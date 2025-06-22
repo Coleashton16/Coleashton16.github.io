@@ -143,30 +143,33 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const buttons = document.querySelectorAll('.resource-button');
-            const overlay = document.getElementById('redirectOverlay');
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('.resource-button');
+        const overlay = document.getElementById('redirectOverlay');
 
-            if (buttons && overlay) {
-                buttons.forEach(button => {
-                    button.addEventListener('click', function (event) {
-                        event.preventDefault(); 
-                        const destinationUrl = this.href;
+        if (buttons && overlay) {
+            buttons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent the default link behavior
+                    const destinationUrl = this.href;
 
-                        overlay.classList.add('visible');
+                    overlay.classList.add('visible');
 
-                        // Wait for 1.3 seconds, then navigate
-                        setTimeout(function () {
-                            window.open(destinationUrl, '_blank');
-                            
-                            // Hide the overlay again on the original page
-                            overlay.classList.remove('visible');
-                        }, 1300); // 1300 milliseconds
-                    });
+                    // Wait for 1.3 seconds, then navigate in the SAME tab
+                    setTimeout(function () {
+                        // CHANGE THIS LINE:
+                        window.location.href = destinationUrl; 
+                        // Or simply: window.location = destinationUrl;
+
+                        // The overlay will disappear as the page navigates
+                        // so you don't necessarily need the removeClass,
+                        // but it doesn't hurt for visual consistency if navigation somehow fails.
+                        // overlay.classList.remove('visible'); 
+                    }, 1300); // 1300 milliseconds
                 });
-            }
-        });
-    </script>
-
+            });
+        }
+    });
+</script>
 </body>
 </html>
