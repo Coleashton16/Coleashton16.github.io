@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Med Surg 1: Academic Support Resources</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Global Reset & Base Styles --- */
+        :root {
+            --primary-blue: #0d6efd;
+            --secondary-gray: #6c757d;
+            --light-bg: #f8f9fa;
+            --white-bg: #ffffff;
+            --dark-text: #212529;
+            --light-border: #dee2e6;
+            --shadow-light: rgba(0,0,0,0.05);
+            --shadow-medium: rgba(13, 110, 253, 0.15);
+            --border-radius-lg: 16px;
+            --border-radius-md: 12px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            margin: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- Layout Container --- */
+        .page-container {
+            max-width: 1000px; /* Slightly wider for more content */
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* --- Header Section --- */
+        .header {
+            text-align: center;
+            padding: 48px 24px;
+            background-color: var(--white-bg);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin: 0 0 12px 0;
+            line-height: 1.2;
+        }
+
+        .header p {
+            font-size: 20px;
+            color: var(--secondary-gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- Content Section (Modular Boxes) --- */
+        .content-section {
+            background-color: var(--white-bg);
+            padding: 32px;
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+
+        .content-section h2 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #343a40;
+            margin-top: 0;
+            margin-bottom: 28px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-border);
+            text-align: center;
+        }
+
+        /* --- Button Grid for Resources --- */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Slightly wider buttons */
+            gap: 25px; /* More space between buttons */
+            justify-content: center; /* Center items if they don't fill the grid */
+            align-items: stretch; /* Make buttons same height */
+        }
+
+        .resource-button {
+            background: var(--white-bg);
+            border: 1px solid var(--light-border);
+            color: var(--dark-text);
+            padding: 22px 20px; /* Slightly more padding */
+            font-size: 19px; /* Slightly larger font */
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--border-radius-md);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column; /* Stack icon and text */
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Space between icon and text */
+            min-height: 100px; /* Ensure a minimum height for all buttons */
+        }
+
+        /* Hover effect for buttons */
+        .resource-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: all 0.4s ease;
+        }
+
+        .resource-button:hover:before {
+            left: 100%;
+        }
+
+        .resource-button:hover {
+            transform: translateY(-7px); /* More pronounced lift */
+            box-shadow: 0 10px 30px var(--shadow-medium); /* Stronger shadow */
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .resource-button .icon {
+            font-size: 36px; /* Larger icons */
+            line-height: 1; /* Align icon better */
+            transition: transform 0.3s ease;
+        }
+
+        .resource-button:hover .icon {
+            transform: scale(1.15); /* More pronounced icon scale */
+        }
+        
+        /* Specific button adjustments if needed */
+        .resource-button.exam-button {
+            background-color: #f0f8ff; /* Light blue background for exams */
+            color: var(--primary-blue);
+        }
+        .resource-button.exam-button:hover {
+            background-color: #e0f2ff;
+        }
+
+
+        /* --- Footer --- */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: var(--secondary-gray);
+            margin-top: 40px;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 36px;
+            }
+            .header p {
+                font-size: 18px;
+            }
+            .content-section h2 {
+                font-size: 24px;
+            }
+            .resource-button {
+                font-size: 17px;
+                padding: 18px;
+            }
+            .resource-button .icon {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .page-container {
+                padding: 16px;
+            }
+            .header, .content-section {
+                padding: 24px 18px;
+                margin-bottom: 24px;
+            }
+            .header h1 {
+                font-size: 30px;
+            }
+            .header p {
+                font-size: 16px;
+            }
+            .content-section h2 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+            .button-grid {
+                grid-template-columns: 1fr; /* Stack buttons on very small screens */
+                gap: 15px;
+            }
+            .resource-button {
+                min-height: 80px;
+                padding: 15px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <header class="header">
+            <h1>Med Surg 1: Academic Support Resources</h1>
+            <p>Your dedicated hub for study materials, practice exams, and learning modules to excel in Medical-Surgical Nursing 1.</p>
+        </header>
+
+        <main>
+            <section class="content-section">
+                <h2>Unit 2 Resources (Gas Exchange, Glucose Control, Hormones)</h2>
+                <div class="button-grid">
+                    <a href="gas-exchange-learning-module.html" class="resource-button">
+                        <span class="icon">📖</span> Gas Exchange Learning Module
+                    </a>
+                    <a href="gas-exchange-diagnostic-exam.html" class="resource-button exam-button">
+                        <span class="icon">📝</span> Gas Exchange (Student Diagnostic Exam)
+                    </a>
+                    </div>
+            </section>
+
+            </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Cole Ashton Valencia Student Representation. All rights reserved.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
