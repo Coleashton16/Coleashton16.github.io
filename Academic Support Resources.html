@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nursing Program Resources</title>
+    <style>
+        /* Using Google Fonts for a professional, modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        /* --- Global Setup --- */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* --- Main Container & Layout --- */
+        .page-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* --- Header Section --- */
+        .header {
+            text-align: center;
+            padding: 24px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px_12px rgba(0,0,0,0.05);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0d6efd;
+            margin: 0 0 8px 0;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #6c757d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- General Section Styling --- */
+        .content-section {
+            background-color: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .content-section h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #343a40;
+            margin-top: 0;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        /* --- Video Section Styling --- */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 12px;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+
+        /* --- Button Grid Layout --- */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        /* --- Enhanced Button Styling --- */
+        .resource-button {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            color: #343a40;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .resource-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: all 0.4s ease;
+        }
+
+        .resource-button:hover:before {
+            left: 100%;
+        }
+
+        .resource-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(13, 110, 253, 0.15);
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+
+        .resource-button .icon {
+            transition: transform 0.3s ease;
+            font-size: 20px;
+        }
+        .resource-button:hover .icon {
+            transform: scale(1.1);
+        }
+
+        /* --- Placeholder Styling for Semester 1 --- */
+        .placeholder-text {
+            color: #6c757d;
+            text-align: center;
+            padding: 30px 20px;
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            font-style: italic;
+        }
+        
+        /* --- Redirect Animation Overlay --- */
+        .redirect-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 20, 30, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .redirect-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .redirect-content {
+            text-align: center;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
+        }
+        
+        .redirect-text {
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: #fff;
+            opacity: 0;
+            animation: fadeInText 1.5s forwards;
+        }
+        
+        .redirect-dots span {
+            opacity: 0;
+            animation: blink 1.5s infinite;
+        }
+        .redirect-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .redirect-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes fadeInText {
+            to { opacity: 1; }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .header, .content-section {
+                padding: 24px 16px;
+                margin-bottom: 24px;
+            }
+            .page-container {
+                padding: 16px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="redirect-overlay" id="redirectOverlay">
+        <div class="redirect-content">
+            <div class="spinner"></div>
+            <p class="redirect-text">
+                Loading Resources<span class="redirect-dots"><span>.</span><span>.</span><span>.</span></span>
+            </p>
+        </div>
+    </div>
+
+    <div class="page-container">
+        <header class="header">
+            <h1>Nursing Program Resources</h1>
+            <p>Your central hub for study guides, practice tests, and clinical materials. Select a subject below to get started.</p>
+        </header>
+
+        <main>
+            <section class="content-section">
+                <h2>Welcome Video</h2>
+                <div class="video-container">
+                    <div class="sp-embed-player" data-id="cT1iDhnXhed" style="position:absolute; top:0; left:0; width:100%; height:100%;">
+                        <script src="https://go.screenpal.com/player/appearance/cT1iDhnXhed"></script>
+                        <iframe width="100%" height="100%" style="border:0;" scrolling="no" src="https://go.screenpal.com/player/cT1iDhnXhed?width=100%&height=100%&ff=1&title=0" allowfullscreen="true"></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>First Semester</h2>
+                <div class="placeholder-text">
+                    <p>More resources coming soon!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Second Semester</h2>
+                <div class="button-grid">
+                    <a href="https://www.vsrep.org/pharmacology" class="resource-button">
+                        <span class="icon">💊</span> Pharmacology
+                    </a>
+                    <a href="https://www.vsrep.org/med-surg-1" class="resource-button">
+                        <span class="icon">🩺</span> Med Surg 1
+                    </a>
+                    <a href="https://www.vsrep.org/mental-health" class="resource-button">
+                        <span class="icon">🧠</span> Mental Health
+                    </a>
+                    <a href="https://www.vsrep.org/clinical-resources" class="resource-button">
+                        <span class="icon"> scrubs </span> Clinical Resources
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.resource-button');
+            const overlay = document.getElementById('redirectOverlay');
+
+            if (buttons && overlay) {
+                buttons.forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault(); 
+                        const destinationUrl = this.href;
+                        overlay.classList.add('visible');
+                        
+                        // Wait for 3 seconds, then navigate
+                        setTimeout(function () {
+                            // --- CHANGED HERE ---
+                            // Opens the link in a new tab to bypass embed restrictions
+                            window.open(destinationUrl, '_blank');
+                            
+                            // You might want to hide the overlay again on the original page
+                            overlay.classList.remove('visible');
+                        }, 3000); // 3000 milliseconds = 3 seconds
+                    });
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
