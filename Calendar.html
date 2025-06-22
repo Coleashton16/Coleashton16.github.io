@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Countdown to Next Meeting</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+  body {
+    background-color: #1a1a1a; /* Dark background for contrast */
+    color: #f0e68c; /* Khaki - a warm, vintage yellow */
+    font-family: 'Roboto Mono', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    text-align: center;
+    overflow: hidden; /* Hide scrollbars if any */
+  }
+
+  .container {
+    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent dark overlay */
+    padding: 40px 60px;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(240, 230, 140, 0.3), /* Khaki glow */
+                inset 0 0 15px rgba(255, 165, 0, 0.2); /* Orange inner glow */
+    border: 2px solid #4a3b1a; /* Dark brownish border */
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8em;
+    color: #ffd700; /* Gold */
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; /* Gold and DarkOrange glow */
+    font-weight: 700;
+  }
+
+  p.subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.2em;
+    color: #f5deb3; /* Wheat */
+    margin-top: 0;
+    margin-bottom: 30px;
+  }
+
+  #countdown {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Spacing between bulb units */
+  }
+
+  .time-unit {
+    background-color: rgba(40, 30, 10, 0.6); /* Darker, slightly transparent brown */
+    padding: 20px;
+    border-radius: 10px;
+    min-width: 100px;
+    box-shadow: 0 0 15px rgba(255, 165, 0, 0.4), /* Orange glow */
+                inset 0 0 8px rgba(255, 223, 186, 0.3); /* NavajoWhite inner glow */
+    border: 1px solid #805500; /* Dark orange/brown border */
+    position: relative; /* For pseudo-element filament */
+  }
+
+  /* Simulating the filament glow */
+  .time-unit::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(to bottom, rgba(255,223,186,0) 0%, rgba(255,165,0,0.8) 50%, rgba(255,223,186,0) 100%);
+    border-radius: 2px;
+    opacity: 0.7;
+    box-shadow: 0 0 5px #ffA500, 0 0 10px #ffA500;
+    animation: flicker 1.5s infinite alternate;
+  }
+
+
+  .time-unit span {
+    display: block;
+    font-size: 3em; /* Large numbers */
+    font-weight: 700;
+    color: #ffdead; /* NavajoWhite - warm off-white */
+    text-shadow: 0 0 5px #ffdead, 0 0 10px #ffA500, 0 0 15px #ff8c00; /* Filament-like glow */
+    line-height: 1;
+  }
+
+  .time-unit .label {
+    font-size: 0.8em;
+    color: #f0e68c; /* Khaki */
+    text-transform: uppercase;
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  #message {
+    margin-top: 40px;
+    font-size: 1.8em;
+    font-family: 'Playfair Display', serif;
+    color: #ffd700;
+    text-shadow: 0 0 8px #ffd700;
+    display: none; /* Hidden initially */
+  }
+
+  /* Subtle background 'filament' lines */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        rgba(255, 215, 0, 0.02),
+        rgba(255, 215, 0, 0.02) 1px,
+        transparent 1px,
+        transparent 20px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        rgba(255, 165, 0, 0.02),
+        rgba(255, 165, 0, 0.02) 1px,
+        transparent 1px,
+        transparent 20px
+      );
+    z-index: -1; /* Behind everything */
+    pointer-events: none; /* Allow clicks through */
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 0.7; box-shadow: 0 0 5px #ffA500, 0 0 10px #ffA500; }
+    50% { opacity: 1; box-shadow: 0 0 8px #ff8c00, 0 0 15px #ff8c00; }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .container {
+      padding: 30px 20px;
+    }
+    h1 {
+      font-size: 2em;
+    }
+    p.subtitle {
+        font-size: 1em;
+    }
+    #countdown {
+      flex-direction: column;
+      gap: 15px;
+    }
+    .time-unit {
+      min-width: 200px; /* Adjust for stacked layout */
+      padding: 15px;
+    }
+    .time-unit span {
+      font-size: 2.5em;
+    }
+  }
+    @media (max-width: 480px) {
+    h1 {
+      font-size: 1.6em;
+    }
+    .time-unit span {
+      font-size: 2em;
+    }
+    .time-unit {
+      min-width: 180px;
+      padding: 10px;
+    }
+    .container {
+        padding: 20px 15px;
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Next Meeting</h1>
+  <p class="subtitle">Countdown until June 23rd, 2025, 15:30</p>
+  <div id="countdown">
+    <div class="time-unit">
+      <span id="days">00</span>
+      <div class="label">Days</div>
+    </div>
+    <div class="time-unit">
+      <span id="hours">00</span>
+      <div class="label">Hours</div>
+    </div>
+    <div class="time-unit">
+      <span id="minutes">00</span>
+      <div class="label">Minutes</div>
+    </div>
+    <div class="time-unit">
+      <span id="seconds">00</span>
+      <div class="label">Seconds</div>
+    </div>
+  </div>
+  <div id="message">The meeting time has arrived! ✨</div>
+</div>
+
+<script>
+  // Set the date we're counting down to
+  // Note: JavaScript months are 0-indexed (January is 0, June is 5)
+  const countDownDate = new Date("June 23, 2025 15:30:00").getTime();
+
+  // Update the count down every 1 second
+  const x = setInterval(function() {
+
+    // Get today's date and time
+    const now = new Date().getTime();
+
+    // Find the distance between now and the count down date
+    const distance = countDownDate - now;
+
+    // Time calculations for days, hours, minutes and seconds
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Display the result in the elements
+    document.getElementById("days").innerText = String(days).padStart(2, '0');
+    document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+    document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+    document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+
+    // If the count down is finished, write some text
+    if (distance < 0) {
+      clearInterval(x);
+      document.getElementById("countdown").style.display = "none";
+      document.getElementById("message").style.display = "block";
+      document.getElementById("message").innerText = "The meeting time has arrived! ✨"; // Updated message
+    }
+  }, 1000);
+</script>
+
+</body>
+</html>
