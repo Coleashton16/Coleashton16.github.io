@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VSREP Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        /* --- Global Setup --- */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* --- Main Page Styles (Unchanged) --- */
+        .page-container { max-width: 960px; margin: 0 auto; padding: 24px; }
+        .header { text-align: center; padding: 48px 24px; background-color: #ffffff; border-radius: 16px; margin-bottom: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .header h1 { font-size: 36px; font-weight: 700; color: #0d6efd; margin: 0 0 8px 0; }
+        .header p { font-size: 18px; color: #6c757d; max-width: 600px; margin: 0 auto; }
+        .content-section { background-color: #ffffff; padding: 32px; border-radius: 16px; margin-bottom: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .content-section h2 { font-size: 22px; font-weight: 600; color: #343a40; margin-top: 0; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid #dee2e6; text-align: center; }
+        .button-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .resource-button { background: #fff; border: 1px solid #dee2e6; color: #343a40; padding: 20px; font-size: 18px; font-weight: 600; text-decoration: none; border-radius: 12px; text-align: center; position: relative; overflow: hidden; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .resource-button:before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent); transition: all 0.4s ease; }
+        .resource-button:hover:before { left: 100%; }
+        .resource-button:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(13, 110, 253, 0.15); border-color: #0d6efd; color: #0d6efd; }
+        .resource-button .icon { transition: transform 0.3s ease; }
+        .resource-button:hover .icon { transform: scale(1.1); }
+        .footer { text-align: center; padding: 20px; font-size: 14px; color: #6c757d; }
+
+        /* --- NEW: Modern & Ergonomic Redirect Overlay --- */
+        .redirect-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(20, 20, 25, 0.85); /* Softer, semi-transparent black */
+            backdrop-filter: blur(8px); /* Blurs the background content */
+            -webkit-backdrop-filter: blur(8px); /* Safari support */
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .redirect-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .redirect-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* The new, elegant spinner */
+        .elegant-spinner {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            /* Using a conic gradient for a smooth, fading effect */
+            background: conic-gradient(from 90deg at 50% 50%, rgba(255, 255, 255, 0.1), #0d6efd);
+            mask: radial-gradient(transparent 45%, black 46%);
+            -webkit-mask: radial-gradient(transparent 45%, black 46%);
+            animation: ergonomic-spin 1s linear infinite;
+        }
+        
+        .redirect-text {
+            font-size: 18px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            animation: ergonomic-fade-in 0.8s ease both;
+        }
+
+        @keyframes ergonomic-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes ergonomic-fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .header, .content-section { padding: 24px 16px; }
+            .page-container { padding: 16px; }
+            .header h1 { font-size: 32px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="redirect-overlay" id="redirectOverlay">
+        <div class="redirect-content">
+            <div class="elegant-spinner"></div>
+            <p class="redirect-text">Redirecting...</p>
+        </div>
+    </div>
+
+    <div class="page-container">
+        <header class="header">
+            <h1>How Can We Be of Service?</h1>
+            <p>Your central hub for support, scheduling, and student resources.</p>
+        </header>
+
+        <main>
+            <section class="content-section">
+                <h2>Quick Links</h2>
+                <div class="button-grid">
+                    <a href="https://www.vsrep.org/anonymous-reporting-form" class="resource-button">
+                        <span class="icon">🤫</span> Anonymous Issue Reporting
+                    </a>
+                    <a href="https://www.vsrep.org/calendar" class="resource-button">
+                        <span class="icon">📅</span> Calendar / Upcoming Events
+                    </a>
+                    <a href="https://www.vsrep.org/academic-support-resources-consent" class="resource-button">
+                        <span class="icon">📚</span> Academic Support Resources
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Cole Ashton Valencia Student Representation</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.resource-button');
+            const overlay = document.getElementById('redirectOverlay');
+
+            if (buttons && overlay) {
+                buttons.forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault(); 
+                        const destinationUrl = this.href;
+
+                        overlay.classList.add('visible');
+
+                        // Wait for 1.3 seconds, then navigate
+                        setTimeout(function () {
+                            window.open(destinationUrl, '_blank');
+                            
+                            // Hide the overlay again on the original page
+                            overlay.classList.remove('visible');
+                        }, 1300); // 1300 milliseconds
+                    });
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
