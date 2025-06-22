@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disclaimer & Consent</title>
+<style>
+  /* --- Basic Setup & Background --- */
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f7f6;
+    margin: 0;
+  }
+
+  /* --- A wrapper to help center the content --- */
+  .container-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  /* --- Shared Box Styling --- */
+  .box-style {
+    background-color: #fff;
+    max-width: 700px;
+    width: 95%;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  /* --- Disclaimer Container --- */
+  .disclaimer-container {
+    border-top: 6px solid #d9534f;
+    opacity: 0; /* Start hidden for animation */
+    transform: translateY(25px);
+    animation: fadeInUp 0.6s 0.2s ease-out forwards;
+    /* Initially hidden until script decides to show it */
+    display: none;
+  }
+  
+  /* --- NEW: Continue Link Box for Returning Users --- */
+  .continue-link-container {
+      border-top: 6px solid #28a745; /* Green color for success/continue */
+      /* Initially hidden */
+      display: none;
+  }
+
+  .continue-link-container p {
+      font-size: 18px;
+      margin: 15px 0;
+  }
+
+  .continue-link-container a {
+      display: inline-block;
+      background-color: #28a745;
+      color: #fff;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+  }
+  
+  .continue-link-container a:hover {
+      background-color: #218838;
+  }
+
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* --- Content Styling --- */
+  .disclaimer-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #d9534f;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .disclaimer-content p {
+    margin-bottom: 15px;
+    font-size: 16px;
+    text-align: left;
+  }
+
+  .proprietary-notice h3 {
+    font-size: 18px;
+  }
+  
+  .terms-affirmation {
+    font-size: 14px;
+    color: #666;
+    margin-top: 30px;
+    margin-bottom: -10px;
+  }
+
+  .terms-affirmation a {
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  #acceptButton {
+    background-color: #d9534f;
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 30px;
+  }
+
+  #acceptButton:hover {
+    background-color: #c9302c;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="container-wrapper" id="containerWrapper">
+  
+  <div class="box-style disclaimer-container" id="disclaimerBox">
+    <h2 class="disclaimer-title">Disclaimer</h2>
+    <div class="disclaimer-content">
+      <p>The questions and study materials provided on this platform are generated with the assistance of Artificial Intelligence (AI) and are based on textbooks, presentations, and other course materials from Valencia College. While we strive for accuracy, <strong>some information may be incorrect or incomplete.</strong></p>
+      <p>Always exercise your own judgment and critically evaluate all information. These materials should be used as a supplementary study aid and <strong>not as your sole source of information</strong> for academic purposes. It is highly recommended that you cross-reference the content with official course materials and consult with your instructors.</p>
+      <div class="proprietary-notice">
+        <h3>Proprietary Technology & Redistribution</h3>
+        <p>The testing engine, features, and all related functionalities on this platform are proprietary technology. This technology is provided for your personal, non-commercial use only and is not intended to be redistributed. Any form of redistribution is strictly prohibited.</p>
+      </div>
+    </div>
+    <div class="terms-affirmation">
+      <p>By clicking 'I Understand and Accept', you affirm that you have read and agree to our <a href="https://www.vsrep.org/tos" target="_blank">Terms of Service</a> and understand the conditions outlined above.</p>
+    </div>
+    <button id="acceptButton">I Understand and Accept</button>
+  </div>
+  
+  <div class="box-style continue-link-container" id="continueLinkBox">
+      <p>You have already accepted our terms.</p>
+      <a href="Academic Support Resources.html">Click here to continue to Academic Support Resources</a>
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const disclaimerBox = document.getElementById('disclaimerBox');
+    const continueLinkBox = document.getElementById('continueLinkBox');
+    const acceptButton = document.getElementById('acceptButton');
+    
+    const storageKey = 'disclaimerAccepted';
+    // UPDATED REDIRECT URL TO LOCAL PATH
+    const redirectUrl = 'Academic Support Resources.html'; 
+
+    try {
+        const consentGiven = localStorage.getItem(storageKey);
+
+        if (consentGiven === 'true') {
+            // --- RETURNING USER LOGIC ---
+            console.log("Consent found. Showing 'Continue' link.");
+            continueLinkBox.style.display = 'block';
+
+        } else {
+            // --- NEW USER LOGIC ---
+            console.log("No consent found. Displaying full disclaimer.");
+            disclaimerBox.style.display = 'block';
+        }
+    } catch (e) {
+        // Fallback if localStorage is blocked entirely (e.g., some privacy settings)
+        console.error("Could not access localStorage. Displaying disclaimer by default.", e);
+        disclaimerBox.style.display = 'block';
+    }
+
+
+    acceptButton.addEventListener('click', function() {
+        console.log("'Accept' button clicked.");
+        
+        try {
+            // 1. Save the consent choice.
+            localStorage.setItem(storageKey, 'true');
+        } catch (e) {
+            console.error("Could not save consent.", e);
+        }
+
+        // 2. Open the destination in the SAME TAB.
+        console.log("Navigating to:", redirectUrl);
+        window.location.href = redirectUrl; // THIS IS THE CHANGE for same tab
+        
+        // 3. Hide the disclaimer on the original page (optional, as navigation will happen)
+        // document.getElementById('containerWrapper').style.display = 'none'; 
+    });
+  });
+</script>
+
+</body>
+</html>
