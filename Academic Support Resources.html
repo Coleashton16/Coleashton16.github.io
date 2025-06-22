@@ -309,11 +309,10 @@
                         
                         // Wait for 3 seconds, then navigate
                         setTimeout(function () {
-                            // --- CHANGED HERE ---
-                            // Opens the link in a new tab to bypass embed restrictions
-                            window.open(destinationUrl, '_blank');
+                            // Changed to open in the same window/tab
+                            window.location.href = destinationUrl;
                             
-                            // You might want to hide the overlay again on the original page
+                            // The overlay will disappear as the page navigates
                             overlay.classList.remove('visible');
                         }, 3000); // 3000 milliseconds = 3 seconds
                     });
