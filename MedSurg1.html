@@ -6,78 +6,97 @@
     <title>Med Surg 1: Academic Support Resources</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* --- Global Reset & Base Styles --- */
+        /* --- Global Variables & NEW Refined Color Palette --- */
         :root {
-            --primary-blue: #0d6efd; /* This page's specific primary blue */
-            --secondary-gray: #6c757d;
-            --light-bg: #f8f9fa;
-            --white-bg: #ffffff;
-            --dark-text: #212529;
-            --light-border: #dee2e6;
-            --shadow-light: rgba(0,0,0,0.05);
-            --shadow-medium: rgba(13, 110, 253, 0.15);
-            --border-radius-lg: 16px;
-            --border-radius-md: 12px;
+            /* Core Neutrals & Blues (Modern & Professional) */
+            --color-primary-dark: #2F4858;    /* Deep Slate Blue - for headings, navigation */
+            --color-primary-medium: #4B6B80; /* Muted Steel Blue - for secondary headings, accents */
+            --color-text-main: #333333;      /* Dark Gray - for main body text */
+            --color-text-light: #607D8B;     /* Light Slate Gray - for subtle text, icons */
+            --color-background: #F4F7F6;    /* Very Light Blue-Gray - overall page background */
+            --color-card-background: #FFFFFF; /* Crisp White - for main content cards */
+            --color-border: #E0E6EC;         /* Soft Border Gray */
 
-            /* Additional colors for top-nav consistency (if different from page's primary-blue) */
-            --nav-primary-blue: #2c7ac2; /* Deeper, more professional blue for the navigation */
-            --nav-primary-blue-light: #e0f2ff; /* Very light blue for nav backgrounds/hovers */
+            /* Accent Color (Warm & Inviting) */
+            --color-accent: #DAA520;         /* Goldenrod - for hover states, underlines, active elements */
+            --color-accent-light: #FFE082;   /* Lighter Goldenrod - for very subtle accents */
+
+            /* Shadows (Soft & Modern) */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+            /* Spacing & Radii */
+            --spacing-unit: 1rem;
+            --padding-section: 2.5rem; /* Consistent padding for sections */
+            --padding-inner: 1.5rem; /* Padding inside elements like topic groups */
+            --radius-default: 6px;   /* Slightly less rounded for modern look */
+            --radius-large: 12px;    /* Larger radius for main cards */
+
+            /* Global padding */
+            --page-horizontal-padding: max(20px, 5vw);
+
+            /* Resource Button Specific Colors (Harmonized with new palette) */
+            --module-button-base: #2A9D8F;    /* Teal - for Modules */
+            --module-button-hover: #217C74;
+            --module-shadow-tint: rgba(42, 157, 143, 0.15);
+
+            --exam-button-base: #E76F51;      /* Terracotta Orange - for Exams */
+            --exam-button-hover: #D05E41;
+            --exam-shadow-tint: rgba(231, 111, 81, 0.15);
+
+            /* Topic Group background */
+            --color-topic-group-bg: #EDF2F7; /* Very light, cool gray for topic group background */
         }
 
+        /* --- Global 10% Zoom & Base Styles --- */
         html {
+            font-size: 96.25%;
             scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
+            font-family: 'Open Sans', sans-serif; /* A softer, more modern body font */
+            background-color: var(--color-background);
+            color: var(--color-text-main);
             margin: 0;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+            box-sizing: border-box;
+            font-weight: 400;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
         }
 
         /* --- Top Navigation Menu --- */
         .top-nav {
-            background-color: var(--nav-primary-blue); /* Using the consistent nav blue */
-            padding: 12px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            background-color: var(--color-primary-dark);
+            padding: 0.8rem 0;
+            box-shadow: var(--shadow-md);
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1); /* Subtle white border */
         }
 
         .top-nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
+            width: 100%;
+            padding: 0 var(--page-horizontal-padding);
             display: flex;
-            justify-content: center; /* Center the navigation items */
+            justify-content: flex-start;
             align-items: center;
-            overflow-x: auto; /* Allow horizontal scrolling if too many links */
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-            scrollbar-width: thin; /* Firefox */
-            scrollbar-color: var(--nav-primary-blue) rgba(255,255,255,0.1); /* Firefox */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
-        /* Custom scrollbar for Webkit browsers */
         .top-nav-container::-webkit-scrollbar {
-            height: 6px;
-        }
-        .top-nav-container::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-        }
-        .top-nav-container::-webkit-scrollbar-thumb {
-            background: var(--nav-primary-blue-light); /* Using the consistent nav light blue */
-            border-radius: 3px;
-        }
-        .top-nav-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.7);
+            display: none;
         }
 
         .top-nav-list {
@@ -85,238 +104,347 @@
             margin: 0;
             padding: 0;
             display: flex;
-            gap: 30px; /* Standard gap */
-            white-space: nowrap; /* Prevent wrapping */
+            gap: 2.5rem;
+            white-space: nowrap;
         }
 
         .top-nav-item a {
-            color: white;
+            color: rgba(255, 255, 255, 0.85); /* Softer white for nav links */
             text-decoration: none;
-            font-weight: 600;
-            font-size: 1.05rem; /* Standard font size */
-            padding: 10px 15px;
-            border-radius: var(--border-radius-md);
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            display: block;
+            font-family: 'Roboto', sans-serif; /* Use Roboto for nav links */
+            font-weight: 500; /* Medium weight */
+            font-size: 1.0rem;
+            padding: 0.6rem 0;
+            transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
+            display: block;
+            letter-spacing: 0.02em;
         }
 
         .top-nav-item a::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 3px;
-            background-color: white;
-            transition: width 0.3s ease;
+            bottom: -0.25rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--color-accent);
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease;
         }
 
         .top-nav-item a:hover {
-            background-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            color: var(--color-accent);
+            transform: translateY(-2px);
         }
-
         .top-nav-item a:hover::after {
-            width: 80%;
+            transform: scaleX(1);
         }
 
-        /* --- Layout Container --- */
+        /* --- Main Page Container --- */
         .page-container {
-            max-width: 1000px; /* Slightly wider for more content */
-            margin: 0 auto;
-            padding: 24px;
-            padding-top: 0; /* Adjust if header has top padding/margin */
+            width: 100%;
+            padding: var(--padding-section) var(--page-horizontal-padding) 4rem;
+            display: flex;
+            flex-direction: column;
         }
 
         /* --- Header Section --- */
         .header {
+            width: 100%;
+            padding: 4rem var(--padding-section);
+            background: var(--color-card-background);
+            border-radius: var(--radius-large);
+            margin-bottom: var(--padding-section);
+            box-shadow: var(--shadow-md);
             text-align: center;
-            padding: 48px 24px;
-            background-color: var(--white-bg);
-            border-radius: var(--border-radius-lg);
-            margin-bottom: 32px;
-            box-shadow: 0 4px 12px var(--shadow-light);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+        }
+
+        .header-content {
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .header h1 {
-            font-size: 42px;
+            font-family: 'Roboto', sans-serif; /* Roboto for headings */
+            font-size: 3.2rem;
             font-weight: 700;
-            color: var(--primary-blue); /* Using this page's specific primary blue */
-            margin: 0 0 12px 0;
+            color: var(--color-primary-dark);
+            margin: 0 0 1rem 0;
             line-height: 1.2;
+            letter-spacing: -0.02em;
         }
 
         .header p {
-            font-size: 20px;
-            color: var(--secondary-gray);
-            max-width: 700px;
+            font-size: 1.15rem;
+            color: var(--color-text-light);
             margin: 0 auto;
+            font-weight: 300;
+            line-height: 1.6;
+            max-width: 700px;
         }
 
-        /* --- Content Section (Modular Boxes) --- */
+        /* --- Content Section --- */
         .content-section {
-            background-color: var(--white-bg);
-            padding: 32px;
-            border-radius: var(--border-radius-lg);
-            margin-bottom: 32px;
-            box-shadow: 0 4px 12px var(--shadow-light);
+            background-color: var(--color-card-background);
+            padding: var(--padding-section);
+            border-radius: var(--radius-large);
+            margin-bottom: var(--padding-section);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-border);
+            width: 100%;
+            transition: all 0.3s ease;
         }
 
-        .content-section h2 {
-            font-size: 26px;
+        .content-section:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        /* Collapsible Header */
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.8rem;
             font-weight: 600;
-            color: #343a40;
+            color: var(--color-primary-medium);
             margin-top: 0;
-            margin-bottom: 28px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--light-border);
-            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--color-border);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+            line-height: 1.2;
+        }
+
+        .collapsible-header:hover {
+            color: var(--color-accent);
+            border-color: var(--color-accent-light);
+        }
+
+        .collapsible-header .collapse-icon {
+            font-size: 1.2rem;
+            margin-left: 1.2rem;
+            transition: transform 0.3s ease;
+            color: var(--color-text-light);
+        }
+
+        .collapsible-header:hover .collapse-icon {
+            color: var(--color-accent);
+        }
+
+        .collapsible-header .collapse-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        /* Collapsible Content */
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-out, padding 0.7s ease-out;
+            padding-top: 0;
+        }
+
+        .collapsible-content.expanded {
+            max-height: 4000px; /* Increased for potential large content */
+            transition: max-height 1s ease-in, padding 1s ease-in;
+            padding-top: var(--padding-inner);
+        }
+
+        /* Sub-section for topic groups within collapsible content */
+        .topic-group {
+            background-color: var(--color-topic-group-bg);
+            border-radius: var(--radius-default);
+            padding: var(--padding-inner);
+            margin-bottom: var(--padding-inner);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .topic-group h3 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.3rem;
+            color: var(--color-primary-medium);
+            margin-top: 0;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border); /* Solid line for clean look */
+            padding-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-weight: 500;
         }
 
         /* --- Button Grid for Resources --- */
         .button-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Slightly wider buttons */
-            gap: 25px; /* More space between buttons */
-            justify-content: center; /* Center items if they don't fill the grid */
-            align-items: stretch; /* Make buttons same height */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted min-width slightly */
+            gap: 1.5rem; /* Adjusted gap */
+            justify-content: center;
+            align-items: stretch;
+            width: 100%;
         }
 
         .resource-button {
-            background: var(--white-bg);
-            border: 1px solid var(--light-border);
-            color: var(--dark-text);
-            padding: 22px 20px; /* Slightly more padding */
-            font-size: 19px; /* Slightly larger font */
+            background-color: var(--color-card-background);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-main);
+            padding: 1.2rem 1rem;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.05rem;
             font-weight: 600;
             text-decoration: none;
-            border-radius: var(--border-radius-md);
+            border-radius: var(--radius-default);
             text-align: center;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
             display: flex;
-            flex-direction: column; /* Stack icon and text */
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 10px; /* Space between icon and text */
-            min-height: 100px; /* Ensure a minimum height for all buttons */
-        }
-
-        /* Hover effect for buttons */
-        .resource-button:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: all 0.4s ease;
-        }
-
-        .resource-button:hover:before {
-            left: 100%;
+            gap: 0.8rem;
+            min-height: 6rem;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
         }
 
         .resource-button:hover {
-            transform: translateY(-7px); /* More pronounced lift */
-            box-shadow: 0 10px 30px var(--shadow-medium); /* Stronger shadow */
-            border-color: var(--primary-blue); /* Using this page's specific primary blue */
-            color: var(--primary-blue); /* Using this page's specific primary blue */
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            color: var(--color-primary-dark);
+            border-color: var(--color-accent);
         }
 
         .resource-button .icon {
-            font-size: 36px; /* Larger icons */
-            line-height: 1; /* Align icon better */
+            font-size: 2.2rem; /* Slightly smaller for a more refined look */
+            line-height: 1;
             transition: transform 0.3s ease;
+            color: var(--color-primary-medium); /* Default icon color */
         }
 
         .resource-button:hover .icon {
-            transform: scale(1.15); /* More pronounced icon scale */
+            transform: scale(1.1);
+            color: var(--color-accent); /* Icon color changes on hover */
         }
         
-        /* Specific button adjustments if needed */
-        .resource-button.exam-button {
-            background-color: #f0f8ff; /* Light blue background for exams */
-            color: var(--primary-blue); /* Using this page's specific primary blue */
+        /* Specific button adjustments (Module) */
+        .resource-button.module-button {
+            color: var(--module-button-base);
         }
-        .resource-button.exam-button:hover {
-            background-color: #e0f2ff;
+        .resource-button.module-button .icon {
+            color: var(--module-button-base);
+        }
+        .resource-button.module-button:hover {
+            background-color: var(--module-button-hover);
+            color: var(--color-white);
+            border-color: var(--module-button-hover);
+            box-shadow: 0 5px 15px var(--module-shadow-tint);
+        }
+        .resource-button.module-button:hover .icon {
+            color: var(--color-white); /* Icon white on module hover */
         }
 
+        /* Specific button adjustments (Exam) */
+        .resource-button.exam-button {
+            color: var(--exam-button-base);
+        }
+        .resource-button.exam-button .icon {
+            color: var(--exam-button-base);
+        }
+        .resource-button.exam-button:hover {
+            background-color: var(--exam-button-hover);
+            color: var(--color-white);
+            border-color: var(--exam-button-hover);
+            box-shadow: 0 5px 15px var(--exam-shadow-tint);
+        }
+        .resource-button.exam-button:hover .icon {
+            color: var(--color-white); /* Icon white on exam hover */
+        }
+
+        /* Placeholder text within grids */
+        .button-grid p {
+            color: var(--color-text-light);
+            font-size: 0.95rem;
+            padding: 0.8rem 0;
+        }
 
         /* --- Footer --- */
         .footer {
             text-align: center;
-            padding: 20px;
-            font-size: 14px;
-            color: var(--secondary-gray);
-            margin-top: 40px;
+            padding: var(--padding-inner);
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+            margin-top: 3rem;
+            border-top: 1px solid var(--color-border);
+            background-color: var(--color-card-background);
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-sm);
+            width: 100%;
         }
 
         /* --- Responsive Adjustments --- */
+        @media (max-width: 1200px) {
+            :root { --padding-section: 2rem; }
+            .header h1 { font-size: 2.8rem; }
+            .header p { font-size: 1.1rem; }
+            .collapsible-header { font-size: 1.6rem; }
+            .resource-button { font-size: 1rem; padding: 1rem 0.8rem; min-height: 5.5rem; }
+            .resource-button .icon { font-size: 2rem; }
+            .topic-group h3 { font-size: 1.2rem; }
+        }
+
+        @media (max-width: 992px) {
+            :root { --padding-section: 1.8rem; --padding-inner: 1.2rem; }
+            .header h1 { font-size: 2.4rem; }
+            .header p { font-size: 1.05rem; }
+            .collapsible-header { font-size: 1.4rem; }
+            .resource-button { font-size: 0.95rem; padding: 0.9rem 0.7rem; min-height: 5rem; }
+            .resource-button .icon { font-size: 1.8rem; }
+            .top-nav-list { gap: 2rem; }
+            .top-nav-item a { font-size: 0.95rem; }
+            .topic-group h3 { font-size: 1.1rem; }
+        }
+
         @media (max-width: 768px) {
-            .top-nav-container {
-                padding: 0 15px;
-            }
-            .top-nav-list {
-                gap: 15px;
-            }
-            .top-nav-item a {
-                font-size: 0.9rem;
-                padding: 8px 12px;
-            }
-            .header h1 {
-                font-size: 36px;
-            }
-            .header p {
-                font-size: 18px;
-            }
-            .content-section h2 {
-                font-size: 24px;
-            }
-            .resource-button {
-                font-size: 17px;
-                padding: 18px;
-            }
-            .resource-button .icon {
-                font-size: 32px;
-            }
+            :root { --page-horizontal-padding: max(15px, 4vw); }
+            html { font-size: 90%; }
+            .header { padding: 3rem var(--padding-section); }
+            .header h1 { font-size: 2rem; }
+            .header p { font-size: 0.95rem; }
+            .content-section { padding: var(--padding-section); }
+            .collapsible-header { font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.8rem; }
+            .collapsible-header .collapse-icon { font-size: 1rem; }
+            .button-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; }
+            .resource-button { min-height: 4.5rem; gap: 0.6rem; }
+            .resource-button .icon { font-size: 1.6rem; }
+            .topic-group { padding: 1rem; margin-bottom: 1rem; }
+            .topic-group h3 { font-size: 1rem; padding-bottom: 0.5rem; }
         }
 
-        @media (max-width: 500px) {
-            .page-container {
-                padding: 16px;
-            }
-            .header, .content-section {
-                padding: 24px 18px;
-                margin-bottom: 24px;
-            }
-            .header h1 {
-                font-size: 30px;
-            }
-            .header p {
-                font-size: 16px;
-            }
-            .content-section h2 {
-                font-size: 22px;
-                margin-bottom: 20px;
-            }
-            .button-grid {
-                grid-template-columns: 1fr; /* Stack buttons on very small screens */
-                gap: 15px;
-            }
-            .resource-button {
-                min-height: 80px;
-                padding: 15px;
-            }
+        @media (max-width: 576px) {
+            :root { --page-horizontal-padding: 15px; }
+            html { font-size: 85%; }
+            .top-nav-list { gap: 1.5rem; }
+            .top-nav-item a { font-size: 0.9rem; }
+            .header { padding: 2.5rem var(--padding-section); }
+            .header h1 { font-size: 1.7rem; }
+            .header p { font-size: 0.85rem; }
+            .collapsible-header { flex-direction: column; text-align: center; gap: 0.5rem; padding-bottom: 0.8rem; }
+            .collapsible-header .collapse-icon { margin-left: 0; margin-top: 0.3rem; }
+            .button-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .resource-button { min-height: 4rem; padding: 1rem; }
+            .resource-button .icon { font-size: 1.4rem; }
+            .footer { padding: 1rem; font-size: 0.8rem; }
         }
-
     </style>
 </head>
 <body>
@@ -334,29 +462,138 @@
 
     <div class="page-container">
         <header class="header">
-            <h1>Med Surg 1: Academic Support Resources</h1>
-            <p>Your dedicated hub for study materials, practice exams, and learning modules to excel in Medical-Surgical Nursing 1.</p>
+            <div class="header-content">
+                <h1>Med Surg 1: Academic Support Resources</h1>
+                <p>Access professionally curated study materials, comprehensive practice exams, and specialized learning modules designed to support your academic success in Medical-Surgical Nursing.</p>
+            </div>
         </header>
 
         <main>
             <section class="content-section">
-                <h2>Unit 2 Resources (Gas Exchange, Glucose Control, Hormones)</h2>
-                <div class="button-grid">
-                    <a href="GasExchangeMS1LearningModule.html" class="resource-button">
-                        <span class="icon">📖</span> Gas Exchange Learning Module
-                    </a>
-                    <a href="gas-exchange-diagnostic-exam.html" class="resource-button exam-button">
-                        <span class="icon">📝</span> Gas Exchange (Student Diagnostic Exam)
-                    </a>
+                <h2 class="collapsible-header">
+                    Unit 1 Resources (Introduction & Fundamentals)
+                    <i class="fas fa-chevron-down collapse-icon"></i>
+                </h2>
+                <div class="collapsible-content">
+                    <div class="button-grid">
+                        <p style="grid-column: 1 / -1; text-align: center; color: var(--color-text-light); font-size: 1rem; padding: 1rem 0;">Content for Unit 1 will be added here soon!</p>
                     </div>
+                </div>
             </section>
 
-            </main>
+            <section class="content-section">
+                <h2 class="collapsible-header">
+                    Unit 2 Resources (Gas Exchange, Glucose Control, Hormones)
+                    <i class="fas fa-chevron-down collapse-icon"></i>
+                </h2>
+                <div class="collapsible-content">
+                    <div class="topic-group">
+                        <h3><i class="fas fa-lungs"></i> Gas Exchange</h3>
+                        <div class="button-grid">
+                            <a href="MedSurg Gas Exchange Exemplar SDE.html" class="resource-button exam-button">
+                                <span class="icon">📈</span> <strong>Exemplar SDE</strong>
+                            </a>
+                            <a href="MedSurg Gas Exchange Exemplars Learning Module.html" class="resource-button module-button">
+                                <span class="icon">🔬</span> <strong>Exemplars Learning Module</strong>
+                            </a>
+                            <a href="MedSurg Gas Exchange Learning Module.html" class="resource-button module-button">
+                                <span class="icon">🫁</span> <strong>Learning Module</strong>
+                            </a>
+                            <a href="MedSurg Gas Exchange SDE new.html" class="resource-button exam-button">
+                                <span class="icon">⏱️</span> <strong>SDE</strong>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="topic-group">
+                        <h3><i class="fas fa-sugar"></i> Glucose Control</h3>
+                        <div class="button-grid">
+                            <a href="MedSurg Glucose Control SDE.html" class="resource-button exam-button">
+                                <span class="icon">🩸</span> <strong>SDE</strong>
+                            </a>
+                            </div>
+                    </div>
+
+                    <div class="topic-group">
+                        <h3><i class="fas fa-balance-scale"></i> Hormone Regulation</h3>
+                        <div class="button-grid">
+                            <a href="MedSurg Hormone Regulation SDE.html" class="resource-button exam-button">
+                                <span class="icon">⚖️</span> <strong>SDE</strong>
+                            </a>
+                            </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2 class="collapsible-header">
+                    Unit 3 Resources (Perfusion, Clotting, Inflammation, Infection)
+                    <i class="fas fa-chevron-down collapse-icon"></i>
+                </h2>
+                <div class="collapsible-content">
+                    <div class="topic-group">
+                        <h3><i class="fas fa-heartbeat"></i> Perfusion</h3>
+                        <div class="button-grid">
+                            <a href="MedSurg Perfusion SDE.html" class="resource-button exam-button">
+                                <span class="icon">💖</span> <strong>SDE</strong>
+                            </a>
+                            </div>
+                    </div>
+
+                    <div class="topic-group">
+                        <h3><i class="fas fa-tint"></i> Clotting</h3>
+                        <div class="button-grid">
+                            <a href="MedSurg Clotting SDE.html" class="resource-button exam-button">
+                                <span class="icon">🩹</span> <strong>SDE</strong>
+                            </a>
+                            </div>
+                    </div>
+
+                    <div class="topic-group">
+                        <h3><i class="fas fa-fire"></i> Inflammation</h3>
+                        <div class="button-grid">
+                            <a href="MedSurg Inflammation SDE.html" class="resource-button exam-button">
+                                <span class="icon">🔥</span> <strong>SDE</strong>
+                            </a>
+                            </div>
+                    </div>
+
+                    <div class="topic-group">
+                        <h3><i class="fas fa-bug"></i> Infection</h3>
+                        <div class="button-grid">
+                            <a href="MedSurg Infection SDE.html" class="resource-button exam-button">
+                                <span class="icon">🦠</span> <strong>SDE</strong>
+                            </a>
+                            </div>
+                    </div>
+                </div>
+            </section>
+        </main>
 
         <footer class="footer">
             <p>&copy; 2024 Cole Ashton Valencia Student Representation. All rights reserved.</p>
         </footer>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
+
+            collapsibleHeaders.forEach(header => {
+                const content = header.nextElementSibling; // Get the .collapsible-content
+                const icon = header.querySelector('.collapse-icon');
+
+                // Set initial state: all collapsed by default
+                content.classList.remove('expanded');
+                icon.classList.remove('rotated');
+
+                header.addEventListener('click', () => {
+                    content.classList.toggle('expanded');
+                    icon.classList.toggle('rotated');
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
