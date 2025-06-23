@@ -6,64 +6,103 @@
     <title>Pharmacology: Academic Support Resources</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* --- Global Reset & Base Styles --- */
+        /* --- Global Variables & NEW Refined Color Palette (from Med Surg 1 design) --- */
         :root {
-            --primary-blue: #2c7ac2; /* Deeper, more professional blue */
-            --primary-blue-light: #e0f2ff; /* Very light blue for backgrounds */
-            --secondary-gray: #6f7c8d; /* Slightly darker gray for text */
-            --light-bg: #f5f8fa; /* Soft, very light background */
-            --white-bg: #ffffff;
-            --dark-text: #344759; /* Near black for main text */
-            --light-border: #e0e6ed; /* Subtle border color */
-            --shadow-light: rgba(0,0,0,0.08); /* More visible but still soft shadow */
-            --shadow-medium: rgba(44, 122, 194, 0.2); /* Blue-tinted shadow for hover */
-            --border-radius-lg: 18px; /* Slightly larger radius */
-            --border-radius-md: 10px;
-            --section-header-color: #344759; /* Dark text for headers */
+            /* Core Neutrals & Blues (Modern & Professional) */
+            --color-primary-dark: #2F4858;    /* Deep Slate Blue - for headings, navigation */
+            --color-primary-medium: #4B6B80; /* Muted Steel Blue - for secondary headings, accents */
+            --color-text-main: #333333;      /* Dark Gray - for main body text */
+            --color-text-light: #607D8B;     /* Light Slate Gray - for subtle text, icons */
+            --color-background: #F4F7F6;    /* Very Light Blue-Gray - overall page background */
+            --color-card-background: #FFFFFF; /* Crisp White - for main content cards */
+            --color-border: #E0E6EC;         /* Soft Border Gray */
+            --color-white: #FFFFFF; /* Explicit white for button text on hover */
 
-            /* New colors for buttons and highlights */
-            --exam-red: #d9534f; /* A more muted, professional red */
-            --exam-red-hover: #c9302c;
-            --exam-red-light: #fbecec; /* Very light red for background */
-            --module-green: #5cb85c; /* A professional green */
-            --module-green-hover: #4cae4c;
-            --module-green-light: #edf7ed; /* Very light green */
+            /* Accent Color (Warm & Inviting) */
+            --color-accent: #DAA520;         /* Goldenrod - for hover states, underlines, active elements */
+            --color-accent-light: #FFE082;   /* Lighter Goldenrod - for very subtle accents */
+
+            /* Shadows (Soft & Modern) */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+            /* Spacing & Radii */
+            --spacing-unit: 1rem;
+            --padding-section: 2.5rem; /* Consistent padding for sections */
+            --padding-inner: 1.5rem; /* Padding inside elements like topic groups */
+            --radius-default: 6px;   /* Slightly less rounded for modern look */
+            --radius-large: 12px;    /* Larger radius for main cards */
+
+            /* Global padding */
+            --page-horizontal-padding: max(20px, 5vw);
+
+            /* Resource Button Specific Colors (Harmonized with new palette) */
+            --module-button-base: #2A9D8F;    /* Teal - for Modules */
+            --module-button-hover: #217C74;
+            --module-shadow-tint: rgba(42, 157, 143, 0.15);
+
+            --exam-button-base: #E76F51;      /* Terracotta Orange - for Exams */
+            --exam-button-hover: #D05E41;
+            --exam-shadow-tint: rgba(231, 111, 81, 0.15);
+
+            /* New Distinct Unit One Exam Color */
+            --unit-one-exam-base: #3876BF;    /* Rich Blue */
+            --unit-one-exam-hover: #2B5E99;
+            --unit-one-exam-shadow-tint: rgba(56, 118, 191, 0.4);
+
+            /* Topic Group background */
+            --color-topic-group-bg: #EDF2F7; /* Very light, cool gray for topic group background */
         }
 
+        /* --- Global 10% Zoom & Base Styles --- */
         html {
+            font-size: 96.25%; /* To match previous MedSurg 1 scaling */
             scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
+            font-family: 'Open Sans', sans-serif; /* A softer, more modern body font */
+            background-color: var(--color-background);
+            color: var(--color-text-main);
             margin: 0;
-            line-height: 1.65; /* Improved readability */
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            box-sizing: border-box;
+            font-weight: 400;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
         }
 
         /* --- Top Navigation Menu --- */
         .top-nav {
-            background-color: var(--primary-blue);
-            padding: 12px 0; /* More vertical padding */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* Stronger, professional shadow */
+            background-color: var(--color-primary-dark);
+            padding: 0.8rem 0; /* Adjusted for consistency */
+            box-shadow: var(--shadow-md);
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1); /* Subtle white border */
         }
 
         .top-nav-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 24px;
+            width: 100%;
+            padding: 0 var(--page-horizontal-padding);
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .top-nav-container::-webkit-scrollbar {
+            display: none;
         }
 
         .top-nav-list {
@@ -71,125 +110,141 @@
             margin: 0;
             padding: 0;
             display: flex;
-            gap: 30px; /* More space between nav items */
+            gap: 2.5rem; /* Adjusted for consistency */
+            white-space: nowrap;
         }
 
         .top-nav-item a {
-            color: white;
+            color: rgba(255, 255, 255, 0.85); /* Softer white for nav links */
             text-decoration: none;
-            font-weight: 600; /* Slightly bolder */
-            font-size: 1.05rem; /* Slightly larger font */
-            padding: 10px 18px; /* Generous padding */
-            border-radius: var(--border-radius-md);
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-family: 'Roboto', sans-serif; /* Use Roboto for nav links */
+            font-weight: 500; /* Medium weight */
+            font-size: 1.0rem;
+            padding: 0.6rem 0;
+            transition: all 0.3s ease;
+            position: relative;
             display: block;
-            position: relative; /* For the subtle underline effect */
-            overflow: hidden;
+            letter-spacing: 0.02em;
         }
 
         .top-nav-item a::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 3px;
-            background-color: white; /* Underline color */
-            transition: width 0.3s ease;
+            bottom: -0.25rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--color-accent);
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease;
         }
 
         .top-nav-item a:hover {
-            background-color: rgba(255, 255, 255, 0.25); /* More distinct hover */
-            transform: translateY(-3px); /* Nicer lift */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtle shadow on hover */
+            color: var(--color-accent);
+            transform: translateY(-2px);
         }
-
         .top-nav-item a:hover::after {
-            width: 80%; /* Expand underline on hover */
+            transform: scaleX(1);
         }
 
-        /* --- Layout Container --- */
+        /* --- Main Page Container --- */
         .page-container {
-            max-width: 1050px; /* Slightly wider for content */
-            margin: 0 auto;
-            padding: 30px; /* More overall padding */
+            width: 100%;
+            padding: var(--padding-section) var(--page-horizontal-padding) 4rem;
+            display: flex;
+            flex-direction: column;
         }
 
         /* --- Header Section --- */
         .header {
+            width: 100%;
+            padding: 4rem var(--padding-section); /* Adjusted for consistency */
+            background: var(--color-card-background);
+            border-radius: var(--radius-large);
+            margin-bottom: var(--padding-section);
+            box-shadow: var(--shadow-md);
             text-align: center;
-            padding: 60px 30px; /* More padding */
-            background: linear-gradient(135deg, var(--white-bg), var(--primary-blue-light)); /* Soft gradient */
-            border-radius: var(--border-radius-lg);
-            margin-bottom: 40px;
-            box-shadow: 0 8px 25px var(--shadow-light); /* Enhanced shadow */
-            border: 1px solid var(--light-border); /* Subtle border */
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+        }
+
+        .header-content {
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .header h1 {
-            font-size: 3.2rem; /* Larger, more impactful heading */
+            font-family: 'Roboto', sans-serif; /* Roboto for headings */
+            font-size: 3.2rem;
             font-weight: 700;
-            color: var(--primary-blue);
-            margin: 0 0 15px 0;
+            color: var(--color-primary-dark);
+            margin: 0 0 1rem 0;
             line-height: 1.2;
-            letter-spacing: -0.03em; /* Slightly tighter for aesthetics */
+            letter-spacing: -0.02em;
         }
 
         .header p {
-            font-size: 1.3rem; /* Larger subtitle */
-            color: var(--secondary-gray);
-            max-width: 750px;
+            font-size: 1.15rem;
+            color: var(--color-text-light);
             margin: 0 auto;
+            font-weight: 300;
+            line-height: 1.6;
+            max-width: 700px;
         }
 
-        /* --- Content Section (Modular Boxes) --- */
+        /* --- Content Section --- */
         .content-section {
-            background-color: var(--white-bg);
-            padding: 35px; /* More padding */
-            border-radius: var(--border-radius-lg);
-            margin-bottom: 40px;
-            box-shadow: 0 6px 20px var(--shadow-light); /* Consistent shadow */
-            border: 1px solid var(--light-border);
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* For subtle hover */
+            background-color: var(--color-card-background);
+            padding: var(--padding-section); /* Adjusted for consistency */
+            border-radius: var(--radius-large);
+            margin-bottom: var(--padding-section);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-border);
+            width: 100%;
+            transition: all 0.3s ease;
         }
 
         .content-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
         }
 
-        /* Collapsible Header for Content Sections */
+        /* Collapsible Header */
         .collapsible-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.9rem; /* Larger header text */
-            font-weight: 700; /* Bolder */
-            color: var(--section-header-color);
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.8rem; /* Adjusted for consistency */
+            font-weight: 600;
+            color: var(--color-primary-medium);
             margin-top: 0;
-            margin-bottom: 30px; /* More space below header */
-            padding-bottom: 18px; /* More padding below text */
-            border-bottom: 3px solid var(--primary-blue); /* More prominent border */
+            margin-bottom: 1.5rem; /* Adjusted for consistency */
+            padding-bottom: 1.2rem; /* Adjusted for consistency */
+            border-bottom: 1px solid var(--color-border); /* Consistent border */
             cursor: pointer;
             user-select: none;
-            transition: color 0.3s ease, border-color 0.3s ease;
+            transition: all 0.3s ease;
+            line-height: 1.2;
         }
 
         .collapsible-header:hover {
-            color: var(--primary-blue);
-            border-color: var(--module-green); /* Change border on hover */
+            color: var(--color-accent);
+            border-color: var(--color-accent-light);
         }
 
         .collapsible-header .collapse-icon {
-            font-size: 1.4rem; /* Larger icon */
-            margin-left: 20px;
+            font-size: 1.2rem;
+            margin-left: 1.2rem;
             transition: transform 0.3s ease;
-            color: var(--secondary-gray); /* Icon color */
+            color: var(--color-text-light);
         }
 
         .collapsible-header:hover .collapse-icon {
-            color: var(--primary-blue); /* Icon color change on hover */
+            color: var(--color-accent);
         }
 
         .collapsible-header .collapse-icon.rotated {
@@ -200,84 +255,91 @@
         .collapsible-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease-out, padding 0.5s ease-out; /* Smoother, with padding */
+            transition: max-height 0.7s ease-out, padding 0.7s ease-out;
             padding-top: 0;
         }
 
         .collapsible-content.expanded {
-            max-height: 2500px; /* Sufficiently large */
-            transition: max-height 0.7s ease-in, padding 0.7s ease-in;
-            padding-top: 15px; /* Add padding when expanded */
+            max-height: 4000px; /* Increased for potential large content */
+            transition: max-height 1s ease-in, padding 1s ease-in;
+            padding-top: var(--padding-inner);
         }
 
-        /* --- Subsection Styling --- */
+        /* Sub-section (formerly .topic-group) for topic groups within collapsible content */
         .subsection {
-            background-color: var(--primary-blue-light); /* Consistent light blue */
-            padding: 30px; /* More padding */
-            border-radius: var(--border-radius-md);
-            margin-top: 30px; /* More spacing */
-            border: 1px solid var(--primary-blue);
-            box-shadow: 0 4px 15px rgba(44, 122, 194, 0.1); /* Subtle blue shadow */
+            background-color: var(--color-topic-group-bg); /* Use the new subtle background */
+            border-radius: var(--radius-default);
+            padding: var(--padding-inner);
+            margin-top: var(--padding-inner); /* Consistent spacing */
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
         }
 
         .subsection h3 {
-            font-size: 1.7rem; /* Larger subsection title */
-            font-weight: 600;
-            color: var(--primary-blue);
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.3rem; /* Adjusted for consistency */
+            color: var(--color-primary-medium);
             margin-top: 0;
-            margin-bottom: 25px; /* More space */
-            padding-bottom: 12px;
-            border-bottom: 1px dashed var(--primary-blue); /* Dashed border for distinction */
-            text-align: left;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border); /* Solid line for clean look */
+            padding-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-weight: 500;
+            text-align: left; /* Ensure text alignment */
         }
         
         /* Special styling for the UNIT EXAM subsection */
         .subsection.unit-exam-highlight {
-            background-color: var(--exam-red-light); /* Light red background */
-            border-color: var(--exam-red); /* Darker red border */
-            box-shadow: 0 6px 20px rgba(217, 83, 79, 0.2); /* Red-tinted shadow */
-            padding: 35px; /* More padding for emphasis */
+            background-color: var(--exam-button-base); /* Use the exam button base color for highlight */
+            border-color: var(--exam-button-hover);
+            box-shadow: 0 5px 15px var(--exam-shadow-tint); /* Red-tinted shadow */
+            padding: calc(var(--padding-inner) + 0.5rem); /* More padding for emphasis */
             text-align: center;
-            margin-top: 40px; /* More separation */
+            margin-top: 2rem; /* More separation */
         }
 
         .subsection.unit-exam-highlight h3 {
-            color: var(--exam-red); /* Red for emphasis */
-            font-style: italic;
-            border-bottom: 2px solid var(--exam-red);
-            padding-bottom: 20px; /* More padding */
-            margin-bottom: 20px;
-            font-size: 2rem; /* Larger */
-            letter-spacing: 0.05em; /* A bit spaced out */
-            text-transform: uppercase; /* Make it pop */
+            color: var(--color-white); /* White for emphasis against the red background */
+            font-style: normal; /* Remove italic */
+            border-bottom: 2px solid var(--color-white);
+            padding-bottom: 1rem; /* Consistent padding */
+            margin-bottom: 1rem;
+            font-size: 1.8rem; /* Adjusted for consistency */
+            letter-spacing: 0.03em; /* Slightly spaced out */
+            text-transform: uppercase;
+            justify-content: center; /* Center heading within highlight */
+            gap: 0.5rem;
         }
 
         .subsection.unit-exam-highlight p {
-            font-size: 1.15rem; /* Larger text */
-            color: var(--dark-text);
-            margin-bottom: 30px; /* More space */
-            line-height: 1.7;
+            font-size: 1.05rem; /* Adjusted for consistency */
+            color: var(--color-white); /* White text for readability */
+            margin-bottom: 1.5rem; /* More space */
+            line-height: 1.6;
         }
-
 
         /* --- Button Grid for Resources --- */
         .button-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Slightly wider min width */
-            gap: 25px; /* More gap */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted min-width slightly */
+            gap: 1.5rem; /* Adjusted gap */
             justify-content: center;
             align-items: stretch;
+            width: 100%;
         }
 
         .resource-button {
-            background: var(--white-bg);
-            border: 1px solid var(--light-border);
-            color: var(--dark-text);
-            padding: 22px; /* Generous padding */
-            font-size: 1.1rem; /* Slightly larger font */
+            background-color: var(--color-card-background);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-main);
+            padding: 1.2rem 1rem;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.05rem;
             font-weight: 600;
             text-decoration: none;
-            border-radius: var(--border-radius-md);
+            border-radius: var(--radius-default);
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -286,240 +348,226 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 10px; /* More space between icon and text */
-            min-height: 100px; /* Taller buttons */
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05); /* Subtle default shadow */
-        }
-
-        /* Hover effect for buttons - refined shimmer and lift */
-        .resource-button:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -120%; /* Start further left */
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent); /* Stronger shimmer */
-            transition: all 0.5s ease; /* Slower shimmer */
-        }
-
-        .resource-button:hover:before {
-            left: 120%; /* End further right */
+            gap: 0.8rem;
+            min-height: 6rem; /* Adjusted for consistency */
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
         }
 
         .resource-button:hover {
-            transform: translateY(-7px); /* More pronounced lift */
-            box-shadow: 0 12px 35px var(--shadow-medium); /* Stronger, blue-tinted shadow */
-            border-color: var(--primary-blue);
-            color: var(--primary-blue);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            color: var(--color-primary-dark);
+            border-color: var(--color-accent);
+        }
+
+        /* Remove shimmer effect */
+        .resource-button:before {
+            content: none;
         }
 
         .resource-button .icon {
-            font-size: 2.2rem; /* Larger icons */
+            font-size: 2.2rem; /* Slightly smaller for a more refined look */
             line-height: 1;
-            transition: transform 0.3s ease, color 0.3s ease;
-            color: var(--primary-blue); /* Default icon color */
+            transition: transform 0.3s ease;
+            color: var(--color-primary-medium); /* Default icon color */
         }
 
         .resource-button:hover .icon {
-            transform: scale(1.15); /* More pronounced icon scale */
-            color: var(--primary-blue); /* Ensure icon color stays consistent or changes nicely */
+            transform: scale(1.1);
+            color: var(--color-accent); /* Icon color changes on hover */
         }
         
-        /* Specific styling for exam and learning module buttons */
+        /* Specific button adjustments (Exam) */
         .resource-button.exam-button {
-            background-color: var(--exam-red-light);
-            border-color: var(--exam-red);
-            color: var(--exam-red);
-            font-weight: 600;
+            color: var(--exam-button-base);
         }
         .resource-button.exam-button .icon {
-            color: var(--exam-red);
+            color: var(--exam-button-base);
         }
         .resource-button.exam-button:hover {
-            background-color: var(--exam-red-light); /* Maintain light background */
-            color: var(--exam-red-hover);
-            border-color: var(--exam-red-hover);
-            box-shadow: 0 12px 35px rgba(217, 83, 79, 0.3); /* Red shadow on hover */
+            background-color: var(--exam-button-hover);
+            color: var(--color-white);
+            border-color: var(--exam-button-hover);
+            box-shadow: 0 5px 15px var(--exam-shadow-tint);
         }
         .resource-button.exam-button:hover .icon {
-             color: var(--exam-red-hover);
+            color: var(--color-white); /* Icon white on exam hover */
         }
 
-        /* Learning Module buttons (default is good, but can specify for clarity) */
+        /* Specific button adjustments (Learning Module) */
         .resource-button.learning-module-button {
-            background-color: var(--module-green-light);
-            border-color: var(--module-green);
-            color: var(--module-green);
-            font-weight: 600;
+            color: var(--module-button-base);
         }
         .resource-button.learning-module-button .icon {
-            color: var(--module-green);
+            color: var(--module-button-base);
         }
         .resource-button.learning-module-button:hover {
-            background-color: var(--module-green-light);
-            color: var(--module-green-hover);
-            border-color: var(--module-green-hover);
-            box-shadow: 0 12px 35px rgba(92, 184, 92, 0.3); /* Green shadow on hover */
+            background-color: var(--module-button-hover);
+            color: var(--color-white);
+            border-color: var(--module-button-hover);
+            box-shadow: 0 5px 15px var(--module-shadow-tint);
         }
         .resource-button.learning-module-button:hover .icon {
-            color: var(--module-green-hover);
+            color: var(--color-white); /* Icon white on module hover */
         }
 
         /* Full width button for Unit 2 Exam Simulation */
         .resource-button.full-width-button {
             grid-column: 1 / -1;
-            background-color: var(--exam-red); /* Strong red */
-            color: white;
-            padding: 30px 25px; /* Even more padding */
-            font-size: 1.3rem; /* Larger font */
+            background-color: var(--exam-button-base); /* Strong red */
+            color: var(--color-white);
+            padding: 1.8rem 1.5rem; /* Adjusted for consistency */
+            font-size: 1.2rem; /* Adjusted for consistency */
             font-weight: 700;
-            border-color: var(--exam-red-hover);
-            box-shadow: 0 8px 25px rgba(217, 83, 79, 0.4); /* Pronounced red shadow */
+            border-color: var(--exam-button-hover);
+            box-shadow: 0 8px 25px rgba(231, 111, 81, 0.4); /* Pronounced red shadow */
             flex-direction: row; /* Icon and text side-by-side */
-            gap: 20px; /* Space out icon and text */
+            gap: 1.2rem; /* Adjusted for consistency */
         }
 
         .resource-button.full-width-button:hover {
-            background-color: var(--exam-red-hover);
-            border-color: var(--exam-red);
-            box-shadow: 0 12px 35px rgba(217, 83, 79, 0.5);
-            transform: translateY(-10px); /* More dramatic lift */
+            background-color: var(--exam-button-hover);
+            border-color: var(--exam-button-hover); /* Consistent border */
+            box-shadow: 0 12px 35px rgba(231, 111, 81, 0.5);
+            transform: translateY(-7px); /* Consistent lift */
         }
         .resource-button.full-width-button .icon {
-            font-size: 3.5rem; /* Largest icon */
-            color: white; /* White icon for contrast */
+            font-size: 2.8rem; /* Adjusted for consistency */
+            color: var(--color-white); /* White icon for contrast */
+        }
+        
+        /* NEW: Distinct style for Unit One Exam button */
+        .resource-button.unit-one-exam-button {
+            grid-column: 1 / -1; /* Make it full width if it's the only one in its grid */
+            background-color: var(--unit-one-exam-base); /* Use the NEW blue color */
+            color: var(--color-white);
+            padding: 1.8rem 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-color: var(--unit-one-exam-hover);
+            box-shadow: 0 8px 25px var(--unit-one-exam-shadow-tint); /* Blue tinted shadow */
+            flex-direction: row;
+            gap: 1.2rem;
         }
 
+        .resource-button.unit-one-exam-button:hover {
+            background-color: var(--unit-one-exam-hover);
+            border-color: var(--unit-one-exam-hover);
+            box-shadow: 0 12px 35px var(--unit-one-exam-shadow-tint);
+            transform: translateY(-7px);
+        }
+
+        .resource-button.unit-one-exam-button .icon {
+            font-size: 2.8rem;
+            color: var(--color-white);
+        }
 
         /* --- Footer --- */
         .footer {
             text-align: center;
-            padding: 30px; /* More padding */
-            font-size: 0.95rem;
-            color: var(--secondary-gray);
-            margin-top: 50px; /* More margin */
-            border-top: 1px solid var(--light-border); /* Top border */
+            padding: var(--padding-inner);
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+            margin-top: 3rem;
+            border-top: 1px solid var(--color-border);
+            background-color: var(--color-card-background);
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-sm);
+            width: 100%;
         }
 
         /* --- Responsive Adjustments --- */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.8rem;
-            }
-            .header p {
+        @media (max-width: 1200px) {
+            :root { --padding-section: 2rem; }
+            .header h1 { font-size: 2.8rem; }
+            .header p { font-size: 1.1rem; }
+            .collapsible-header { font-size: 1.6rem; }
+            .resource-button { font-size: 1rem; padding: 1rem 0.8rem; min-height: 5.5rem; }
+            .resource-button .icon { font-size: 2rem; }
+            .subsection h3 { font-size: 1.2rem; }
+            .resource-button.unit-one-exam-button {
                 font-size: 1.15rem;
+                padding: 1.5rem 1.2rem;
             }
-            .collapsible-header {
-                font-size: 1.7rem;
-            }
-            .subsection h3 {
-                font-size: 1.5rem;
-            }
-            .resource-button {
-                font-size: 1rem;
-                padding: 20px;
-                min-height: 90px;
-            }
-            .resource-button .icon {
-                font-size: 2rem;
-            }
-            .resource-button.full-width-button {
-                font-size: 1.15rem;
-                padding: 25px 20px;
-            }
-            .resource-button.full-width-button .icon {
-                font-size: 3rem;
-            }
-            .top-nav-list {
-                gap: 20px;
-            }
-            .top-nav-item a {
-                font-size: 1rem;
-                padding: 8px 12px;
-            }
-            .page-container {
-                padding: 20px;
-            }
-            .header {
-                padding: 40px 20px;
-            }
-            .content-section {
-                padding: 30px;
-            }
-            .subsection {
-                padding: 25px;
+            .resource-button.unit-one-exam-button .icon {
+                font-size: 2.2rem;
             }
         }
 
-        @media (max-width: 550px) {
-            .page-container {
-                padding: 15px;
+        @media (max-width: 992px) {
+            :root { --padding-section: 1.8rem; --padding-inner: 1.2rem; }
+            .header h1 { font-size: 2.4rem; }
+            .header p { font-size: 1.05rem; }
+            .collapsible-header { font-size: 1.4rem; }
+            .resource-button { font-size: 0.95rem; padding: 0.9rem 0.7rem; min-height: 5rem; }
+            .resource-button .icon { font-size: 1.8rem; }
+            .top-nav-list { gap: 2rem; }
+            .top-nav-item a { font-size: 0.95rem; }
+            .subsection h3 { font-size: 1.1rem; }
+            .resource-button.unit-one-exam-button {
+                font-size: 1.1rem;
+                padding: 1.3rem 1rem;
             }
-            .header, .content-section {
-                padding: 25px 15px;
-                margin-bottom: 30px;
+            .resource-button.unit-one-exam-button .icon {
+                font-size: 2rem;
             }
-            .header h1 {
+        }
+
+        @media (max-width: 768px) {
+            :root { --page-horizontal-padding: max(15px, 4vw); }
+            html { font-size: 90%; }
+            .header { padding: 3rem var(--padding-section); }
+            .header h1 { font-size: 2rem; }
+            .header p { font-size: 0.95rem; }
+            .content-section { padding: var(--padding-section); }
+            .collapsible-header { font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.8rem; }
+            .collapsible-header .collapse-icon { font-size: 1rem; }
+            .button-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; }
+            .resource-button { min-height: 4.5rem; gap: 0.6rem; }
+            .resource-button .icon { font-size: 1.6rem; }
+            .subsection { padding: 1rem; margin-top: 1rem; }
+            .subsection h3 { font-size: 1rem; padding-bottom: 0.5rem; }
+            .subsection.unit-exam-highlight h3 { font-size: 1.5rem; }
+            .subsection.unit-exam-highlight p { font-size: 0.95rem; }
+            .resource-button.full-width-button,
+            .resource-button.unit-one-exam-button {
+                font-size: 1.05rem;
+                padding: 1.5rem 1.2rem;
+                gap: 1rem;
+            }
+            .resource-button.full-width-button .icon,
+            .resource-button.unit-one-exam-button .icon {
                 font-size: 2.2rem;
             }
-            .header p {
-                font-size: 1rem;
-            }
-            .collapsible-header {
-                font-size: 1.5rem;
-                margin-bottom: 20px;
-                padding-bottom: 12px;
-            }
-            .subsection {
-                padding: 20px;
-                margin-top: 25px;
-            }
-            .subsection h3 {
-                font-size: 1.3rem;
-                margin-bottom: 18px;
-                padding-bottom: 8px;
-            }
-            .button-grid {
-                grid-template-columns: 1fr; /* Stack buttons on very small screens */
-                gap: 18px;
-            }
-            .resource-button {
-                min-height: 85px;
-                padding: 18px;
+        }
+
+        @media (max-width: 576px) {
+            :root { --page-horizontal-padding: 15px; }
+            html { font-size: 85%; }
+            .top-nav-list { gap: 1.5rem; }
+            .top-nav-item a { font-size: 0.9rem; }
+            .header { padding: 2.5rem var(--padding-section); }
+            .header h1 { font-size: 1.7rem; }
+            .header p { font-size: 0.85rem; }
+            .collapsible-header { flex-direction: column; text-align: center; gap: 0.5rem; padding-bottom: 0.8rem; }
+            .collapsible-header .collapse-icon { margin-left: 0; margin-top: 0.3rem; }
+            .button-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .resource-button { min-height: 4rem; padding: 1rem; }
+            .resource-button .icon { font-size: 1.4rem; }
+            .footer { padding: 1rem; font-size: 0.8rem; }
+            .resource-button.full-width-button,
+            .resource-button.unit-one-exam-button {
                 font-size: 0.95rem;
+                padding: 1.2rem 1rem;
+                flex-direction: column;
+                gap: 0.8rem;
             }
-            .resource-button .icon {
+            .resource-button.full-width-button .icon,
+            .resource-button.unit-one-exam-button .icon {
                 font-size: 1.8rem;
             }
-            .resource-button.full-width-button {
-                font-size: 1.05rem;
-                padding: 22px;
-                flex-direction: column; /* Stack icon and text for full-width on small screens */
-                gap: 10px;
-            }
-            .resource-button.full-width-button .icon {
-                font-size: 2.8rem;
-            }
-            .subsection.unit-exam-highlight h3 {
-                font-size: 1.8rem;
-            }
-            .subsection.unit-exam-highlight p {
-                font-size: 1rem;
-            }
-            .top-nav-list {
-                flex-direction: column; /* Stack nav items vertically on very small screens */
-                align-items: center; /* Center them when stacked */
-                gap: 10px;
-            }
-            .top-nav-item a {
-                font-size: 0.9rem;
-                padding: 8px 15px;
-                width: fit-content;
-            }
-            .top-nav-container {
-                padding: 0 15px;
-            }
+            .subsection.unit-exam-highlight h3 { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -550,7 +598,7 @@
                 </h2>
                 <div class="collapsible-content">
                     <div class="button-grid">
-                        <a href="Pharmacology NCLEX Unit One Exam.html" class="resource-button exam-button">
+                        <a href="Pharmacology NCLEX Unit One Exam.html" class="resource-button unit-one-exam-button">
                             <span class="icon">💯</span> Pharmacology Unit One Practice Exam
                         </a>
                     </div>
@@ -603,7 +651,7 @@
                     </div>
 
                     <div class="subsection unit-exam-highlight">
-                        <h3><em>UNIT EXAM</em></h3>
+                        <h3>UNIT EXAM</h3>
                         <p>SIMULATION of the unit exam. All 3 concepts are included in this exam. The exam engine is intended to mimic the college's test engine to prepare you for the assessment.</p>
                         <div class="button-grid">
                             <a href="Pharmacology Unit-2 Exam Simulation.html" class="resource-button full-width-button">
@@ -649,13 +697,15 @@
             const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
 
             collapsibleHeaders.forEach(header => {
-                header.addEventListener('click', function() {
-                    const content = this.nextElementSibling; // The .collapsible-content div
-                    const icon = this.querySelector('.collapse-icon');
+                const content = header.nextElementSibling; // Get the .collapsible-content
+                const icon = header.querySelector('.collapse-icon');
 
-                    // Toggle the 'expanded' class on the content
+                // Set initial state: all collapsed by default
+                content.classList.remove('expanded');
+                icon.classList.remove('rotated');
+
+                header.addEventListener('click', () => {
                     content.classList.toggle('expanded');
-                    // Toggle the 'rotated' class on the icon
                     icon.classList.toggle('rotated');
                 });
             });
