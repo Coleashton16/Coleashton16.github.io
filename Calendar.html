@@ -4,242 +4,384 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Countdown to Next Meeting</title>
+<!-- Existing Font for Countdown Page Content -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<!-- New Fonts for the Navigation Bar (from Med Surg / Pharma pages) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<!-- Font Awesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+    /* --- Countdown Page Specific Variables --- */
+    :root {
+        --primary-color: #007bff; /* Blue - This was from the NCLEX page, not the countdown. Removing if it conflicts */
+        --primary-hover-color: #0056b3; /* Removing if it conflicts */
+        --secondary-color: #6c757d; /* Gray - Removing if it conflicts */
+        --background-color-countdown: #1a1a1a; /* Dark background for contrast */
+        --text-color-countdown: #f0e68c; /* Khaki - a warm, vintage yellow */
+        --surface-color-countdown: rgba(0, 0, 0, 0.3); /* Semi-transparent dark overlay for container */
+        --border-color-countdown: #4a3b1a; /* Dark brownish border for container */
+        --highlight-color-countdown: #ffd700; /* Gold for H1 and message */
+        --subtitle-color-countdown: #f5deb3; /* Wheat for subtitle */
+        --time-unit-bg-countdown: rgba(40, 30, 10, 0.6); /* Darker, slightly transparent brown */
+        --time-unit-border-countdown: #805500; /* Dark orange/brown border */
+        --time-unit-number-color-countdown: #ffdead; /* NavajoWhite - warm off-white */
+        --success-color: #28a745; /* Green - From previous context, keeping if used */
+        --danger-color: #dc3545; /* Red - From previous context, keeping if used */
+        --font-family-countdown: 'Roboto Mono', monospace; /* Kept for countdown specific text */
+        --font-family-title-countdown: 'Playfair Display', serif; /* Kept for countdown titles */
+        --border-radius-countdown: 15px; /* Specific to countdown container */
+        --box-shadow-countdown: 0 0 30px rgba(240, 230, 140, 0.3), inset 0 0 15px rgba(255, 165, 0, 0.2); /* Khaki glow */
+    }
 
-  body {
-    background-color: #1a1a1a; /* Dark background for contrast */
-    color: #f0e68c; /* Khaki - a warm, vintage yellow */
-    font-family: 'Roboto Mono', monospace;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    text-align: center;
-    overflow: hidden; /* Hide scrollbars if any */
-  }
+    /* --- Global Variables for Navigation (from Med Surg / Pharma pages) --- */
+    /* Using distinct names to prevent conflicts with countdown specific variables */
+    :root {
+        --nav-primary-dark: #2F4858;    /* Deep Slate Blue - for navigation background */
+        --nav-primary-medium: #4B6B80; /* Muted Steel Blue - for nav hover */
+        --nav-text-color: rgba(255, 255, 255, 0.85); /* Softer white for nav links */
+        --nav-accent: #DAA520;         /* Goldenrod - for nav hover states, underlines */
+        --nav-accent-light: #FFE082;   /* Lighter Goldenrod - for very subtle accents */
+        --nav-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08); /* Shadow for navigation */
+        --nav-page-horizontal-padding: max(20px, 5vw); /* Global padding for full width elements like nav */
+    }
 
-  .container {
-    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent dark overlay */
-    padding: 40px 60px;
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(240, 230, 140, 0.3), /* Khaki glow */
-                inset 0 0 15px rgba(255, 165, 0, 0.2); /* Orange inner glow */
-    border: 2px solid #4a3b1a; /* Dark brownish border */
-  }
+    /* --- Base Body Styles (Adjusted for new navigation, preserving countdown background) --- */
+    body {
+        background-color: var(--background-color-countdown); /* Keep countdown's dark background */
+        color: var(--text-color-countdown); /* Keep countdown's text color */
+        font-family: var(--font-family-countdown); /* Keep countdown's default font */
+        display: flex;
+        flex-direction: column; /* Allow nav to stack above container */
+        justify-content: flex-start; /* Align content from top */
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        text-align: center;
+        overflow: hidden; /* Hide scrollbars if any */
+        padding: 0; /* Remove padding here so nav can be full width */
+    }
 
-  h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.8em;
-    color: #ffd700; /* Gold */
-    margin-bottom: 10px;
-    text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; /* Gold and DarkOrange glow */
-    font-weight: 700;
-  }
+    /* --- Top Navigation Menu (Copied from Med Surg / Pharma pages) --- */
+    .top-nav {
+        background-color: var(--nav-primary-dark);
+        padding: 0.8rem 0;
+        box-shadow: var(--nav-shadow-md);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        width: 100%; /* Ensure it spans full width */
+    }
 
-  p.subtitle {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 1.2em;
-    color: #f5deb3; /* Wheat */
-    margin-top: 0;
-    margin-bottom: 30px;
-  }
+    .top-nav-container {
+        width: 100%;
+        padding: 0 var(--nav-page-horizontal-padding); /* Use nav's padding variable */
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .top-nav-container::-webkit-scrollbar {
+        display: none;
+    }
 
-  #countdown {
-    display: flex;
-    justify-content: center;
-    gap: 20px; /* Spacing between bulb units */
-  }
+    .top-nav-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 2.5rem;
+        white-space: nowrap;
+    }
 
-  .time-unit {
-    background-color: rgba(40, 30, 10, 0.6); /* Darker, slightly transparent brown */
-    padding: 20px;
-    border-radius: 10px;
-    min-width: 100px;
-    box-shadow: 0 0 15px rgba(255, 165, 0, 0.4), /* Orange glow */
-                inset 0 0 8px rgba(255, 223, 186, 0.3); /* NavajoWhite inner glow */
-    border: 1px solid #805500; /* Dark orange/brown border */
-    position: relative; /* For pseudo-element filament */
-  }
+    .top-nav-item a {
+        color: var(--nav-text-color);
+        text-decoration: none;
+        font-family: 'Roboto', sans-serif; /* Use Roboto for nav links */
+        font-weight: 500;
+        font-size: 1.0rem;
+        padding: 0.6rem 0;
+        transition: all 0.3s ease;
+        position: relative;
+        display: block;
+        letter-spacing: 0.02em;
+    }
 
-  /* Simulating the filament glow */
-  .time-unit::before {
-    content: '';
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 20px;
-    background: linear-gradient(to bottom, rgba(255,223,186,0) 0%, rgba(255,165,0,0.8) 50%, rgba(255,223,186,0) 100%);
-    border-radius: 2px;
-    opacity: 0.7;
-    box-shadow: 0 0 5px #ffA500, 0 0 10px #ffA500;
-    animation: flicker 1.5s infinite alternate;
-  }
+    .top-nav-item a::after {
+        content: '';
+        position: absolute;
+        bottom: -0.25rem;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--nav-accent);
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.3s ease;
+    }
 
-
-  .time-unit span {
-    display: block;
-    font-size: 3em; /* Large numbers */
-    font-weight: 700;
-    color: #ffdead; /* NavajoWhite - warm off-white */
-    text-shadow: 0 0 5px #ffdead, 0 0 10px #ffA500, 0 0 15px #ff8c00; /* Filament-like glow */
-    line-height: 1;
-  }
-
-  .time-unit .label {
-    font-size: 0.8em;
-    color: #f0e68c; /* Khaki */
-    text-transform: uppercase;
-    margin-top: 10px;
-    letter-spacing: 1px;
-  }
-
-  #message {
-    margin-top: 40px;
-    font-size: 1.8em;
-    font-family: 'Playfair Display', serif;
-    color: #ffd700;
-    text-shadow: 0 0 8px #ffd700;
-    display: none; /* Hidden initially */
-  }
-
-  /* Subtle background 'filament' lines */
-  body::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-      repeating-linear-gradient(
-        45deg,
-        rgba(255, 215, 0, 0.02),
-        rgba(255, 215, 0, 0.02) 1px,
-        transparent 1px,
-        transparent 20px
-      ),
-      repeating-linear-gradient(
-        -45deg,
-        rgba(255, 165, 0, 0.02),
-        rgba(255, 165, 0, 0.02) 1px,
-        transparent 1px,
-        transparent 20px
-      );
-    z-index: -1; /* Behind everything */
-    pointer-events: none; /* Allow clicks through */
-  }
-
-  @keyframes flicker {
-    0%, 100% { opacity: 0.7; box-shadow: 0 0 5px #ffA500, 0 0 10px #ffA500; }
-    50% { opacity: 1; box-shadow: 0 0 8px #ff8c00, 0 0 15px #ff8c00; }
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
+    .top-nav-item a:hover {
+        color: var(--nav-accent);
+        transform: translateY(-2px);
+    }
+    .top-nav-item a:hover::after {
+        transform: scaleX(1);
+    }
+    
+    /* --- Original Countdown Styles (Modified to adapt to navigation) --- */
     .container {
-      padding: 30px 20px;
+        background-color: var(--surface-color-countdown);
+        padding: 40px 60px;
+        border-radius: var(--border-radius-countdown);
+        box-shadow: var(--box-shadow-countdown);
+        border: 2px solid var(--border-color-countdown);
+        margin-top: 40px; /* Push container down from sticky nav */
+        margin-bottom: 30px; /* Keep existing bottom margin */
+        width: auto; /* Let it shrink to content, max-width below */
+        max-width: calc(100% - (2 * var(--nav-page-horizontal-padding))); /* Prevent it from touching screen edges */
     }
+
     h1 {
-      font-size: 2em;
+        font-family: var(--font-family-title-countdown);
+        font-size: 2.8em;
+        color: var(--highlight-color-countdown);
+        margin-bottom: 10px;
+        text-shadow: 0 0 10px var(--highlight-color-countdown), 0 0 20px #ff8c00;
+        font-weight: 700;
     }
+
     p.subtitle {
-        font-size: 1em;
+        font-family: var(--font-family-title-countdown);
+        font-style: italic;
+        font-size: 1.2em;
+        color: var(--subtitle-color-countdown);
+        margin-top: 0;
+        margin-bottom: 30px;
     }
+
     #countdown {
-      flex-direction: column;
-      gap: 15px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
     }
+
     .time-unit {
-      min-width: 200px; /* Adjust for stacked layout */
-      padding: 15px;
+        background-color: var(--time-unit-bg-countdown);
+        padding: 20px;
+        border-radius: 10px;
+        min-width: 100px;
+        box-shadow: 0 0 15px rgba(255, 165, 0, 0.4), inset 0 0 8px rgba(255, 223, 186, 0.3);
+        border: 1px solid var(--time-unit-border-countdown);
+        position: relative;
     }
+
+    /* Simulating the filament glow */
+    .time-unit::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 20px;
+        background: linear-gradient(to bottom, rgba(255,223,186,0) 0%, rgba(255,165,0,0.8) 50%, rgba(255,223,186,0) 100%);
+        border-radius: 2px;
+        opacity: 0.7;
+        box-shadow: 0 0 5px #ffA500, 0 0 10px #ffA500;
+        animation: flicker 1.5s infinite alternate;
+    }
+
     .time-unit span {
-      font-size: 2.5em;
+        display: block;
+        font-size: 3em;
+        font-weight: 700;
+        color: var(--time-unit-number-color-countdown);
+        text-shadow: 0 0 5px #ffdead, 0 0 10px #ffA500, 0 0 15px #ff8c00;
+        line-height: 1;
     }
-  }
+
+    .time-unit .label {
+        font-size: 0.8em;
+        color: var(--text-color-countdown);
+        text-transform: uppercase;
+        margin-top: 10px;
+        letter-spacing: 1px;
+    }
+
+    #message {
+        margin-top: 40px;
+        font-size: 1.8em;
+        font-family: var(--font-family-title-countdown);
+        color: var(--highlight-color-countdown);
+        text-shadow: 0 0 8px var(--highlight-color-countdown);
+        display: none;
+    }
+
+    /* Subtle background 'filament' lines */
+    body::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+            repeating-linear-gradient(
+                45deg,
+                rgba(255, 215, 0, 0.02),
+                rgba(255, 215, 0, 0.02) 1px,
+                transparent 1px,
+                transparent 20px
+            ),
+            repeating-linear-gradient(
+                -45deg,
+                rgba(255, 165, 0, 0.02),
+                rgba(255, 165, 0, 0.02) 1px,
+                transparent 1px,
+                transparent 20px
+            );
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    @keyframes flicker {
+        0%, 100% { opacity: 0.7; box-shadow: 0 0 5px #ffA500, 0 0 10px #ffA500; }
+        50% { opacity: 1; box-shadow: 0 0 8px #ff8c00, 0 0 15px #ff8c00; }
+    }
+
+    /* Responsive adjustments for navigation and container */
+    @media (max-width: 768px) {
+        .top-nav-container {
+            justify-content: center; /* Center nav items on smaller screens */
+        }
+        .container {
+            padding: 30px 20px;
+            max-width: calc(100% - 30px); /* Adjust max-width for smaller screens */
+        }
+        h1 {
+            font-size: 2em;
+        }
+        p.subtitle {
+            font-size: 1em;
+        }
+        #countdown {
+            flex-direction: column;
+            gap: 15px;
+        }
+        .time-unit {
+            min-width: 200px;
+            padding: 15px;
+        }
+        .time-unit span {
+            font-size: 2.5em;
+        }
+    }
     @media (max-width: 480px) {
-    h1 {
-      font-size: 1.6em;
+        .top-nav-list {
+            flex-direction: column; /* Stack nav items vertically on very small screens */
+            align-items: center; /* Center them when stacked */
+            gap: 10px;
+        }
+        .top-nav-item a {
+            font-size: 0.9rem;
+            padding: 8px 15px;
+            width: fit-content;
+        }
+        .top-nav-container {
+            padding: 0 15px;
+        }
+        h1 {
+            font-size: 1.6em;
+        }
+        .time-unit span {
+            font-size: 2em;
+        }
+        .time-unit {
+            min-width: 180px;
+            padding: 10px;
+        }
+        .container {
+            padding: 20px 15px;
+        }
     }
-    .time-unit span {
-      font-size: 2em;
-    }
-    .time-unit {
-      min-width: 180px;
-      padding: 10px;
-    }
-    .container {
-        padding: 20px 15px;
-    }
-  }
 
 </style>
 </head>
 <body>
+    <!-- Top Navigation Bar (Copied from other pages) -->
+    <nav class="top-nav">
+        <div class="top-nav-container">
+            <ul class="top-nav-list">
+                <li class="top-nav-item"><a href="index.html">Home</a></li>
+                <li class="top-nav-item"><a href="Academic Support Resources consent.html">Learning Support</a></li>
+                <li class="top-nav-item"><a href="Calendar.html">Calendar</a></li>
+                <li class="top-nav-item"><a href="https://www.vsrep.org/complaints" target="_blank" rel="noopener noreferrer">Complaints</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<div class="container">
-  <h1>Next Meeting</h1>
-  <p class="subtitle">Countdown until June 23rd, 2025, 15:30</p>
-  <div id="countdown">
-    <div class="time-unit">
-      <span id="days">00</span>
-      <div class="label">Days</div>
+    <div class="container">
+        <h1>Next Meeting</h1>
+        <p class="subtitle">Countdown until June 23rd, 2025, 15:30</p>
+        <div id="countdown">
+            <div class="time-unit">
+                <span id="days">00</span>
+                <div class="label">Days</div>
+            </div>
+            <div class="time-unit">
+                <span id="hours">00</span>
+                <div class="label">Hours</div>
+            </div>
+            <div class="time-unit">
+                <span id="minutes">00</span>
+                <div class="label">Minutes</div>
+            </div>
+            <div class="time-unit">
+                <span id="seconds">00</span>
+                <div class="label">Seconds</div>
+            </div>
+        </div>
+        <div id="message">The meeting time has arrived! ✨</div>
     </div>
-    <div class="time-unit">
-      <span id="hours">00</span>
-      <div class="label">Hours</div>
-    </div>
-    <div class="time-unit">
-      <span id="minutes">00</span>
-      <div class="label">Minutes</div>
-    </div>
-    <div class="time-unit">
-      <span id="seconds">00</span>
-      <div class="label">Seconds</div>
-    </div>
-  </div>
-  <div id="message">The meeting time has arrived! ✨</div>
-</div>
 
 <script>
-  // Set the date we're counting down to
-  // Note: JavaScript months are 0-indexed (January is 0, June is 5)
-  const countDownDate = new Date("June 23, 2025 15:30:00").getTime();
+    // Set the date we're counting down to
+    // Note: JavaScript months are 0-indexed (January is 0, June is 5)
+    const countDownDate = new Date("June 23, 2025 15:30:00").getTime();
 
-  // Update the count down every 1 second
-  const x = setInterval(function() {
+    // Update the count down every 1 second
+    const x = setInterval(function() {
 
-    // Get today's date and time
-    const now = new Date().getTime();
+        // Get today's date and time
+        const now = new Date().getTime();
 
-    // Find the distance between now and the count down date
-    const distance = countDownDate - now;
+        // Find the distance between now and the count down date
+        const distance = countDownDate - now;
 
-    // Time calculations for days, hours, minutes and seconds
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        // Time calculations for days, hours, minutes and seconds
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    // Display the result in the elements
-    document.getElementById("days").innerText = String(days).padStart(2, '0');
-    document.getElementById("hours").innerText = String(hours).padStart(2, '0');
-    document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
-    document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+        // Display the result in the elements
+        document.getElementById("days").innerText = String(days).padStart(2, '0');
+        document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+        document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+        document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
 
-    // If the count down is finished, write some text
-    if (distance < 0) {
-      clearInterval(x);
-      document.getElementById("countdown").style.display = "none";
-      document.getElementById("message").style.display = "block";
-      document.getElementById("message").innerText = "The meeting time has arrived! ✨"; // Updated message
-    }
-  }, 1000);
+        // If the count down is finished, write some text
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("countdown").style.display = "none";
+            document.getElementById("message").style.display = "block";
+            document.getElementById("message").innerText = "The meeting time has arrived! ✨"; // Updated message
+        }
+    }, 1000);
 </script>
 
 </body>
