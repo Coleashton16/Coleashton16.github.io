@@ -7,10 +7,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* --- Global Reset & Base Styles --- */
         :root {
-            --primary-blue: #0d6efd;
+            --primary-blue: #0d6efd; /* This page's specific primary blue */
             --secondary-gray: #6c757d;
             --light-bg: #f8f9fa;
             --white-bg: #ffffff;
@@ -20,6 +21,10 @@
             --shadow-medium: rgba(13, 110, 253, 0.15);
             --border-radius-lg: 16px;
             --border-radius-md: 12px;
+
+            /* Additional colors for top-nav consistency (if different from page's primary-blue) */
+            --nav-primary-blue: #2c7ac2; /* Deeper, more professional blue for the navigation */
+            --nav-primary-blue-light: #e0f2ff; /* Very light blue for nav backgrounds/hovers */
         }
 
         html {
@@ -34,6 +39,89 @@
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            box-sizing: border-box; /* Ensures padding and border are included in the element's total width and height */
+        }
+
+        /* --- Top Navigation Menu --- */
+        .top-nav {
+            background-color: var(--nav-primary-blue); /* Using the consistent nav blue */
+            padding: 12px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: center; /* Center the navigation items */
+            align-items: center;
+            overflow-x: auto; /* Allow horizontal scrolling if too many links */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: var(--nav-primary-blue) rgba(255,255,255,0.1); /* Firefox */
+        }
+        /* Custom scrollbar for Webkit browsers */
+        .top-nav-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .top-nav-container::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+        .top-nav-container::-webkit-scrollbar-thumb {
+            background: var(--nav-primary-blue-light); /* Using the consistent nav light blue */
+            border-radius: 3px;
+        }
+        .top-nav-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.7);
+        }
+
+        .top-nav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 30px; /* Standard gap */
+            white-space: nowrap; /* Prevent wrapping */
+        }
+
+        .top-nav-item a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem; /* Standard font size */
+            padding: 10px 15px;
+            border-radius: var(--border-radius-md);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top-nav-item a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+
+        .top-nav-item a:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .top-nav-item a:hover::after {
+            width: 80%;
         }
 
         /* --- Layout Container --- */
@@ -41,6 +129,7 @@
             max-width: 1000px; /* Slightly wider for more content */
             margin: 0 auto;
             padding: 24px;
+            padding-top: 0; /* Adjust if header has top padding/margin */
         }
 
         /* --- Header Section --- */
@@ -56,7 +145,7 @@
         .header h1 {
             font-size: 42px;
             font-weight: 700;
-            color: var(--primary-blue);
+            color: var(--primary-blue); /* Using this page's specific primary blue */
             margin: 0 0 12px 0;
             line-height: 1.2;
         }
@@ -137,8 +226,8 @@
         .resource-button:hover {
             transform: translateY(-7px); /* More pronounced lift */
             box-shadow: 0 10px 30px var(--shadow-medium); /* Stronger shadow */
-            border-color: var(--primary-blue);
-            color: var(--primary-blue);
+            border-color: var(--primary-blue); /* Using this page's specific primary blue */
+            color: var(--primary-blue); /* Using this page's specific primary blue */
         }
 
         .resource-button .icon {
@@ -154,7 +243,7 @@
         /* Specific button adjustments if needed */
         .resource-button.exam-button {
             background-color: #f0f8ff; /* Light blue background for exams */
-            color: var(--primary-blue);
+            color: var(--primary-blue); /* Using this page's specific primary blue */
         }
         .resource-button.exam-button:hover {
             background-color: #e0f2ff;
@@ -172,6 +261,16 @@
 
         /* --- Responsive Adjustments --- */
         @media (max-width: 768px) {
+            .top-nav-container {
+                padding: 0 15px;
+            }
+            .top-nav-list {
+                gap: 15px;
+            }
+            .top-nav-item a {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
             .header h1 {
                 font-size: 36px;
             }
@@ -221,6 +320,17 @@
     </style>
 </head>
 <body>
+
+    <header class="top-nav">
+        <div class="top-nav-container">
+            <ul class="top-nav-list">
+                <li class="top-nav-item"><a href="index.html">Home</a></li>
+                <li class="top-nav-item"><a href="Academic Support Resources consent.html">Learning Support</a></li>
+                <li class="top-nav-item"><a href="Calendar.html">Calendar</a></li>
+                <li class="top-nav-item"><a href="https://www.vsrep.org/complaints" target="_blank">Complaints</a></li>
+            </ul>
+        </div>
+    </header>
 
     <div class="page-container">
         <header class="header">
