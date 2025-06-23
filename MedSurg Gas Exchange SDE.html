@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Exchange Diagnostics Exam</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .quiz-wrapper {
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .quiz-header {
+            background-color: #4a5568;
+            color: white;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid #2c3e50;
+            position: relative; 
+        }
+        .logo {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.8rem;
+            font-weight: 900;
+            font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+            color: #f6ad55;
+            letter-spacing: 1px;
+        }
+        .quiz-header h1 { margin: 0; font-size: 1.75rem; }
+        #timer-display { font-size: 1.25rem; margin-top: 0.5rem; font-weight: bold; color: #f6ad55; }
+        .quiz-content { padding: 1.5rem 2rem; flex-grow: 1; }
+        #initial-screen { text-align: center; }
+        #initial-screen h2 { color: #2c3e50; }
+        #initial-screen p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 1rem auto; }
+        #question-container { margin-bottom: 1.5rem; }
+        .question-header { font-size: 1.1rem; color: #718096; margin-bottom: 1rem; }
+        .question-text { font-size: 1.3rem; font-weight: bold; margin-bottom: 1.5rem; line-height: 1.5; }
+        .options-container label { display: block; background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 1rem; margin-bottom: 0.75rem; border-radius: 8px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+        .options-container label:hover { background-color: #e2e8f0; border-color: #cbd5e0; }
+        .options-container input[type="radio"], .options-container input[type="checkbox"] { margin-right: 10px; }
+        /* Style for text input answers */
+        .text-answer-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.2rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            margin-top: 1rem;
+            box-sizing: border-box;
+        }
+        .flag-container { margin-top: 1.5rem; text-align: right; }
+        .flag-container label { cursor: pointer; color: #4a5568; font-weight: bold; }
+        .flag-container input[type="checkbox"] { margin-right: 5px; transform: scale(1.2); }
+        #navigation-btn, #start-btn, #print-btn { display: block; width: 100%; padding: 1rem; font-size: 1.2rem; font-weight: bold; color: white; background-color: #3182ce; border: none; border-radius: 8px; cursor: pointer; margin-top: 1rem; transition: background-color 0.2s; }
+        #navigation-btn:hover, #start-btn:hover, #print-btn:hover { background-color: #2b6cb0; }
+        #print-btn { background-color: #68d391; }
+        #print-btn:hover { background-color: #48bb78; }
+        #results-area { line-height: 1.7; }
+        #results-summary { text-align: center; background-color: #ebf8ff; border: 1px solid #90cdf4; padding: 1.5rem; margin-bottom: 2rem; border-radius: 8px; }
+        #results-summary h2 { margin-top: 0; }
+        .result-question { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; }
+        .result-question p strong { display: block; margin-bottom: 1rem; font-size: 1.2em; }
+        .result-question ul { list-style-type: none; padding: 0; margin: 0; }
+        .result-question li { padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; border: 1px solid #e2e8f0; }
+        .correct-answer-label { background-color: #c6f6d5 !important; border-color: #9ae6b4 !important; }
+        .incorrect-answer-label { background-color: #fed7d7 !important; border-color: #feb2b2 !important; }
+        .missed-correct-answer-label { border: 2px solid #68d391 !important; }
+        .typed-answer-result { margin-top: 1rem; }
+        .typed-answer-result .user-answer.correct { color: #38a169; }
+        .typed-answer-result .user-answer.incorrect { color: #e53e3e; text-decoration: line-through; }
+        .typed-answer-result .correct-answer-text { color: #38a169; font-weight: bold; }
+        .rationale { margin-top: 1rem; padding: 1rem; border-radius: 6px; border-left: 5px solid #a0aec0; background-color: #f7fafc; }
+        .rationale strong { display: block; margin-bottom: 0.5rem; }
+        .time-spent-info { font-style: italic; color: #718096; margin-top: 0.5rem; display: block; }
+        .time-flagged-rationale { background-color: #e9d8fd !important; border-left-color: #9f7aea !important; }
+        .flagged-rationale { background-color: #fefcbf !important; border-left-color: #f6e05e !important; }
+        #study-focus { margin-top: 2.5rem; padding: 1.5rem; background-color: #fefcbf; border: 1px solid #f6e05e; border-radius: 8px; }
+        #study-focus h3 { margin-top: 0; color: #2d3748; border-bottom: 2px solid #f6e05e; padding-bottom: 0.5rem; }
+        #study-focus ul { list-style-type: '👉'; padding-left: 2rem; }
+        #study-focus li { padding-left: 0.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .hidden { display: none; }
+
+        #pause-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1010; 
+            background-color: #f6ad55;
+            color: #2d3748;
+            border: 2px solid #2d3748;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        #pause-btn:hover {
+            background-color: #f687b3;
+            transform: scale(1.1);
+        }
+        #pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(226, 232, 240, 0.95);
+            z-index: 1000;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+        }
+        #pause-overlay .pause-content h1 {
+            font-size: 5rem;
+            color: #e53e3e; 
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        #pause-overlay .pause-content .stop-sign {
+             font-size: 8rem;
+        }
+        #pause-overlay .pause-content p {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-top: 1rem;
+        }
+
+        #study-guide-printable {
+             display: none;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #study-guide-printable, #study-guide-printable * {
+                visibility: visible;
+            }
+            #study-guide-printable {
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                font-family: 'Times New Roman', Times, serif;
+                color: #000;
+            }
+            .study-guide-item {
+                page-break-inside: avoid;
+                margin-bottom: 2rem;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 1rem;
+            }
+            .study-guide-item h2, .study-guide-item h3 {
+                font-size: 14pt;
+                margin-bottom: 1rem;
+                color: #000;
+            }
+             .study-guide-item h1 {
+                font-size: 24pt;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            .study-guide-item p {
+                font-size: 12pt;
+                line-height: 1.4;
+                margin: 0.5rem 0;
+            }
+            .study-guide-item .print-rationale {
+                margin-top: 1rem;
+                padding: 0.5rem;
+                border-left: 3px solid #ccc;
+                background-color: #f0f0f0 !important;
+                font-style: italic;
+            }
+            .study-guide-item .print-rationale strong {
+                font-style: normal;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <button id="pause-btn" class="hidden">||</button>
+    <div id="pause-overlay">
+        <div class="pause-content">
+            <div class="stop-sign">🛑</div>
+            <h1>EXAM PAUSED</h1>
+            <p>Click the pause button in the corner to resume.</p>
+        </div>
+    </div>
+
+    <div class="quiz-wrapper">
+        <header class="quiz-header">
+            <div class="logo">VSREP</div>
+            <h1>Gas Exchange Diagnostics Exam</h1>
+            <div id="timer-display">Time Left: 35:00</div>
+        </header>
+
+        <main class="quiz-content">
+            <div id="initial-screen">
+                <h2>Welcome to the Exam</h2>
+                <p>This is a timed, 30-question quiz on gas exchange diagnostics and pharmacology based on your course materials. The time limit is <strong>35 minutes</strong>. You can flag questions for review. Click "Start Quiz" when you are ready to begin.</p>
+                <button id="start-btn">Start Quiz</button>
+            </div>
+
+            <form id="quiz-form" class="hidden">
+                <div id="question-container"></div>
+                <div class="flag-container">
+                    <label><input type="checkbox" id="flag-for-review"> Flag for Review</label>
+                </div>
+                 <button type="submit" id="navigation-btn" class="hidden">Next Question</button>
+            </form>
+
+            <div id="results-area" class="hidden">
+                <div id="results-summary"></div>
+                <div id="results-details"></div>
+                <div id="study-focus"></div>
+                <button id="print-btn" class="hidden">🖨️ Print Study Guide</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="study-guide-printable"></div>
+
+
+<script>
+    const fullQuizData = [
+    {
+        "questionText": "A 78-year-old client with a history of COPD and heart failure is admitted with pneumonia. Vital signs are: Temp 101.5°F, HR 118, RR 28, BP 105/60, SaO2 86% on 2L NC. ABGs show pH 7.29, PaCO2 58, PaO2 62, HCO3 29. The client is anxious and using accessory muscles. Which nursing action is the highest priority?",
+        "options": {
+            "A": "Administer the prescribed IV antibiotic immediately.",
+            "B": "Increase the oxygen flow rate to 6 L/min via nasal cannula.",
+            "C": "Place the client on a non-invasive positive pressure ventilation (BiPAP) mask as per standing orders.",
+            "D": "Administer PRN lorazepam to decrease the client's anxiety."
+        },
+        "correctAnswer": "C",
+        "rationale": "This client is in acute-on-chronic respiratory failure (acidosis, hypoxia, hypercapnia despite O2) and is showing signs of respiratory muscle fatigue. The priority is to support ventilation and reduce the work of breathing. BiPAP will provide inspiratory and expiratory pressure to improve alveolar ventilation, correct hypoxia and hypercapnia, and rest the respiratory muscles. While antibiotics are crucial, they will not immediately correct the gas exchange failure. Increasing O2 on a COPD retainer could blunt the respiratory drive further. Sedating the client with lorazepam is dangerous and could lead to respiratory arrest.",
+        "section": "Acute Respiratory Failure"
+    },
+    {
+        "questionText": "A nurse is caring for four clients. Which client should the nurse assess first?",
+        "options": {
+            "A": "A client with COPD who has an SaO2 of 91% and is using pursed-lip breathing.",
+            "B": "A client with asthma who used a SABA 30 minutes ago and now has expiratory wheezes only.",
+            "C": "A client 1-day post-lobectomy with a chest tube who is reporting pain of 8/10.",
+            "D": "A client with a suspected pulmonary embolism who has new-onset stridor and restlessness."
+        },
+        "correctAnswer": "D",
+        "rationale": "Stridor is a high-pitched, harsh sound indicating a severe upper airway obstruction, which is a medical emergency that can lead to complete airway closure. While the other clients have significant issues, an acute airway obstruction is the most immediate threat to life (Airway, Breathing, Circulation). The COPD client is stable for their condition. The asthma client is improving (wheezes on expiration only is better than both inspiratory and expiratory). The post-op client's pain needs management but is not as life-threatening as an airway obstruction.",
+        "section": "Assessment"
+    },
+    {
+        "questionText": "A client is in the exudative phase of Acute Respiratory Distress Syndrome (ARDS). The nurse understands that the profound hypoxemia is primarily caused by a combination of which pathophysiological changes? (Select All That Apply)",
+        "options": {
+            "A": "Damage to type II alveolar cells, leading to surfactant inactivation.",
+            "B": "Hypersecretion of thick mucus from goblet cells, obstructing the bronchi.",
+            "C": "Increased permeability of the alveolar-capillary membrane, causing protein-rich fluid to flood the alveoli.",
+            "D": "Formation of a hyaline membrane, which impairs gas diffusion.",
+            "E": "Loss of elastic recoil leading to chronic air trapping.",
+            "F": "Bronchoconstriction caused by muscarinic receptor stimulation."
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "The exudative phase of ARDS is characterized by diffuse inflammation and damage to the alveolar-capillary membrane. This leads to: 1) Increased permeability, allowing fluid and proteins into the alveoli (C); 2) Damage to type II pneumocytes, which stops surfactant production, causing atelectasis (A); and 3) The combination of cellular debris and plasma proteins forming a waxy hyaline membrane that blocks gas exchange (D). Mucus hypersecretion is characteristic of bronchitis. Air trapping is characteristic of COPD. Bronchoconstriction is characteristic of asthma.",
+        "section": "Acute Respiratory Distress Syndrome"
+    },
+    {
+        "questionText": "A client with a tension pneumothorax has a chest tube inserted. Which assessment finding 1 hour later would indicate that the primary complication has been resolved and the client's condition is improving?",
+        "options": {
+            "A": "Continuous vigorous bubbling in the water-seal chamber.",
+            "B": "The client's trachea has returned to a midline position.",
+            "C": "Absence of tidaling in the water-seal chamber.",
+            "D": "Subcutaneous emphysema is noted around the insertion site."
+        },
+        "correctAnswer": "B",
+        "rationale": "A tension pneumothorax causes a mediastinal shift, pushing the trachea away from the affected side. The successful re-expansion of the lung by the chest tube relieves this pressure, allowing the trachea and other structures to return to their normal midline position. This is the most definitive sign that the life-threatening complication has been resolved. Continuous bubbling indicates an air leak. Absence of tidaling may mean the lung has re-expanded, but it could also mean there is a kink in the tubing. Subcutaneous emphysema is a complication.",
+        "section": "Pneumothorax"
+    },
+    {
+        "questionText": "A client with end-stage emphysema has a PaCO2 of 65 mmHg and a PaO2 of 55 mmHg. The provider orders oxygen via a Venturi mask. The nurse should question which FiO2 setting?",
+        "options": {
+            "A": "24%",
+            "B": "28%",
+            "C": "31%",
+            "D": "50%"
+        },
+        "correctAnswer": "D",
+        "rationale": "This client is a chronic CO2 retainer, meaning their respiratory drive is likely stimulated by hypoxemia, not hypercapnia. Administering a high concentration of oxygen (50%) can suppress this hypoxic drive, leading to severe hypoventilation and respiratory arrest. The goal for such clients is to maintain an SaO2 of around 88-92% using the lowest possible FiO2. A Venturi mask is used to deliver precise, low-flow concentrations (like 24-31%), making the 50% setting inappropriate and dangerous without close monitoring and likely ventilatory support.",
+        "section": "Oxygen Therapy"
+    },
+    {
+        "questionText": "A client with a history of IV drug use is admitted with right-sided bacterial endocarditis. The client suddenly develops pleuritic chest pain, dyspnea, and coughs up blood-tinged sputum. The nurse recognizes these findings as most consistent with which complication?",
+        "options": {
+            "A": "Aplastic anemia secondary to infection.",
+            "B": "Septic pulmonary emboli.",
+            "C": "Anaphylactic reaction to antibiotics.",
+            "D": "Spontaneous pneumothorax."
+        },
+        "correctAnswer": "B",
+        "rationale": "In right-sided endocarditis, vegetations on the tricuspid valve can break off and travel through the pulmonary circulation. These septic emboli lodge in the lungs, causing a pulmonary embolism that presents with the classic triad of dyspnea, chest pain, and hemoptysis. Because the emboli are from an infected source, they also seed the lungs with bacteria, causing infarction and abscesses.",
+        "section": "Pulmonary Embolism"
+    },
+    {
+        "questionText": "A nurse is educating a client recently diagnosed with cystic fibrosis about airway clearance techniques. The client asks, 'Why do I have to do chest physiotherapy and use a mucolytic? Why can't I just take a cough suppressant?' What is the nurse's best response?",
+        "options": {
+            "A": "Cough suppressants are highly addictive and should be avoided in all chronic respiratory conditions.",
+            "B": "The goal of your treatment is to make your cough more effective at clearing the abnormally thick mucus; suppressing the cough would be counterproductive and dangerous.",
+            "C": "Your physician needs to evaluate the effectiveness of the mucolytic first before adding a cough suppressant to your regimen.",
+            "D": "Coughing is a reflex that cannot be suppressed by medication in clients with cystic fibrosis due to genetic factors."
+        },
+        "correctAnswer": "B",
+        "rationale": "This response directly addresses the pathophysiology of CF and the therapeutic goal. CF produces thick, tenacious mucus that must be removed to prevent airway obstruction and infection. CPT and mucolytics are used to loosen this mucus, and an effective cough is the primary mechanism for its removal. Suppressing this protective cough reflex would lead to retained secretions, worsening the disease process.",
+        "section": "Cystic Fibrosis"
+    },
+    {
+        "questionText": "A client is brought to the ED with a suspected opiate overdose. The client is somnolent with a respiratory rate of 6/min and pinpoint pupils. The ABG results are pH 7.15, PaCO2 80 mmHg, PaO2 50 mmHg, HCO3 25 mEq/L. After initiating oxygen, what is the nurse's next PRIORITY action?",
+        "options": {
+            "A": "Insert a nasogastric tube for activated charcoal administration.",
+            "B": "Administer naloxone IV as prescribed.",
+            "C": "Obtain a urine toxicology screen.",
+            "D": "Prepare the client for emergent endotracheal intubation."
+        },
+        "correctAnswer": "B",
+        "rationale": "The client is in severe, uncompensated respiratory acidosis due to opiate-induced respiratory depression. The priority is to reverse the cause. Naloxone is an opioid antagonist that will rapidly reverse the respiratory depression and improve ventilation. While intubation (D) may ultimately be needed if the client does not respond, naloxone should be tried first as it can prevent the need for mechanical ventilation. Activated charcoal and toxicology screens are secondary to restoring adequate breathing.",
+        "section": "Acid-Base Balance"
+    },
+    {
+        "questionText": "A client with long-standing, poorly controlled asthma is undergoing a pulmonary function test (PFT). The nurse anticipates the results will show which pattern, indicative of airway remodeling?",
+        "options": {
+            "A": "A significantly decreased Total Lung Capacity (TLC) and Residual Volume (RV).",
+            "B": "A decreased Forced Expiratory Volume in 1 second (FEV1) that completely normalizes after bronchodilator use.",
+            "C": "An FEV1/FVC ratio of less than 70% that shows only partial reversibility with a bronchodilator.",
+            "D": "An increased FEV1 and a decreased RV, indicating hyper-responsiveness."
+        },
+        "correctAnswer": "C",
+        "rationale": "Classic asthma shows reversible obstruction. However, in long-standing, poorly controlled asthma, airway remodeling (fibrosis, smooth muscle hypertrophy) occurs, leading to a fixed, non-fully reversible airflow limitation similar to COPD. This is reflected in a low FEV1/FVC ratio (<0.70) that improves after a bronchodilator is given, but does not return to normal, indicating a component of fixed obstruction.",
+        "section": "Asthma"
+    },
+    {
+        "questionText": "A client is on a mechanical ventilator with settings of FiO2 100% and PEEP 15 cm H2O. The nurse notes a sudden drop in blood pressure to 85/50 mmHg and a decrease in urine output. The nurse should suspect that the client's impaired perfusion is most likely a direct consequence of which factor?",
+        "options": {
+            "A": "The high FiO2 causing oxygen toxicity.",
+            "B": "Hypovolemia from inadequate fluid intake.",
+            "C": "The high PEEP level increasing intrathoracic pressure.",
+            "D": "A systemic inflammatory response to the ventilator tubing."
+        },
+        "correctAnswer": "C",
+        "rationale": "High levels of Positive End-Expiratory Pressure (PEEP) increase pressure within the thoracic cavity. This increased pressure can compress the vena cava, which reduces venous return to the right side of the heart (decreased preload). A significant decrease in preload leads to a decrease in cardiac output, resulting in hypotension and reduced perfusion to vital organs like the kidneys.",
+        "section": "Mechanical Ventilation"
+    },
+    {
+        "questionText": "A 6-month-old infant, born at term, is being evaluated for poor feeding and lethargy. The mother, a recent immigrant, reports no prenatal care. A CBC reveals Hgb 7.0 g/dL and Hct 21%. The nurse considers that this infant's impaired gas exchange is most likely a result of which condition?",
+        "options": {
+            "A": "Physiological anemia of infancy.",
+            "B": "Sickle cell anemia.",
+            "C": "Severe iron deficiency anemia.",
+            "D": "Aplastic anemia."
+        },
+        "correctAnswer": "C",
+        "rationale": "While physiological anemia occurs around 2-3 months, an Hgb of 7.0 is too low for it to be the sole cause. The text notes that at around 6 months, maternal iron stores are depleted. In an infant with likely poor maternal nutrition (no prenatal care), these stores would be even lower, leading to severe iron deficiency anemia when dietary iron intake is insufficient. This is a common cause of severe anemia at this specific age.",
+        "section": "Anemia"
+    },
+    {
+        "questionText": "A client receiving a blood transfusion for hemolytic anemia develops a fever, chills, and flank pain. The nurse's first action should be to:",
+        "options": {
+            "A": "Administer an antipyretic as ordered.",
+            "B": "Stop the transfusion immediately.",
+            "C": "Slow the rate of the transfusion.",
+            "D": "Send a blood sample to the lab."
+        },
+        "correctAnswer": "B",
+        "rationale": "These are classic signs of an acute hemolytic transfusion reaction, a life-threatening emergency. The absolute first priority is to stop the transfusion to prevent any more incompatible blood from entering the client's system. All other actions (notifying the provider, maintaining IV access with normal saline, sending samples) follow immediately after stopping the transfusion.",
+        "section": "Anemia"
+    },
+    {
+        "questionText": "A nurse is interpreting the results of a Mantoux test on a healthcare worker with no known TB exposure. The area of induration measures 12 mm. How should the nurse interpret this result?",
+        "options": {
+            "A": "Negative, because the induration must be >15 mm for healthcare workers.",
+            "B": "Positive, indicating an active tuberculosis infection.",
+            "C": "Positive, indicating exposure to tuberculosis and the development of antibodies.",
+            "D": "Inconclusive, requiring an immediate repeat test on the opposite arm."
+        },
+        "correctAnswer": "C",
+        "rationale": "For healthcare workers and other specific high-risk groups, an induration of 10 mm or greater is considered a positive result. A positive Mantoux test does not diagnose active disease; it indicates that the person has been exposed to Mycobacterium tuberculosis at some point and has mounted an immune response. This requires follow-up (e.g., chest x-ray, symptom screen) to rule out active infection.",
+        "section": "Tuberculosis"
+    },
+    {
+        "questionText": "A client with severe pneumonia is positioned in bed lying on their left side. A new nurse asks why the client isn't lying on their 'good' right side to rest it. What is the charge nurse's best explanation?",
+        "options": {
+            "A": "This position prevents the client from aspirating oral secretions.",
+            "B": "This is the tripod position, which maximizes use of accessory muscles.",
+            "C": "Positioning with the unaffected lung down improves the ventilation-perfusion match by using gravity to increase blood flow to the healthy lung.",
+            "D": "The client's left lung is filled with fluid, and this position helps to drain it out through the bronchus."
+        },
+        "correctAnswer": "C",
+        "rationale": "The concept of positioning for improved gas exchange relies on matching ventilation with perfusion (V/Q matching). The text states, 'The greatest volume of pulmonary blood flow occurs in the gravity-dependent areas of the lung.' Therefore, placing the client with the 'good' lung down (the unaffected, better-ventilated lung) directs more blood flow to that lung, improving the V/Q match and overall oxygenation. The new nurse's suggestion to lie on the 'good' lung (the right side in this scenario) was actually correct, and the charge nurse should explain the principle behind it.",
+        "section": "Positioning"
+    },
+    {
+        "questionText": "A client with a new diagnosis of lung cancer is scheduled for a PET scan. The client asks how this test is different from a CT scan. The nurse explains that the primary advantage of a PET scan in this situation is its ability to:",
+        "options": {
+            "A": "Provide a more detailed three-dimensional image of the lung structures.",
+            "B": "Detect impaired blood flow to the tumor.",
+            "C": "Distinguish between benign and malignant nodules based on metabolic activity.",
+            "D": "Visualize the airways directly using a fiber-optic scope."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text states that a PET scan 'uses an intravenous injection of radioactive chemical compounds to distinguish benign from malignant pulmonary nodules.' Malignant cells are typically more metabolically active and will take up more of the radioactive tracer (usually a form of glucose), causing them to 'light up' on the scan. This helps differentiate cancer from benign growths.",
+        "section": "Radiologic Studies"
+    },
+    {
+        "questionText": "Which assessment finding in a client 2 days post-hip fracture is most indicative of a developing fat embolism rather than a thromboembolism?",
+        "options": {
+            "A": "Unilateral calf swelling and tenderness.",
+            "B": "A positive Homan's sign.",
+            "C": "A petechial rash on the chest and axillae.",
+            "D": "Pleuritic chest pain and hemoptysis."
+        },
+        "correctAnswer": "C",
+        "rationale": "While both fat embolism syndrome (FES) and pulmonary thromboembolism (PE) can cause respiratory distress, the pathognomonic sign of FES is a petechial rash on the chest, axillae, and conjunctiva. This is caused by fat globules damaging small capillaries. Unilateral calf swelling is classic for DVT (the precursor to PE). The classic triad of chest pain, dyspnea, and hemoptysis is more common with PE from a DVT.",
+        "section": "Pulmonary Embolism"
+    },
+    {
+        "questionText": "The nurse is titrating a nitroglycerin infusion for a client with acute cardiogenic pulmonary edema. The primary therapeutic effect the nurse is trying to achieve to improve gas exchange is:",
+        "options": {
+            "A": "Increasing myocardial contractility (positive inotropy).",
+            "B": "Reducing venous return to the heart (preload reduction).",
+            "C": "Increasing systemic vascular resistance (afterload increase).",
+            "D": "Increasing the heart rate to improve cardiac output."
+        },
+        "correctAnswer": "B",
+        "rationale": "In cardiogenic pulmonary edema, the left ventricle cannot effectively pump blood forward, causing it to back up into the lungs. Nitroglycerin is a potent venodilator. By dilating the veins, it reduces the amount of blood returning to the heart (preload). This decrease in preload lessens the pressure in the pulmonary circulation, allowing fluid to shift out of the alveoli and improving gas exchange.",
+        "section": "Heart Failure"
+    },
+    {
+        "questionText": "An elderly client with dementia is admitted for aspiration pneumonia. They are anorexic and refuse to eat. The nurse initiates a tube feeding. Which intervention is critical to prevent a recurrence of aspiration?",
+        "options": {
+            "A": "Using a large-bore nasogastric tube for the feeding.",
+            "B": "Placing the client in a supine position during and after feeding.",
+            "C": "Checking for gastric residual volume before each feeding.",
+            "D": "Administering the feeding as a rapid bolus to finish quickly."
+        },
+        "correctAnswer": "C",
+        "rationale": "Checking for gastric residual volume (GRV) is a key safety measure to assess tolerance and prevent aspiration. A high GRV indicates delayed gastric emptying, which significantly increases the risk that the formula could be regurgitated and aspirated. If the residual is high (per facility policy), the feeding is held and the provider is notified. The head of the bed must be elevated, and feedings should be given slowly.",
+        "section": "Pneumonia"
+    },
+    {
+        "questionText": "A client on long-term corticosteroid therapy for sarcoidosis is at risk for which complications that can indirectly affect gas exchange? (Select All That Apply)",
+        "options": {
+            "A": "Immunosuppression, increasing the risk of pneumonia.",
+            "B": "Fluid retention, potentially worsening pulmonary edema.",
+            "C": "Muscle wasting, which can weaken respiratory muscles.",
+            "D": "Hypoglycemia, reducing cellular energy.",
+            "E": "Development of a productive cough."
+        },
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "Long-term steroid use has many side effects. It suppresses the immune system, increasing susceptibility to infections like pneumonia (A). It causes sodium and water retention, which can lead to fluid overload and exacerbate or cause pulmonary edema in susceptible individuals (B). It also causes myopathy, or muscle wasting, which can affect the diaphragm and intercostal muscles, impairing ventilation (C). Steroids typically cause hyperglycemia, not hypoglycemia.",
+        "section": "Pharmacotherapy"
+    },
+    {
+        "questionText": "A client is prescribed an IV infusion of a medication. The order is to infuse 750 mg of the drug in 100 mL of 0.9% NaCl over 30 minutes. The drug literature states the maximum safe infusion rate is 20 mg/min. Which action should the nurse take?",
+        "options": {
+            "A": "Administer the infusion as ordered.",
+            "B": "Administer the infusion but run it over 60 minutes instead.",
+            "C": "Contact the provider to question the safety of the infusion rate.",
+            "D": "Dilute the medication in 250 mL of fluid to decrease the concentration."
+        },
+        "correctAnswer": "C",
+        "rationale": "First, calculate the ordered infusion rate in mg/min. Rate = Total mg / Total minutes = 750 mg / 30 min = 25 mg/min. The maximum safe rate is 20 mg/min. Since the ordered rate of 25 mg/min exceeds the maximum safe rate, the order is unsafe. The nurse's responsibility is to recognize this discrepancy and contact the prescriber to clarify the order and discuss a safer administration rate (e.g., infusing the dose over a longer period, such as 40-45 minutes). The nurse cannot unilaterally change the infusion time (B) or dilution (D) without an order.",
+        "section": "Pharmacotherapy"
+    },
+    {
+        "questionText": "A client with COVID-19 develops acute respiratory failure. An ABG shows pH 7.25, PaO2 58 mmHg, PaCO2 65 mmHg. This client's gas exchange impairment is best categorized as a failure of:",
+        "options": {
+            "A": "Transport",
+            "B": "Perfusion",
+            "C": "Ventilation",
+            "D": "Hemoglobin saturation"
+        },
+        "correctAnswer": "C",
+        "rationale": "The ABG results show severe hypoxemia and hypercapnia (high CO2), indicating ventilatory failure. The lungs are unable to adequately move air to oxygenate the blood and remove CO2. In COVID-19, this is often due to severe inflammation, fluid-filled alveoli (pneumonia/ARDS), and damage to lung tissue, all of which impede the mechanical process of ventilation.",
+        "section": "COVID-19"
+    },
+    {
+        "questionText": "A patient with a history of chronic bronchitis has an elevated hematocrit level. The nurse interprets this finding as a likely result of which compensatory mechanism?",
+        "options": {
+            "A": "Chronic hypercapnia stimulating platelet production.",
+            "B": "Increased production of erythrocytes to compensate for chronic hypoxia.",
+            "C": "Dehydration from increased respiratory effort.",
+            "D": "An inflammatory response increasing white blood cell production."
+        },
+        "correctAnswer": "B",
+        "rationale": "Clients with chronic bronchitis experience long-term hypoxia. In response to chronic low oxygen levels, the kidneys release erythropoietin, which stimulates the bone marrow to produce more red blood cells (erythrocytes). This condition, known as secondary polycythemia, increases the oxygen-carrying capacity of the blood but also increases blood viscosity. Hematocrit is the measure of the percentage of blood volume composed of RBCs, so it would be elevated.",
+        "section": "Chronic Bronchitis"
+    },
+    {
+        "questionText": "The nurse is providing discharge instructions to a client who had a pulmonary embolism and is now on long-term warfarin therapy. Which statement by the client indicates a need for further teaching?",
+        "options": {
+            "A": "I will need to have my INR checked regularly.",
+            "B": "I should use a soft-bristled toothbrush to protect my gums.",
+            "C": "I will increase my intake of leafy green vegetables to improve my clotting.",
+            "D": "I must report any signs of unusual bleeding or bruising to my doctor."
+        },
+        "correctAnswer": "C",
+        "rationale": "Warfarin is a vitamin K antagonist. Leafy green vegetables are high in vitamin K, which would counteract the effects of warfarin and decrease the INR, putting the client at risk for another clot. Clients on warfarin should be taught to maintain a *consistent*, not increased, intake of vitamin K. The other statements reflect correct understanding of anticoagulant therapy.",
+        "section": "Pulmonary Embolism"
+    },
+    {
+        "questionText": "A client who was successfully resuscitated after a cardiac arrest is now intubated and on a ventilator. The initial ABG shows pH 7.10, PaO2 150 mmHg, PaCO2 35 mmHg, and HCO3 12 mEq/L. The nurse correctly identifies the primary acid-base disturbance as:",
+        "options": {
+            "A": "Respiratory acidosis.",
+            "B": "Respiratory alkalosis.",
+            "C": "Metabolic acidosis.",
+            "D": "Metabolic alkalosis."
+        },
+        "correctAnswer": "C",
+        "rationale": "The pH is very low (acidosis). The HCO3 is very low, indicating a metabolic cause. This severe metabolic acidosis is due to the buildup of lactic acid from tissue hypoxia and anaerobic metabolism during the cardiac arrest. The PaCO2 is normal, indicating the ventilator is providing adequate ventilation, but the underlying metabolic problem persists. The high PaO2 reflects the high FiO2 setting post-intubation.",
+        "section": "Acid-Base Balance"
+    },
+    {
+        "questionText": "A client is admitted with an acute asthma attack. Despite receiving multiple nebulized albuterol treatments, the client's wheezing persists and they appear fatigued. What is the nurse's priority action?",
+        "options": {
+            "A": "Continue administering albuterol every 20 minutes.",
+            "B": "Recommend the addition of an inhaled anticholinergic like ipratropium.",
+            "C": "Administer systemic corticosteroids as ordered.",
+            "D": "Teach the client how to use a peak flow meter."
+        },
+        "correctAnswer": "C",
+        "rationale": "This client is experiencing a severe exacerbation that is not responding adequately to SABAs alone (status asthmaticus). The underlying problem in a severe attack is inflammation. Systemic corticosteroids are essential to decrease this inflammation, reduce airway edema, and potentiate the effects of the beta2-agonists. While continuing SABAs and adding an anticholinergic are also parts of the treatment, addressing the severe inflammation with steroids is the priority to prevent respiratory failure.",
+        "section": "Asthma"
+    },
+    {
+        "questionText": "A nurse is assessing a client with suspected obstructive sleep apnea (OSA). The nurse would expect the client's partner to report which classic symptom?",
+        "options": {
+            "A": "Nightmares and sleepwalking.",
+            "B": "Loud, disruptive snoring with periods of silence.",
+            "C": "Constant coughing throughout the night.",
+            "D": "Sleeping for more than 10 hours without waking."
+        },
+        "correctAnswer": "B",
+        "rationale": "OSA is characterized by repeated episodes of upper airway collapse during sleep. This leads to loud snoring as air is forced through a narrowed passage, followed by periods of apnea (silence) when the airway is completely obstructed. The client often wakes with a gasp or snort as they struggle to breathe, leading to fragmented sleep and daytime sleepiness.",
+        "section": "Ventilation"
+    },
+    {
+        "questionText": "An 80-year-old client is 2 days post-op from abdominal surgery. Auscultation reveals diminished breath sounds in the bilateral bases. The client is afebrile with an SaO2 of 93% on room air. What is the nurse's most appropriate action?",
+        "options": {
+            "A": "Request an order for a stat chest x-ray.",
+            "B": "Administer oxygen via nasal cannula at 2 L/min.",
+            "C": "Aggressively coach the client to use the incentive spirometer and ambulate in the hall.",
+            "D": "Document the findings as normal for an elderly postoperative client."
+        },
+        "correctAnswer": "C",
+        "rationale": "The most likely cause of diminished breath sounds in this client is atelectasis (alveolar collapse) due to shallow breathing from pain and immobility. The priority intervention is to promote lung expansion. Aggressively encouraging the use of the incentive spirometer, deep breathing, coughing, and ambulation will help re-expand the collapsed alveoli and prevent progression to pneumonia. While an x-ray or oxygen may be needed if the condition worsens, the immediate therapeutic action is C.",
+        "section": "Atelectasis"
+    },
+    {
+        "questionText": "A client's complete blood count shows a low hemoglobin, low hematocrit, low RBC count, and a mean corpuscular volume (MCV) of 115 fL (high). This profile is most consistent with which type of anemia?",
+        "options": {
+            "A": "Iron deficiency anemia.",
+            "B": "Anemia of chronic disease.",
+            "C": "Folic acid or Vitamin B12 deficiency anemia.",
+            "D": "Sickle cell anemia."
+        },
+        "correctAnswer": "C",
+        "rationale": "The key finding is the high MCV, which indicates macrocytic anemia (abnormally large red blood cells). Folic acid and Vitamin B12 are essential for DNA synthesis and RBC maturation. A deficiency in either leads to the production of large, immature megaloblasts, resulting in macrocytic anemia. Iron deficiency and anemia of chronic disease are typically microcytic or normocytic.",
+        "section": "Anemia"
+    },
+    {
+        "questionText": "A client is being treated for a massive pulmonary embolism with a continuous IV heparin infusion. The aPTT result returns at 150 seconds (therapeutic range 60-80 seconds). What is the nurse's priority action?",
+        "options": {
+            "A": "Continue the infusion at the current rate and recheck the aPTT in 6 hours.",
+            "B": "Increase the heparin infusion rate according to the protocol.",
+            "C": "Stop the heparin infusion and notify the healthcare provider immediately.",
+            "D": "Administer a dose of Vitamin K as the antidote."
+        },
+        "correctAnswer": "C",
+        "rationale": "An aPTT of 150 seconds is critically high and indicates excessive anticoagulation, placing the client at high risk for spontaneous and severe bleeding. The nurse's first action must be to stop the infusion to prevent further risk. The provider must then be notified for orders, which may include holding the infusion for a period of time and then restarting at a lower rate. The antidote for heparin is protamine sulfate, not Vitamin K (which is for warfarin).",
+        "section": "Pharmacotherapy"
+    },
+    {
+        "questionText": "Which statement by a student nurse demonstrates an accurate understanding of the primary difference between ventilation and perfusion?",
+        "options": {
+            "A": "Ventilation is the movement of blood, while perfusion is the movement of air.",
+            "B": "Ventilation is the process of gas exchange at the cellular level, and perfusion is the process at the alveolar level.",
+            "C": "Ventilation is the mechanical process of moving air into and out of the lungs, while perfusion is the flow of blood through the pulmonary capillaries.",
+            "D": "Ventilation refers to oxygen transport, and perfusion refers to carbon dioxide transport."
+        },
+        "correctAnswer": "C",
+        "rationale": "This statement accurately defines the two concepts. Ventilation (V) is the mechanical act of breathing. Perfusion (Q) is the passage of blood through the lung's vascular system. Effective gas exchange depends on a close match between ventilation and perfusion (V/Q matching).",
+        "section": "Definition"
+    },
+    {
+        "questionText": "A client has a chest x-ray report that notes a 'large pleural effusion' in the right lung. The nurse would anticipate which finding upon physical assessment of the right side of the chest?",
+        "options": {
+            "A": "Increased tactile fremitus.",
+            "B": "Hyperresonant sounds on percussion.",
+            "C": "Absent or decreased breath sounds.",
+            "D": "Coarse rhonchi that clear with coughing."
+        },
+        "correctAnswer": "C",
+        "rationale": "A pleural effusion is a collection of fluid in the pleural space, outside the lung tissue. This fluid compresses the lung and acts as a barrier to sound transmission. Therefore, the nurse would expect to find markedly decreased or absent breath sounds and decreased tactile fremitus over the area of the effusion. The percussion note would be dull or flat, not hyperresonant (which suggests a pneumothorax).",
+        "section": "Pleural Effusion"
+    },
+    {
+        "questionText": "A client with a history of emphysema is admitted with increasing dyspnea. The ABG is pH 7.35, PaCO2 60, HCO3 34. How does the nurse interpret this state?",
+        "options": {
+            "A": "Uncompensated respiratory acidosis.",
+            "B": "Partially compensated respiratory acidosis.",
+            "C": "Fully compensated respiratory acidosis.",
+            "D": "Normal acid-base balance."
+        },
+        "correctAnswer": "C",
+        "rationale": "The pH of 7.35 is at the lowest end of the normal range (7.35-7.45), indicating that compensation has occurred. The PaCO2 is high (acidotic), and the HCO3 is high (alkalotic). This pattern shows a primary respiratory acidosis (from CO2 retention in emphysema) that has been fully compensated for by the kidneys retaining bicarbonate over time. The body has successfully brought the pH back into the normal range.",
+        "section": "Acid-Base Balance"
+    },
+    {
+        "questionText": "A nurse is preparing to administer an inhaled corticosteroid (ICS) and a short-acting beta-agonist (SABA) to a client with asthma. Which is the correct procedure?",
+        "options": {
+            "A": "Administer the ICS first to reduce inflammation, then the SABA.",
+            "B": "Administer the SABA first, wait 5 minutes, then administer the ICS.",
+            "C": "Mix both medications in the same nebulizer for simultaneous delivery.",
+            "D": "Administer the medications back-to-back with no waiting period."
+        },
+        "correctAnswer": "B",
+        "rationale": "The SABA is a bronchodilator. It should be administered first to open the airways. This allows the anti-inflammatory medication (the ICS) to be inhaled more deeply into the lungs and be more effective. A waiting period of a few minutes between the two allows the SABA to take full effect.",
+        "section": "Pharmacotherapy"
+    },
+    {
+        "questionText": "A client is diagnosed with a large pulmonary embolism. The nurse understands that this condition primarily impairs gas exchange by creating a mismatch where:",
+        "options": {
+            "A": "Alveoli are perfused but not ventilated.",
+            "B": "Alveoli are ventilated but not perfused.",
+            "C": "There is a complete lack of both ventilation and perfusion.",
+            "D": "There is an obstruction to airflow in the bronchi."
+        },
+        "correctAnswer": "B",
+        "rationale": "A pulmonary embolism is a blockage in the pulmonary artery, which prevents blood from reaching the downstream capillaries. The alveoli in that lung region are still receiving air (they are ventilated), but there is no blood flow for gas exchange to occur (they are not perfused). This creates a large area of alveolar dead space and a significant V/Q mismatch.",
+        "section": "Pulmonary Embolism"
+    },
+    {
+        "questionText": "A patient with a traumatic C4 spinal cord injury is at high risk for respiratory failure because this level of injury causes:",
+        "options": {
+            "A": "Paralysis of the diaphragm.",
+            "B": "Loss of the cough reflex.",
+            "C": "Fracture of the ribs.",
+            "D": "Obstruction of the upper airway."
+        },
+        "correctAnswer": "A",
+        "rationale": "The phrenic nerve, which innervates the diaphragm, originates from the C3-C5 spinal levels. An injury at the C4 level can cause partial or complete paralysis of the diaphragm, the primary muscle of inspiration. This severely impairs ventilation and often necessitates long-term mechanical ventilation.",
+        "section": "Ventilation"
+    },
+    {
+        "questionText": "A nurse is reviewing the chart of a client with thalassemia. The nurse understands that the fundamental defect in this disorder relates to:",
+        "options": {
+            "A": "An abnormal sickle shape of the red blood cell.",
+            "B": "A deficiency in the production of globin chains for hemoglobin.",
+            "C": "An autoimmune destruction of red blood cells.",
+            "D": "A failure of the bone marrow to produce any cells."
+        },
+        "correctAnswer": "B",
+        "rationale": "Thalassemia is a genetic disorder characterized by a quantitative problem with hemoglobin synthesis. There is a deficient production of one or more of the globin chains (alpha or beta) that make up adult hemoglobin (HgbA). This leads to the production of defective, fragile red blood cells and results in a microcytic, hypochromic anemia.",
+        "section": "Anemia"
+    },
+    {
+        "questionText": "A client with a history of asthma reports using their albuterol (SABA) inhaler 4-5 times a day for the past month. What is the nurse's best interpretation of this information?",
+        "options": {
+            "A": "The client's asthma is well-controlled.",
+            "B": "The client is likely developing a tolerance to the medication.",
+            "C": "The client's asthma is poorly controlled and requires a change in therapy.",
+            "D": "The client is using the inhaler correctly for prophylaxis."
+        },
+        "correctAnswer": "C",
+        "rationale": "A SABA is a rescue inhaler, intended for acute, intermittent symptoms. According to asthma guidelines, the need to use a SABA more than twice a week for symptom relief indicates inadequate control of underlying inflammation. This client's frequent use suggests their asthma is poorly controlled, and they likely need the addition or adjustment of a daily controller medication, such as an inhaled corticosteroid.",
+        "section": "Asthma"
+    },
+    {
+        "questionText": "During an assessment of a client with emphysema, the nurse notes a barrel chest. The nurse understands this physical change is a result of:",
+        "options": {
+            "A": "Hypertrophy of the accessory muscles of respiration.",
+            "B": "Chronic air trapping and hyperinflation of the lungs.",
+            "C": "Kyphosis of the thoracic spine due to aging.",
+            "D": "Fluid accumulation in the pleural space."
+        },
+        "correctAnswer": "B",
+        "rationale": "In emphysema, the destruction of alveolar walls leads to a loss of elastic recoil, causing airways to collapse during exhalation. This traps air in the lungs, leading to chronic hyperinflation. Over time, this hyperinflation causes the chest cage to expand in the anteroposterior (AP) diameter, resulting in the characteristic barrel shape (AP diameter equals lateral diameter).",
+        "section": "Emphysema"
+    },
+    {
+        "questionText": "Which of these clients on a medical-surgical unit requires the most immediate intervention by the nurse?",
+        "options": {
+            "A": "A client with pneumonia reporting pleuritic chest pain rated 6/10.",
+            "B": "A client with COPD with an SaO2 of 90% on 2L NC.",
+            "C": "A client 4 hours post-bronchoscopy who is requesting ice chips.",
+            "D": "A client with a DVT who suddenly becomes tachypneic and confused."
+        },
+        "correctAnswer": "D",
+        "rationale": "The client with the DVT is exhibiting classic signs and symptoms of a pulmonary embolism (PE), a life-threatening condition. The sudden onset of tachypnea and confusion indicates significant V/Q mismatch and hypoxia. This is an emergency requiring immediate intervention (e.g., rapid response team, oxygen, stat diagnostics). The other clients have expected problems that need attention but are not as acutely life-threatening.",
+        "section": "Pulmonary Embolism"
+    },
+    {
+        "questionText": "The primary purpose of encouraging a post-operative patient to use an incentive spirometer is to prevent:",
+        "options": {
+            "A": "Atelectasis",
+            "B": "Pulmonary Embolism",
+            "C": "Bronchoconstriction",
+            "D": "Pleural Effusion"
+        },
+        "correctAnswer": "A",
+        "rationale": "Post-operative patients often take shallow breaths due to pain and immobility. The incentive spirometer provides visual feedback to encourage the patient to take slow, deep, sustained inspirations. This action inflates the alveoli, especially at the lung bases, preventing the alveolar collapse known as atelectasis, which is a common precursor to pneumonia.",
+        "section": "Preventing Postoperative Complications"
+    },
+    {
+        "questionText": "A client's arterial blood gas results are: pH 7.52, PaCO2 28 mmHg, HCO3 24 mEq/L. The nurse identifies this as uncompensated respiratory alkalosis. Which clinical situation is the most likely cause?",
+        "options": {
+            "A": "A narcotic overdose.",
+            "B": "An acute anxiety attack.",
+            "C": "A severe asthma exacerbation.",
+            "D": "End-stage renal disease."
+        },
+        "correctAnswer": "B",
+        "rationale": "Uncompensated respiratory alkalosis (high pH, low PaCO2, normal HCO3) is caused by hyperventilation. During an acute anxiety attack, a person breathes rapidly and deeply (hyperventilates), blowing off excessive amounts of CO2, which leads to this acid-base imbalance. A narcotic overdose or asthma attack would cause respiratory acidosis. Renal disease would cause metabolic acidosis.",
+        "section": "Acid-Base Balance"
+    },
+    {
+        "questionText": "A client with a history of smoking for 40 years is diagnosed with chronic bronchitis. The nurse explains that the chronic cough is primarily due to:",
+        "options": {
+            "A": "Destruction of the alveolar walls.",
+            "B": "Hypertrophy of goblet cells and mucus hypersecretion.",
+            "C": "Loss of elastic recoil in the lung parenchyma.",
+            "D": "Irreversible bronchoconstriction."
+        },
+        "correctAnswer": "B",
+        "rationale": "The hallmark of chronic bronchitis is inflammation of the airways caused by chronic exposure to irritants like tobacco smoke. This leads to hypertrophy and hyperplasia of the mucus-producing goblet cells, resulting in excessive, thick mucus. The cough is a compensatory mechanism to try and clear this mucus from the airways.",
+        "section": "Chronic Bronchitis"
+    },
+    {
+        "questionText": "A client with a history of heart failure is prescribed furosemide 40mg IV. Which laboratory value is most critical for the nurse to check before administering this medication?",
+        "options": {
+            "A": "Serum potassium",
+            "B": "Hemoglobin",
+            "C": "Blood urea nitrogen (BUN)",
+            "D": "White blood cell count"
+        },
+        "correctAnswer": "A",
+        "rationale": "Furosemide is a potent loop diuretic that causes significant potassium excretion. Hypokalemia is a common and dangerous side effect, as it can lead to cardiac dysrhythmias, especially in a client with underlying heart failure. The nurse must know the client's potassium level before administering the dose to prevent severe hypokalemia.",
+        "section": "Pharmacotherapy"
+    },
+    {
+        "questionText": "What is the most significant, non-modifiable risk factor for impaired gas exchange in an 85-year-old client?",
+        "options": {
+            "A": "A history of smoking.",
+            "B": "A sedentary lifestyle.",
+            "C": "Age-related physiological changes.",
+            "D": "A high-fat diet."
+        },
+        "correctAnswer": "C",
+        "rationale": "While smoking and lifestyle are modifiable risk factors, the physiological changes of aging are non-modifiable. The text describes that with advanced age, the chest wall becomes stiffer, respiratory muscles weaken, alveoli become less elastic, and the immune response decreases. These inevitable changes put all older adults at an increased baseline risk for impaired gas exchange.",
+        "section": "Age-Related Differences"
+    },
+    {
+        "questionText": "A client with end-stage COPD is lethargic and confused. ABGs are: pH 7.20, PaCO2 75, PaO2 48. This condition is best described as:",
+        "options": {
+            "A": "Hypoxemic respiratory failure.",
+            "B": "Hypercapnic respiratory failure.",
+            "C": "Fully compensated metabolic acidosis.",
+            "D": "Shunt-induced hypoxemia."
+        },
+        "correctAnswer": "B",
+        "rationale": "The defining characteristic of this ABG is the severely elevated PaCO2 (hypercapnia) leading to a profound acidosis. This indicates that the primary problem is a failure of ventilation—the client cannot effectively remove CO2 from their system. While hypoxemia is also present, the primary driver of the acute decompensation is ventilatory failure, also known as hypercapnic respiratory failure.",
+        "section": "Acute Respiratory Failure"
+    },
+    {
+        "questionText": "A client is diagnosed with iron deficiency anemia. The nurse's dietary teaching should emphasize increasing the intake of which foods? (Select All That Apply)",
+        "options": {
+            "A": "Red meat and poultry",
+            "B": "Milk and cheese",
+            "C": "Citrus fruits like oranges",
+            "D": "Fortified cereals and breads",
+            "E": "Spinach and lentils"
+        },
+        "correctAnswer": ["A", "D", "E"],
+        "rationale": "Good dietary sources of iron include heme iron from animal sources (red meat, poultry - A) and non-heme iron from plant sources (spinach, lentils, fortified cereals - D, E). Citrus fruits (C) are high in Vitamin C, which enhances the absorption of non-heme iron, so they are beneficial to eat with iron-rich foods, but are not a source of iron themselves. Dairy products (B) are poor sources of iron.",
+        "section": "Nutrition"
+    },
+    {
+        "questionText": "The nurse is caring for a client immediately after a thoracentesis. Which assessment finding requires the most immediate action?",
+        "options": {
+            "A": "A small amount of serosanguineous drainage on the dressing.",
+            "B": "A client report of pain at the insertion site, rated 3/10.",
+            "C": "Asymmetrical chest expansion and an absent breath sound on the procedural side.",
+            "D": "A respiratory rate of 22 breaths per minute, decreased from 28 pre-procedure."
+        },
+        "correctAnswer": "C",
+        "rationale": "Asymmetrical chest movement and absent breath sounds on the side of the procedure are hallmark signs of a pneumothorax, a known and serious complication of thoracentesis where the lung has been punctured. This requires immediate notification of the provider and preparation for a chest tube insertion. The other findings are either expected (A, B) or indicate improvement (D).",
+        "section": "Invasive Procedures"
+    },
+    {
+        "questionText": "A patient with a pulmonary embolism is receiving a continuous heparin infusion. The nurse knows that heparin works by:",
+        "options": {
+            "A": "Dissolving the existing clot (thrombolysis).",
+            "B": "Preventing the conversion of prothrombin to thrombin and fibrinogen to fibrin.",
+            "C": "Inhibiting platelet aggregation.",
+            "D": "Antagonizing the effects of vitamin K."
+        },
+        "correctAnswer": "B",
+        "rationale": "Heparin is an anticoagulant. It does not dissolve existing clots. Its primary mechanism is to bind with antithrombin III, which then greatly enhances the inactivation of thrombin and factor Xa. This action prevents the conversion of fibrinogen to fibrin, thereby preventing the formation of new clots and the extension of existing ones. Thrombolytics (like tPA) dissolve clots. Platelet inhibition is the role of antiplatelet drugs (like aspirin). Vitamin K antagonism is the mechanism of warfarin.",
+        "section": "Pharmacotherapy"
+    },
+    {
+        "questionText": "Which factor is the primary reason infants are obligate nose breathers?",
+        "options": {
+            "A": "Their nasal passages are smaller and more easily obstructed.",
+            "B": "Their diaphragm is positioned higher in the chest.",
+            "C": "The epiglottis is located higher in the pharynx, and the tongue is proportionally larger.",
+            "D": "They lack sufficient surfactant to keep their alveoli open."
+        },
+        "correctAnswer": "C",
+        "rationale": "The anatomical structure of the infant airway is the reason for obligate nose breathing. A large tongue in relation to the oral cavity and a high-set epiglottis make it difficult to coordinate breathing through the mouth. This is a normal developmental stage, but it makes them vulnerable to respiratory distress if their nasal passages become blocked.",
+        "section": "Age-Related Differences"
+    },
+    {
+        "questionText": "A nurse is teaching a smoking cessation class. What is the most common reason smokers report for their lack of success in quitting?",
+        "options": {
+            "A": "Fear of social isolation.",
+            "B": "The high cost of nicotine replacement therapy.",
+            "C": "Stress, weight gain, and withdrawal symptoms.",
+            "D": "Lack of evidence that quitting improves health."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text explicitly states, 'Smokers often report lack of success in smoking cessation because of stress, weight gain, and withdrawal symptoms, which include irritability, anxiety, difficulty concentrating, and increased appetite.' These physiological and psychological challenges are the most significant barriers to quitting.",
+        "section": "Smoking Cessation"
+    },
+    {
+        "questionText": "A client with a severe exacerbation of COPD is anxious and fighting the BiPAP mask. The nurse's best initial action is to:",
+        "options": {
+            "A": "Request an order for a sedative to improve compliance.",
+            "B": "Hold the mask to the client's face without strapping it on.",
+            "C": "Switch the client to a simple face mask at 10 L/min.",
+            "D": "Calmly coach the client on breathing with the machine and explain its purpose."
+        },
+        "correctAnswer": "D",
+        "rationale": "The sensation of BiPAP can be frightening and claustrophobic. The first step is to try and de-escalate the situation through therapeutic communication. Coaching the client to take slow breaths in sync with the machine's inspiratory pressure and reassuring them that it will ease their work of breathing can often improve tolerance. Restraining or sedating the client are last resorts. Switching to a simple mask will not provide the necessary ventilatory support.",
+        "section": "Acute Respiratory Failure"
+    },
+    {
+        "questionText": "Which type of adventitious breath sound would a nurse most expect to hear in a client with an upper airway obstruction, such as laryngeal edema?",
+        "options": {
+            "A": "Wheezes",
+            "B": "Crackles",
+            "C": "Rhonchi",
+            "D": "Stridor"
+        },
+        "correctAnswer": "D",
+        "rationale": "Stridor is a high-pitched, monophonic, inspiratory crowing sound caused by a partial obstruction of the upper airway (larynx or trachea). It is a sign of a medical emergency. Wheezes are caused by narrowing of the lower airways (bronchi). Crackles are caused by fluid in the alveoli. Rhonchi are caused by secretions in the larger airways.",
+        "section": "Assessment"
+    },
+    {
+        "questionText": "A client with a hemoglobin of 6.8 g/dL is pale and reports severe fatigue and dizziness. The nurse understands these clinical manifestations are primarily a direct result of:",
+        "options": {
+            "A": "An inflammatory response to low iron levels.",
+            "B": "Inadequate tissue oxygenation.",
+            "C": "A decreased blood volume.",
+            "D": "The compensatory increase in heart rate."
+        },
+        "correctAnswer": "B",
+        "rationale": "Hemoglobin is the primary carrier of oxygen in the blood. Severe anemia means there is a drastically reduced oxygen-carrying capacity. The fatigue, dizziness (due to reduced oxygen to the brain), and pallor (due to shunting of blood to vital organs) are all direct consequences of inadequate oxygen delivery to the body's tissues (hypoxia).",
+        "section": "Anemia"
+    },
+    {
+        "questionText": "What is the primary rationale for administering a sympathomimetic (beta2-agonist) and an anticholinergic agent together in a severe asthma attack?",
+        "options": {
+            "A": "The anticholinergic reduces the systemic side effects of the sympathomimetic.",
+            "B": "They produce bronchodilation through different mechanisms, resulting in a synergistic effect.",
+            "C": "The sympathomimetic agent has anti-inflammatory properties, and the anticholinergic has bronchodilator properties.",
+            "D": "This combination helps to thin mucus secretions more effectively than either drug alone."
+        },
+        "correctAnswer": "B",
+        "rationale": "Beta2-agonists stimulate the sympathetic pathway to cause bronchodilation. Anticholinergics block the parasympathetic pathway, which prevents bronchoconstriction. By targeting both sides of the autonomic nervous system's control of the airways, they produce a greater and more prolonged bronchodilator effect than either agent used alone.",
+        "section": "Pharmacotherapy"
+    },
+    {
+        "questionText": "A client is diagnosed with restrictive lung disease secondary to pulmonary fibrosis. The nurse anticipates the client's pulmonary function tests will show:",
+        "options": {
+            "A": "Increased total lung capacity (TLC).",
+            "B": "Decreased forced expiratory volume in 1 second (FEV1).",
+            "C": "A normal FEV1/FVC ratio.",
+            "D": "Increased residual volume (RV)."
+        },
+        "correctAnswer": "B",
+        "rationale": "Restrictive lung diseases impair the ability to get air *into* the lungs due to stiff, non-compliant lung tissue. This leads to a reduction in all lung volumes. Therefore, the total amount of air that can be forcefully exhaled (FVC) and the amount exhaled in the first second (FEV1) will both be decreased. Because both FEV1 and FVC are reduced proportionally, the FEV1/FVC ratio often remains normal, which distinguishes it from obstructive disease.",
+        "section": "Pulmonary Function Studies"
+    },
+    {
+        "questionText": "A patient with a flail chest injury is exhibiting paradoxical chest wall motion. The nurse's immediate priority is to:",
+        "options": {
+            "A": "Administer morphine for pain.",
+            "B": "Place a sandbag over the flail segment.",
+            "C": "Prepare for positive-pressure ventilation.",
+            "D": "Insert a nasogastric tube."
+        },
+        "correctAnswer": "C",
+        "rationale": "Paradoxical motion severely impairs the mechanics of ventilation and leads to acute respiratory failure. The definitive treatment is to provide internal stabilization with positive-pressure ventilation (often via intubation). This creates positive pressure throughout the respiratory cycle, which 'splints' the flail segment from the inside and ensures adequate ventilation. Administering analgesia is important but secondary to stabilizing breathing. Placing sandbags is an outdated and harmful practice.",
+        "section": "Trauma and Flail Chest"
+    },
+    {
+        "questionText": "Which statement by a client indicates a correct understanding of how an expectorant medication works?",
+        "options": {
+            "A": "This medication will stop my cough so I can rest.",
+            "B": "This medication will break up the phlegm so it's more liquid.",
+            "C": "This medication will help me bring up secretions by making my cough more productive.",
+            "D": "This medication will open my airways so I can breathe better."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text defines expectorants as causing 'the cough to be more productive by stimulating the flow of respiratory tract secretions.' This is different from a mucolytic, which directly breaks down mucus, or an antitussive, which suppresses the cough.",
+        "section": "Pharmacotherapy"
+    },
+    {
+        "questionText": "A nurse is reviewing the CBC of a client undergoing chemotherapy for leukemia. The WBC count is 1.2 cells/mm3 (1,200). What is the priority nursing diagnosis for this client?",
+        "options": {
+            "A": "Ineffective Airway Clearance",
+            "B": "Risk for Bleeding",
+            "C": "Fatigue",
+            "D": "Risk for Infection"
+        },
+        "correctAnswer": "D",
+        "rationale": "A normal WBC count is roughly 4,500-11,000 cells/mm3. A count of 1,200 represents severe neutropenia and immunosuppression. The body's ability to fight infection is critically impaired. Therefore, the highest priority is protecting the client from infection, as even a minor pathogen can become life-threatening.",
+        "section": "Immunosuppression"
+    },
+    {
+        "questionText": "A client with a history of hypertension and asthma is prescribed a new blood pressure medication. Which medication would cause the nurse to be most concerned due to its potential effect on gas exchange?",
+        "options": {
+            "A": "Lisinopril (an ACE inhibitor)",
+            "B": "Propranolol (a non-selective beta-blocker)",
+            "C": "Amlodipine (a calcium channel blocker)",
+            "D": "Hydrochlorothiazide (a thiazide diuretic)"
+        },
+        "correctAnswer": "B",
+        "rationale": "Non-selective beta-blockers like propranolol block both beta-1 (heart) and beta-2 (lung) receptors. Blocking the beta-2 receptors in the lungs can cause bronchoconstriction and trigger a severe asthma attack. Therefore, these drugs are generally contraindicated in patients with asthma.",
+        "section": "Asthma"
+    },
+    {
+        "questionText": "A client is admitted with diabetic ketoacidosis (DKA). The nurse would expect to see what type of respiratory pattern as a compensatory mechanism?",
+        "options": {
+            "A": "Slow, shallow respirations.",
+            "B": "Rapid, deep respirations (Kussmaul breathing).",
+            "C": "Periods of apnea followed by hyperventilation (Cheyne-Stokes).",
+            "D": "Paradoxical chest wall movement."
+        },
+        "correctAnswer": "B",
+        "rationale": "DKA causes a severe metabolic acidosis. The respiratory system attempts to compensate by blowing off as much carbon dioxide (an acid) as possible. This is achieved through Kussmaul respirations, which are characterized by a deep, rapid, sighing pattern. This is the body's attempt to correct the low pH.",
+        "section": "Acid-Base Balance"
+    },
+    {
+        "questionText": "Which factor best explains why a person living at a high altitude for several months will have a higher hemoglobin and hematocrit level?",
+        "options": {
+            "A": "The lower atmospheric pressure causes red blood cells to expand.",
+            "B": "Chronic exposure to lower oxygen levels stimulates erythropoietin production.",
+            "C": "The body loses plasma volume due to the drier climate.",
+            "D": "The bone marrow becomes more sensitive to PaCO2 levels."
+        },
+        "correctAnswer": "B",
+        "rationale": "At high altitudes, the partial pressure of oxygen is lower, leading to a state of chronic hypoxemia. This stimulates the kidneys to produce more of the hormone erythropoietin. Erythropoietin, in turn, stimulates the bone marrow to increase the production of red blood cells, thus increasing the oxygen-carrying capacity of the blood to compensate for the thinner air.",
+        "section": "Transport"
+    },
+    {
+        "questionText": "A client with suspected lung cancer is undergoing a sputum cytology test. A positive result would indicate the presence of what in the sputum?",
+        "options": {
+            "A": "Acid-fast bacilli",
+            "B": "Gram-negative bacteria",
+            "C": "Eosinophils",
+            "D": "Malignant cells"
+        },
+        "correctAnswer": "D",
+        "rationale": "Cytology is the study of cells. A sputum cytology examination is performed specifically to look for abnormal or malignant (cancerous) cells that may have been shed from a tumor into the airways and expectorated in the sputum. Acid-fast bacilli indicate TB. Bacteria indicate infection. Eosinophils indicate an allergic response.",
+        "section": "Diagnostic Tests"
+    },
+    {
+        "questionText": "A patient with a history of alcoholism is admitted after being found unconscious. They have a weak cough reflex and are at high risk for aspiration pneumonia. This impairment in gas exchange is initially a problem of:",
+        "options": {
+            "A": "Transport",
+            "B": "Ventilation",
+            "C": "Perfusion",
+            "D": "Erythropoiesis"
+        },
+        "correctAnswer": "B",
+        "rationale": "Aspiration occurs when foreign material enters the lungs, causing obstruction and inflammation. This directly interferes with the ability of air to reach the alveoli, making it a primary problem of ventilation. The altered state of consciousness from alcoholism impairs the protective airway reflexes, increasing the risk.",
+        "section": "Ventilation"
+    },
+    {
+        "questionText": "The nurse is administering an allergy skin test. The nurse understands that a positive result, indicated by a wheal and flare, is caused by the release of which inflammatory mediator?",
+        "options": {
+            "A": "Leukotrienes",
+            "B": "Prostaglandins",
+            "C": "Histamine",
+            "D": "Bradykinin"
+        },
+        "correctAnswer": "C",
+        "rationale": "In an allergic person, the allergen binds to IgE antibodies on the surface of mast cells. This triggers the mast cells to degranulate and release large amounts of histamine. Histamine causes local vasodilation (flare/erythema) and increased capillary permeability (wheal/edema), which are the classic signs of a positive allergy skin test.",
+        "section": "Diagnostic Tests"
+    },
+    {
+        "questionText": "What is the primary physiological consequence of inadequate perfusion on cellular metabolism?",
+        "options": {
+            "A": "A shift from aerobic to anaerobic metabolism, leading to lactic acid production.",
+            "B": "A shift to using proteins for energy, leading to respiratory alkalosis.",
+            "C": "An increase in cellular pH due to the buildup of bicarbonate.",
+            "D": "A decrease in carbon dioxide production."
+        },
+        "correctAnswer": "A",
+        "rationale": "Perfusion delivers oxygen to the cells, which is required for aerobic metabolism (the most efficient way to produce ATP). When perfusion is inadequate, cells are deprived of oxygen and must switch to anaerobic metabolism. The byproduct of this inefficient process is lactic acid. The buildup of lactic acid leads to metabolic acidosis.",
+        "section": "Perfusion"
+    },
+    {
+        "questionText": "A client with a long history of chronic bronchitis is thin, has a barrel chest, and uses accessory muscles to breathe. The nurse recognizes these findings are more characteristic of which co-existing condition?",
+        "options": {
+            "A": "Asthma",
+            "B": "Emphysema",
+            "C": "Pulmonary fibrosis",
+            "D": "Pleural effusion"
+        },
+        "correctAnswer": "B",
+        "rationale": "While the client has a history of chronic bronchitis, the clinical picture described—underweight, barrel chest, and significant accessory muscle use—is the classic presentation of emphysema. In COPD, features of both chronic bronchitis and emphysema often coexist. The physical changes are due to air trapping and destruction of lung parenchyma seen in emphysema.",
+        "section": "Emphysema"
+    },
+    {
+        "questionText": "A client is prescribed an antitussive with codeine for a persistent, nonproductive cough. The nurse must monitor the client for which major adverse effect?",
+        "options": {
+            "A": "Hypertension",
+            "B": "Tachycardia",
+            "C": "Respiratory depression",
+            "D": "Anxiety"
+        },
+        "correctAnswer": "C",
+        "rationale": "Codeine is an opioid. While it is effective at suppressing the cough reflex in the central nervous system, all opioids carry the risk of causing respiratory depression. The nurse must monitor the client's respiratory rate, depth, and oxygen saturation, especially if they have underlying respiratory disease.",
+        "section": "Pharmacotherapy"
+    },
+    {
+        "questionText": "Which immunization is most critical for preventing epiglottitis, a life-threatening cause of upper airway obstruction in children?",
+        "options": {
+            "A": "Pneumococcal vaccine (PCV)",
+            "B": "Measles, Mumps, Rubella (MMR) vaccine",
+            "C": "Pertussis vaccine (DTaP)",
+            "D": "Haemophilus influenzae type b (Hib) vaccine"
+        },
+        "correctAnswer": "D",
+        "rationale": "Acute epiglottitis was historically a common and deadly childhood emergency. The vast majority of cases were caused by the bacterium Haemophilus influenzae type b. The widespread introduction of the Hib vaccine has made this condition rare. It is a prime example of the success of immunization in primary prevention.",
+        "section": "Primary Prevention"
+    },
+    {
+        "questionText": "A nurse is caring for a client with a tracheostomy tube who requires suctioning. Which actions are appropriate for this procedure? (Select All That Apply)",
+        "options": {
+            "A": "Applying suction continuously while inserting the catheter.",
+            "B": "Hyper-oxygenating the client before and after the suctioning pass.",
+            "C": "Instilling normal saline into the tracheostomy to loosen secretions.",
+            "D": "Limiting each suctioning pass to 10-15 seconds.",
+            "E": "Using sterile technique for the procedure.",
+            "F": "Setting the suction pressure to 200 mm Hg or higher."
+        },
+        "correctAnswer": ["B", "D", "E"],
+        "rationale": "Correct suctioning technique is crucial to prevent complications. Key principles include: using sterile technique to prevent infection (E), hyper-oxygenating the client to prevent hypoxia (B), and limiting each pass to 10-15 seconds to minimize oxygen desaturation and mucosal trauma (D). Suction should only be applied intermittently while withdrawing the catheter, not during insertion. Routine saline instillation is not recommended and may increase infection risk. Suction pressure should be set to the lowest effective level, typically 80-120 mm Hg.",
+        "section": "Airway Management and Breathing Support"
+    },
+    {
+        "questionText": "A client who smokes two packs of cigarettes per day asks the nurse, 'If I quit, how long will it take for my health to actually improve?' What is the nurse's best response?",
+        "options": {
+            "A": "It will take at least 15 years to see any significant reduction in your risk for heart disease.",
+            "B": "The health benefits are almost immediate, with improvements in circulation and lung function beginning within weeks to months.",
+            "C": "Unfortunately, after smoking for so long, the damage is irreversible and quitting will not improve your health.",
+            "D": "You will only see health benefits if you quit before the age of 40."
+        },
+        "correctAnswer": "B",
+        "rationale": "Health benefits from smoking cessation begin very quickly. While the risk of cancer and heart disease declines over many years, improvements in lung function, circulation, and a decrease in coughing and shortness of breath can be seen in the first few months after quitting. It is never too late to quit, and benefits occur at any age.",
+        "section": "Smoking Cessation"
+    },
+    {
+        "questionText": "An infant is diagnosed with respiratory syncytial virus (RSV) bronchiolitis. The nurse knows that the primary pathophysiology leading to impaired gas exchange in this condition is:",
+        "options": {
+            "A": "Fluid accumulation in the pleural space.",
+            "B": "Laryngospasm and upper airway obstruction.",
+            "C": "Inflammation and mucus plugging of the small airways (bronchioles).",
+            "D": "Destruction of alveolar walls."
+        },
+        "correctAnswer": "C",
+        "rationale": "RSV causes inflammation, edema, and necrosis of the epithelial cells of the small airways. This, combined with copious mucus production, leads to obstruction of the bronchioles. This obstruction causes air trapping and atelectasis, resulting in a significant V/Q mismatch and hypoxemia.",
+        "section": "Respiratory Syncytial Virus"
+    },
+    {
+        "questionText": "A client has a pulmonary function test result of FEV1/FVC ratio > 80%. This finding is most consistent with which condition?",
+        "options": {
+            "A": "Asthma",
+            "B": "COPD",
+            "C": "Pulmonary Fibrosis",
+            "D": "Cystic Fibrosis"
+        },
+        "correctAnswer": "C",
+        "rationale": "In restrictive lung diseases like pulmonary fibrosis, both the FEV1 and FVC are reduced proportionally due to stiff lungs. Because both values decrease together, the ratio of FEV1 to FVC is often normal or even elevated. In contrast, obstructive diseases (Asthma, COPD, CF) are defined by a low FEV1/FVC ratio (<70%) because the FEV1 is disproportionately reduced due to airway obstruction.",
+        "section": "Pulmonary Function Studies"
+    },
+    {
+        "questionText": "A client with a history of heart failure reports shortness of breath when lying flat. The nurse would document this finding as:",
+        "options": {
+            "A": "Dyspnea on exertion",
+            "B": "Orthopnea",
+            "C": "Paroxysmal nocturnal dyspnea",
+            "D": "Apnea"
+        },
+        "correctAnswer": "B",
+        "rationale": "Orthopnea is the specific term for shortness of breath that occurs when lying flat and is relieved by sitting or standing. It is a classic symptom of left-sided heart failure, caused by the redistribution of fluid from the lower extremities to the lungs in a recumbent position.",
+        "section": "Assessment"
+    },
+    {
+        "questionText": "Which population group has the highest percentage of members with only a GED who smoke, according to the provided text?",
+        "options": {
+            "A": "Ages 45 to 64 years.",
+            "B": "Individuals with a household income less than $35,000.",
+            "C": "Individuals with a General Educational Development (GED) certificate.",
+            "D": "Non-Hispanic Black individuals."
+        },
+        "correctAnswer": "C",
+        "rationale": "According to the data in Box 18.2 under the 'By Education' section, individuals with a GED certificate have the highest smoking rate at 32%. This is significantly higher than any other educational attainment level listed.",
+        "section": "Risk Factors"
+    },
+    {
+        "questionText": "The process by which blood transports oxygen-containing hemoglobin to cells and returns carbon dioxide-containing hemoglobin to the alveoli is known as:",
+        "options": {
+            "A": "Ventilation",
+            "B": "Transport",
+            "C": "Perfusion",
+            "D": "Diffusion"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text defines perfusion as 'the ability of blood to transport oxygen-containing hemoglobin to cells and return carbon dioxide–containing hemoglobin to the alveoli.' It is the process of blood flow through the vascular system to facilitate delivery and removal of gases and nutrients.",
+        "section": "Perfusion"
+    },
+    {
+        "questionText": "A client with COVID-19 pneumonia is found to have 'silent hypoxemia,' where the SaO2 is 85% but the client denies feeling short of breath. The nurse understands this phenomenon highlights a potential disconnect between which two factors?",
+        "options": {
+            "A": "Ventilation and Perfusion",
+            "B": "PaO2 and SaO2",
+            "C": "Objective signs of hypoxemia and the subjective sensation of dyspnea.",
+            "D": "Heart rate and respiratory rate."
+        },
+        "correctAnswer": "C",
+        "rationale": "Silent or 'happy' hypoxemia is a noted phenomenon in some COVID-19 patients where they have objectively low oxygen levels (hypoxemia) but do not experience the corresponding subjective feeling of breathlessness (dyspnea). This is dangerous as the patient may not seek care until they are critically ill. It highlights a disconnect between the body's physiological state and the patient's perception of it.",
+        "section": "COVID-19"
+    },
+    {
+        "questionText": "A client who is anemic reports feeling fatigued. The nurse explains that fatigue is related to impaired gas exchange because:",
+        "options": {
+            "A": "Low iron levels directly reduce muscle strength.",
+            "B": "The heart has to work harder to circulate the remaining blood cells.",
+            "C": "There is a decreased oxygen-carrying capacity, leading to reduced oxygen available for cellular energy production.",
+            "D": "The inflammatory process of anemia consumes large amounts of energy."
+        },
+        "correctAnswer": "C",
+        "rationale": "Fatigue in anemia is a direct consequence of impaired oxygen transport. With fewer red blood cells or less hemoglobin, the blood's capacity to carry oxygen is diminished. This results in less oxygen being delivered to the tissues, including muscles, leading to decreased ATP (energy) production and the sensation of fatigue.",
+        "section": "Fatigue"
+    },
+    {
+        "questionText": "What is the primary mechanism by which an antihistamine provides relief from allergic rhinitis?",
+        "options": {
+            "A": "It suppresses the release of inflammatory mediators like leukotrienes.",
+            "B": "It blocks H1 receptors, causing vasoconstriction and decreased capillary permeability.",
+            "C": "It activates alpha-1 adrenergic receptors to shrink nasal membranes.",
+            "D": "It acts on the central nervous system to suppress the sneeze reflex."
+        },
+        "correctAnswer": "B",
+        "rationale": "Antihistamines work by competitively blocking histamine from binding to its H1 receptors on target cells. This prevents histamine from causing its characteristic effects of vasodilation and increased capillary permeability, thereby reducing symptoms like sneezing, itching, and rhinorrhea.",
+        "section": "Pharmacotherapy"
+    },
+    {
+        "questionText": "A client is scheduled for a bronchoscopy. Which of the following is an essential pre-procedure nursing intervention?",
+        "options": {
+            "A": "Administering a laxative the night before.",
+            "B": "Ensuring the client has been NPO (nothing by mouth) for 6-8 hours.",
+            "C": "Instructing the client to perform deep breathing exercises.",
+            "D": "Applying a warm compress to the client's throat."
+        },
+        "correctAnswer": "B",
+        "rationale": "Because the throat will be anesthetized for the procedure to suppress the gag reflex, the client must be NPO before the bronchoscopy to prevent the risk of aspiration of gastric contents during or immediately after the procedure. This is a critical safety measure.",
+        "section": "Invasive Procedures"
+    },
+    {
+        "questionText": "A client has a PaO2 of 55 mmHg and a PaCO2 of 65 mmHg. This condition is defined as:",
+        "options": {
+            "A": "Hypoxemia",
+            "B": "Hypercapnia",
+            "C": "Hypoxemic and hypercapnic respiratory failure",
+            "D": "Ischemia"
+        },
+        "correctAnswer": "C",
+        "rationale": "Respiratory failure is defined by the levels of oxygen and carbon dioxide in the arterial blood. A PaO2 < 60 mmHg is defined as hypoxemic failure. A PaCO2 > 50 mmHg with an acidotic pH is defined as hypercapnic failure. Since this client meets both criteria, they have combined hypoxemic and hypercapnic respiratory failure.",
+        "section": "Acute Respiratory Failure"
+    },
+    {
+        "questionText": "A client with chronic heart failure has developed a large right-sided pleural effusion. The nurse understands this is most likely caused by:",
+        "options": {
+            "A": "Increased hydrostatic pressure in the pleural capillaries.",
+            "B": "Decreased oncotic pressure due to malnutrition.",
+            "C": "Inflammation of the pleura from a viral infection.",
+            "D": "Blockage of the lymphatic drainage system."
+        },
+        "correctAnswer": "A",
+        "rationale": "In right-sided heart failure, the right ventricle fails to pump effectively, leading to a backup of pressure in the systemic venous system. This increases the hydrostatic (fluid-pushing) pressure in the pleural capillaries that drain into the systemic circulation, forcing fluid out of the capillaries and into the pleural space, creating an effusion.",
+        "section": "Pleural Effusion"
+    },
+    {
+        "questionText": "Which concept is most closely interrelated with gas exchange, where a severe impairment can cause feelings of suffocation and panic?",
+        "options": {
+            "A": "Mobility",
+            "B": "Nutrition",
+            "C": "Anxiety",
+            "D": "Fatigue"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text states, 'When patients experience breathlessness, such as during an asthma attack, they may experience anxiety due to the lack of oxygen.' The sensation of not being able to get enough air is profoundly frightening and is a powerful trigger for anxiety and panic, which can, in turn, worsen the breathlessness by increasing respiratory rate and oxygen demand.",
+        "section": "Anxiety"
+    },
+    {
+        "questionText": "A client with a new tracheostomy is concerned about their body image. Which nursing intervention best addresses this concern?",
+        "options": {
+            "A": "Telling the client that they will get used to it over time.",
+            "B": "Encouraging the client to express their feelings about the tracheostomy.",
+            "C": "Keeping the tracheostomy covered at all times so the client doesn't have to see it.",
+            "D": "Referring the client to a plastic surgeon for consultation."
+        },
+        "correctAnswer": "B",
+        "rationale": "Altered body image is a common and valid concern for clients with a tracheostomy. The most therapeutic initial approach is to create a safe space for the client to verbalize their feelings, fears, and concerns. This validates their experience and is the first step in helping them cope and adapt. The other options are dismissive, avoidant, or premature.",
+        "section": "Airway Management and Breathing Support"
+    },
+    {
+        "questionText": "A client with a history of COPD who continues to smoke is at a high risk for developing which of the following conditions? (Select all that apply)",
+        "options": {
+            "A": "Lung cancer",
+            "B": "Worsening of COPD",
+            "C": "Coronary heart disease",
+            "D": "Peripheral artery disease",
+            "E": "Pernicious anemia"
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "According to the text, smoking cessation reduces the risk for lung and other cancers, coronary heart disease, stroke, peripheral vascular disease, and COPD. Therefore, continuing to smoke increases the risk for all these conditions. Smoking is not a direct cause of pernicious anemia.",
+        "section": "Risk Factors"
+    },
+    {
+        "questionText": "An infant's risk for impaired gas exchange is increased compared to an adult's due to which anatomical difference?",
+        "options": {
+            "A": "A larger alveolar surface area.",
+            "B": "Wider, less branched peripheral airways.",
+            "C": "A more rigid chest wall.",
+            "D": "Narrow branching of peripheral airways."
+        },
+        "correctAnswer": "D",
+        "rationale": "The text states that infants and young children are at risk because they have 'narrow branching of peripheral airways that are easily obstructed by mucus, edema, or foreign objects.' This anatomical feature makes them much more susceptible to severe respiratory distress from conditions like RSV or aspiration.",
+        "section": "Age-Related Differences"
+    },
+    // The last 10 questions are the hard, fill-in-the-blank dosage calculations
+    {
+        "questionText": "A client weighing 176 lbs is on a norepinephrine infusion for septic shock. The order is to titrate the infusion to maintain a MAP of >65 mmHg, starting at 0.05 mcg/kg/min. The pharmacy supplies a bag of norepinephrine 8 mg in 250 mL of D5W. What is the initial rate of the infusion in mL/hr? (Round to the nearest tenth).",
+        "correctAnswer": "7.5",
+        "rationale": "1. Convert weight: 176 lbs / 2.2 lbs/kg = 80 kg. \n2. Calculate initial dose in mcg/min: 0.05 mcg/kg/min * 80 kg = 4 mcg/min. \n3. Calculate initial dose in mcg/hr: 4 mcg/min * 60 min/hr = 240 mcg/hr. \n4. Convert drug concentration to mcg/mL: 8 mg = 8000 mcg. So, 8000 mcg / 250 mL = 32 mcg/mL. \n5. Calculate infusion rate: (Dose in mcg/hr) / (Concentration in mcg/mL) = (240 mcg/hr) / (32 mcg/mL) = 7.5 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A client is to receive an IV aminophylline loading dose. The order is for 6 mg/kg to be infused over 30 minutes. The client weighs 80 kg. The medication is supplied in a 500 mg/250 mL premixed bag. What rate should the nurse set the infusion pump to in mL/hr?",
+        "correctAnswer": "480",
+        "rationale": "1. Calculate total loading dose in mg: 6 mg/kg * 80 kg = 480 mg. \n2. Determine the volume needed for the dose. First find concentration: 500 mg / 250 mL = 2 mg/mL. Then find volume: 480 mg / 2 mg/mL = 240 mL. \n3. The dose (240 mL) is to be infused over 30 minutes (0.5 hours). \n4. Calculate the rate in mL/hr: (Total Volume / Total Time in hours) = 240 mL / 0.5 hr = 480 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "An ICU patient (90 kg) on a ventilator requires a continuous infusion of propofol for sedation, ordered at 20 mcg/kg/min. The propofol concentration is 10 mg/mL. The infusion has been running for 4 hours. How many TOTAL milligrams of propofol has the patient received? (Enter the number only).",
+        "correctAnswer": "4320",
+        "rationale": "1. Calculate dose in mcg/min: 20 mcg/kg/min * 90 kg = 1800 mcg/min. \n2. Convert dose to mg/min: 1800 mcg/min / 1000 mcg/mg = 1.8 mg/min. \n3. Calculate total infusion time in minutes: 4 hours * 60 min/hr = 240 minutes. \n4. Calculate total mg infused: 1.8 mg/min * 240 min = 4320 mg.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A client is receiving a heparin infusion at a rate of 12 mL/hr. The concentration of the solution is 25,000 units in 250 mL of D5W. The client's aPTT is below the therapeutic range. The protocol states to administer a bolus of 80 units/kg and increase the infusion rate by 4 units/kg/hr. The client weighs 75 kg. What will the NEW infusion rate be in mL/hr?",
+        "correctAnswer": "15",
+        "rationale": "1. Find the concentration of the solution: 25,000 units / 250 mL = 100 units/mL. \n2. Calculate the current dose in units/hr: 12 mL/hr * 100 units/mL = 1200 units/hr. \n3. Calculate the required increase in units/hr: 4 units/kg/hr * 75 kg = 300 units/hr. \n4. Calculate the new dose in units/hr: 1200 units/hr (current) + 300 units/hr (increase) = 1500 units/hr. \n5. Calculate the new rate in mL/hr: 1500 units/hr / 100 units/mL = 15 mL/hr. (The bolus calculation is extraneous information for finding the new rate).",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "An order is written for a child weighing 55 lbs for IV vancomycin 15 mg/kg every 8 hours. The medication must be diluted in 100 mL of NS and infused over 60 minutes. What is the total single dose of vancomycin in mg that the nurse will prepare? (Round to the nearest whole number).",
+        "correctAnswer": "375",
+        "rationale": "1. Convert weight: 55 lbs / 2.2 lbs/kg = 25 kg. \n2. Calculate the total dose in mg: 15 mg/kg * 25 kg = 375 mg. \n(The information about the fluid volume and infusion time is not needed to calculate the single dose amount).",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A client needs a continuous infusion of regular insulin at 7 units/hr. The pharmacy provides a solution of 100 units of regular insulin in 100 mL of 0.9% NaCl. At what rate in mL/hr should the nurse set the infusion pump?",
+        "correctAnswer": "7",
+        "rationale": "1. Determine the concentration of the solution: 100 units / 100 mL = 1 unit/mL. \n2. Calculate the required rate: (Desired dose in units/hr) / (Concentration in units/mL) = (7 units/hr) / (1 unit/mL) = 7 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A physician orders dobutamine to be infused at 7.5 mcg/kg/min for a patient weighing 220 lbs. The IV bag contains 500 mg of dobutamine in 250 mL of D5W. Calculate the required infusion rate in mL/hr. (Round to the nearest whole number).",
+        "correctAnswer": "23",
+        "rationale": "1. Convert weight: 220 lbs / 2.2 lbs/kg = 100 kg. \n2. Calculate dose in mcg/min: 7.5 mcg/kg/min * 100 kg = 750 mcg/min. \n3. Calculate dose in mg/hr: (750 mcg/min * 60 min/hr) / 1000 mcg/mg = 45 mg/hr. \n4. Determine concentration: 500 mg / 250 mL = 2 mg/mL. \n5. Calculate rate: 45 mg/hr / 2 mg/mL = 22.5 mL/hr. Round to 23 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "The order is to administer 2 g of magnesium sulfate IVPB for a client with pre-eclampsia. The pharmacy supplies a bag containing 40 g of magnesium sulfate in 1000 mL of Lactated Ringer's. You need to administer the dose over 20 minutes. At what rate will you set the infusion pump in mL/hr?",
+        "correctAnswer": "150",
+        "rationale": "1. Determine the volume needed for the 2 g dose. First find the concentration: 40 g / 1000 mL = 0.04 g/mL. \n2. Calculate the volume needed for the dose: 2 g / 0.04 g/mL = 50 mL. So, you need to infuse 50 mL. \n3. The infusion time is 20 minutes. \n4. Calculate the rate in mL/hr. There are three 20-minute periods in an hour. So, 50 mL * 3 = 150 mL/hr. OR using the formula: (Volume to infuse in mL / Time in minutes) * 60 = (50 mL / 20 min) * 60 = 150 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A pediatric patient requires an antibiotic with a safe dose range of 20-40 mg/kg/day, divided into doses every 8 hours. The patient weighs 44 lbs. The physician orders a dose of 250 mg IV every 8 hours. What is the total calculated daily dose in mg that the patient will receive?",
+        "correctAnswer": "750",
+        "rationale": "1. Calculate the ordered total daily dose: 250 mg/dose * 3 doses/day (every 8 hours means 24/8 = 3 doses) = 750 mg/day. \n2. (For self-check, is it safe?) Convert weight: 44 lbs / 2.2 lbs/kg = 20 kg. Calculate safe range: Low end: 20 mg/kg/day * 20 kg = 400 mg/day. High end: 40 mg/kg/day * 20 kg = 800 mg/day. The daily dose of 750 mg is within the safe range of 400-800 mg/day. The question asks for the total daily dose administered.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "You need to reconstitute a vial of powdered antibiotic labeled 'Add 5.7 mL of sterile water to yield a final concentration of 250 mg/mL'. The order is for a 750 mg dose. After reconstituting, how many mL will you draw up into the syringe?",
+        "correctAnswer": "3",
+        "rationale": "1. The key information is the final concentration after reconstitution, which is 250 mg/mL. The amount of diluent added (5.7 mL) is only needed to perform the reconstitution correctly; it's not used in the dose calculation itself. \n2. Calculate the volume to draw up: (Dose ordered / Concentration) = (750 mg) / (250 mg/mL) = 3 mL.",
+        "section": "Dosage Calculation"
+    }
+];
+
+    let finalQuizData = [];
+
+    function prepareQuizData() {
+        const dosageQuestions = fullQuizData.filter(q => q.section.includes("Dosage Calculation"));
+        const standardQuestions = fullQuizData.filter(q => !q.section.includes("Dosage Calculation"));
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        shuffleArray(dosageQuestions);
+        shuffleArray(standardQuestions);
+
+        const selectedDosage = dosageQuestions.slice(0, 3);
+        const selectedStandard = standardQuestions.slice(0, 27);
+
+        finalQuizData = [...selectedStandard, ...selectedDosage];
+        shuffleArray(finalQuizData);
+    }
+
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let timeSpentOnQuestions = {};
+    let timeFlaggedQuestions = new Set();
+    let flaggedForReview = new Set();
+    let overallTimerInterval;
+    let timeLeft = 35 * 60;
+    let questionStartTime;
+    const TIME_THRESHOLD = 90;
+   
+    let isPaused = false;
+
+    const initialScreen = document.getElementById('initial-screen');
+    const startBtn = document.getElementById('start-btn');
+    const quizForm = document.getElementById('quiz-form');
+    const questionContainer = document.getElementById('question-container');
+    const navigationBtn = document.getElementById('navigation-btn');
+    const timerDisplay = document.getElementById('timer-display');
+    const flagCheckbox = document.getElementById('flag-for-review');
+    const resultsArea = document.getElementById('results-area');
+    const resultsSummary = document.getElementById('results-summary');
+    const resultsDetails = document.getElementById('results-details');
+    const studyFocusContainer = document.getElementById('study-focus');
+    const pauseBtn = document.getElementById('pause-btn');
+    const pauseOverlay = document.getElementById('pause-overlay');
+    const printBtn = document.getElementById('print-btn');
+    const printableStudyGuide = document.getElementById('study-guide-printable');
+
+
+    function startQuiz() {
+        prepareQuizData();
+
+        if (finalQuizData.length === 0) {
+            questionContainer.innerHTML = `<p class="question-text">There are no questions loaded in this quiz.</p>`;
+            initialScreen.classList.add('hidden');
+            quizForm.classList.remove('hidden');
+            timerDisplay.textContent = "Quiz Not Started";
+            return;
+        }
+       
+        initialScreen.classList.add('hidden');
+        quizForm.classList.remove('hidden');
+        navigationBtn.classList.remove('hidden');
+        pauseBtn.classList.remove('hidden'); 
+        startOverallTimer();
+        displayCurrentQuestion();
+    }
+   
+    function togglePause() {
+        isPaused = !isPaused;
+        if (isPaused) {
+            clearInterval(overallTimerInterval);
+            pauseOverlay.style.display = 'flex';
+            quizForm.style.visibility = 'hidden'; 
+            navigationBtn.style.visibility = 'hidden';
+        } else {
+            startOverallTimer();
+            pauseOverlay.style.display = 'none';
+            quizForm.style.visibility = 'visible';
+            navigationBtn.style.visibility = 'visible';
+        }
+    }
+
+    function startOverallTimer() {
+        clearInterval(overallTimerInterval);
+        overallTimerInterval = setInterval(() => {
+            if (timeLeft <= 0) {
+                submitQuiz();
+                return;
+            }
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function displayCurrentQuestion() {
+        questionStartTime = new Date();
+        const qData = finalQuizData[currentQuestionIndex];
+        const isSATA = Array.isArray(qData.correctAnswer);
+        const isTyped = qData.section === 'Dosage Calculation';
+       
+        let contentHTML = '';
+        if(isTyped) {
+            const userAnswer = userAnswers[currentQuestionIndex] || '';
+            contentHTML = `<div class="options-container"><input type="text" id="text-answer" class="text-answer-input" placeholder="Enter numerical answer..." value="${userAnswer}"></div>`;
+        } else {
+             let optionsHTML = '';
+             for (const key in qData.options) {
+                 let checked = '';
+                 const currentAnswers = userAnswers[currentQuestionIndex];
+                 if (currentAnswers) {
+                     if (isSATA && currentAnswers.includes(key)) {
+                         checked = 'checked';
+                     } else if (!isSATA && currentAnswers === key) {
+                         checked = 'checked';
+                     }
+                 }
+                 optionsHTML += `<label><input type="${isSATA ? 'checkbox' : 'radio'}" name="answer" value="${key}" ${checked}> ${key}: ${qData.options[key]}</label>`;
+             }
+            contentHTML = `<div class="options-container">${optionsHTML}</div>`
+        }
+
+        questionContainer.innerHTML = `
+            <div class="question-header">Question ${currentQuestionIndex + 1} of ${finalQuizData.length}${isSATA ? ' (Select All That Apply)' : ''}</div>
+            <p class="question-text">${qData.questionText}</p>
+            ${contentHTML}
+        `;
+        flagCheckbox.checked = flaggedForReview.has(currentQuestionIndex);
+        navigationBtn.textContent = (currentQuestionIndex === finalQuizData.length - 1) ? "Submit Quiz" : "Next Question";
+    }
+
+    function saveAnswerAndState() {
+        const qData = finalQuizData[currentQuestionIndex];
+        if (!qData) return;
+       
+        const isTyped = qData.section === 'Dosage Calculation';
+
+        if (isTyped) {
+            const inputElement = document.getElementById('text-answer');
+            userAnswers[currentQuestionIndex] = inputElement.value.trim();
+        } else {
+             const isSATA = Array.isArray(qData.correctAnswer);
+             const selectedOptions = document.querySelectorAll('input[name="answer"]:checked');
+             userAnswers[currentQuestionIndex] = isSATA
+                 ? Array.from(selectedOptions).map(cb => cb.value)
+                 : (selectedOptions.length ? selectedOptions[0].value : null);
+        }
+
+        const timeSpent = Math.round((new Date() - questionStartTime) / 1000);
+        timeSpentOnQuestions[currentQuestionIndex] = (timeSpentOnQuestions[currentQuestionIndex] || 0) + timeSpent;
+        if (timeSpent > TIME_THRESHOLD) {
+            timeFlaggedQuestions.add(currentQuestionIndex);
+        }
+        if (flagCheckbox.checked) {
+            flaggedForReview.add(currentQuestionIndex);
+        } else {
+            flaggedForReview.delete(currentQuestionIndex);
+        }
+    }
+
+    function handleNavigation() {
+        saveAnswerAndState();
+        if (currentQuestionIndex < finalQuizData.length - 1) {
+            currentQuestionIndex++;
+            displayCurrentQuestion();
+        } else {
+            submitQuiz();
+        }
+    }
+
+    function submitQuiz() {
+        clearInterval(overallTimerInterval);
+        saveAnswerAndState();
+        quizForm.classList.add('hidden');
+        navigationBtn.classList.add('hidden');
+        pauseBtn.classList.add('hidden'); 
+        timerDisplay.textContent = "Quiz Finished";
+        displayResults();
+    }
+   
+    function checkAnswerCorrectness(qData, userAnswer) {
+        if (qData.section === 'Dosage Calculation') {
+            return userAnswer === qData.correctAnswer;
+        }
+        if (Array.isArray(qData.correctAnswer)) { // SATA
+            const sortedUserAnswer = userAnswer ? [...userAnswer].sort() : [];
+            const sortedCorrectAnswer = [...qData.correctAnswer].sort();
+            return JSON.stringify(sortedUserAnswer) === JSON.stringify(sortedCorrectAnswer);
+        }
+        // Multiple choice
+        return userAnswer === qData.correctAnswer;
+    }
+
+    function displayResults() {
+        resultsArea.classList.remove('hidden');
+        let correctCount = 0;
+        let incorrectCount = 0;
+
+        finalQuizData.forEach((qData, index) => {
+            if (checkAnswerCorrectness(qData, userAnswers[index])) {
+                correctCount++;
+            } else {
+                incorrectCount++;
+            }
+        });
+
+        const score = (correctCount / finalQuizData.length) * 100;
+        resultsSummary.innerHTML = `<h2>Quiz Complete!</h2><p>Your Score: <strong>${score.toFixed(1)}%</strong> (${correctCount} out of ${finalQuizData.length} correct)</p>`;
+
+        let detailsHTML = '';
+        finalQuizData.forEach((qData, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = checkAnswerCorrectness(qData, userAnswer);
+            const isTyped = qData.section === 'Dosage Calculation';
+
+            let resultBodyHTML = '';
+            if(isTyped){
+                const userAnswerDisplay = userAnswer || "No answer";
+                const userClass = isCorrect ? 'correct' : 'incorrect';
+                resultBodyHTML += `<div class="typed-answer-result"><p>Your Answer: <span class="user-answer ${userClass}">${userAnswerDisplay}</span></p>`;
+                if (!isCorrect) {
+                     resultBodyHTML += `<p>Correct Answer: <span class="correct-answer-text">${qData.correctAnswer}</span></p>`;
+                }
+                 resultBodyHTML += `</div>`;
+            } else {
+                let optionsList = '<ul>';
+                for (const key in qData.options) {
+                    let li_class = '';
+                    const isCorrectOption = Array.isArray(qData.correctAnswer) ? qData.correctAnswer.includes(key) : key === qData.correctAnswer;
+                    const isUserSelection = Array.isArray(qData.correctAnswer) ? (userAnswer && userAnswer.includes(key)) : key === userAnswer;
+
+                    if (isCorrectOption) li_class = 'correct-answer-label';
+                    if (isUserSelection && !isCorrectOption) li_class = 'incorrect-answer-label';
+                    if (!isUserSelection && isCorrectOption && !isCorrect) li_class += ' missed-correct-answer-label';
+                   
+                    optionsList += `<li class="${li_class}">${key}: ${qData.options[key]}</li>`;
+                }
+                optionsList += '</ul>';
+                resultBodyHTML = optionsList;
+            }
+
+            let rationaleHTML = '';
+            if (!isCorrect) {
+                let rationaleClasses = 'rationale';
+                if (timeFlaggedQuestions.has(index)) rationaleClasses += ' time-flagged-rationale';
+                if (flaggedForReview.has(index)) rationaleClasses += ' flagged-rationale';
+                rationaleHTML = `<div class="${rationaleClasses}"><strong>Rationale:</strong> ${qData.rationale.replace(/\n/g, '<br>')}<span class="time-spent-info">You spent ${timeSpentOnQuestions[index] || 0} seconds on this question. ${flaggedForReview.has(index) ? '(You flagged this for review)' : ''}</span></div>`;
+            }
+
+            detailsHTML += `<div class="result-question"><p><strong>Question ${index + 1}: ${qData.questionText}</strong></p>${resultBodyHTML}${rationaleHTML}</div>`;
+        });
+        resultsDetails.innerHTML = detailsHTML;
+        generateStudyFocus();
+       
+        if (incorrectCount > 0) {
+            generatePrintableStudyGuide();
+            printBtn.classList.remove('hidden');
+        }
+    }
+
+    function generateStudyFocus() {
+        const topicCounts = {};
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const isTimeFlagged = timeFlaggedQuestions.has(index);
+            const isUserFlagged = flaggedForReview.has(index);
+
+            if (!isCorrect || isTimeFlagged || isUserFlagged) {
+                const topic = qData.section;
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+            }
+        });
+
+        const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+        let focusHTML = '<h3>Personalized Study Focus Guide</h3>';
+        if (sortedTopics.length > 0) {
+            focusHTML += '<p>Based on your performance, focus your review on these topics:</p><ul>';
+            sortedTopics.forEach(topic => {
+                focusHTML += `<li><strong>${topic[0]}</strong> (${topic[1]} item${topic[1] > 1 ? 's' : ''} noted)</li>`;
+            });
+            focusHTML += '</ul>';
+        } else {
+            focusHTML += '<p>Excellent work! No specific weak areas were identified.</p>';
+        }
+        studyFocusContainer.innerHTML = focusHTML;
+    }
+
+    function generatePrintableStudyGuide() {
+        let printHTML = '<h1>Gas Exchange Exam - Study Guide</h1>';
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            if (!isCorrect) {
+                const userAnswer = userAnswers[index];
+                const isTyped = qData.section === 'Dosage Calculation';
+                let userAnswerText = 'No answer selected.';
+                let correctAnswerText = '';
+
+                if (isTyped) {
+                    userAnswerText = userAnswer || 'No answer';
+                    correctAnswerText = qData.correctAnswer;
+                } else {
+                    if (Array.isArray(qData.correctAnswer)) { // SATA
+                        userAnswerText = userAnswer ? userAnswer.map(key => `${key}: ${qData.options[key]}`).join('<br>') : 'No answer selected.';
+                        correctAnswerText = qData.correctAnswer.map(key => `${key}: ${qData.options[key]}`).join('<br>');
+                    } else { // MC
+                        userAnswerText = userAnswer ? `${userAnswer}: ${qData.options[userAnswer]}` : 'No answer selected.';
+                        correctAnswerText = `${qData.correctAnswer}: ${qData.options[qData.correctAnswer]}`;
+                    }
+                }
+               
+                printHTML += `
+                    <div class="study-guide-item">
+                        <h3>Question: ${qData.questionText}</h3>
+                        <p><strong>Your Answer:</strong><br>${userAnswerText}</p>
+                        <p><strong>Correct Answer:</strong><br>${correctAnswerText}</p>
+                        <div class="print-rationale">
+                             <strong>Rationale:</strong> ${qData.rationale.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        printableStudyGuide.innerHTML = printHTML;
+    }
+
+
+    startBtn.addEventListener('click', startQuiz);
+    pauseBtn.addEventListener('click', togglePause);
+    printBtn.addEventListener('click', () => {
+        window.print();
+    });
+
+    // This correctly handles the "Next" and "Submit" button clicks within the form
+    // without causing a page reload, ensuring the user can get to the results screen.
+    quizForm.addEventListener('submit', (event) => {
+        event.preventDefault(); 
+        handleNavigation();   
+    });
+
+</script>
+
+</body>
+</html>

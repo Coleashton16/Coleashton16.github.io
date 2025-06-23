@@ -1,0 +1,2858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concept 18: Gas Exchange – Lower Respiratory Conditions (ADHD Friendly)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@400;600&display=swap');
+
+        :root {
+            --primary-color: #20b2aa; /* Light Sea Green */
+            --secondary-color: #3cb371; /* Medium Sea Green */
+            --accent-color: #ffb347; /* Warm Orange */
+            --alert-color: #dc3545; /* Red */
+            --info-color: #4682b4; /* Steel Blue */
+            --text-color: #333;
+            --bg-light: #f0f8ff; /* Alice Blue */
+            --bg-white: #ffffff;
+            --border-color: #add8e6; /* Light Blue */
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --focus-border: #6c757d; /* Gray for focus boxes */
+            --quiz-bg: #d4edda; /* Light green for quizzes */
+            --reveal-bg: #e0f2f7; /* Lighter blue for revealed content */
+            --drug-card-bg: #f5f5f5; /* Light gray for drug quiz card */
+            --button-mastered: #28a745; /* Green for Yes */
+            --button-missed: #dc3545; /* Red for No */
+            --progress-bar-bg: #e0e0e0;
+            --progress-bar-fill: #4CAF50; /* Green fill */
+            --break-prompt-bg: #fff0f0; /* Very light red for break prompts */
+            --break-prompt-border: #ffcccb; /* Light red for border */
+        }
+
+        /* Crucial adjustments for iframe scrolling */
+        html, body {
+            height: 100%; /* Make sure HTML and Body fill the iframe */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scrollbar */
+            overflow-y: auto; /* Allow vertical scrolling within the iframe */
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+            transition: font-size 0.2s ease, filter 0.5s ease-in-out; /* Smooth text size change and blur */
+        }
+
+        /* Styles for blurring the background content */
+        body.blurred > *:not(#clockOutOverlay) {
+            filter: blur(5px);
+            pointer-events: none; /* Disables interaction with blurred content */
+            user-select: none; /* Prevents text selection on blurred content */
+        }
+
+        .container {
+            max-width: 100%; /* Changed to fill screen width */
+            margin: 20px auto; /* Still keeps a bit of margin around the edges */
+            padding: 20px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            min-height: calc(100vh - 40px); /* Ensure container is tall enough to trigger scroll */
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative; /* For progress bar positioning */
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+
+        /* Module Progress Bar */
+        #moduleProgressBarContainer {
+            width: 90%;
+            height: 10px;
+            background-color: var(--progress-bar-bg);
+            border-radius: 5px;
+            margin: 15px auto 0;
+            overflow: hidden;
+        }
+
+        #moduleProgressBar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--progress-bar-fill);
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 10px 0;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            margin: 5px 15px;
+        }
+
+        nav ul li a { /* Updated: No href, so no default link styles needed for href, just cursor */
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: default; /* Indicate it's not clickable as a link */
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            cursor: default; /* Maintain default cursor on hover too */
+        }
+
+        nav ul li a.completed {
+            background-color: #1e7e34; /* Darker green for completed */
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+        }
+
+
+        h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h2 {
+            font-size: 2em;
+        }
+
+        h3 {
+            font-size: 1.5em;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        section:hover {
+            transform: translateY(-3px);
+        }
+
+        .objectives ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .objective-item {
+            margin-bottom: 8px;
+        }
+
+        .info-card {
+            background-color: var(--bg-light);
+            border-left: 5px solid var(--info-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .reveal-button {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            display: block; /* Make button full width */
+            width: fit-content; /* Adjust width to content */
+        }
+
+        .reveal-button:hover {
+            background-color: #ffda6a;
+        }
+
+        .reveal-content {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: var(--reveal-bg);
+            border-left: 3px solid var(--secondary-color);
+            border-radius: 5px;
+        }
+
+        .question-card {
+            background-color: var(--quiz-bg);
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-card p {
+            font-weight: 600;
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .question-card .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .question-card .options input[type="radio"],
+        .question-card .options input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .question-card .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .question-card .feedback.correct {
+            background-color: #d1ecf1; /* light blue */
+            color: #0c5460; /* dark blue */
+            border: 1px solid #bee5eb;
+        }
+
+        .question-card .feedback.incorrect {
+            background-color: #f8d7da; /* light red */
+            color: #721c24; /* dark red */
+            border: 1px solid #f5c6cb;
+        }
+
+        .question-card .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .question-card .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+
+        .prototype-drug-chart {
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        .prototype-drug-chart th, .prototype-drug-chart td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .prototype-drug-chart th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .prototype-drug-chart tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .note, .focus-prompt, .quick-fact {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .note {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+        }
+
+        .focus-prompt {
+            background-color: #d1ecf1; /* light blue */
+            border-left: 5px solid #0c5460; /* dark blue */
+            color: #0c5460;
+        }
+
+        .quick-fact {
+            background-color: #e2f0d9; /* very light green */
+            border-left: 5px solid #6ab04c; /* medium green */
+            color: #4a7d32;
+        }
+
+        .highlight {
+            background-color: #ffe082; /* Light yellow for highlighting key terms */
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .nclex-next-gen {
+            background-color: #e6f7ff;
+            border: 2px solid #a6d9f5;
+            padding: 25px;
+            margin: 40px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .nclex-next-gen h3 {
+            color: #2196f3;
+            border-bottom: 1px dashed #a6d9f5;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .nclex-next-gen .case-study {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .nclex-next-gen .fill-in-the-blank {
+            margin-top: 20px;
+        }
+
+        .nclex-next-gen .fill-in-the-blank textarea {
+            width: calc(100% - 20px);
+            min-height: 80px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            resize: vertical;
+        }
+
+        .nclex-next-gen .fill-in-the-blank button {
+            margin-top: 15px;
+        }
+
+        .nclex-next-gen .rationale {
+            background-color: #e0f2f7;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .nclex-next-gen .rationale p {
+            margin: 0;
+            font-size: 0.95em;
+        }
+
+        .figure-placeholder {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #eef;
+            border: 1px dashed #bbb;
+            border-radius: 5px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .recap {
+            background-color: #f0f8ff; /* Lighter blue */
+            border-left: 5px solid #add8e6; /* Light steel blue */
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .recap h4 {
+            color: #36a2eb;
+            border-bottom: 1px solid #add8e6;
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* Tooltip styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dotted var(--primary-color); /* Underline for tooltips */
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the text */
+            left: 50%;
+            margin-left: -125px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85em;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* At the bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Drug Mastery Quiz Specific Styles */
+        #drug-mastery-quiz .quiz-card {
+            background-color: var(--drug-card-bg);
+            border: 1px solid var(--primary-color);
+            padding: 25px;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            display: none; /* Hidden until quiz starts */
+            text-align: center;
+        }
+
+        #drug-mastery-quiz .quiz-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.8em;
+            border-bottom: none; /* Override default h4 border */
+        }
+
+        #drug-mastery-quiz .quiz-card p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        #drug-mastery-quiz .quiz-controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz .quiz-controls button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        #drug-mastery-quiz .quiz-controls button:active {
+            transform: translateY(1px);
+        }
+
+        #drug-mastery-quiz #startQuizBtn {
+            background-color: var(--secondary-color);
+            color: white;
+            display: block;
+            margin: 20px auto;
+            width: fit-content;
+            padding: 15px 30px;
+            font-size: 1.4em;
+        }
+        #drug-mastery-quiz #startQuizBtn:hover {
+            background-color: #218838;
+        }
+
+        #drug-mastery-quiz #showAnswerBtn {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+        #drug-mastery-quiz #showAnswerBtn:hover {
+            background-color: #e0a800;
+        }
+
+        #drug-mastery-quiz #answerFeedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--reveal-bg);
+            border: 1px dashed var(--info-color);
+            text-align: left;
+            display: none;
+        }
+
+        #drug-mastery-quiz #answerFeedback h5 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        #drug-mastery-quiz #masteryButtons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz #masteryButtons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn {
+            background-color: var(--button-mastered);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn:hover {
+            background-color: #218838;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn {
+            background-color: var(--button-missed);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn:hover {
+            background-color: #c82333;
+        }
+
+        /* Removed #nextCardBtn from quiz styles as it's now automatic */
+
+        #drug-mastery-quiz #quizSummary {
+            display: none;
+            padding: 25px;
+            background-color: #e6ffe6; /* Light green for success */
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            text-align: center;
+        }
+        #drug-mastery-quiz #quizSummary h4 {
+            color: var(--secondary-color);
+            font-size: 2em;
+            margin-bottom: 15px;
+            border-bottom: none;
+        }
+        #drug-mastery-quiz #quizSummary p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        #drug-mastery-quiz #quizSummary button {
+            margin: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn:hover {
+            background-color: #0056b3;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn {
+            background-color: var(--alert-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn:hover {
+            background-color: #c82333;
+        }
+
+        #drug-mastery-quiz .progress-tracker {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* ADHD-specific additions */
+        .quick-note-area {
+            background-color: #f7f7f7;
+            border: 1px dashed #ccc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .quick-note-area h3 {
+            color: #666;
+            border-bottom: 1px solid #ddd;
+            margin-top: 0;
+        }
+
+        .quick-note-area textarea {
+            width: calc(100% - 10px);
+            min-height: 100px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            resize: vertical; /* Allow vertical resizing */
+        }
+
+        .text-size-controls {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .text-size-controls button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 44px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .micro-break-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--break-prompt-bg);
+            border: 2px solid var(--break-prompt-border);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-weight: bold;
+            color: var(--alert-color);
+            display: none; /* Hidden by default */
+            animation: fadeInOut 8s forwards; /* Animation */
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        }
+
+        /* Clock Out Overlay Styles (Revised for improved centering and appearance) */
+        #clockOutOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000; /* Make sure it's on top of everything */
+            /* Start hidden and transition in */
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s ease-out; /* Delay visibility transition for smooth fade out */
+        }
+
+        #clockOutOverlay.active {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 0.5s ease-in; /* No delay for fade in */
+        }
+
+        #clockOutContent {
+            background-color: var(--bg-white);
+            color: var(--text-color);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 400px;
+            width: 90%; /* Responsive width */
+            /* Add some initial transform to make it "pop" when appearing */
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+
+        #clockOutOverlay.active #clockOutContent {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        #clockOutContent h2 {
+            color: var(--primary-color);
+            font-family: 'Roboto', sans-serif; /* Ensure Roboto font */
+            font-size: 2.8em; /* Slightly larger for impact */
+            margin-top: 0;
+            border-bottom: none; /* Override default h2 border */
+        }
+
+        #brainEmoji {
+            font-size: 6em; /* Make the emoji very large */
+            margin: 20px 0;
+            display: block; /* Ensure it takes full width for margin auto */
+            animation: floatUpDown 2s infinite alternate ease-in-out; /* Gentle animation */
+        }
+
+        @keyframes floatUpDown {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); } /* Increased float */
+        }
+
+        #countdownTimer {
+            font-family: 'Roboto', monospace; /* Monospace for consistent digit width */
+            font-size: 4.5em; /* Slightly larger timer */
+            font-weight: 700;
+            color: var(--alert-color); /* Red for urgency */
+            margin: 20px 0;
+        }
+
+        /* Mobile Responsiveness for Clock Out */
+        @media (max-width: 500px) {
+            #clockOutContent {
+                padding: 25px; /* Smaller padding on small screens */
+            }
+            #clockOutContent h2 {
+                font-size: 2em;
+            }
+            #brainEmoji {
+                font-size: 4em;
+            }
+            #countdownTimer {
+                font-size: 3.5em;
+            }
+        }
+
+
+        /* Mobile Responsiveness for overall layout */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li {
+                margin: 5px 0;
+            }
+
+            .prototype-drug-chart, .responsive-table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .prototype-drug-chart thead, .responsive-table thead {
+                display: none;
+            }
+
+            .prototype-drug-chart tbody tr, .responsive-table tbody tr {
+                display: block;
+                margin-bottom: 10px;
+                border: 1px solid var(--border-color);
+                border-radius: 5px;
+            }
+
+            .prototype-drug-chart tbody td, .responsive-table tbody td {
+                display: block;
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            .prototype-drug-chart tbody td::before, .responsive-table tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+
+            .micro-break-prompt {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Concept 18: Gas Exchange – Respiratory Conditions</h1>
+            <p>Mastering Essential Nursing Concepts for Patient Care - ADHD Friendly!</p>
+            <div id="moduleProgressBarContainer">
+                <div id="moduleProgressBar"></div>
+            </div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a id="nav-objectives">Objectives</a></li>
+                <li><a id="nav-concepts-review">Concepts</a></li>
+                <li><a id="nav-anatomy-physiology">A&P Review</a></li>
+                <li><a id="nav-aging-changes">Aging</a></li>
+                <li><a id="nav-health-promotion">Health Prom.</a></li>
+                <li><a id="nav-copd">COPD</a></li>
+                <li><a id="nav-cystic-fibrosis">Cystic Fibrosis</a></li>
+                <li><a id="nav-pneumonia">Pneumonia</a></li>
+                <li><a id="nav-tuberculosis">Tuberculosis</a></li>
+                <li><a id="nav-resp-assessment">Resp. Assess</a></li>
+                <li><a id="nav-oxygen-therapy">O2 Therapy</a></li>
+                <li><a id="nav-interrelated-concepts">Interrelated</a></li>
+                <li><a id="nav-case-study-copd">COPD Case</a></li>
+                <li><a id="nav-case-study-pneumonia">Pneumonia Case</a></li>
+                <li><a id="nav-review-questions">Review Qs</a></li>
+                <li><a id="nav-drug-mastery-quiz">Drug Challenge!</a></li>
+            </ul>
+        </nav>
+
+        <div class="text-size-controls">
+            <button id="increaseText">A+</button>
+            <button id="decreaseText">A-</button>
+        </div>
+
+        <div class="micro-break-prompt" id="microBreakPrompt">
+            Quick Break! Stand up and stretch, or take a few deep breaths!
+        </div>
+
+        <section id="objectives" class="objectives">
+            <h2>Your Learning Adventure Starts Here!</h2>
+            <p>By the end of this module, you'll be able to:</p>
+            <ul>
+                <li class="objective-item"><strong>Define and apply the concept of Gas Exchange</strong> to patient care.</li>
+                <li class="objective-item"><strong>Describe the pathophysiology, etiology, and complications</strong> of Chronic Obstructive Pulmonary Disease (COPD), Cystic Fibrosis (CF), Pneumonia, and Pulmonary Tuberculosis (TB).</li>
+                <li class="objective-item"><strong>Conduct comprehensive assessments</strong> for patients with noninfectious and infectious lower respiratory conditions.</li>
+                <li class="objective-item"><strong>Identify priority problems and develop appropriate nursing interventions</strong> to improve gas exchange, prevent complications, and promote patient well-being for these conditions.</li>
+                <li class="objective-item"><strong>Understand the principles and hazards of oxygen therapy</strong> and appropriate oxygen delivery systems.</li>
+                <li class="objective-item"><strong>Recognize the impact of age-related changes</strong> on the respiratory system.</li>
+                <li class="objective-item"><strong>Implement health promotion and maintenance strategies</strong> to optimize respiratory health.</li>
+                <li class="objective-item"><strong>Demonstrate clinical judgment</strong> in managing acute and chronic respiratory conditions.</li>
+            </ul>
+            <p class="note"><strong>Bonus!</strong> For extra info and cool tools, check out your textbook's relevant chapters and resources like the CDC and American Lung Association!</p>
+        </section>
+
+        <div class="quick-note-area">
+            <h3>Quick Notes / Brain Dump Space</h3>
+            <textarea id="quickNotesTextarea" placeholder="Jot down thoughts, questions, or key takeaways here... (Note: These will try to save to your browser's local storage, but backup important info!)"></textarea>
+        </div>
+
+        <section id="concepts-review">
+            <h2>1. Core Concepts: The Foundation of Care</h2>
+            <div class="info-card">
+                <p>In this module, our <strong>priority concept</strong> is:</p>
+                <ul>
+                    <li><span class="highlight"><strong>Gas Exchange:</strong></span> The process of oxygen transport to cells and carbon dioxide transport from cells. This is fundamental to life!</li>
+                </ul>
+                <button class="reveal-button">See the Interrelated Concepts!</button>
+                <div class="reveal-content">
+                    <p>Gas Exchange doesn't work alone. It's closely linked with these <strong>interrelated concepts</strong>:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Perfusion:</strong></span> The arterial blood flow through tissues and the blood pumped by the heart. You need good blood flow to move those gases!</li>
+                        <li><span class="highlight"><strong>Inflammation:</strong></span> A body's response to injury or infection that can narrow airways and impair gas exchange.</li>
+                        <li><span class="highlight"><strong>Cellular Regulation:</strong></span> The processes that control cell growth, replication, and function. Crucial for healthy lung tissue and red blood cell production for gas transport.</li>
+                        <li><span class="highlight"><strong>Infection:</strong></span> The invasion of the body by pathogenic organisms, often leading to inflammation and impaired gas exchange in the respiratory system (e.g., pneumonia, TB).</li>
+                        <li><span class="highlight"><strong>Cognition:</strong></span> Impaired gas exchange (hypoxia) can directly affect brain function and cognition.</li>
+                        <li><span class="highlight"><strong>Immunity:</strong></span> A strong immune system is essential to fight off respiratory infections that impair gas exchange.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Core Concepts</h4>
+                <ul>
+                    <li><strong>Priority:</strong> Gas Exchange (O2 to cells, CO2 from cells).</li>
+                    <li><strong>Interrelated:</strong> Perfusion, Inflammation, Cellular Regulation, Infection, Cognition, Immunity. All are interconnected!</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="anatomy-physiology">
+            <h2>2. Anatomy & Physiology Review: Your Respiratory Superhighway!</h2>
+            <div class="info-card">
+                <p>Let's quickly review the major parts of your respiratory system, which are essential for gas exchange.</p>
+                <ul>
+                    <li><strong>Upper Airway:</strong> Includes the nose, sinuses, pharynx, trachea, and larynx. It warms, humidifies, and filters the air.</li>
+                    <li><strong>Lower Airway:</strong> Comprises the bronchi, bronchioles, and the vital <span class="tooltip-container">alveolar air sacs<span class="tooltip-text">Tiny, grape-like air sacs at the end of the bronchioles where gas exchange (oxygen and carbon dioxide) actually occurs between the lungs and the bloodstream.</span></span> where the magic of gas exchange happens!</li>
+                </ul>
+                <button class="reveal-button">How Gas Exchange & Perfusion Work Together</button>
+                <div class="reveal-content">
+                    <h4>The Breathing Basics:</h4>
+                    <ul>
+                        <li><span class="highlight"><strong>Gas Exchange:</strong></span> This is the fundamental process. It's how oxygen gets transported TO your cells, and how carbon dioxide is transported AWAY from them. This involves both <span class="tooltip-container">ventilation<span class="tooltip-text">The mechanical movement of air in and out of the lungs (breathing).</span></span> (moving air) and <span class="tooltip-container">diffusion<span class="tooltip-text">The passive movement of gases (oxygen and carbon dioxide) across the alveolar-capillary membrane from an area of higher concentration to an area of lower concentration.</span></span> (gas movement across membranes).</li>
+                        <li><span class="highlight"><strong>Perfusion:</strong></span> This is the blood side of the equation. It refers to the arterial blood flow through your tissues, and the pumping action of your heart that drives this blood. You need proper perfusion for oxygenated blood to reach cells and for deoxygenated blood to return to the lungs.</li>
+                    </ul>
+                    <div class="figure-placeholder">
+                        <h4>Visualize It!</h4>
+                        <p><strong>Image:</strong> Upper Airway Structures (Nose, Sinuses, Pharynx, Trachea, Larynx).</p>
+                        <p><strong>Image:</strong> Lower Airway Structures (Bronchi, Bronchioles, Alveoli).</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: A&P Review</h4>
+                <ul>
+                    <li>Respiratory system: Upper airway (nose, pharynx, larynx) for air prep; Lower airway (bronchi, alveoli) for gas exchange.</li>
+                    <li>Gas exchange = ventilation + diffusion (O2 in, CO2 out).</li>
+                    <li>Perfusion = blood flow through tissues and heart pumping. Both essential!</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="aging-changes">
+            <h2>3. Respiratory Changes Associated with Aging</h2>
+            <div class="info-card">
+                <p>As people age, their respiratory system undergoes several changes that can impact gas exchange. These changes are influenced by:</p>
+                <ul>
+                    <li><span class="highlight"><strong>Heredity:</strong></span> Genetic predispositions.</li>
+                    <li><span class="highlight"><strong>Lifetime Exposure to Environmental Pollutants:</strong></span> Cumulative damage from air pollution, chemicals, etc.</li>
+                </ul>
+                <button class="reveal-button">Specific Age-Related Respiratory Changes</button>
+                <div class="reveal-content">
+                    <h4>Common Changes in Older Adults:</h4>
+                    <ul>
+                        <li><strong>Diminished strength of respiratory muscles:</strong> Reduces maximal inspiratory and expiratory force, leading to a weaker cough.</li>
+                        <li><strong>Alveoli become less elastic and more fibrous:</strong> Reduces surface area for gas diffusion, leading to increased dyspnea.</li>
+                        <li><strong>Reduction in erythrocytes:</strong> Increases the risk of anemia, impacting oxygen transport.</li>
+                        <li><strong>Chest wall becomes stiffer:</strong> Loss of elastic recoil makes breathing more difficult.</li>
+                        <li><strong>Vocal cords become slack:</strong> Changes voice quality and strength (this is a normal finding, not requiring intervention).</li>
+                        <li><strong>Increase in residual volume:</strong> More air stays in the lungs after exhalation.</li>
+                        <li><strong>Increase in anteroposterior (AP) diameter:</strong> Chest may appear more rounded, moving towards a 1:1 ratio, which is part of normal aging, not necessarily a disease sign alone unless extreme.</li>
+                    </ul>
+                    <div class="focus-prompt">
+                        <h4>Nursing Focus!</h4>
+                        <p>While some changes are normal with aging, nurses must assess for those that require intervention, such as significant increases in dyspnea or signs of infection, which older adults are less able to fight.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Aging & Respiration</h4>
+                <ul>
+                    <li>Aging impacts respiration due to heredity and pollutant exposure.</li>
+                    <li>Changes: weaker muscles/cough, less elastic/fibrous alveoli, reduced RBCs, stiffer chest wall, slack vocal cords, increased residual volume, increased AP diameter.</li>
+                    <li>Assess carefully: some changes are normal, others require intervention.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="health-promotion">
+            <h2>4. Health Promotion and Maintenance: Protecting Your Lungs</h2>
+            <div class="info-card">
+                <p>Preventing respiratory problems and maintaining healthy gas exchange involves key lifestyle choices and practices.</p>
+                <ul>
+                    <li><span class="highlight"><strong>Minimize Exposure to Inhalation Irritants:</strong></span> Avoid smoke, chemical fumes, and other airborne pollutants.</li>
+                    <li><span class="highlight"><strong>Smoking Cessation:</strong></span> This is the single most important intervention!</li>
+                    <li><span class="highlight"><strong>Avoid Pollutants:</strong></span> Limit exposure to environmental hazards.</li>
+                    <li><span class="highlight"><strong>Get Rest and Sleep:</strong></span> Supports overall immune function and recovery.</li>
+                    <li><span class="highlight"><strong>Eat a Healthy Diet:</strong></span> Provides nutrients for lung health and immune response.</li>
+                    <li><span class="highlight"><strong>Drink 3L of Water Daily:</strong></span> (Unless fluids are restricted). Hydration helps thin secretions.</li>
+                </ul>
+                <button class="reveal-button">Deep Dive into Smoking Cessation!</button>
+                <div class="reveal-content">
+                    <h4>Smoking Cessation: A Top Priority</h4>
+                    <ul>
+                        <li>Tobacco, hookah, and vaping (EVALI) all pose significant risks.</li>
+                        <li><span class="highlight"><strong>Passive Smoking:</strong></span> Secondhand and thirdhand smoke are also harmful.</li>
+                        <li><strong>Smoking-Cessation Protocols:</strong> Many resources and programs are available to help.</li>
+                        <li><span class="highlight"><strong>The 5 A's for Smoking Cessation:</strong></span>
+                            <ol>
+                                <li><strong>Ask:</strong> Identify tobacco users.</li>
+                                <li><strong>Advise:</strong> Strongly urge them to quit.</li>
+                                <li><strong>Assess:</strong> Determine willingness to make a quit attempt.</li>
+                                <li><strong>Assist:</strong> Provide resources, counseling, and drug therapies.</li>
+                                <li><strong>Arrange:</strong> Schedule follow-up contact.</li>
+                            </ol>
+                        </li>
+                        <li><span class="highlight"><strong>Drug Therapies for Quitting:</strong></span>
+                            <ul>
+                                <li><strong>Over-the-counter:</strong> Nicotine replacement therapies (gum, lozenge, patch, inhaler, nasal spray) to reduce withdrawal symptoms.</li>
+                                <li><strong>Prescription:</strong> Bupropion (antidepressant that reduces nicotine cravings) and Varenicline (Chantix - reduces pleasure from smoking and withdrawal symptoms).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4>Assessing Particulate Matter Exposure (I PREPARE Model)</h4>
+                    <ul>
+                        <li>Common cause of chronic lung disease and can worsen acute problems.</li>
+                        <li><strong>I PREPARE Model:</strong> A framework for assessing environmental exposure history:
+                            <ul>
+                                <li><strong>I</strong>nvestigate potential exposures.</li>
+                                <li><strong>P</strong>resent Work (current and past).</li>
+                                <li><strong>R</strong>esidence (age of home, heating, ventilation).</li>
+                                <li><strong>E</strong>nvironmental Concerns (air, water, soil quality).</li>
+                                <li><strong>P</strong>ast Work (exposures, length of employment).</li>
+                                <li><strong>A</strong>ctivities (hobbies, second job).</li>
+                                <li><strong>R</strong>eferrals and Resources.</li>
+                                <li><strong>E</strong>ducate.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Health Promotion</h4>
+                <ul>
+                    <li>Minimize irritant exposure, quit smoking (primary prevention).</li>
+                    <li>Smoking cessation: 5 A's, OTC & Rx drugs (Bupropion, Varenicline).</li>
+                    <li>Avoid passive smoke.</li>
+                    <li>Rest, healthy diet, adequate hydration (3L/day unless contraindicated).</li>
+                    <li>Assess environmental exposure using I PREPARE.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="copd">
+            <h2>5. Gas Exchange Exemplar: Chronic Obstructive Pulmonary Disease (COPD)</h2>
+            <div class="info-card">
+                <p>COPD is a major noninfectious lower respiratory condition characterized by chronic airflow limitation that is not fully reversible. It is a leading cause of morbidity and mortality worldwide.</p>
+                <button class="reveal-button">Unpack COPD: Types, Causes, and Complications!</button>
+                <div class="reveal-content">
+                    <h3>Pathophysiology Overview</h3>
+                    <p>COPD is an umbrella term that includes two main conditions:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Emphysema:</strong></span> This involves the destruction of the alveolar walls, leading to permanent abnormal enlargement of the airspaces distal to the terminal bronchioles. This destruction reduces the surface area available for gas exchange.</li>
+                        <li><span class="highlight"><strong>Chronic Bronchitis:</strong></span> Characterized by inflammation of the bronchi and bronchioles caused by exposure to irritants, especially cigarette smoke. This leads to hypersecretion of mucus and chronic productive cough for at least 3 months in 2 consecutive years. The thick mucus obstructs airways.</li>
+                    </ul>
+                    <h3>Etiology, Genetic Risk, and Incidence</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Cigarette smoking is the greatest risk factor.</strong></span> Long-term exposure damages the lungs and airways.</li>
+                        <li><span class="highlight"><strong>Alpha-1 Antitrypsin Deficiency:</strong></span> This is a genetic risk factor. Alpha-1 antitrypsin (AAT) is a protein that protects the lungs from damage caused by inflammation. Deficiency leads to premature lung destruction, often resulting in early-onset emphysema.</li>
+                        <li><strong>Incidence:</strong> 15.7 million people in the U.S. and 800,000 in Canada are affected by COPD.</li>
+                    </ul>
+                    <h3>Complications of COPD</h3>
+                    <p>COPD can lead to several serious complications due to chronic impaired gas exchange and increased workload on the respiratory and cardiovascular systems:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Hypoxemia:</strong></span> Low levels of oxygen in the blood due to impaired gas exchange.</li>
+                        <li><span class="highlight"><strong>Acidosis:</strong></span> Respiratory acidosis can develop due to retention of carbon dioxide.</li>
+                        <li><span class="highlight"><strong>Respiratory infection:</strong></span> COPD patients are highly susceptible to respiratory infections (bacterial or viral) due to impaired mucociliary clearance and structural changes, which can worsen their condition.</li>
+                        <li><span class="highlight"><strong>Cardiac failure (Cor Pulmonale):</strong></span> The increased workload on the right side of the heart due to pulmonary hypertension can lead to right-sided heart failure.</li>
+                        <li><span class="highlight"><strong>Dysrhythmias:</strong></span> Irregular heart rhythms can occur due to hypoxemia, acidosis, and the increased cardiac workload.</li>
+                        <li><span class="highlight"><strong>Respiratory failure:</strong></span> The most severe complication, where the respiratory system can no longer adequately oxygenate the blood or remove carbon dioxide.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Recognize Cues: Assessment for COPD</h3>
+                <button class="reveal-button">What to Look for in a COPD Patient</button>
+                <div class="reveal-content">
+                    <h4>History:</h4>
+                    <ul>
+                        <li><strong>Risk factors:</strong> Ask about exposure to occupational dusts/chemicals, indoor/outdoor air pollution.</li>
+                        <li><strong>Smoking history:</strong> Document duration and pack-years (packs per day x years smoked). This is critical!</li>
+                        <li><strong>Breathing problems:</strong> Onset, duration, severity of dyspnea, cough (productive/non-productive, color/amount of sputum), wheezing.</li>
+                        <li><strong>Activity level:</strong> How has dyspnea impacted daily activities? (e.g., stopping to catch breath, avoiding activities).</li>
+                        <li><strong>Weight:</strong> Unintended weight loss is common due to increased work of breathing and difficulty eating.</li>
+                    </ul>
+                    <h4>Physical Assessment/Signs and Symptoms:</h4>
+                    <ul>
+                        <li><strong>General appearance:</strong>
+                            <ul>
+                                <li><strong>Thin, underweight:</strong> Often due to increased metabolic demand from breathing and poor appetite.</li>
+                                <li><strong>Stooped posture, slow movement.</strong></li>
+                                <li><strong>Sitting in a forward posture (tripod position):</strong> To ease breathing.</li>
+                                <li><strong>Disheveled appearance:</strong> May indicate increased dyspnea making ADLs difficult.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Respiratory assessment:</strong>
+                            <ul>
+                                <li><strong>Dyspnea (shortness of breath):</strong> Especially on exertion.</li>
+                                <li><strong>Use of accessory muscles:</strong> Sternocleidomastoid, scalene muscles for inspiration.</li>
+                                <li><strong>Barrel chest:</strong> Increased anteroposterior (AP) diameter (1:1 ratio) due to air trapping.</li>
+                                <li><strong>Clubbing of fingers/toes:</strong> Chronic hypoxemia.</li>
+                                <li><strong>Cyanosis:</strong> Bluish discoloration of skin/mucous membranes (late sign).</li>
+                                <li><strong>Pursed-lip breathing:</strong> To prolong exhalation and prevent airway collapse.</li>
+                                <li><strong>Adventitious breath sounds:</strong> Bilateral expiratory wheezes (bronchoconstriction), crackles (fluid/secretions), diminished breath sounds.</li>
+                                <li><strong>Respiratory rate:</strong> Often increased.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Cardiac changes:</strong>
+                            <ul>
+                                <li><strong>Tachycardia:</strong> Compensatory mechanism for hypoxemia, or from cardiac strain.</li>
+                                <li><strong>Dysrhythmias:</strong> Due to hypoxemia, acidosis.</li>
+                                <li><strong>Dependent edema:</strong> Signs of right-sided heart failure (cor pulmonale).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4>Psychosocial Assessment:</h4>
+                    <ul>
+                        <li><strong>Anxiety, fear:</strong> Common due to chronic breathlessness.</li>
+                        <li><strong>Changes in roles, relationships:</strong> Due to activity limitations.</li>
+                        <li><strong>Social isolation:</strong> Avoidance of activities due to dyspnea or embarrassment.</li>
+                        <li><strong>Financial problems, unemployment, disability:</strong> Due to chronic illness.</li>
+                        <li><strong>Coping mechanisms:</strong> Assess how the patient deals with their chronic condition.</li>
+                    </ul>
+                    <h4>Laboratory Assessment:</h4>
+                    <ul>
+                        <li><strong>Arterial Blood Gases (ABGs):</strong> May show chronic respiratory acidosis (low pH, high PaCO2) with compensatory high HCO3, and hypoxemia (low PaO2).</li>
+                        <li><strong>Complete Blood Count (CBC):</strong> May show increased RBCs (polycythemia) as a compensatory response to chronic hypoxemia.</li>
+                        <li><strong>Sputum culture and Gram stain:</strong> To identify infection if present.</li>
+                        <li><strong>Alpha-1 Antitrypsin (AAT) levels:</strong> To screen for genetic deficiency.</li>
+                    </ul>
+                    <h4>Imaging Assessment:</h4>
+                    <ul>
+                        <li><strong>Chest X-ray:</strong> May show hyperinflation, flattened diaphragm, increased AP diameter (barrel chest). Rules out other lung conditions.</li>
+                        <li><strong>CT scan:</strong> More detailed imaging to identify emphysema (bullae) or other structural changes.</li>
+                    </ul>
+                    <h4>Other Diagnostic Assessments:</h4>
+                    <ul>
+                        <li><strong>Pulmonary Function Tests (PFTs):</strong> Gold standard for diagnosing and classifying COPD. Show airflow obstruction (e.g., decreased FEV1/FVC ratio, increased residual volume).</li>
+                        <li><strong>Spirometry:</strong> A common PFT.</li>
+                        <li><strong>Exercise testing:</strong> To assess activity tolerance and oxygen desaturation with exertion.</li>
+                        <li><strong>Pulse oximetry:</strong> Measures SaO2.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Analyze Cues and Prioritize Hypotheses: Analysis for COPD</h3>
+                <button class="reveal-button">What are the Main Problems in COPD?</button>
+                <div class="reveal-content">
+                    <p>Based on the assessment, the priority collaborative problems for patients with COPD typically include:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Decreased gas exchange:</strong></span> This is the primary problem due to impaired ventilation (air trapping, narrowed airways) and diffusion.</li>
+                        <li><span class="highlight"><strong>Weight loss:</strong></span> Often significant, due to increased energy expenditure for breathing and difficulty eating.</li>
+                        <li><span class="highlight"><strong>Fatigue:</strong></span> From increased work of breathing and chronic hypoxemia.</li>
+                        <li><span class="highlight"><strong>Potential for pneumonia:</strong></span> High risk due to impaired lung defenses and chronic lung damage.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Generate Solutions & Take Action: Planning and Implementation for COPD</h3>
+                <button class="reveal-button">Nursing Interventions for COPD</button>
+                <div class="reveal-content">
+                    <p>Nursing interventions for COPD focus on addressing the prioritized problems:</p>
+                    <h4>Improving Gas Exchange:</h4>
+                    <ul>
+                        <li><strong>Airway Management:</strong> Positioning (high-Fowler's), deep breathing and coughing, hydration to thin secretions.</li>
+                        <li><strong>Oxygen therapy:</strong> Administer as prescribed, usually at low flow rates (1-3 L/min via nasal cannula) for chronic CO2 retainers to avoid suppressing respiratory drive (hypoxic drive theory, though research suggests complex interplay, caution is still advised).</li>
+                        <li><strong>Drug therapy:</strong> Bronchodilators (beta-agonists, anticholinergics, methylxanthines), anti-inflammatories (glucocorticoids, leukotriene inhibitors), mucolytics.</li>
+                        <li><strong>Pulmonary rehabilitation:</strong> Exercise training, nutrition counseling, education.</li>
+                    </ul>
+                    <h4>Preventing Weight Loss:</h4>
+                    <ul>
+                        <li>High-calorie, high-protein, nutritious foods.</li>
+                        <li>Small, frequent meals.</li>
+                        <li>Oral care before meals.</li>
+                        <li>Consider dietary supplements if needed.</li>
+                    </ul>
+                    <h4>Improving Endurance:</h4>
+                    <ul>
+                        <li>Pacing activities, alternating rest with activity.</li>
+                        <li>Pulmonary rehabilitation programs.</li>
+                        <li>Energy conservation techniques.</li>
+                    </ul>
+                    <h4>Preventing Respiratory Infection:</h4>
+                    <ul>
+                        <li>Vaccinations (influenza, pneumococcal, COVID-19).</li>
+                        <li>Smoking cessation (if applicable).</li>
+                        <li>Good hand hygiene, avoiding crowds during flu season.</li>
+                        <li>Prompt reporting of worsening symptoms or fever.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Care Coordination and Transition Management for COPD</h3>
+                <button class="reveal-button">Preparing for Home & Self-Management</button>
+                <div class="reveal-content">
+                    <h4>Home Care Management:</h4>
+                    <ul>
+                        <li><strong>Use of oxygen:</strong> Ensure patient understands proper use, safety, maintenance, and supplies for home oxygen therapy.</li>
+                        <li><strong>Environmental modifications:</strong> Reducing irritants, ensuring adequate ventilation.</li>
+                    </ul>
+                    <h4>Self-Management Education:</h4>
+                    <ul>
+                        <li><strong>Drug therapy:</strong> Proper use of inhalers (technique, timing, cleaning), understanding medication purpose, side effects, and when to call the provider.</li>
+                        <li><strong>Breathing techniques:</strong> Pursed-lip breathing, diaphragmatic breathing to improve ventilation and reduce work of breathing.</li>
+                        <li><strong>Symptom management:</strong> Recognizing signs of worsening condition (increased dyspnea, change in sputum, fever) and when to seek emergency care.</li>
+                        <li><strong>Activity pacing and energy conservation.</strong></li>
+                        <li><strong>Nutrition guidelines.</strong></li>
+                    </ul>
+                    <h4>Health Care Resources:</h4>
+                    <ul>
+                        <li>Referrals to pulmonary rehabilitation programs.</li>
+                        <li>Smoking cessation programs.</li>
+                        <li>Home health services (nursing, respiratory therapy).</li>
+                        <li>Support groups.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Evaluation: Evaluate Outcomes for COPD</h3>
+                <button class="reveal-button">How Do We Know It Worked?</button>
+                <div class="reveal-content">
+                    <p>Successful outcomes for COPD patients include:</p>
+                    <ul>
+                        <li>Attain and maintain gas exchange at a level within his or her chronic baseline values (e.g., SaO2, ABGs).</li>
+                        <li>Achieve an effective breathing pattern that decreases the work of breathing (e.g., less accessory muscle use, improved respiratory rate).</li>
+                        <li>Maintain a patent airway (e.g., reduced wheezing, clear breath sounds, effective cough).</li>
+                        <li>Achieve and maintain a body weight within 10% of his or her ideal weight.</li>
+                        <li>Have decreased anxiety related to breathing.</li>
+                        <li>Increase activity to a level acceptable to him or her, showing improved endurance.</li>
+                        <li>Avoid serious respiratory infections.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: COPD Comprehensive Review</h4>
+                <ul>
+                    <li><strong>Patho:</strong> Emphysema (alveolar destruction), Chronic Bronchitis (mucus hypersecretion, airway obstruction).</li>
+                    <li><strong>Etiology:</strong> Smoking is #1, Alpha-1 Antitrypsin deficiency (genetic).</li>
+                    <li><strong>Complications:</strong> Hypoxemia, Acidosis, Infection, Cardiac failure (Cor Pulmonale), Dysrhythmias, Respiratory failure.</li>
+                    <li><strong>Assessment:</strong> History (smoking, dyspnea), Physical (barrel chest, tripod, accessory muscles, wheezes/crackles, clubbing), Psychosocial (anxiety, isolation), Labs (ABGs, CBC), Imaging (X-ray, CT), PFTs.</li>
+                    <li><strong>Problems:</strong> Decreased gas exchange, weight loss, fatigue, infection risk.</li>
+                    <li><strong>Interventions:</strong> O2 therapy (low flow for COPD!), bronchodilators, anti-inflammatories, nutrition, rehab, infection prevention.</li>
+                    <li><strong>Coordination:</strong> Home oxygen, self-management education (inhaler use, breathing techniques, symptom recognition), referrals.</li>
+                    <li><strong>Evaluation:</strong> Stable gas exchange, effective breathing, patent airway, stable weight, reduced anxiety, improved activity, no infections.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="cystic-fibrosis">
+            <h2>6. Gas Exchange Exemplar: Cystic Fibrosis (CF)</h2>
+            <div class="info-card">
+                <p>Cystic Fibrosis (CF) is a genetic disorder that severely affects the lungs and other organs, impacting gas exchange due to thick, sticky mucus.</p>
+                <button class="reveal-button">Understanding Cystic Fibrosis</button>
+                <div class="reveal-content">
+                    <h3>Pathophysiology Overview</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Autosomal recessive genetic disease:</strong></span> This means a child must inherit two copies of the defective gene (one from each parent) to develop CF.</li>
+                        <li><span class="highlight"><strong>Blocked chloride transport in cell membranes:</strong></span> A defective gene (CFTR gene) leads to abnormal protein production that impairs chloride and water transport across cell membranes.</li>
+                        <li><span class="highlight"><strong>Thick, sticky mucous:</strong></span> This is the hallmark of CF. Instead of thin, slippery mucus, the body produces abnormally thick and sticky mucus that clogs the airways, pancreatic ducts, and other passageways.</li>
+                        <li><strong>Affects lungs and nonpulmonary organs:</strong> While respiratory issues are prominent, CF also impacts the pancreas, liver, intestines, and sweat glands.</li>
+                    </ul>
+                    <h3>Assessment: Recognize Cues for Cystic Fibrosis</h3>
+                    <p>CF symptoms can be broad, affecting many body systems:</p>
+                    <h4>Non-pulmonary Symptoms:</h4>
+                    <ul>
+                        <li><strong>Abdominal distention:</strong> Due to digestive issues.</li>
+                        <li><strong>GERD (Gastroesophageal Reflux Disease):</strong> Common.</li>
+                        <li><strong>Rectal prolapse:</strong> Can occur due to straining from constipation or poor absorption.</li>
+                        <li><strong>Foul-smelling stools, steatorrhea:</strong> Greasy, bulky stools due to malabsorption of fats (pancreatic enzyme insufficiency).</li>
+                        <li><strong>Malnourishment, vitamin deficiencies:</strong> Especially fat-soluble vitamins (A, D, E, K).</li>
+                        <li><strong>Diabetes:</strong> CF-related diabetes due to pancreatic damage.</li>
+                        <li><strong>Osteoporosis, osteopenia:</strong> Bone thinning due to malabsorption and chronic inflammation.</li>
+                        <li><strong>Salty-tasting skin:</strong> Due to increased chloride in sweat.</li>
+                    </ul>
+                    <h4>Pulmonary Symptoms:</h4>
+                    <ul>
+                        <li><strong>Recurrent respiratory infections:</strong> Chronic colonization by bacteria (e.g., Pseudomonas aeruginosa) is common due to thick mucus trapping bacteria.</li>
+                        <li><strong>Chest congestion and sputum production:</strong> Persistent cough with thick, purulent sputum.</li>
+                        <li><strong>Limited exercise tolerance:</strong> Due to impaired gas exchange and increased work of breathing.</li>
+                        <li><strong>Wheezing and crackles:</strong> On auscultation.</li>
+                        <li><strong>Barrel chest, clubbing:</strong> Similar to COPD in advanced stages.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Diagnostic Confirmation:</h4>
+                        <p>The definitive diagnostic test for CF is the <strong>sweat chloride test</strong>, which shows elevated chloride levels in sweat.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Interventions: Take Action for Cystic Fibrosis</h3>
+                <button class="reveal-button">Managing CF: From Daily Care to Transplantation</button>
+                <div class="reveal-content">
+                    <h4>Nonsurgical Management:</h4>
+                    <ul>
+                        <li><strong>Nutrition management:</strong>
+                            <ul>
+                                <li>High-calorie, high-protein diet.</li>
+                                <li>Pancreatic enzyme replacement therapy (taken with meals/snacks) to aid digestion and absorption.</li>
+                                <li>Fat-soluble vitamin supplements (A, D, E, K).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Preventive/maintenance therapy (Pulmonary):</strong>
+                            <ul>
+                                <li>Daily chest physiotherapy (CPT) and postural drainage to loosen and clear mucus.</li>
+                                <li>Airway clearance devices (e.g., vibrating vests, positive expiratory pressure devices).</li>
+                                <li>Bronchodilators to open airways.</li>
+                                <li>Mucolytics (e.g., dornase alfa, hypertonic saline) to thin mucus.</li>
+                                <li>Antibiotics (oral, inhaled, IV) to treat/prevent infections.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Exacerbation therapy:</strong> Aggressive antibiotic treatment and increased airway clearance during acute flare-ups.</li>
+                        <li><strong>Gene therapy:</strong> An area of ongoing research aimed at correcting the underlying genetic defect.</li>
+                    </ul>
+                    <h4>Surgical Management:</h4>
+                    <ul>
+                        <li><span class="highlight"><strong>Lung transplantation:</strong></span>
+                            <ul>
+                                <li>It **does not cure** cystic fibrosis, as the genetic defect is systemic. Other organs (like the pancreas) remain affected.</li>
+                                <li>It extends life by 1 to 15 years on average.</li>
+                                <li>The transplant rejection rate is high.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Continued risk for lethal pulmonary infections:</strong> Even after transplantation, patients remain susceptible to infections due to immunosuppression and potential chronic colonization.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Cystic Fibrosis</h4>
+                <ul>
+                    <li><strong>Patho:</strong> Autosomal recessive, blocked chloride transport → thick, sticky mucus. Affects lungs + many other organs.</li>
+                    <li><strong>Assessment:</strong> Non-pulmonary (GI issues: distention, GERD, steatorrhea, malnourishment, diabetes, osteoporosis; salty skin). Pulmonary (recurrent infections, chronic cough with thick sputum, limited exercise tolerance, wheezing).</li>
+                    <li><strong>Interventions (Nonsurgical):</strong> Nutrition (high-cal/protein, enzymes, vitamins), Pulmonary (daily CPT, airway clearance devices, bronchodilators, mucolytics, antibiotics), Exacerbation therapy, Gene therapy (research).</li>
+                    <li><strong>Interventions (Surgical):</strong> Lung transplantation (doesn't cure, high rejection, continued infection risk, extends life 1-15 years).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="pneumonia">
+            <h2>7. Gas Exchange Exemplar: Pneumonia</h2>
+            <div class="info-card">
+                <p>Pneumonia is an acute inflammation of the lung parenchyma, typically involving the terminal bronchioles and alveoli, characterized by fluid in the lungs, which severely impairs gas exchange.</p>
+                <button class="reveal-button">Understanding Pneumonia: Causes, Categories, & Prevention!</button>
+                <div class="reveal-content">
+                    <h3>Pathophysiology Overview</h3>
+                    <ul>
+                        <li><strong>Excess fluid in lungs:</strong> Inflammation causes fluid and exudates to accumulate in the alveoli and bronchioles.</li>
+                        <li><strong>Can be lobar in nature:</strong> Affecting a specific lobe of the lung, or diffuse (spread throughout).</li>
+                        <li>This fluid buildup blocks the diffusion of oxygen and carbon dioxide, leading to impaired gas exchange.</li>
+                    </ul>
+                    <h3>Etiology (Causes)</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Infectious Organisms:</strong></span> Most frequent causes are microorganisms:
+                            <ul>
+                                <li>Bacteria (e.g., *Streptococcus pneumoniae*, *Haemophilus influenzae*)</li>
+                                <li>Viruses (e.g., influenza, RSV, COVID-19)</li>
+                                <li>Mycoplasmas</li>
+                                <li>Fungi</li>
+                                <li>Rickettsiae, Protozoa, Helminths (less common)</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Noninfectious Causes:</strong></span> Can also cause pneumonia, such as:
+                            <ul>
+                                <li>Aspiration of food, fluid, or vomit.</li>
+                                <li>Inhalation of toxic gases or chemicals.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h3>Categories of Pneumonia</h3>
+                    <p>Pneumonia is often categorized by where and how it was acquired:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Community-Acquired Pneumonia (CAP):</strong></span> Acquired outside of health care facilities or within 48 hours of hospital admission.</li>
+                        <li><span class="highlight"><strong>Hospital-Acquired Pneumonia (HAP):</strong></span> Develops 48 hours or more after admission to a hospital or other healthcare facility, and was not incubating at the time of admission.</li>
+                        <li><span class="highlight"><strong>Ventilator-Associated Pneumonia (VAP):</strong></span> A type of HAP that develops in patients who are on mechanical ventilation for more than 48 hours.</li>
+                    </ul>
+                    <h3>Health Promotion and Maintenance</h3>
+                    <p>Preventing pneumonia is crucial, especially for at-risk populations:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Vaccination:</strong></span> Flu vaccine annually, pneumococcal vaccines (PCV13, PPSV23) as recommended, COVID-19 vaccine.</li>
+                        <li><strong>Avoid crowded places during flu season:</strong> Reduces exposure to respiratory pathogens.</li>
+                        <li><strong>Cough, turn, move, deep breathe:</strong> Especially for postoperative or immobile patients, to prevent atelectasis and fluid stasis.</li>
+                        <li><strong>Clean respiratory equipment:</strong> For patients using home nebulizers or CPAP machines.</li>
+                        <li><strong>Avoid pollutants:</strong> Such as secondhand smoke, chemical fumes.</li>
+                        <li><strong>Stop smoking:</strong> Significantly reduces risk.</li>
+                        <li><strong>Get rest and sleep:</strong> Supports immune system.</li>
+                        <li><strong>Eat healthy diet:</strong> Provides necessary nutrients for immune function.</li>
+                        <li><strong>Drink 3L of water daily:</strong> (Unless fluids are restricted). Helps keep secretions thin and mobile.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Recognize Cues: Assessment for Pneumonia</h3>
+                <button class="reveal-button">What to Look for in a Pneumonia Patient</button>
+                <div class="reveal-content">
+                    <h4>History:</h4>
+                    <ul>
+                        <li><strong>Risk factors:</strong> Recent cold or flu, chronic illness (COPD, heart failure, diabetes), immunosuppression, dysphagia (swallowing difficulties), recent surgery/hospitalization, smoking history.</li>
+                        <li><strong>I PREPARE model:</strong> To assess for environmental or occupational exposures that could contribute.</li>
+                        <li><strong>Use of respiratory equipment:</strong> Nebulizers, CPAP, oxygen.</li>
+                        <li><strong>Vaccination status:</strong> Flu, pneumococcal, COVID-19.</li>
+                        <li><strong>Symptoms:</strong> Onset of fever, chills, cough (productive/non-productive, sputum characteristics), shortness of breath, chest pain, fatigue, malaise.</li>
+                    </ul>
+                    <h4>Physical Assessment/Signs & Symptoms:</h4>
+                    <ul>
+                        <li><strong>General appearance:</strong> Flushed appearance (fever), anxious, fatigued, restless, slightly stooped posture, possibly cyanosis (late sign).</li>
+                        <li><strong>Respiratory assessment:</strong>
+                            <ul>
+                                <li><strong>Tachypnea (increased respiratory rate):</strong> Often rapid and shallow.</li>
+                                <li><strong>Dyspnea (shortness of breath):</strong> With exertion or at rest.</li>
+                                <li><strong>Accessory muscle use:</strong> For breathing.</li>
+                                <li><strong>Nasal flaring, retractions:</strong> Especially in children.</li>
+                                <li><strong>Cough:</strong> Productive (white, yellow, green sputum) often bacterial; nonproductive or clear sputum often viral.</li>
+                                <li><strong>Auscultation:</strong> Rhonchi (coarse, rattling) or crackles (fine, bubbly) over affected areas. Diminished breath sounds.</li>
+                                <li><strong>Percussion:</strong> Dullness over areas of consolidation.</li>
+                                <li><strong>Chest pain:</strong> Often sharp or stabbing, especially with inspiration (pleuritic chest pain).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Vital signs:</strong>
+                            <ul>
+                                <li><strong>Elevated temperature (fever).</strong></li>
+                                <li><strong>Increased heart rate (tachycardia):</strong> Due to fever, hypoxemia.</li>
+                                <li><strong>Decreased oxygen saturation (SpO2/SaO2):</strong> Below 95%, especially on room air.</li>
+                                <li>Blood pressure: May be normal or slightly elevated/decreased depending on hydration/sepsis.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Dysrhythmias:</strong> Can occur due to hypoxemia or fever.</li>
+                    </ul>
+                    <h4>Psychosocial Assessment:</h4>
+                    <ul>
+                        <li><strong>Confusion or disorientation:</strong> Especially common in older adults.</li>
+                        <li>Anxiety, fear.</li>
+                        <li>Fatigue, lethargy, malaise.</li>
+                    </ul>
+                    <h4>Laboratory Assessment:</h4>
+                    <ul>
+                        <li><strong>Gram stain, culture and sensitivity of sputum:</strong> To identify causative organism and guide antibiotic therapy.</li>
+                        <li><strong>Complete Blood Count (CBC):</strong> Elevated WBC count (leukocytosis), especially neutrophils, indicating bacterial infection.</li>
+                        <li><strong>Blood cultures:</strong> To detect bacteremia or sepsis.</li>
+                        <li><strong>Arterial Blood Gases (ABGs):</strong> To assess oxygenation and acid-base balance (may show hypoxemia, respiratory alkalosis initially, then acidosis).</li>
+                        <li><strong>Serum electrolytes, BUN, creatinine:</strong> To assess hydration and kidney function.</li>
+                        <li><strong>Lactate level:</strong> Elevated in sepsis.</li>
+                    </ul>
+                    <h4>Imaging Assessment:</h4>
+                    <ul>
+                        <li><strong>Chest x-ray:</strong> Reveals infiltrates, consolidation, or pleural effusion in affected lung areas. Essential for diagnosis.</li>
+                    </ul>
+                    <h4>Other Diagnostic Assessment:</h4>
+                    <ul>
+                        <li><strong>Pulse oximetry:</strong> Continuous monitoring of SpO2.</li>
+                        <li><strong>Thoracentesis:</strong> If pleural effusion is present, fluid analysis can aid diagnosis.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Analyze Cues & Prioritize Hypotheses: Analysis for Pneumonia</h3>
+                <button class="reveal-button">Priority Problems in Pneumonia</button>
+                <div class="reveal-content">
+                    <p>For patients with pneumonia, the priority problems include:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Decreased gas exchange:</strong></span> Due to fluid and inflammation in the alveoli.</li>
+                        <li><span class="highlight"><strong>Potential for airway obstruction:</strong></span> From increased secretions and inflammation.</li>
+                        <li><span class="highlight"><strong>Potential for sepsis:</strong></span> If the infection spreads systemically.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Generate Solutions & Take Action: Planning and Implementation for Pneumonia</h3>
+                <button class="reveal-button">Nursing Interventions for Pneumonia</button>
+                <div class="reveal-content">
+                    <p>Interventions focus on improving gas exchange, clearing airways, and fighting infection:</p>
+                    <h4>Improving Gas Exchange:</h4>
+                    <ul>
+                        <li><strong>Oxygen therapy:</strong> To maintain adequate SpO2 (>90%).</li>
+                        <li><strong>Positioning:</strong> High-Fowler's to facilitate breathing.</li>
+                        <li><strong>Medications:</strong> Antibiotics (if bacterial), bronchodilators, mucolytics.</li>
+                        <li><strong>Monitoring:</strong> Respiratory status, vital signs, SpO2, ABGs.</li>
+                    </ul>
+                    <h4>Preventing Airway Obstruction:</h4>
+                    <ul>
+                        <li><strong>Deep breathing and coughing:</strong> Encourage at least every 2 hours.</li>
+                        <li><strong>Incentive spirometry:</strong> Teach and encourage use every hour while awake.</li>
+                        <li><strong>Hydration:</strong> Encourage 3L of fluid per day (unless contraindicated) to thin secretions.</li>
+                        <li><strong>Chest physiotherapy (CPT):</strong> For patients with thick secretions.</li>
+                        <li><strong>Airway suctioning:</strong> As needed for ineffective cough.</li>
+                    </ul>
+                    <h4>Preventing Sepsis:</h4>
+                    <ul>
+                        <li><strong>Timely administration of antibiotics:</strong> After obtaining cultures.</li>
+                        <li><strong>Fluid resuscitation:</strong> With IV fluids if signs of dehydration or shock.</li>
+                        <li><strong>Monitor for signs of worsening infection:</strong> Persistent fever, increased WBC, mental status changes, hypotension.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Care Coordination and Transition Management for Pneumonia</h3>
+                <button class="reveal-button">Discharge Planning for Pneumonia Patients</button>
+                <div class="reveal-content">
+                    <h4>Home Care Management:</h4>
+                    <ul>
+                        <li>Patient education on medication regimen (e.g., completing entire course of antibiotics).</li>
+                        <li>Importance of continuing deep breathing/coughing exercises.</li>
+                        <li>Recognizing signs of relapse or complications.</li>
+                        <li>Rest and nutrition.</li>
+                    </ul>
+                    <h4>Health Care Resources:</h4>
+                    <ul>
+                        <li><strong>Smoking cessation:</strong> Referrals for current smokers.</li>
+                        <li><strong>Immunization of appropriate persons:</strong> Emphasize importance of flu and pneumococcal vaccines for prevention.</li>
+                        <li>Follow-up appointments with healthcare provider.</li>
+                        <li>Pulmonary rehabilitation if needed.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Evaluate Outcomes: Evaluation for Pneumonia</h3>
+                <button class="reveal-button">Did the Care Plan Work?</button>
+                <div class="reveal-content">
+                    <p>Expected outcomes for patients with pneumonia include:</p>
+                    <ul>
+                        <li>Attains or maintains adequate gas exchange (e.g., SpO2 >95% on room air or minimal oxygen, clear breath sounds, normal respiratory rate).</li>
+                        <li>Maintains patent airway (e.g., effective cough, no excessive secretions).</li>
+                        <li>Is free from infection (e.g., afebrile, normal WBC count).</li>
+                        <li>Returns to pre-pneumonia health status (or achieves optimal recovery).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Pneumonia Comprehensive Review</h4>
+                <ul>
+                    <li><strong>Patho:</strong> Fluid in lungs, impairs gas exchange.</li>
+                    <li><strong>Etiology:</strong> Infectious (bacteria, viruses most common), Noninfectious (aspiration, chemicals).</li>
+                    <li><strong>Categories:</strong> CAP, HAP, VAP.</li>
+                    <li><strong>Health Promotion:</strong> Vaccinations (Flu, Pneumococcal, COVID-19), hygiene, avoid crowds/pollutants, rest, healthy diet, fluids, deep breathing post-op.</li>
+                    <li><strong>Assessment:</strong> History (risk factors, symptoms), Physical (tachypnea, dyspnea, fever, cough, crackles/rhonchi), Psychosocial (confusion in elderly), Labs (sputum C&S, CBC, blood cultures, ABGs), Imaging (Chest X-ray).</li>
+                    <li><strong>Problems:</strong> Decreased gas exchange, airway obstruction risk, sepsis risk.</li>
+                    <li><strong>Interventions:</strong> O2, positioning, meds (antibiotics, bronchodilators, mucolytics), deep breathing/cough, IS, hydration, CPT, prompt antibiotics.</li>
+                    <li><strong>Coordination/Evaluation:</strong> Med education, relapse signs, smoking cessation, return to baseline health.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="tuberculosis">
+            <h2>8. Gas Exchange Exemplar: Pulmonary Tuberculosis (TB)</h2>
+            <div class="info-card">
+                <p>Pulmonary Tuberculosis (TB) is a highly communicable disease caused by *Mycobacterium tuberculosis*, primarily affecting the lungs and significantly impacting gas exchange.</p>
+                <button class="reveal-button">Understanding Tuberculosis</button>
+                <div class="reveal-content">
+                    <h3>Pathophysiology and Transmission</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Highly communicable:</strong></span> Easily spread from person to person.</li>
+                        <li><span class="highlight"><strong>Caused by *Mycobacterium tuberculosis*:</strong></span> A slow-growing bacterium.</li>
+                        <li><span class="highlight"><strong>Transmitted via aerosolization:</strong></span> When an infected person coughs, sneezes, or speaks, tiny airborne droplets containing the bacteria are released and can be inhaled by others.</li>
+                        <li><span class="highlight"><strong>Secondary TB:</strong></span> This refers to the reactivation of the disease in a person who was previously infected but had dormant (inactive) TB. This often occurs when the immune system becomes weakened.</li>
+                    </ul>
+                    <h3>Recognize Cues: Assessment for Pulmonary Tuberculosis</h3>
+                    <h4>History:</h4>
+                    <ul>
+                        <li><strong>Past TB exposure:</strong> Has the patient been in contact with someone with active TB?</li>
+                        <li><strong>BCG vaccine:</strong> History of receiving the Bacillus Calmette-Guérin vaccine (used in some countries, can cause a positive TST result).</li>
+                        <li>Travel history, living conditions, immunosuppression, HIV status.</li>
+                    </ul>
+                    <h4>Physical Assessment/Signs & Symptoms:</h4>
+                    <p>Early symptoms are often vague and can be overlooked:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Progressive fatigue:</strong></span> Persistent and worsening tiredness.</li>
+                        <li><span class="highlight"><strong>Lethargy:</strong></span> Lack of energy, sluggishness.</li>
+                        <li><span class="highlight"><strong>Nausea, anorexia, and weight loss:</strong></span> Significant and often unexplained weight loss.</li>
+                        <li><strong>Irregular menses:</strong> In women.</li>
+                        <li><span class="highlight"><strong>Low-grade fever:</strong></span> Often occurs in the afternoon or evening.</li>
+                        <li><span class="highlight"><strong>Cough:</strong></span> Persistent, often with mucopurulent sputum, which may have blood streaks.</li>
+                        <li><strong>Dull aching chest pain:</strong> Can occur as the disease progresses.</li>
+                        <li><strong>Night sweats:</strong> Classic symptom.</li>
+                    </ul>
+                    <h4>Diagnostic Assessment:</h4>
+                    <ul>
+                        <li><span class="highlight"><strong>Chest X-ray:</strong></span> May show infiltrates, cavitations (holes in the lung), or effusions, especially in the upper lobes.</li>
+                        <li><span class="highlight"><strong>Sputum culture:</strong></span> The definitive diagnostic test for active TB. Requires three consecutive early morning sputum samples. Acid-fast bacilli (AFB) smear is usually done first.</li>
+                        <li><span class="highlight"><strong>Nucleic Acid Amplification Test (NAAT):</strong></span> Rapid test that detects TB DNA or RNA in sputum, providing results faster than culture.</li>
+                        <li><span class="highlight"><strong>Tuberculin Skin Test (TST) / Mantoux skin test:</strong></span>
+                            <ul>
+                                <li>A positive reaction (induration/hardening, not redness) does not mean active disease is present, but **does indicate exposure** to *Mycobacterium tuberculosis* or dormant (latent) disease.</li>
+                                <li>It signifies that the person has developed antibodies.</li>
+                            </ul>
+                            <div class="figure-placeholder">
+                                <h4>Visualize It!</h4>
+                                <p><strong>Image:</strong> PPD Skin Test result with induration.</p>
+                            </div>
+                        </li>
+                        <li><span class="highlight"><strong>Interferon-Gamma Release Assays (IGRAs):</strong></span> (e.g., QuantiFERON-TB Gold In-Tube test, T-Spot.TB test). Blood tests that detect TB infection (latent or active) by measuring the immune response to TB proteins. Not affected by BCG vaccination status.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Interventions: Take Action for Pulmonary Tuberculosis</h3>
+                <button class="reveal-button">Managing TB: A Multi-faceted Approach</button>
+                <div class="reveal-content">
+                    <p>Managing TB involves a combination of strategies, primarily focusing on drug therapy and infection control:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Promoting airway clearance:</strong></span> Encourage deep breathing and coughing, hydration to thin secretions.</li>
+                        <li><span class="highlight"><strong>Reducing drug-resistance and infection spread:</strong></span>
+                            <ul>
+                                <li>**Strict adherence to multidrug therapy:** This is crucial! TB requires a long course (6-9 months or more) of multiple antitubercular drugs (e.g., Isoniazid, Rifampin, Pyrazinamide, Ethambutol) to prevent drug resistance.</li>
+                                <li>**Directly Observed Therapy (DOT):** Healthcare workers observe patients taking their medications to ensure adherence, especially for those at high risk of non-compliance.</li>
+                                <li>**Infection control measures:**
+                                    <ul>
+                                        <li>**Airborne isolation (negative pressure room) in healthcare settings.**</li>
+                                        <li>**Wearing N95 masks for healthcare workers.**</li>
+                                        <li>**Teaching patients to cover coughs and dispose of tissues properly.**</li>
+                                        <li>**Ensuring good ventilation in home environments.**</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Improving nutrition:</strong></span> High-calorie, high-protein diet to combat weight loss and support recovery.</li>
+                        <li><span class="highlight"><strong>Managing fatigue:</strong></span> Pacing activities, encouraging rest periods.</li>
+                        <li><strong>Patient education:</strong> About the disease, transmission, importance of medication adherence, and follow-up.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Pulmonary Tuberculosis</h4>
+                <ul>
+                    <li><strong>Patho:</strong> Highly communicable, caused by *M. tuberculosis*, transmitted via aerosolization. Secondary TB = reactivation.</li>
+                    <li><strong>Assessment:</strong> History (exposure, BCG), Physical (fatigue, lethargy, weight loss, low-grade fever, cough with mucopurulent/blood-streaked sputum, night sweats), Diagnostic (Chest X-ray, Sputum culture/AFB/NAAT, TST, IGRA).</li>
+                    <li><strong>Interventions:</strong> Airway clearance, **multidrug therapy (long course, DOT to prevent resistance and spread!)**, infection control (airborne isolation, N95), improving nutrition, managing fatigue.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="resp-assessment">
+            <h2>9. Comprehensive Respiratory Assessment</h2>
+            <div class="info-card">
+                <p>A thorough assessment is the first step to understanding a patient's gas exchange status. This involves history, physical examination, and various diagnostic tools.</p>
+                <button class="reveal-button">Dive into Respiratory Assessment Details</button>
+                <div class="reveal-content">
+                    <h3>History: Asking the Right Questions</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Respiratory History:</strong></span> Previous lung diseases (asthma, COPD, pneumonia, TB), surgeries, hospitalizations for respiratory issues.</li>
+                        <li><span class="highlight"><strong>Smoking:</strong></span> Document pack-years (packs per day x years smoked). Include e-cigarettes, hookah, passive smoking exposure.</li>
+                        <li><span class="highlight"><strong>Drug Use:</strong></span> Both prescribed (e.g., inhalers, oxygen, oral steroids, antibiotics) and illicit drugs (e.g., IV drugs can lead to emboli/infections, inhaled drugs can cause lung damage).</li>
+                        <li><span class="highlight"><strong>Complementary and Integrative Therapies:</strong></span> Herbs, supplements, acupuncture, etc., that might affect respiratory health or interact with medications.</li>
+                        <li><span class="highlight"><strong>Allergies:</strong></span> Environmental, food, drug allergies that might trigger respiratory symptoms.</li>
+                        <li><span class="highlight"><strong>Travel and Geographic Area of Residence:</strong></span> Exposure to endemic infections (e.g., fungal infections in certain regions) or environmental pollutants.</li>
+                        <li><span class="highlight"><strong>Family History and Genetic Risk:</strong></span> History of asthma, COPD, cystic fibrosis, alpha-1 antitrypsin deficiency, lung cancer, or TB in the family.</li>
+                        <li><span class="highlight"><strong>Current Health Problems:</strong></span> Any ongoing symptoms like cough, shortness of breath, chest pain, fatigue, sputum production.</li>
+                    </ul>
+                    <h3>Physical Assessment: Observe, Palpate, Percuss, Auscultate</h3>
+                    <p>A systematic head-to-toe assessment:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Nose and Sinuses:</strong></span> Inspect for symmetry, discharge, inflammation, tenderness over sinuses (frontal, ethmoid, maxillary, sphenoid). Assess patency of nares.</li>
+                        <li><span class="highlight"><strong>Pharynx, Trachea, Larynx:</strong></span> Inspect throat for redness/inflammation. Palpate trachea for midline position. Assess voice quality (hoarseness, stridor).</li>
+                        <li><span class="highlight"><strong>Lungs and Thorax:</strong></span>
+                            <ul>
+                                <li><strong>Inspection:</strong> Respiratory rate, rhythm, depth. Use of accessory muscles. Chest shape (barrel chest), symmetry of expansion. Digital clubbing, cyanosis.</li>
+                                <li><strong>Palpation:</strong> Symmetrical chest expansion, tactile fremitus.</li>
+                                <li><strong>Percussion:</strong> Resonance over lung tissue. Dullness over consolidation/fluid, hyperresonance over air trapping.</li>
+                                <li><strong>Auscultation:</strong> Listen for normal breath sounds (bronchial, bronchovesicular, vesicular) and adventitious sounds (crackles, wheezes, rhonchi, pleural friction rub).</li>
+                            </ul>
+                            <div class="figure-placeholder">
+                                <h4>Visualize It!</h4>
+                                <p><strong>Image:</strong> Location of paranasal sinuses.</p>
+                                <p><strong>Image:</strong> Structures of the larynx (anterior & posterior views), glottis.</p>
+                                <p><strong>Image:</strong> Sequence for percussion and auscultation of the lungs and thorax.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <h3>Other Indicators of Respiratory Adequacy:</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Skin and Mucous Membrane Changes:</strong></span> Pallor, cyanosis, mottling (late signs of poor perfusion/oxygenation).</li>
+                        <li><span class="highlight"><strong>General Appearance:</strong></span> Level of consciousness, anxiety, fatigue, posture, ability to speak in full sentences.</li>
+                        <li><span class="highlight"><strong>Endurance:</strong></span> Ability to perform ADLs, exercise tolerance.</li>
+                    </ul>
+                    <h3>Psychosocial Assessment:</h3>
+                    <p>Respiratory conditions can profoundly impact a patient's mental and emotional well-being:</p>
+                    <ul>
+                        <li><span class="highlight"><strong>Anxiety:</strong></span> Especially common with dyspnea.</li>
+                        <li><span class="highlight"><strong>Changes in roles, relationships:</strong></span> Due to chronic illness and limitations.</li>
+                        <li><span class="highlight"><strong>Social isolation:</strong></span> Avoiding social activities due to symptoms or fear of infection.</li>
+                        <li><span class="highlight"><strong>Financial problems, unemployment, disability:</strong></span> Due to chronic illness affecting work capacity.</li>
+                        <li><span class="highlight"><strong>Discuss coping mechanisms:</strong></span> How does the patient deal with their condition?</li>
+                    </ul>
+                    <h3>Laboratory Assessment: (Revisiting from previous request, consolidating here for assessment)</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>RBC count, Hemoglobin, Hematocrit:</strong></span> To assess oxygen-carrying capacity (anemia).</li>
+                        <li><span class="highlight"><strong>Arterial Blood Gases (ABGs):</strong></span> pH, PaO2, PaCO2, HCO3, SaO2 for gas exchange and acid-base balance.</li>
+                        <li><span class="highlight"><strong>Sputum specimens:</strong></span> Gram stain, culture & sensitivity, acid-fast bacillus (AFB), cytology.</li>
+                        <li><span class="highlight"><strong>WBC count and differential:</strong></span> For infection and inflammation.</li>
+                    </ul>
+                    <h3>Imaging Assessment: (Revisiting from previous request, consolidating here)</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Chest X-rays:</strong></span> For visualization of lung structures, foreign bodies, infiltrates, tumors, etc.</li>
+                        <li><span class="highlight"><strong>CT scans:</strong></span> Detailed 3D images for pulmonary densities, tumors, emboli.</li>
+                        <li><span class="highlight"><strong>MRI:</strong></span> For difficult-to-assess lesions.</li>
+                        <li><span class="highlight"><strong>V/Q scans:</strong></span> For pulmonary emboli.</li>
+                        <li><span class="highlight"><strong>PET scans:</strong></span> Distinguish benign/malignant nodules.</li>
+                    </ul>
+                    <h3>Other Noninvasive Diagnostic Assessments:</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Pulse oximetry:</strong></span> Noninvasive measurement of SaO2.</li>
+                        <li><span class="highlight"><strong>Capnometry and Capnography:</strong></span> Measurement (capnometry) and display (capnography) of exhaled carbon dioxide (EtCO2), reflecting ventilation.</li>
+                        <li><span class="highlight"><strong>Pulmonary Function Tests (PFTs):</strong></span> Assess lung volumes and airflow rates (spirometry).</li>
+                        <li><span class="highlight"><strong>Exercise testing:</strong></span> To assess activity-induced dyspnea and desaturation.</li>
+                    </ul>
+                    <h3>Invasive Diagnostic Assessment:</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Endoscopic examinations:</strong></span>
+                            <ul>
+                                <li><strong>Bronchoscopy:</strong> Direct visualization of airways, biopsy, foreign body removal, lavage.</li>
+                                <li><strong>Thoracentesis:</strong> Removal of pleural fluid for diagnosis or symptom relief.</li>
+                                <li><strong>Lung biopsy:</strong> Obtaining tissue samples for microscopic examination.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Respiratory Assessment</h4>
+                <ul>
+                    <li><strong>History:</strong> Past resp. issues, **smoking (pack-years!)**, drug use, allergies, travel, family history, current symptoms.</li>
+                    <li><strong>Physical:</strong> Inspect (RR, effort, barrel chest, cyanosis, clubbing), Palpate (expansion), Percuss (resonance/dullness), Auscultate (normal/adventitious sounds - crackles, wheezes, rhonchi).</li>
+                    <li><strong>Other Indicators:</strong> Skin/mucous membranes, general appearance, endurance.</li>
+                    <li><strong>Psychosocial:</strong> Anxiety, isolation, role changes, coping.</li>
+                    <li><strong>Labs:</strong> RBC/Hb/Hct, ABGs, Sputum, WBC.</li>
+                    <li><strong>Imaging:</strong> Chest X-ray, CT, MRI, V/Q, PET.</li>
+                    <li><strong>Noninvasive:</strong> Pulse oximetry, capnometry/capnography, PFTs, exercise testing.</li>
+                    <li><strong>Invasive:</strong> Bronchoscopy, Thoracentesis, Lung biopsy.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="oxygen-therapy">
+            <h2>10. Oxygen Therapy: Delivering the Breath of Life</h2>
+            <div class="info-card">
+                <p>Oxygen therapy is a cornerstone intervention to manage impaired gas exchange, especially to relieve <span class="tooltip-container">hypoxemia<span class="tooltip-text">Low levels of oxygen in the arterial blood.</span></span> and prevent <span class="tooltip-container">hypoxia<span class="tooltip-text">Decreased tissue oxygenation.</span></span>.</p>
+                <ul>
+                    <li><strong>Purpose:</strong> To increase the oxygen concentration in inspired air and improve tissue oxygenation.</li>
+                    <li><strong>Goal:</strong> To use the lowest fraction of inspired oxygen (FiO2) for an acceptable blood oxygen level without causing harmful side effects (like oxygen toxicity).</li>
+                </ul>
+                <button class="reveal-button">Oxygen Delivery Systems and Their Hazards</button>
+                <div class="reveal-content">
+                    <h3>Oxygen Delivery Systems: Choosing the Right Tool</h3>
+                    <p>The type of oxygen delivery system used depends on:</p>
+                    <ul>
+                        <li>Required oxygen concentration.</li>
+                        <li>Oxygen concentration achievable by the system.</li>
+                        <li>Importance of accuracy and control of the oxygen concentration.</li>
+                        <li>Patient comfort.</li>
+                        <li>Need for humidity.</li>
+                        <li>Patient mobility.</li>
+                    </ul>
+                    <h4>Low-Flow Oxygen Delivery Systems: (Amount of oxygen delivered varies)</h4>
+                    <ul>
+                        <li>Generally easy to use and comfortable.</li>
+                        <li><span class="highlight"><strong>Nasal Cannula:</strong></span>
+                            <ul>
+                                <li>Flow rates of 1 to 6 L/min.</li>
+                                <li>Oxygen concentration of 24% to 44% (1 to 6 L/min).</li>
+                                <li>Flow rate >6 L/min does not significantly increase gas exchange because anatomical dead space is full.</li>
+                                <li>Often used for chronic lung disease or long-term therapy.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Facemask:</strong></span>
+                            <ul>
+                                <li><strong>Simple Facemask:</strong>
+                                    <ul>
+                                        <li>Delivers O2 up to 40% to 60% for short-term therapy.</li>
+                                        <li>Requires a minimum of 5 L/min to prevent rebreathing of exhaled CO2.</li>
+                                        <li>Ensure appropriate fit.</li>
+                                        <div class="figure-placeholder">
+                                            <h4>Visualize It!</h4>
+                                            <p><strong>Image:</strong> Simple facemask for oxygen delivery.</p>
+                                        </div>
+                                    </ul>
+                                </li>
+                                <li><strong>Partial Rebreather Mask:</strong>
+                                    <ul>
+                                        <li>Provides 60% to 75% with a flow rate of 6 to 11 L/min.</li>
+                                        <li>Patient rebreathes one-third exhaled tidal volume (from the reservoir bag).</li>
+                                        <div class="figure-placeholder">
+                                            <h4>Visualize It!</h4>
+                                            <p><strong>Image:</strong> Partial rebreather mask.</p>
+                                        </div>
+                                    </ul>
+                                </li>
+                                <li><strong>Non-Rebreather Mask:</strong>
+                                    <ul>
+                                        <li>Delivers the highest O2 level of the low-flow systems.</li>
+                                        <li>Can deliver FiO2 greater than 90% (up to 100%).</li>
+                                        <li>Used for unstable clients who may require intubation.</li>
+                                        <li>Ensure valves are patent and functional (prevents rebreathing of exhaled air).</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4>High-Flow Oxygen Delivery Systems: (Deliver precise, controlled FiO2)</h4>
+                    <ul>
+                        <li><span class="highlight"><strong>High-Flow Nasal Cannulas (HFNC):</strong></span>
+                            <ul>
+                                <li>Can deliver 30 L/min to 60 L/min of heated and humidified oxygen.</li>
+                                <li>Combination of heat and humidity minimizes damage to mucous membranes.</li>
+                                <li>Can provide some positive airway pressure.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Venturi Masks:</strong></span>
+                            <ul>
+                                <li>An adapter located between the bottom of the mask and the O2 source.</li>
+                                <li>Pulls in a proportional amount of room air for each liter flow of oxygen, allowing for **precise delivery** of specific FiO2 (e.g., 24%, 28%, 31%, 35%, 40%, 50%).</li>
+                                <li>Often preferred for patients where precise FiO2 is critical, such as those with COPD.</li>
+                                <div class="figure-placeholder">
+                                    <h4>Visualize It!</h4>
+                                    <p><strong>Image:</strong> Venturi mask for precise oxygen delivery.</p>
+                                </div>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h3>Noninvasive Positive-Pressure Ventilation (NPPV):</h3>
+                    <ul>
+                        <li>Uses positive pressure to keep alveoli open and improve gas exchange without invasive tubes.</li>
+                        <li><span class="highlight"><strong>CPAP (Continuous Positive Airway Pressure):</strong></span> Delivers a single, continuous positive pressure level during both inhalation and exhalation. Used for sleep apnea, respiratory failure.</li>
+                        <li><span class="highlight"><strong>BiPAP (Bilevel Positive Airway Pressure):</strong></span> Delivers two distinct pressure levels: a higher pressure during inhalation and a lower pressure during exhalation. Often volume-limited or flow-limited. Used for COPD exacerbations, respiratory failure.</li>
+                    </ul>
+                    <div class="focus-prompt">
+                        <h4>Critical Safety Alert: Oxygen for COPD Patients!</h4>
+                        <p>Research now disproves the simple "hypoxic drive theory" as the *sole* reason for breathing suppression. However, patients with chronic lung disease (like severe COPD) *are* at risk for **oxygen-induced hypercapnia** (increased CO2 in blood) if given high flow oxygen.</p>
+                        <p>The safest approach is to administer oxygen at the **lowest liter flow needed to manage hypoxemia**, often via a Venturi mask for precise control. Monitor their response closely to ensure adequate gas exchange without significantly increasing CO2 levels or severely reducing their respiratory effort. Always consult provider orders and facility protocols.</p>
+                    </div>
+                    <h3>Hazards and Complications of Oxygen Therapy:</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Combustion:</strong></span> Oxygen supports combustion. Ensure no smoking, open flames, or heat sources near oxygen equipment.</li>
+                        <li><span class="highlight"><strong>Oxygen toxicity:</strong></span> Occurs with high concentrations of oxygen (FiO2 >50%) delivered over long periods (usually >24-48 hours). Symptoms include substernal chest pain, dry cough, pleuritic pain, GI upset, dyspnea. Can lead to ARDS.</li>
+                        <li><span class="highlight"><strong>Absorption atelectasis:</strong></span> High concentrations of oxygen wash out nitrogen from the alveoli. Without nitrogen (which helps keep alveoli open), the alveoli can collapse, leading to atelectasis.</li>
+                        <li><span class="highlight"><strong>Drying of mucous membranes:</strong></span> Oxygen is a dry gas. Use humidification for flows >4 L/min or for long-term therapy.</li>
+                        <li><span class="highlight"><strong>Infection:</strong></span> From contaminated equipment (humidifiers, nebulizers). Ensure regular cleaning and changes.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Oxygen Therapy</h4>
+                <ul>
+                    <li><strong>Purpose:</strong> Relieve hypoxemia, prevent hypoxia. **Goal:** Lowest FiO2 for acceptable O2 levels.</li>
+                    <li><strong>Low-Flow Systems:</strong> Nasal cannula (1-6L, 24-44%), Simple mask (min 5L, 40-60%), Partial Rebreather (6-11L, 60-75%), Non-Rebreather (>90% high flow).</li>
+                    <li><strong>High-Flow Systems:</strong> HFNC (30-60L, heated/humidified), Venturi mask (precise FiO2, often for COPD).</li>
+                    <li><strong>NPPV:</strong> CPAP (continuous pressure), BiPAP (bilevel pressure) - noninvasive breathing support.</li>
+                    <li>**HAZARDS:** Combustion, **Oxygen Toxicity** (high O2 long term), **Absorption Atelectasis**, Dry mucous membranes, Infection.</li>
+                    <li>**COPD CAUTION:** Use low O2 flow for chronic CO2 retainers to prevent hypercapnia and respiratory drive suppression.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="interrelated-concepts">
+            <h2>11. Interrelated Concepts: The Web of Health for Gas Exchange</h2>
+            <div class="info-card">
+                <p>As noted at the beginning, Gas Exchange is a central concept, deeply intertwined with many other physiological processes and conditions. Understanding these connections is key to holistic nursing care.</p>
+                <button class="reveal-button">Explore the Interconnections!</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li><span class="highlight"><strong>Perfusion:</strong></span>
+                            <ul>
+                                <li>**Definition:** Arterial blood flow through tissues and blood pumped by the heart.</li>
+                                <li>**Connection:** Adequate perfusion is essential to deliver oxygenated blood from the lungs to the tissues and to return deoxygenated blood and CO2 to the lungs. Impaired perfusion (e.g., heart failure, pulmonary emboli) directly impacts gas exchange.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Inflammation:</strong></span>
+                            <ul>
+                                <li>**Definition:** A body's protective response to injury or infection.</li>
+                                <li>**Connection:** In respiratory conditions (e.g., asthma, pneumonia, bronchitis), inflammation leads to swelling, bronchoconstriction, and increased mucus production, all of which narrow airways and impair the ability of gases to exchange.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Cellular Regulation:</strong></span>
+                            <ul>
+                                <li>**Definition:** Processes that control cell growth, replication, and function.</li>
+                                <li>**Connection:** Healthy cellular regulation is vital for the proper function of lung cells (e.g., Type I and Type II alveolar cells) and for the production of healthy red blood cells (erythrocytes) and hemoglobin, which are crucial for oxygen transport. Disrupted cellular regulation (e.g., lung cancer, certain anemias) directly impairs gas exchange.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Infection:</strong></span>
+                            <ul>
+                                <li>**Definition:** Invasion of the body by pathogenic microorganisms.</li>
+                                <li>**Connection:** Respiratory infections (e.g., pneumonia, tuberculosis, influenza, COVID-19) are a common cause of impaired gas exchange. They lead to inflammation, fluid buildup, and tissue damage in the lungs, hindering oxygen intake and CO2 removal.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Cognition:</strong></span>
+                            <ul>
+                                <li>**Definition:** The mental processes of acquiring knowledge and understanding through thought, experience, and the senses.</li>
+                                <li>**Connection:** Insufficient oxygen reaching the brain (hypoxia or hypoxemia) can lead to impaired cognition, including confusion, disorientation, memory problems, and decreased level of consciousness.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Immunity:</strong></span>
+                            <ul>
+                                <li>**Definition:** The body's ability to resist harmful microorganisms or toxins.</li>
+                                <li>**Connection:** A strong immune system is essential for preventing and fighting off respiratory infections that would otherwise compromise gas exchange. Immunosuppression (due to disease or treatment) significantly increases the risk of impaired gas exchange from infection.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Acid-Base Balance:</strong></span>
+                            <ul>
+                                <li>**Connection:** Directly linked.
+                                    <ul>
+                                        <li>**Respiratory Acidosis:** Develops when CO2 is retained (hypoventilation), as in COPD, leading to increased carbonic acid and lower pH.</li>
+                                        <li>**Respiratory Alkalosis:** Develops when excessive CO2 is exhaled (hyperventilation), as in anxiety attacks, leading to decreased carbonic acid and higher pH.</li>
+                                        <li>**Metabolic Acidosis:** Can occur if severe hypoxemia (due to inadequate perfusion from, say, myocardial infarction) leads to anaerobic metabolism and lactic acid buildup.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Anxiety:</strong></span>
+                            <ul>
+                                <li>**Connection:** A common manifestation of impaired gas exchange, as the sensation of not getting enough air (dyspnea) is terrifying. Anxiety can also exacerbate dyspnea and hyperventilation, creating a vicious cycle.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Mobility:</strong></span>
+                            <ul>
+                                <li>**Connection:** Often reduced in patients with impaired gas exchange because dyspnea worsens with activity, leading to activity intolerance and deconditioning. Prolonged immobility also increases the risk of respiratory complications like atelectasis and pneumonia.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Fatigue:</strong></span>
+                            <ul>
+                                <li>**Connection:** A common symptom. It can be a direct result of anemia (impaired oxygen transport) or the immense energy expenditure required for increased work of breathing (e.g., in emphysema).</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Nutrition:</strong></span>
+                            <ul>
+                                <li>**Connection:** Essential for adequate energy to support the increased work of breathing in respiratory diseases (e.g., high-calorie, high-protein for CF or emphysema). Patients with impaired gas exchange may have difficulty eating due to dyspnea or poor appetite. Proper nutrition also supports the immune system and red blood cell production (e.g., iron for anemia).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Interrelated Concepts</h4>
+                <ul>
+                    <li>Gas Exchange is core, connected to:</li>
+                    <li>**Perfusion:** Blood flow for gas transport.</li>
+                    <li>**Inflammation:** Narrows airways, impairs gas exchange.</li>
+                    <li>**Cellular Regulation:** Impacts lung/RBC health.</li>
+                    <li>**Infection:** Common cause of impairment (pneumonia, TB).</li>
+                    <li>**Cognition:** Affected by hypoxia.</li>
+                    <li>**Immunity:** Protects against respiratory infections.</li>
+                    <li>**Acid-Base Balance:** Respiratory acidosis (CO2 retention), alkalosis (CO2 excretion); Metabolic acidosis (lactic acid from hypoxia).</li>
+                    <li>**Anxiety:** Result of and exacerbates dyspnea.</li>
+                    <li>**Mobility:** Reduced by dyspnea, immobility causes complications.</li>
+                    <li>**Fatigue:** From anemia or increased breathing work.</li>
+                    <li>**Nutrition:** Provides energy for breathing, supports immunity/RBCs.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="case-study-copd" class="nclex-next-gen">
+            <h3>12. NCLEX Next Gen! Case Study: COPD Client</h3>
+            <p class="case-study">A 60-year-old woman with COPD who smoked cigarettes for 40 years is admitted to the hospital. The ED nurse reports the following to the medical-surgical nurse:</p>
+            <ul>
+                <li>Has a saline lock in the R forearm and is on oxygen at 2 L per nasal cannula.</li>
+                <li>Had a bronchodilator respiratory treatment in the ED.</li>
+                <li>Has bilateral expiratory wheezes and crackles, anteriorly and posteriorly.</li>
+            </ul>
+
+            <div class="fill-in-the-blank">
+                <p>1. Which assessment finding does the nurse expect to see when the client arrives? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="cs_copd_q1" value="a"> A. Bradycardia</label>
+                    <label><input type="checkbox" name="cs_copd_q1" value="b"> B. Shortness of breath</label>
+                    <label><input type="checkbox" name="cs_copd_q1" value="c"> C. Use of accessory muscles</label>
+                    <label><input type="checkbox" name="cs_copd_q1" value="d"> D. Sitting in a forward posture</label>
+                    <label><input type="checkbox" name="cs_copd_q1" value="e"> E. Barrel chest appearance</label>
+                </div>
+                <button class="submit-btn" id="submit_cs_copd_q1">Submit Answer</button>
+                <div class="feedback" id="cs_copd_q1_feedback"></div>
+            </div>
+
+            <p class="case-study">When the client arrives to the unit, she is assessed and is in acute respiratory distress. Her respirations are labored with a respiratory rate of 32. Oxygen saturation is 82% on O2 at 2 L/min via nasal cannula.</p>
+
+            <div class="fill-in-the-blank">
+                <p>2. What will the nurse do next?</p>
+                <textarea id="cs_copd_q2_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_copd_q2_text">Check My Answer!</button>
+                <div class="feedback" id="cs_copd_q2_text_feedback"></div>
+                <div class="rationale" id="cs_copd_q2_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS: The Rapid Response Team should be notified immediately.</strong> All of these assessment findings indicate acute respiratory difficulty. The oxygen saturation should be at least 90% on 2 L per NC. This client is decompensating rapidly and requires immediate, expert intervention.</p>
+                </div>
+            </div>
+
+            <p class="case-study">While the Rapid Response Team is at the bedside, the client’s health care provider arrives. The provider writes several orders.</p>
+
+            <div class="fill-in-the-blank">
+                <p>3. Which order will the nurse implement immediately?</p>
+                <div class="options">
+                    <label><input type="radio" name="cs_copd_q3" value="a"> A. Transfer to ICU</label>
+                    <label><input type="radio" name="cs_copd_q3" value="b"> B. Increase O2 to 3 L per nasal cannula</label>
+                    <label><input type="radio" name="cs_copd_q3" value="c"> C. ABGs 30 minutes after oxygen is increased</label>
+                    <label><input type="radio" name="cs_copd_q3" value="d"> D. Methylprednisolone sodium succinate (Solu-Medrol) 40 mg IVP</label>
+                </div>
+                <button class="submit-btn" id="submit_cs_copd_q3">Submit Answer</button>
+                <div class="feedback" id="cs_copd_q3_feedback"></div>
+            </div>
+
+            <p class="case-study">The client is in the ICU for 3 days and then transferred back to a pulmonary stepdown unit. She is still slightly short of breath with exertion. Her O2 saturation is 99% on oxygen at 2L/min via nasal cannula. She denies any shortness of breath when resting during the assessment.</p>
+            <p class="case-study">The health care provider plans to discharge the client on home oxygen in the morning.</p>
+
+            <div class="fill-in-the-blank">
+                <p>4. What will the nurse include in this client’s discharge teaching?</p>
+                <textarea id="cs_copd_q4_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_copd_q4_text">Check My Answer!</button>
+                <div class="feedback" id="cs_copd_q4_text_feedback"></div>
+                <div class="rationale" id="cs_copd_q4_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS:</strong> Make sure that the client understands any new medication regimen. She should be instructed to call 911 for any severe respiratory distress. Because she is being discharged with home oxygen, home health services should be arranged.</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: COPD Case Study Takeaways</h4>
+                <ul>
+                    <li>COPD patients often present with SOB, accessory muscle use, tripod position, and barrel chest.</li>
+                    <li>Acute respiratory distress (e.g., RR 32, SpO2 82%) requires immediate notification of Rapid Response Team.</li>
+                    <li>Priority intervention in acute distress is always to address oxygenation first (increase O2).</li>
+                    <li>Discharge teaching for COPD on home O2 must include medication regimen, when to call 911, and arrangement of home health services.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="case-study-pneumonia" class="nclex-next-gen">
+            <h3>13. NCLEX Next Gen! Case Study: Pneumonia Client</h3>
+            <p class="case-study">An 81-year-old client who came to the ED has been admitted to the medical-surgical unit with a diagnosis of suspected pneumonia.</p>
+            <p class="case-study">The client reports having a productive cough and fever for 2 days. Assessment reveals flushed appearance and shortness of breath when talking.</p>
+            <p class="case-study">History includes type 2 diabetes mellitus and hypertension, and no known allergies. A chest x-ray, CBC, and basic metabolic panel (electrolytes, BUN, creatinine) were done in the ED. A saline lock is inserted into the right forearm.</p>
+            <p class="case-study">Upon arrival to the unit, blood glucose and vital signs are obtained:</p>
+            <ul>
+                <li>BG—239 mg/dL</li>
+                <li>BP—138/88 mm Hg</li>
+                <li>HR—128</li>
+                <li>RR—36 breaths/min</li>
+                <li>O2 saturation—88% (room air)</li>
+                <li>Temperature—101.6º F</li>
+            </ul>
+
+            <div class="fill-in-the-blank">
+                <p>1. Which vital sign or test result requires immediate nursing intervention?</p>
+                <div class="options">
+                    <label><input type="radio" name="cs_pneumonia_q1" value="a"> A. Blood pressure</label>
+                    <label><input type="radio" name="cs_pneumonia_q1" value="b"> B. Respiratory rate</label>
+                    <label><input type="radio" name="cs_pneumonia_q1" value="c"> C. Temperature</label>
+                    <label><input type="radio" name="cs_pneumonia_q1" value="d"> D. Blood glucose</label>
+                </div>
+                <button class="submit-btn" id="submit_cs_pneumonia_q1">Submit Answer</button>
+                <div class="feedback" id="cs_pneumonia_q1_feedback"></div>
+            </div>
+
+            <p class="case-study">After consulting with the health care provider, these orders are received:</p>
+            <ul>
+                <li>Full liquid ADA diet</li>
+                <li>IV fluids 1000 mL .9 NS at 60 mL/hr</li>
+                <li>Oxygen at 2 L per nasal cannula</li>
+                <li>Blood cultures × 3 and urinalysis</li>
+                <li>Tylenol as ordered every 4 hour for temperature above 101º F</li>
+                <li>Cefazolin as ordered every 8 hours</li>
+            </ul>
+
+            <div class="fill-in-the-blank">
+                <p>2. Which order will the nurse implement first?</p>
+                <div class="options">
+                    <label><input type="radio" name="cs_pneumonia_q2" value="a"> A. Blood cultures and urinalysis</label>
+                    <label><input type="radio" name="cs_pneumonia_q2" value="b"> B. Cefazolin every 8 hours</label>
+                    <label><input type="radio" name="cs_pneumonia_q2" value="c"> C. Oxygen at 2 L per nasal cannula</label>
+                    <label><input type="radio" name="cs_pneumonia_q2" value="d"> D. IV fluids 1000 mL .9 NS at 60 mL/hr</label>
+                </div>
+                <button class="submit-btn" id="submit_cs_pneumonia_q2">Submit Answer</button>
+                <div class="feedback" id="cs_pneumonia_q2_feedback"></div>
+            </div>
+
+            <p class="case-study">Two hours later, the client has a weak cough, crackles in both lower lobes, and an SpO2 reading of 90% by pulse oximetry.</p>
+
+            <div class="fill-in-the-blank">
+                <p>3. What interventions will the nurse implement at this time?</p>
+                <textarea id="cs_pneumonia_q3_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_pneumonia_q3_text">Check My Answer!</button>
+                <div class="feedback" id="cs_pneumonia_q3_text_feedback"></div>
+                <div class="rationale" id="cs_pneumonia_q3_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS:</strong> The client has developed problems with the airway. Interventions should include encouraging to cough and deep breathe at least every 2 hours; teaching incentive spirometry every hour while awake; encouraging the client to consume 3 L of fluid per day; monitoring intake and output; and administering bronchodilators if ordered.</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Pneumonia Case Study Takeaways</h4>
+                <ul>
+                    <li>In acute respiratory distress, **respiratory rate and oxygen saturation are the most immediate priorities.**</li>
+                    <li>Always administer **oxygen therapy first** when hypoxemia is present, even before other crucial orders like cultures or antibiotics.</li>
+                    <li>For pneumonia, interventions must focus on **airway clearance** (coughing, deep breathing, IS, fluids) and symptom management.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="review-questions">
+            <h2>14. Module Review Questions: Test Your Knowledge!</h2>
+
+            <div class="question-card" id="q1_ars">
+                <p>1. The nurse is assessing an older adult client. Which assessment finding requires nursing intervention? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="q1_ars_option" value="a"> A. Tightening of vocal cords</label>
+                    <label><input type="checkbox" name="q1_ars_option" value="b"> B. Increase in residual volume</label>
+                    <label><input type="checkbox" name="q1_ars_option" value="c"> C. Feeling breathless during exercise</label>
+                    <label><input type="checkbox" name="q1_ars_option" value="d"> D. Decrease in anteroposterior diameter</label>
+                    <label><input type="checkbox" name="q1_ars_option" value="e"> E. Decrease in respiratory muscle strength</label>
+                </div>
+                <button class="submit-btn" id="submit_q1_ars">Submit Answer</button>
+                <div class="feedback" id="q1_ars_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q2_ars">
+                <p>2. When working on smoking cessation measures, which client statement demonstrates to the nurse that further teaching is needed?</p>
+                <div class="options">
+                    <label><input type="radio" name="q2_ars_option" value="a"> A. “I wish there was a drug that could help me stop smoking.”</label>
+                    <label><input type="radio" name="q2_ars_option" value="b"> B. “I am going to look for nicotine gum at the store.”</label>
+                    <label><input type="radio" name="q2_ars_option" value="c"> C. “Quitting is going to be hard but I am willing to try.”</label>
+                    <label><input type="radio" name="q2_ars_option" value="d"> D. “While I’m cutting down, I will smoke outside instead of in the house.”</label>
+                </div>
+                <button class="submit-btn" id="submit_q2_ars">Submit Answer</button>
+                <div class="feedback" id="q2_ars_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q3_ars">
+                <p>3. Which assessment finding in an adult client does the nurse identify as most closely associated with lung disease?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3_ars_option" value="a"> A. Cough</label>
+                    <label><input type="radio" name="q3_ars_option" value="b"> B. Dyspnea</label>
+                    <label><input type="radio" name="q3_ars_option" value="c"> C. Chest pain</label>
+                    <label><input type="radio" name="q3_ars_option" value="d"> D. Sputum production</label>
+                </div>
+                <button class="submit-btn" id="submit_q3_ars">Submit Answer</button>
+                <div class="feedback" id="q3_ars_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q4_ars">
+                <p>4. A client with a history of chronic obstructive pulmonary disease is admitted with shortness of breath. Which nursing action is appropriate?</p>
+                <div class="options">
+                    <label><input type="radio" name="q4_ars_option" value="a"> A. Do not administer oxygen.</label>
+                    <label><input type="radio" name="q4_ars_option" value="b"> B. Administer oxygen via Venturi mask.</label>
+                    <label><input type="radio" name="q4_ars_option" value="c"> C. Use nasal cannula to administer high flow oxygen.</label>
+                    <label><input type="radio" name="q4_ars_option" value="d"> D. Administer oxygen at 6L per simple face mask.</label>
+                </div>
+                <button class="submit-btn" id="submit_q4_ars">Submit Answer</button>
+                <div class="feedback" id="q4_ars_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q1_copd_ar">
+                <p>5. A client with COPD who smokes 1 PPD presents for a routine appointment. Which client statement causes the nurse to suspect an increase in dyspnea?</p>
+                <div class="options">
+                    <label><input type="radio" name="q1_copd_ar_option" value="a"> A. “I prop myself up at night to sleep.”</label>
+                    <label><input type="radio" name="q1_copd_ar_option" value="b"> B. “I decided to put on some makeup today.”</label>
+                    <label><input type="radio" name="q1_copd_ar_option" value="c"> C. “I have a productive cough in the morning.”</label>
+                    <label><input type="radio" name="q1_copd_ar_option" value="d"> D. “I have gained weight since I was here last.”</label>
+                </div>
+                <button class="submit-btn" id="submit_q1_copd_ar">Submit Answer</button>
+                <div class="feedback" id="q1_copd_ar_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q3_asthma_ar">
+                <p>6. A client with a history of asthma reports shortness of breath. The nurse observes that the peak flowmeter indicates a peak expiratory flow (PEF) reading that is in the red zone. What is the priority nursing action?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3_asthma_ar_option" value="a"> A. Obtain vital signs.</label>
+                    <label><input type="radio" name="q3_asthma_ar_option" value="b"> B. Administer rescue drugs.</label>
+                    <label><input type="radio" name="q3_asthma_ar_option" value="c"> C. Notify the health care provider.</label>
+                    <label><input type="radio" name="q3_asthma_ar_option" value="d"> D. Repeat the PEF reading to verify results.</label>
+                </div>
+                <button class="submit-btn" id="submit_q3_asthma_ar">Submit Answer</button>
+                <div class="feedback" id="q3_asthma_ar_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q1_pneumonia_ar">
+                <p>7. Which symptom will the nurse anticipate in an older adult client who is suspected of having pneumonia? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="q1_pneumonia_ar_option" value="a"> A. Fever</label>
+                    <label><input type="checkbox" name="q1_pneumonia_ar_option" value="b"> B. Cough</label>
+                    <label><input type="checkbox" name="q1_pneumonia_ar_option" value="c"> C. Confusion</label>
+                    <label><input type="checkbox" name="q1_pneumonia_ar_option" value="d"> D. Weakness</label>
+                    <label><input type="checkbox" name="q1_pneumonia_ar_option" value="e"> E. TST induration</label>
+                </div>
+                <button class="submit-btn" id="submit_q1_pneumonia_ar">Submit Answer</button>
+                <div class="feedback" id="q1_pneumonia_ar_feedback"></div>
+            </div>
+
+        </section>
+        <section id="drug-mastery-quiz">
+            <h2>15. Drug Mastery Challenge: Let's Master These Meds for Gas Exchange!</h2>
+            <p>Ready to test your knowledge on the drugs related to optimizing Gas Exchange? Go through each card and see if you can recall the key information!</p>
+            <button id="startQuizBtn">Start Drug Mastery Challenge!</button>
+
+            <div class="quiz-card" id="drugQuizCard">
+                <div class="progress-tracker">Card <span id="currentCardNum">1</span> of <span id="totalCardsNum">0</span></div>
+                <h4 id="drugName">Drug Name Goes Here</h4>
+                <p id="drugQuestion">Question about the drug will appear here.</p>
+
+                <div class="quiz-controls">
+                    <button id="showAnswerBtn">Show Answer</button>
+                </div>
+
+                <div id="answerFeedback">
+                    <h5>Answer: <span id="answerType"></span></h5>
+                    <p id="answerContent"></p>
+                </div>
+
+                <div id="masteryButtons" style="display: none;">
+                    <p>Did you get it right?</p>
+                    <button id="correctBtn">Yes, I knew it!</button>
+                    <button id="incorrectBtn">No, I need to review.</button>
+                </div>
+            </div>
+
+            <div id="quizSummary">
+                <h4>Challenge Complete!</h4>
+                <p>You've gone through all the drugs!</p>
+                <p>Mastered on first try: <span id="masteredCount">0</span></p>
+                <p>Needed review: <span id="missedCount">0</span></p>
+                <button id="restartQuizBtn">Restart Full Quiz</button>
+                <button id="reviewMissedBtn">Review Missed Drugs</button>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Concept 18: Gas Exchange Learning Module. Designed for focused learning.</p>
+        </footer>
+    </div>
+
+    <div id="clockOutOverlay">
+        <div id="clockOutContent">
+            <h2>Clock Out!</h2>
+            <p>Take a moment to reset your focus. Your module will resume in:</p>
+            <div id="brainEmoji">🧠</div> <div id="countdownTimer">00:30</div>
+        </div>
+    </div>
+    <script>
+        // ==========================================
+        // Drug Data (This is the only part that can safely sit outside DOMContentLoaded)
+        // ==========================================
+        const drugs = [
+            {
+                name: "Albuterol (Proventil HFA, Ventolin HFA)",
+                class: "Short-Acting Beta2-Adrenergic Agonist (SABA) / Bronchodilator",
+                keyActions: "Rapidly relaxes bronchial smooth muscle by stimulating beta2 receptors. Used for acute bronchospasm (rescue inhaler) and preventing exercise-induced bronchospasm. Very effective for quick relief.",
+                sideEffects: "Tachycardia, palpitations, tremors, nervousness, restlessness, headache, dizziness, insomnia, dry mouth.",
+                nursingConsiderations: "Teach patient to use for acute symptoms; not for daily maintenance. Prime inhaler before first use or if not used for a while. Monitor heart rate. If using with a glucocorticoid inhaler, use albuterol first to open airways, then wait 5 minutes before glucocorticoid. Advise patient to report worsening symptoms or frequent use."
+            },
+            {
+                name: "Fluticasone propionate (Flovent HFA)",
+                class: "Inhaled Glucocorticoid / Anti-inflammatory",
+                keyActions: "Suppresses inflammation in the airways, reducing bronchial hyperreactivity and mucus production. Primary use for long-term control of asthma and allergic rhinitis.",
+                sideEffects: "Hoarseness, candidiasis (oral thrush), dry mouth, cough, pharyngitis, headache.",
+                nursingConsiderations: "Teach patient it's a **maintenance drug**, not for acute attacks. Instruct patient to rinse mouth and gargle with water after each use to prevent oral candidiasis (thrush). Full therapeutic effects may take 1-4 weeks to develop. Monitor for signs of infection."
+            },
+            {
+                name: "Montelukast (Singulair)",
+                class: "Leukotriene Receptor Antagonist",
+                keyActions: "Blocks leukotriene receptors, which are inflammatory mediators, reducing bronchoconstriction and inflammatory responses. Used for long-term control of asthma and exercise-induced bronchospasm, and allergic rhinitis.",
+                sideEffects: "Headache, dizziness, fatigue, GI upset (nausea, diarrhea), nasal congestion. Rare: neuropsychiatric events (agitation, aggression, depression, suicidal thoughts).",
+                nursingConsiderations: "Administer once daily in the evening for asthma or 2 hours before exercise for EIB. Not for acute asthma attacks. Monitor for behavioral changes. Can be given to children as young as 6 months (chewable tablets available)."
+            },
+            {
+                name: "Ipratropium bromide (Atrovent HFA)",
+                class: "Anticholinergic / Bronchodilator",
+                keyActions: "Blocks muscarinic receptors in the bronchi, preventing bronchoconstriction and reducing secretions. Used for maintenance treatment of bronchospasm associated with COPD, and sometimes for asthma.",
+                sideEffects: "Dry mouth, irritation of pharynx, cough, headache, dizziness, nausea, blurred vision (if sprayed in eyes), urinary retention (rare).",
+                nursingConsiderations: "Teach patient to use as a maintenance inhaler, not for acute relief. Advise patient to sip water or use sugar-free candy for dry mouth. Caution in patients with glaucoma or prostatic hypertrophy due to anticholinergic effects."
+            },
+            {
+                name: "Guaifenesin (Mucinex)",
+                class: "Expectorant",
+                keyActions: "Thins and loosens bronchial secretions, making coughs more productive and easier to clear mucus from the airways. Used for symptomatic relief of coughs associated with respiratory infections and allergies.",
+                sideEffects: "Nausea, vomiting, stomach upset, headache, dizziness.",
+                nursingConsiderations: "Advise patient to increase fluid intake (at least 8 glasses/day) to help thin secretions; this is the best natural expectorant. Often found in combination cold/cough products. Do not crush or chew extended-release tablets."
+            },
+            {
+                name: "Dextromethorphan (Robitussin DM, Delsym)",
+                class: "Nonopioid Antitussive (Cough Suppressant)",
+                keyActions: "Suppresses the cough reflex by acting on the cough control center in the medulla. Used for temporary relief of nonproductive, irritating coughs.",
+                sideEffects: "Drowsiness, dizziness, nausea, restlessness. High doses can cause euphoria, hallucinations, and CNS depression.",
+                nursingConsiderations: "Commonly found in OTC cold remedies. Advise patient not to exceed recommended dose. Contraindicated with MAOI therapy (risk of serotonin syndrome). Caution patient about potential for drowsiness and avoidance of driving or operating machinery."
+            },
+            {
+                name: "Pseudoephedrine (Sudafed)",
+                class: "Systemic Decongestant (Sympathomimetic Amine)",
+                keyActions: "Stimulates alpha-adrenergic receptors, causing vasoconstriction in nasal blood vessels, reducing nasal congestion. Used for temporary relief of nasal congestion associated with colds and allergies.",
+                sideEffects: "Nervousness, restlessness, insomnia, palpitations, tachycardia, hypertension, headache, dizziness, dry mouth.",
+                nursingConsiderations: "Can increase blood pressure and blood glucose; use with caution in patients with hypertension, cardiac disease, hyperthyroidism, or diabetes. Sales are regulated due to potential for illicit drug manufacturing. Avoid large amounts of caffeine. Not for prolonged use."
+            },
+            {
+                name: "N-acetylcysteine (Mucomyst)",
+                class: "Mucolytic",
+                keyActions: "Breaks down the disulfide bonds in mucus, making it less viscous and easier to expectorate. Used for thick, tenacious secretions in conditions like cystic fibrosis, chronic bronchitis, and emphysema. Also the antidote for acetaminophen overdose.",
+                sideEffects: "Bronchospasm (oral inhalation), nausea, vomiting, stomatitis, fever, rhinorrhea. Distinct sulfur-like odor.",
+                nursingConsiderations: "Administer via nebulizer or directly into tracheostomy. Explain the sulfur-like odor. Monitor for bronchospasm, especially in asthma patients. Have a bronchodilator available. Good oral hygiene is important."
+            },
+            {
+                name: "Theophylline (Theo-24, Elixophyllin)",
+                class: "Methylxanthine / Bronchodilator",
+                keyActions: "Relaxes bronchial smooth muscle, primarily by inhibiting phosphodiesterase, leading to bronchodilation. Used for long-term control of asthma and COPD.",
+                sideEffects: "Narrow therapeutic range! Nausea, vomiting, diarrhea, restlessness, insomnia, tremors, palpitations, tachycardia, dysrhythmias, seizures (at toxic levels).",
+                nursingConsiderations: "Monitor serum drug levels carefully (therapeutic range 5-15 mcg/mL). Many drug interactions (e.g., caffeine, cimetidine, certain antibiotics can increase levels; smoking decreases levels). Educate patient on signs of toxicity and to avoid caffeine. Administer with food to reduce GI upset."
+            },
+            {
+                name: "Oxygen",
+                class: "Medical Gas",
+                keyActions: "Increases oxygen concentration in inspired air, improving tissue oxygenation. Essential for life and treatment of hypoxemia.",
+                sideEffects: "Oxygen toxicity (with high concentrations over long periods), dry mucous membranes, nasal irritation, hypoventilation (in COPD patients with chronic CO2 retention).",
+                nursingConsiderations: "Monitor SaO2 and PaO2. Select appropriate delivery device (nasal cannula, mask). For COPD patients with chronic CO2 retention, administer oxygen cautiously, typically at low flow rates (1-3 L/min via nasal cannula) to avoid suppressing respiratory drive. Humidify oxygen to prevent dryness."
+            },
+            {
+                name: "Bupropion (Zyban, Wellbutrin)",
+                class: "Atypical Antidepressant / Smoking Cessation Aid",
+                keyActions: "Thought to inhibit reuptake of norepinephrine and dopamine, reducing nicotine cravings and withdrawal symptoms. Used to aid smoking cessation.",
+                sideEffects: "Dry mouth, insomnia, agitation, headache, nausea, constipation. Seizure risk (dose-related).",
+                nursingConsiderations: "Start treatment 1-2 weeks before quit date. Do not crush or chew. Monitor for neuropsychiatric symptoms. Contraindicated in seizure disorders, eating disorders, or with MAOIs."
+            },
+            {
+                name: "Varenicline (Chantix)",
+                class: "Nicotinic Receptor Partial Agonist / Smoking Cessation Aid",
+                keyActions: "Reduces the pleasure associated with smoking and alleviates nicotine withdrawal symptoms by binding to nicotine receptors. Used to aid smoking cessation.",
+                sideEffects: "Nausea (common), insomnia, abnormal dreams, headache. Serious: neuropsychiatric events (mood changes, suicidal ideation), cardiovascular events (less common).",
+                nursingConsiderations: "Start 1 week before quit date. Take with food to reduce nausea. Monitor for behavioral changes or mood disturbances. Discontinue if serious neuropsychiatric symptoms develop. Dose adjustment for renal impairment."
+            }
+        ];
+
+
+        // ==========================================
+        // ALL other JavaScript code and functions MUST be inside this single DOMContentLoaded listener.
+        // This ensures all HTML elements are available when the script tries to access them.
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- QUIZ VARIABLES AND ELEMENT SELECTIONS ---
+            let currentQuizDrugsCopy = [];
+            let currentDrugIndex = 0;
+            let masteredDrugs = [];
+            let missedDrugs = [];
+            const questionTypes = ['class', 'keyActions', 'sideEffects', 'nursingConsiderations'];
+
+            const startQuizBtn = document.getElementById('startQuizBtn');
+            const drugQuizCard = document.getElementById('drugQuizCard');
+            const drugNameEl = document.getElementById('drugName');
+            const drugQuestionEl = document.getElementById('drugQuestion');
+            const showAnswerBtn = document.getElementById('showAnswerBtn');
+            const answerFeedbackEl = document.getElementById('answerFeedback');
+            const answerTypeEl = document.getElementById('answerType');
+            const answerContentEl = document.getElementById('answerContent');
+            const masteryButtons = document.getElementById('masteryButtons');
+            const correctBtn = document.getElementById('correctBtn');
+            const incorrectBtn = document.getElementById('incorrectBtn');
+            const quizSummary = document.getElementById('quizSummary');
+            const masteredCountEl = document.getElementById('masteredCount');
+            const missedCountEl = document.getElementById('missedCount');
+            const restartQuizBtn = document.getElementById('restartQuizBtn');
+            const reviewMissedBtn = document.getElementById('reviewMissedBtn');
+            const currentCardNumEl = document.getElementById('currentCardNum');
+            const totalCardsNumEl = document.getElementById('totalCardsNum');
+
+            // --- MODULE PROGRESS BAR VARIABLES ---
+            const moduleProgressBar = document.getElementById('moduleProgressBar');
+            const sections = document.querySelectorAll('section[id]'); // Select all sections with an ID
+            let completedSectionsCount = 0; // Tracks number of completed logical sections
+
+            const completableSectionIds = new Set();
+            // Populate completableSectionIds with all relevant section IDs
+            document.querySelectorAll('section').forEach(section => {
+                // Consider a section completable if it has a reveal button or a question card
+                // For simplicity, checking for existence of either is a good start.
+                if (section.id && (section.querySelector('.reveal-button') || section.querySelector('.question-card') || section.querySelector('textarea'))) {
+                    completableSectionIds.add(section.id);
+                } else if (section.id && section.className.includes('objectives')) { // Objectives is always completable
+                     completableSectionIds.add(section.id);
+                }
+            });
+            completableSectionIds.add('drug-mastery-quiz'); // Explicitly add the quiz section itself
+            completableSectionIds.add('quick-note-area'); // Adding the quick note area as a completable section
+
+            // This line MUST be after completableSectionIds is fully populated
+            const totalSections = completableSectionIds.size; // Corrected calculation
+
+
+            // --- HELPER FUNCTIONS ---
+
+            function updateProgressBar() {
+                const progress = (completedSectionsCount / totalSections) * 100;
+                moduleProgressBar.style.width = `${progress}%`;
+            }
+
+            function markSectionCompleted(sectionId) {
+                const navLink = document.getElementById('nav-' + sectionId); // Use ID now
+                if (navLink && !navLink.classList.contains('completed')) {
+                    navLink.classList.add('completed');
+                    if (completableSectionIds.has(sectionId)) {
+                        completedSectionsCount++;
+                        updateProgressBar();
+                        // Trigger micro-break or clock-out after certain milestones
+                        if (completedSectionsCount > 0 && completedSectionsCount % 3 === 0 && completedSectionsCount !== totalSections) {
+                            showMicroBreakPrompt();
+                        }
+                    }
+                }
+            }
+            // Mark objectives and quick notes as completed on load
+            markSectionCompleted('objectives');
+            markSectionCompleted('quick-note-area');
+
+            // --- Manual scrolling for navigation links ---
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link behavior (no page reload/new tab)
+                    const targetId = this.id.replace('nav-', ''); // Get the actual section ID
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // Optionally, update the URL hash without reloading
+                        // window.location.hash = targetId;
+                    }
+                });
+            });
+
+
+            // toggleReveal function (now called by event listener, no longer onclick)
+            function toggleReveal(button) {
+                const content = button.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                    button.textContent = button.dataset.originalText;
+                } else {
+                    content.style.display = "block";
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = "Click to Hide Details";
+                    // Ensure the parent section is marked complete
+                    const parentSection = button.closest('section');
+                    if (parentSection && parentSection.id) {
+                        markSectionCompleted(parentSection.id);
+                    }
+                }
+            }
+
+            // --- Question Checking Functions ---
+            function checkAnswer(questionId, correctAnswer) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOption = questionCard.querySelector('input[name="' + questionId + '_option"]:checked');
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                // Disable options after submission
+                questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                // Ensure the submit button exists before trying to disable it
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+                if (!selectedOption) {
+                    feedbackDiv.textContent = "Oops! Please pick an answer before checking.";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                if (selectedOption.value === correctAnswer) {
+                    feedbackDiv.textContent = "Awesome! That's correct. Keep up the great work!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Not quite! The correct answer was: ${correctAnswer.toUpperCase()}. Review the material and try to understand why.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkMultipleAnswers(questionId, correctAnswers) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOptions = Array.from(questionCard.querySelectorAll('input[name="' + questionId + '_option"]:checked')).map(input => input.value);
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                // Disable options after submission
+                questionCard.querySelectorAll('input[type="checkbox"]').forEach(input => input.disabled = true);
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+
+                if (selectedOptions.length === 0) {
+                    feedbackDiv.textContent = "Don't forget to select your answers!";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                // Check if all correct answers are selected AND no incorrect ones are selected
+                const isCorrect = correctAnswers.every(answer => selectedOptions.includes(answer)) &&
+                                       selectedOptions.every(answer => correctAnswers.includes(answer));
+
+                if (isCorrect) {
+                    feedbackDiv.textContent = "Fantastic! You got all the correct points!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Hold on! Double-check the options and review the related content. You might have missed something or picked too many/too few. Correct answers were: ${correctAnswers.join(', ').toUpperCase()}.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkCaseStudyFreeText(questionId, rationaleId) {
+                const textarea = document.getElementById(questionId + '_text');
+                const feedbackDiv = document.getElementById(questionId + '_text_feedback');
+                const rationaleDiv = document.getElementById(rationaleId);
+                const submitBtn = document.getElementById('submit_' + questionId + '_text');
+
+                textarea.disabled = true;
+                submitBtn.disabled = true;
+
+                feedbackDiv.textContent = "Good attempt! Compare your answer with the detailed rationale below to refine your understanding. Keep up the great work!";
+                feedbackDiv.className = 'feedback correct';
+                feedbackDiv.style.display = 'block';
+                rationaleDiv.style.display = 'block';
+                markSectionCompleted(rationaleDiv.closest('section').id); // Mark parent section as complete
+            }
+
+
+            // --- DRUG MASTERY QUIZ FUNCTIONS ---
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function startQuiz(reviewMode = false) {
+                if (!reviewMode) {
+                    currentQuizDrugsCopy = shuffleArray([...drugs]); // Start with all drugs shuffled
+                    masteredDrugs = [];
+                    missedDrugs = [];
+                } else {
+                    if (missedDrugs.length === 0) {
+                        alert("Fantastic! You've mastered all the drugs in the review pile. Starting a new full quiz!");
+                        currentQuizDrugsCopy = shuffleArray([...drugs]);
+                        masteredDrugs = [];
+                        missedDrugs = [];
+                    } else {
+                        currentQuizDrugsCopy = shuffleArray([...missedDrugs]); // Only review missed ones
+                        missedDrugs = []; // Clear missed for the new review round
+                    }
+                }
+
+                currentDrugIndex = 0;
+                startQuizBtn.style.display = 'none';
+                drugQuizCard.style.display = 'block';
+                quizSummary.style.display = 'none';
+                displayCurrentCard();
+                markSectionCompleted('drug-mastery-quiz'); // Mark quiz section completed when started
+            }
+
+            function displayCurrentCard() {
+                if (currentDrugIndex >= currentQuizDrugsCopy.length) {
+                    showQuizSummary();
+                    return;
+                }
+
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const randomQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+
+                drugNameEl.textContent = currentDrug.name;
+                currentCardNumEl.textContent = currentDrugIndex + 1;
+                totalCardsNumEl.textContent = currentQuizDrugsCopy.length;
+
+                let questionText = '';
+                switch (randomQuestionType) {
+                    case 'class':
+                        questionText = `What is the **drug class** for ${currentDrug.name}?`;
+                        break;
+                    case 'keyActions':
+                        questionText = `What is a **key action or use** of ${currentDrug.name}?`;
+                        break;
+                    case 'sideEffects':
+                        questionText = `Name one or two **common side effects** of ${currentDrug.name}.`;
+                        break;
+                    case 'nursingConsiderations':
+                        questionText = `What is an **important nursing consideration** when administering ${currentDrug.name}?`;
+                        break;
+                }
+                drugQuestionEl.innerHTML = questionText;
+
+                answerFeedbackEl.style.display = 'none';
+                masteryButtons.style.display = 'none';
+                showAnswerBtn.style.display = 'block';
+
+                drugQuizCard.dataset.currentQuestionType = randomQuestionType;
+            }
+
+            function showAnswer() {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const questionType = drugQuizCard.dataset.currentQuestionType;
+
+                answerTypeEl.textContent = questionType.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, str => str.toUpperCase());
+
+                let content = '';
+                switch (questionType) {
+                    case 'class':
+                        content = currentDrug.class;
+                        break;
+                    case 'keyActions':
+                        content = currentDrug.keyActions;
+                        break;
+                    case 'sideEffects':
+                        content = currentDrug.sideEffects;
+                        break;
+                    case 'nursingConsiderations':
+                        content = currentDrug.nursingConsiderations;
+                        break;
+                }
+                answerContentEl.textContent = content;
+
+                answerFeedbackEl.style.display = 'block';
+                showAnswerBtn.style.display = 'none';
+                masteryButtons.style.display = 'flex';
+            }
+
+            function handleMastery(isCorrect) {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                if (isCorrect) {
+                    // Only add to mastered if it wasn't already in missed (meaning they got it right first time or after review)
+                    if (!missedDrugs.includes(currentDrug)) {
+                        masteredDrugs.push(currentDrug);
+                    }
+                    // If it was in missed, remove it since they mastered it now
+                    const missedIndex = missedDrugs.indexOf(currentDrug);
+                    if (missedIndex > -1) {
+                        missedDrugs.splice(missedIndex, 1);
+                    }
+
+                } else {
+                    if (!missedDrugs.includes(currentDrug)) { // Only add if not already present
+                        missedDrugs.push(currentDrug);
+                    }
+                    // If they got it wrong, and it was in mastered, remove it from mastered
+                    const masteredIndex = masteredDrugs.indexOf(currentDrug);
+                    if (masteredIndex > -1) {
+                        masteredDrugs.splice(masteredIndex, 1);
+                    }
+                }
+                masteryButtons.style.display = 'none';
+
+                setTimeout(() => {
+                    currentDrugIndex++;
+                    displayCurrentCard();
+                }, 1500); // 1.5 second delay before next card
+            }
+
+            function showQuizSummary() {
+                drugQuizCard.style.display = 'none';
+                quizSummary.style.display = 'block';
+
+                const uniqueMastered = [...new Set(masteredDrugs)];
+                const uniqueMissed = [...new Set(missedDrugs)];
+
+                masteredCountEl.textContent = uniqueMastered.length;
+                missedCountEl.textContent = uniqueMissed.length;
+            }
+
+            // --- EVENT LISTENERS ---
+
+            // Attach event listeners for all reveal buttons
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    toggleReveal(this); // 'this' refers to the button that was clicked
+                });
+            });
+
+            // Attach event listeners for quiz question submit buttons (by their IDs)
+            // COPD Case Study
+            document.getElementById('submit_cs_copd_q1').addEventListener('click', () => checkMultipleAnswers('cs_copd_q1', ['b', 'c', 'd', 'e']));
+            document.getElementById('submit_cs_copd_q2_text').addEventListener('click', () => checkCaseStudyFreeText('cs_copd_q2', 'cs_copd_q2_text_rationale'));
+            document.getElementById('submit_cs_copd_q3').addEventListener('click', () => checkAnswer('cs_copd_q3', 'b'));
+            document.getElementById('submit_cs_copd_q4_text').addEventListener('click', () => checkCaseStudyFreeText('cs_copd_q4', 'cs_copd_q4_text_rationale'));
+
+            // Pneumonia Case Study
+            document.getElementById('submit_cs_pneumonia_q1').addEventListener('click', () => checkAnswer('cs_pneumonia_q1', 'b'));
+            document.getElementById('submit_cs_pneumonia_q2').addEventListener('click', () => checkAnswer('cs_pneumonia_q2', 'c'));
+            document.getElementById('submit_cs_pneumonia_q3_text').addEventListener('click', () => checkCaseStudyFreeText('cs_pneumonia_q3', 'cs_pneumonia_q3_text_rationale'));
+
+            // General Review Questions
+            document.getElementById('submit_q1_ars').addEventListener('click', () => checkMultipleAnswers('q1_ars', ['a', 'd'])); // Note: Based on PPT answer, older adults have slack vocal cords (A), and increased AP diameter (D). The question asks what *requires* intervention. The PPT answers are A and D. So, decrease in AP diameter is incorrect here. And increased residual volume and decrease muscle strength are expected. So only A. Wait, the PPT says "A, D". Let's assume A and D are correct based on the provided answer explanation. Re-evaluating, the PPT states "tightening of vocal cords" and "decrease in anteroposterior diameter" *require intervention* because normal aging involves *slack vocal cords* and an *increase* in AP diameter. This implies that the findings in options A and D are deviations from normal aging, hence requiring intervention.
+            document.getElementById('submit_q2_ars').addEventListener('click', () => checkAnswer('q2_ars', 'a'));
+            document.getElementById('submit_q3_ars').addEventListener('click', () => checkAnswer('q3_ars', 'a'));
+            document.getElementById('submit_q4_ars').addEventListener('click', () => checkAnswer('q4_ars', 'b'));
+            document.getElementById('submit_q1_copd_ar').addEventListener('click', () => checkAnswer('q1_copd_ar', 'a'));
+            document.getElementById('submit_q3_asthma_ar').addEventListener('click', () => checkAnswer('q3_asthma_ar', 'b'));
+            document.getElementById('submit_q1_pneumonia_ar').addEventListener('click', () => checkMultipleAnswers('q1_pneumonia_ar', ['a', 'b', 'c', 'd']));
+
+
+            // Quiz Mastery Challenge Event Listeners
+            startQuizBtn.addEventListener('click', () => startQuiz(false));
+            showAnswerBtn.addEventListener('click', showAnswer);
+            correctBtn.addEventListener('click', () => handleMastery(true));
+            incorrectBtn.addEventListener('click', () => handleMastery(false));
+            restartQuizBtn.addEventListener('click', () => startQuiz(false));
+            reviewMissedBtn.addEventListener('click', () => startQuiz(true));
+
+            // Text Size Controls
+            const body = document.body;
+            const increaseTextBtn = document.getElementById('increaseText');
+            const decreaseTextBtn = document.getElementById('decreaseText');
+            let currentFontSize = 16; // Base font size in px (matches default Open Sans)
+
+            increaseTextBtn.addEventListener('click', () => {
+                currentFontSize += 2;
+                body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            decreaseTextBtn.addEventListener('click', () => {
+                currentFontSize -= 2;
+                if (currentFontSize < 12) currentFontSize = 12; // Minimum size
+                body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            // Quick Notes persistence (uses localStorage)
+            const quickNotesTextarea = document.getElementById('quickNotesTextarea');
+            if (localStorage.getItem('adhdModuleNotes')) {
+                quickNotesTextarea.value = localStorage.getItem('adhdModuleNotes');
+            }
+            quickNotesTextarea.addEventListener('input', () => {
+                localStorage.setItem('adhdModuleNotes', quickNotesTextarea.value);
+            });
+
+            // Micro-Break Prompts & Clock Out Logic
+            const microBreakPromptEl = document.getElementById('microBreakPrompt');
+            const breakPrompts = [
+                "Quick Break! Stand up and stretch, or take a few deep breaths!",
+                "Time for a 30-second mental reset. Look away from the screen for a moment!",
+                "Mini-Break! Wiggle your toes or do a quick shoulder roll.",
+                "Focus check! Take a sip of water and recenter. You're doing great!",
+                "Short pause! How about a quick doodle or scribble for 15 seconds?"
+            ];
+            let breakPromptTimeout;
+
+            const clockOutOverlay = document.getElementById('clockOutOverlay');
+            const countdownTimerEl = document.getElementById('countdownTimer');
+            let countdownInterval;
+
+            function showMicroBreakPrompt() {
+                // Clear any existing prompt or countdown before showing a new one
+                if (breakPromptTimeout) {
+                    clearTimeout(breakPromptTimeout);
+                }
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+
+                // Decide whether to show a quick prompt or trigger a full "Clock Out"
+                // Trigger a full "Clock Out" every 3 sections, starting after the first section (completedSectionsCount > 0)
+                // We also add a small random chance to vary it up, so it's not super predictable
+                const randomChanceForClockOut = Math.random(); // 0.0 to 1.0
+                const shouldTriggerClockOut = (completedSectionsCount > 0 && completedSectionsCount % 3 === 0 && randomChanceForClockOut < 0.7); // 70% chance every 3 sections
+
+                if (shouldTriggerClockOut) {
+                    startClockOut();
+                } else {
+                    // Show the regular micro-break prompt temporarily
+                    const randomPrompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)];
+                    microBreakPromptEl.textContent = randomPrompt;
+                    microBreakPromptEl.style.display = 'block';
+                    // Set a timer to hide it after the animation and allow new ones
+                    breakPromptTimeout = setTimeout(() => {
+                        microBreakPromptEl.style.display = 'none';
+                    }, 8000); // Matches animation duration
+                }
+            }
+
+            function startClockOut() {
+                // Hide the quick micro-break prompt if it was visible
+                microBreakPromptEl.style.display = 'none';
+
+                // Show the Clock Out overlay and blur the background
+                clockOutOverlay.classList.add('active');
+                document.body.classList.add('blurred');
+
+                let timeLeft = 30; // 30 seconds for the timer
+                countdownTimerEl.textContent = '00:30'; // Initial display for 30 seconds
+
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+
+                    const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    countdownTimerEl.textContent = formattedTime;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(countdownInterval);
+                        endClockOut();
+                    }
+                }, 1000); // Update every second
+            }
+
+            function endClockOut() {
+                clockOutOverlay.classList.remove('active');
+                document.body.classList.remove('blurred');
+                // Optionally, show a quick "Welcome back!" message or a regular prompt
+                microBreakPromptEl.textContent = "Welcome back! Let's get back to it!";
+                microBreakPromptEl.style.display = 'block';
+                setTimeout(() => {
+                    microBreakPromptEl.style.display = 'none';
+                }, 5000); // Show "Welcome back" for 5 seconds
+            }
+
+            // --- Initial setup calls that run once DOM is fully loaded ---
+            // Initialize reveal button original text (needed for toggleReveal)
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.dataset.originalText = button.textContent;
+            });
+            updateProgressBar(); // Initial update after potential localStorage load for notes
+        }); // END OF document.addEventListener('DOMContentLoaded', ...)
+    </script>
+</body>
+</html>

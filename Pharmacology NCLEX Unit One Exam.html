@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCLEX Challenge Exam - Full Randomized & Modern</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --primary-hover-color: #0056b3;
+            --secondary-color: #6c757d; /* Gray */
+            --background-color: #f8f9fa; /* Light gray */
+            --surface-color: #ffffff; /* White */
+            --text-color: #343a40; /* Dark gray */
+            --light-text-color: #f8f9fa;
+            --border-color: #dee2e6;
+            --success-color: #28a745; /* Green */
+            --danger-color: #dc3545; /* Red */
+            --font-family: 'Lato', sans-serif;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: var(--font-family);
+            line-height: 1.7;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background-color: var(--surface-color);
+            padding: 25px 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 30px;
+        }
+
+        #timerDisplay {
+            font-size: 1.6em;
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 12px 15px;
+            background-color: #e9ecef;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .question-block { /* Applies to questions in form and in review */
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #examFormContainer .question-block:last-of-type { /* Last question block in the form itself */
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+         /* Style for question blocks specifically in the review section */
+        #answerReview .question-block {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #fdfdff; 
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+        }
+
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 20px; /* Increased margin */
+        }
+        h2 { /* For results section title */
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 20px; /* Increased margin */
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+        h3 { /* Question title in form and review */
+            margin-bottom: 18px; /* Increased margin */
+            font-size: 1.25em;
+            font-weight: 700;
+            color: #333;
+            line-height: 1.4;
+        }
+        #examFormContainer label { /* Answer choice label in the form */
+            display: block;
+            margin: 10px 0; /* Increased vertical margin */
+            padding: 12px 15px; /* Increased padding */
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+        }
+        #examFormContainer label:hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+            transform: translateX(2px); /* Slight move on hover */
+        }
+        #examFormContainer input[type="radio"], 
+        #examFormContainer input[type="checkbox"] {
+            margin-right: 12px; /* Increased margin */
+            vertical-align: middle;
+            transform: scale(1.15); /* Slightly larger */
+        }
+        #examFormContainer input[type="text"] {
+            padding: 10px 12px; /* Increased padding */
+            margin-top: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            width: 150px; /* Wider input */
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        button#submitBtn {
+            display: block;
+            width: 240px; /* Wider button */
+            padding: 14px 22px; /* Increased padding */
+            background-color: var(--primary-color);
+            color: var(--light-text-color); /* Ensure text is light on dark button */
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.15em; /* Slightly larger font */
+            font-weight: 700;
+            margin: 45px auto 20px auto; /* Increased top margin */
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button#submitBtn:hover {
+            background-color: var(--primary-hover-color);
+            transform: translateY(-1px);
+        }
+        button#submitBtn:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: var(--surface-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        .results #score {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .results #feedback {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+        .results h3 { /* "Review Your Answers" title in results */
+             color: var(--primary-color);
+             border-bottom: 1px solid var(--border-color);
+             padding-bottom: 8px;
+             margin-bottom: 20px;
+        }
+        .rationale-display { /* For rationales in results */
+            margin-top: 15px; /* Increased margin */
+            padding: 15px; /* Increased padding */
+            background-color: #e9f7fd; 
+            border: 1px solid #bde0fe;
+            border-left: 5px solid var(--primary-color);
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+        .rationale-display strong { /* Bolding within rationale content */
+            font-weight: 700;
+        }
+        .rationale-display p:first-of-type strong { 
+             color: var(--primary-color);
+        }
+        .correct-answer-text-indicator { /* Span for "Correct" / "Incorrect" text in review */
+            font-weight: bold;
+            margin-left: 8px; /* Space out from question number */
+        }
+        .correct-answer-text-indicator.correct {
+            color: var(--success-color);
+        }
+        .correct-answer-text-indicator.incorrect {
+            color: var(--danger-color);
+        }
+        .user-answer-display {
+            font-style: italic;
+            color: var(--secondary-color);
+            margin-bottom: 8px; /* Increased margin */
+            padding-left: 10px; /* Indent user answer slightly */
+        }
+        .instructions {
+            margin-bottom: 30px; /* Increased margin */
+            padding: 18px; /* Increased padding */
+            background-color: #fff3cd; 
+            border: 1px solid #ffeeba;
+            border-left: 5px solid #ffc107; 
+            border-radius: var(--border-radius);
+            font-size: 1.05em; /* Slightly larger instruction text */
+        }
+        .instructions strong {
+            color: #856404; 
+        }
+        .rationale-text-hidden { /* Class for initially hidden rationale divs in HTML */
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px; /* Increased padding for smaller screens */
+            }
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h3 { /* Question titles */
+                font-size: 1.15em;
+            }
+            #examFormContainer label {
+                padding: 10px 12px; /* Adjusted padding */
+                font-size: 0.95em;
+            }
+            button#submitBtn {
+                width: 100%;
+                font-size: 1.05em; /* Adjusted font size */
+                padding: 12px 18px; /* Adjusted padding */
+            }
+            #timerDisplay {
+                font-size: 1.3em;
+            }
+        }
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.6em; /* Adjusted for very small screens */
+            }
+             h3 { 
+                font-size: 1.1em; /* Adjusted */
+            }
+            #examFormContainer label {
+                font-size: 0.9em;
+            }
+             #examFormContainer input[type="text"] {
+                width: 100px; /* Adjust dosage input width */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NCLEX Challenge Exam</h1>
+        <div id="timerDisplay">Time Remaining: 02:00:00</div>
+        <div class="instructions">
+            <p><strong>Instructions:</strong> This is a very challenging exam. Each question is worth <strong>3 points</strong>. Read each question carefully. You have <strong>2 hours</strong> to complete the exam. The exam will automatically submit when the timer runs out. Click the "Submit Exam" button at the end to see your score and rationales.</p>
+        </div>
+        
+        <form id="examFormContainer">
+            </form>
+    </div>
+
+    <div class="container results" id="resultsDisplay" style="display:none;">
+        <h2>Your Results</h2>
+        <p id="score"></p>
+        <p id="feedback"></p>
+        <h3>Review Your Answers:</h3>
+        <div id="answerReview"></div>
+    </div>
+
+    <div class="rationale-text-hidden" id="r_q1">
+        <p><strong>Rationale:</strong> Antidiarrheals like diphenoxylate/atropine (Lomotil) are contraindicated in suspected or confirmed Clostridium difficile infection because they can worsen the condition by retaining toxins and potentially precipitating toxic megacolon. Options B, C, and D are appropriate interventions for suspected C. difficile.</p>
+        <p><strong>Correct Answer Text:</strong> Administer diphenoxylate/atropine.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q2">
+        <p><strong>Rationale:</strong> Promethazine is a vesicant and can cause severe chemical irritation and tissue damage if it extravasates. The symptoms described indicate potential extravasation or severe phlebitis. The infusion must be stopped immediately to prevent further harm. While other actions might be taken later, stopping the infusion is the priority.</p>
+        <p><strong>Correct Answer Text:</strong> Stop the infusion immediately.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q3">
+        <p><strong>Rationale:</strong> Bulk-forming laxatives absorb water to increase bulk and promote peristalsis. Insufficient fluid intake can lead to esophageal or intestinal obstruction. Option B is incorrect; onset is typically 12-72 hours. Option C is general advice but not the most critical for this specific class. Mild cramping (D) can occur; severe cramping or obstruction symptoms would warrant discontinuation.</p>
+        <p><strong>Correct Answer Text:</strong> "Take this medication with at least 8 ounces of fluid."</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q4">
+        <p><strong>Rationale:</strong> The primary goal of lactulose in hepatic encephalopathy is to reduce ammonia levels, thereby improving mental status. While 2-3 soft stools are a means to excrete ammonia and a desired outcome for managing bowel movements, the ultimate therapeutic effect is neurological improvement. A decrease in ammonia is positive, but clinical improvement is the most direct indicator of therapeutic success. Decreased distension can occur but is not the primary indicator for encephalopathy treatment.</p>
+        <p><strong>Correct Answer Text:</strong> Improved level of consciousness and orientation.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q5">
+        <p><strong>Rationale:</strong> Aluminum-containing antacids are known to cause constipation. Magnesium-containing antacids tend to cause diarrhea. Hypermagnesemia is a risk with magnesium antacids, especially in renal impairment. Metabolic alkalosis can occur with excessive use of any antacid, but constipation is specific to aluminum-based ones.</p>
+        <p><strong>Correct Answer Text:</strong> Constipation</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q6">
+        <p><strong>Rationale:</strong> Long-term use of Proton Pump Inhibitors (PPIs) like omeprazole is associated with several potential complications: Increased risk of Clostridium difficile infection due to alteration of gut flora. Hypomagnesemia due to reduced intestinal absorption of magnesium. Vitamin B12 deficiency due to impaired absorption. Increased risk of osteoporosis and fractures due to potential effects on calcium absorption. Acute interstitial nephritis, though less common, is a serious renal adverse effect. All these are recognized long-term risks.</p>
+        <p><strong>Correct Answer Texts:</strong> Increased risk of Clostridium difficile infection, Hypomagnesemia, Vitamin B12 deficiency, Increased risk of osteoporosis and fractures, Acute interstitial nephritis</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q7">
+        <p><strong>Rationale:</strong> Sucralfate can bind to other medications in the GI tract and decrease their absorption. To prevent this interaction, sucralfate should be administered at least 2 hours apart from other medications like phenytoin. Taking them together would reduce phenytoin absorption. 30 minutes is often not enough separation. Crushing sucralfate is appropriate for administration if allowed, but mixing directly with phenytoin doesn't solve the absorption issue and the timing separation is key.</p>
+        <p><strong>Correct Answer Text:</strong> Administer sucralfate at least 2 hours apart from phenytoin.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q8">
+        <p><strong>Rationale:</strong> First-generation H1 antihistamines (e.g., diphenhydramine) are known for their sedative effects. This poses a significant safety risk, especially when performing tasks that require alertness. While dry mouth and appetite changes can occur, and administration with food can decrease GI upset, the risk of sedation and impaired motor skills is the priority safety concern.</p>
+        <p><strong>Correct Answer Text:</strong> "Avoid operating heavy machinery or driving until you know how this drug affects you."</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q9">
+        <p><strong>Rationale:</strong> Anticholinergic drugs can cause mydriasis (pupil dilation), which can precipitate an acute angle-closure glaucoma attack in susceptible individuals. Therefore, narrow-angle glaucoma is a significant contraindication. Hypothyroidism, peptic ulcer disease, and hypertension are generally not contraindications for anticholinergic use, though side effects might need monitoring in some contexts.</p>
+        <p><strong>Correct Answer Text:</strong> Narrow-angle glaucoma</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q10">
+        <p><strong>Rationale:</strong> St. John's Wort is a potent inducer of CYP450 enzymes, particularly CYP3A4 and CYP2C9, which metabolize warfarin. This leads to increased warfarin metabolism and a decreased INR (reduced anticoagulant effect), increasing the risk of clotting. Therefore, the INR needs close monitoring, and the warfarin dose may need to be increased. Decreasing warfarin would be inappropriate. Spacing doses doesn't mitigate this metabolic interaction.</p>
+        <p><strong>Correct Answer Text:</strong> Monitor the INR more frequently and anticipate a potential need to increase the warfarin dose.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q11">
+        <p><strong>Rationale:</strong> The Z-track method is specifically designed to seal medication deep within the muscle tissue and prevent it from leaking back into the subcutaneous tissue or along the needle track. This minimizes irritation, pain, and potential staining for certain medications (e.g., iron dextran, promethazine IM). A 25-gauge, 5/8-inch needle is typically for subcutaneous or intradermal injections. A 45-degree angle is for subcutaneous injections. Vigorous massage is generally contraindicated after Z-track or for irritating medications as it can promote leakage and irritation.</p>
+        <p><strong>Correct Answer Text:</strong> Employing the Z-track injection method.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q12">
+        <p><strong>Rationale:</strong> Chronic alcohol abuse leads to thiamine deficiency, which can cause Wernicke's encephalopathy (confusion, ataxia, nystagmus) and progress to Korsakoff syndrome (amnesia, confabulation). Parenteral thiamine is crucial for prevention and treatment. Vitamin B12 deficiency is associated with pernicious anemia and neurological symptoms, but thiamine is specific for Wernicke-Korsakoff. Vitamin K is for clotting factor synthesis. Vitamin D is for calcium absorption.</p>
+        <p><strong>Correct Answer Text:</strong> Vitamin B1 (Thiamine)</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q13">
+        <p><strong>Rationale:</strong> Sympathomimetic nasal decongestants like pseudoephedrine can cause vasoconstriction, leading to increased blood pressure (a concern for hypertensive patients), and can also worsen urinary retention in clients with BPH. Antihistamines can also contribute to urinary retention due to their anticholinergic effects, but sympathomimetic decongestants pose a dual threat in this client. Dextromethorphan is generally safe unless combined with MAOIs or SSRIs in high doses.</p>
+        <p><strong>Correct Answer Text:</strong> The nasal decongestant (e.g., pseudoephedrine), due to risk of increased blood pressure and urinary retention.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q14">
+        <p><strong>Rationale:</strong> The first trimester is a critical period of organogenesis, making it the most vulnerable time for teratogenic effects. Any medication use requires careful risk-benefit analysis. Many antiemetics are not Category A; for example, ondansetron has had some concerns. Scopolamine is Category C and not first-line. OTC status does not guarantee safety in pregnancy (e.g., NSAIDs in the third trimester).</p>
+        <p><strong>Correct Answer Text:</strong> The benefits of treating severe nausea must outweigh the potential risks to the fetus, especially in the first trimester.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q15">
+        <p><strong>Rationale:</strong> Gentamicin is nephrotoxic and ototoxic. The elevated BUN and creatinine indicate acute kidney injury (AKI). Hyperkalemia (K+ 5.8 mEq/L) is also a sign of renal dysfunction. Continuing gentamicin would worsen renal damage. Notifying the HCP is crucial for re-evaluation of therapy. While hyperkalemia needs addressing, stopping the offending agent is primary. Increased fluids may be helpful but not the priority over stopping the nephrotoxic drug. A potassium-sparing diuretic is contraindicated with hyperkalemia.</p>
+        <p><strong>Correct Answer Text:</strong> Hold the next dose of gentamicin and notify the healthcare provider.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q16">
+        <p><strong>Rationale:</strong> IV administration delivers the drug directly into the systemic circulation, bypassing absorption and the first-pass metabolism in the liver that oral medications undergo. This results in immediate and complete (100%) bioavailability. IV meds often have a higher risk of rapid-onset systemic side effects. PO is generally more convenient for long-term use. Drug interactions can occur regardless of route, though the nature might differ.</p>
+        <p><strong>Correct Answer Text:</strong> Avoidance of the first-pass effect, leading to 100% bioavailability.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q17">
+        <p><strong>Rationale:</strong> Many elixirs and suspensions, especially those containing sorbitol, are hyperosmolar and can cause osmotic diarrhea when administered via PEG tube. Diluting these medications (if compatible and recommended by pharmacy/drug literature) can reduce their osmolarity and alleviate diarrhea. Requesting an antidiarrheal addresses the symptom but not the cause. Switching all meds to crushed tablets may not be feasible (e.g., enteric-coated, sustained-release) and doesn't directly address the osmolarity of remaining liquids. Stopping tube feeding is a significant step and might not be necessary if the cause is medication formulation.</p>
+        <p><strong>Correct Answer Text:</strong> Dilute the hyperosmolar liquid medications with sterile water before administration, if appropriate.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q18">
+        <p><strong>Rationale:</strong> For rapid volume expansion in hypovolemic shock, an isotonic crystalloid is preferred. Lactated Ringer's and 0.9% Sodium Chloride (Normal Saline) are both isotonic. LR is often favored as its electrolyte composition is closer to plasma and it helps buffer acidosis that can occur in shock. 0.45% NaCl is hypotonic and would not effectively expand intravascular volume. D5W is isotonic in the bag but becomes hypotonic once dextrose is metabolized. 3% NaCl is hypertonic and used for specific situations like severe hyponatremia or cerebral edema, not typically for initial hypovolemic shock resuscitation.</p>
+        <p><strong>Correct Answer Text:</strong> Lactated Ringer's (LR) solution</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q19">
+        <p><strong>Rationale:</strong> Scopolamine is an anticholinergic drug. Blurred vision, dry mouth, and drowsiness are common and expected anticholinergic side effects. While these can be bothersome, they are not typically signs of an allergic reaction unless accompanied by rash, hives, or anaphylaxis. They don't necessarily indicate an overdose requiring immediate removal unless severe or accompanied by more serious symptoms like confusion, hallucinations, or urinary retention. Incorrect application usually leads to lack of effect rather than these specific systemic side effects.</p>
+        <p><strong>Correct Answer Text:</strong> Expected anticholinergic side effects.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q20">
+        <p><strong>Rationale:</strong> Ondansetron is a serotonin (5-HT3) receptor antagonist. Common side effects include headache, constipation, and diarrhea. A more serious potential adverse effect is QT interval prolongation, which can increase the risk of torsades de pointes. EPS and tardive dyskinesia are associated with dopamine antagonist antiemetics (e.g., metoclopramide, prochlorperazine). Significant sedation and respiratory depression are more characteristic of phenothiazines (e.g., promethazine) or opioids.</p>
+        <p><strong>Correct Answer Text:</strong> Headache and QT interval prolongation</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q21">
+        <p><strong>Rationale:</strong> Misoprostol is a prostaglandin analog that can cause uterine contractions and is an abortifacient (Pregnancy Category X). It is absolutely contraindicated in pregnancy unless used for cervical ripening/labor induction under medical supervision. Therefore, effective contraception is essential. While other instructions are relevant (GI upset, diarrhea is a common side effect, it protects the stomach lining and can decrease acid), the teratogenic risk is paramount.</p>
+        <p><strong>Correct Answer Text:</strong> "You must use effective contraception during and for one month after misoprostol therapy."</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q22">
+        <p><strong>Rationale:</strong> PRBCs are indicated to increase oxygen-carrying capacity in anemic clients. They provide red blood cells with a much smaller volume of plasma compared to whole blood, which is crucial for clients at risk of fluid overload or who do not need the extra plasma volume. Whole blood contains all components and a larger volume, typically reserved for massive hemorrhage. FFP is used to replace clotting factors. Platelets are for thrombocytopenia or platelet dysfunction. Given the active bleeding and severe anemia, PRBCs are the priority to improve oxygenation.</p>
+        <p><strong>Correct Answer Text:</strong> Packed red blood cells (PRBCs)</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q23">
+        <p><strong>Rationale:</strong> Promethazine can cause severe tissue injury (including gangrene) if extravasation occurs. After stopping the infusion (which is the first crucial step), the HCP must be notified immediately for further orders, which may include specific treatments to limit tissue damage (e.g., phentolamine, hyaluronidase, or specific compresses per policy – often cold for vesicants initially, though policies vary). Oral analgesics address pain but not tissue injury. Warm compresses may be contraindicated with some vesicants as they can increase drug spread; cold is often preferred initially, but specific orders are needed. Documentation is vital but not the priority over immediate medical consultation for intervention.</p>
+        <p><strong>Correct Answer Text:</strong> Notify the healthcare provider and prepare for potential administration of an antidote or further treatment for extravasation.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q24">
+        <p><strong>Rationale:</strong> Magnesium is excreted by the kidneys. In clients with chronic renal failure, magnesium-containing laxatives (like magnesium hydroxide or magnesium citrate) can lead to hypermagnesemia, which can cause serious adverse effects including hypotension, respiratory depression, and cardiac arrest. Psyllium requires adequate fluid intake, which might be an issue with fluid restriction, but doesn't pose the same systemic electrolyte risk. Docusate is generally safe. Bisacodyl acts locally and is less likely to cause systemic electrolyte issues related to renal failure, though dependency can be a concern with long-term use.</p>
+        <p><strong>Correct Answer Text:</strong> Magnesium hydroxide (osmotic - saline)</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q25">
+        <p><strong>Rationale:</strong> The goal of lactulose in hepatic encephalopathy is to promote the excretion of ammonia through the stool. Typically, 2-3 soft stools per day indicate effective therapy. Asterixis (liver flap) is a key sign of hepatic encephalopathy, and its reduction, along with improved mental status, signals efficacy. Frequent watery diarrhea might indicate overdosage and can lead to dehydration/electrolyte imbalance. Lactulose can cause hypokalemia, not hyperkalemia. BUN is more related to renal function and hydration status, not a direct measure of lactulose efficacy for encephalopathy.</p>
+        <p><strong>Correct Answer Text:</strong> The client has 2-3 soft, formed stools per day and reduced asterixis.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q26">
+        <p><strong>Rationale:</strong> Aluminum-based antacids cause constipation. They also bind phosphate in the GI tract, which can lead to hypophosphatemia with prolonged high-dose use. Furosemide is a loop diuretic that causes potassium loss, not typically directly related to the antacid's phosphate binding or constipation effect. Diarrhea is associated with magnesium antacids. Metabolic alkalosis (not acidosis) can occur with excessive systemic absorption of some antacids, but constipation and hypophosphatemia are specific concerns with high-dose aluminum antacids.</p>
+        <p><strong>Correct Answer Text:</strong> Worsening constipation and potential hypophosphatemia.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q27">
+        <p><strong>Rationale:</strong> Long-term PPI use is a known risk factor for hypomagnesemia. Symptoms of hypomagnesemia include neuromuscular excitability (tetany, muscle weakness, tremors, seizures) and cardiac manifestations such as ECG changes (prolonged QT interval, T-wave flattening or inversion) and arrhythmias like Torsades de Pointes. Hyperkalemia typically causes peaked T waves and widened QRS. Hyponatremia symptoms are primarily neurological. Hypercalcemia can cause muscle weakness but different ECG changes (shortened QT).</p>
+        <p><strong>Correct Answer Text:</strong> Hypomagnesemia</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q28">
+        <p><strong>Rationale:</strong> Sucralfate can significantly decrease the absorption of fluoroquinolones like ciprofloxacin by binding to them in the GI tract. To minimize this interaction, ciprofloxacin should be given at least 2 hours before or 4-6 hours after sucralfate. Taking them together or mixing would impair ciprofloxacin efficacy. While sucralfate is typically taken on an empty stomach (1 hour before meals and at bedtime) for ulcer treatment, the critical instruction here is the separation from ciprofloxacin. Ciprofloxacin can be taken with or without food, but food (especially dairy or calcium-fortified) can also reduce its absorption, though the sucralfate interaction is more pronounced.</p>
+        <p><strong>Correct Answer Text:</strong> Administer ciprofloxacin at least 2 hours before or 6 hours after sucralfate.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q29">
+        <p><strong>Rationale:</strong> While H1 receptors are primarily responsible for acute allergic symptoms like itching and hives, H2 receptors are also found on endothelial cells and contribute to vasodilation and increased vascular permeability in systemic allergic reactions, including anaphylaxis. Combining H1 and H2 blockers can provide more complete blockade of histamine effects, particularly in managing severe urticaria and as adjunctive therapy in anaphylaxis (after epinephrine). Sedation is a side effect, not the goal. While H2 blockers reduce acid, this isn't the primary reason for combination in acute allergy. H2 blockers don't reduce H1 blocker anticholinergic effects.</p>
+        <p><strong>Correct Answer Text:</strong> To target both H1 and H2 receptors involved in systemic allergic responses, especially urticaria and anaphylaxis.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q30">
+        <p><strong>Rationale:</strong> Myasthenia gravis is characterized by a deficiency of acetylcholine at the neuromuscular junction. Anticholinergic drugs block the action of acetylcholine. In a client with myasthenia gravis, who already has impaired neuromuscular transmission, further blocking acetylcholine can worsen muscle weakness and potentially trigger a myasthenic crisis (severe muscle weakness leading to respiratory failure). Pyridostigmine is an acetylcholinesterase inhibitor used to treat myasthenia gravis by increasing acetylcholine; anticholinergics would counteract its effects, not potentiate them to cause cholinergic crisis. Anticholinergics generally don't cause severe hypertension; they primarily affect parasympathetic targets. They don't directly interfere with nutrient absorption in a way that is the primary concern here.</p>
+        <p><strong>Correct Answer Text:</strong> Exacerbate muscle weakness and precipitate a myasthenic crisis.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q31">
+        <p><strong>Rationale:</strong> Ginkgo Biloba can inhibit platelet aggregation and may increase the risk of bleeding when taken with warfarin, potentially increasing the INR. Kale and spinach are rich in Vitamin K, which is an antagonist to warfarin and promotes clotting, thereby potentially decreasing the INR. This combination creates opposing effects on the INR, making anticoagulation difficult to manage and unpredictable.</p>
+        <p><strong>Correct Answer Text:</strong> Increased INR from Ginkgo and decreased INR from Vitamin K-rich foods, leading to unpredictable anticoagulation.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q32">
+        <p><strong>Rationale:</strong> The Z-track method is used to prevent leakage of medication into the subcutaneous tissue after an IM injection. This is particularly important for medications that: Cause irritation or damage to subcutaneous tissue (e.g., promethazine, hydroxyzine) and Stain the skin (e.g., iron dextran). While viscosity influences needle choice, Z-track itself doesn't primarily address it. Rapid absorption is characteristic of IM injections in general, not specific to Z-track. Small volumes don't necessarily mandate Z-track; the nature of the medication is key.</p>
+        <p><strong>Correct Answer Texts:</strong> Cause irritation or damage to subcutaneous tissue, Stain the skin.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q33">
+        <p><strong>Rationale:</strong> The symptoms described (tremors, agitation, tachycardia, diaphoresis) are classic signs of alcohol withdrawal. Withdrawal seizures are a known complication of severe alcohol withdrawal, typically occurring 12-48 hours after the last drink. Wernicke's encephalopathy presents with confusion, ataxia, and ophthalmoplegia. Hepatic encephalopathy involves altered mental status due to liver dysfunction and ammonia buildup. Thiamine deficiency can cause Wernicke's but isn't directly linked to hypertensive crisis and seizures in this acute withdrawal context.</p>
+        <p><strong>Correct Answer Text:</strong> Severe alcohol withdrawal syndrome, specifically withdrawal seizures.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q34">
+        <p><strong>Rationale:</strong> Many adult OTC cold medications are combination products. Some ingredients (e.g., certain decongestants, higher doses of antihistamines) may not be safe or appropriate for young children. Additionally, concentrations differ, making accurate dosing by "giving a smaller amount" risky and prone to error. Children's drug metabolism varies by age and drug; some drugs are metabolized slower, increasing toxicity risk. Simple weight adjustment isn't always sufficient due to differences in pharmacokinetics and pharmacodynamics. Overdosing and toxicity (not just underdosing) are significant risks.</p>
+        <p><strong>Correct Answer Text:</strong> Adult formulations may contain multiple ingredients, some of which are contraindicated or dosed differently for children.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q35">
+        <p><strong>Rationale:</strong> A platelet count of 75,000/mm³ is significantly low (thrombocytopenia) and, in a client receiving heparin, raises strong suspicion for Heparin-Induced Thrombocytopenia (HIT). HIT is a life-threatening immune complication of heparin therapy that paradoxically causes thrombosis. Heparin must be discontinued immediately if HIT is suspected. An aPTT of 70 seconds is within the therapeutic range for heparin therapy (typically 1.5-2.5 times control). Hemoglobin of 11.5 g/dL is slightly low for pregnancy but not acutely critical in this context. Potassium of 3.8 mEq/L is within normal limits.</p>
+        <p><strong>Correct Answer Text:</strong> Platelet count of 75,000/mm³.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q36">
+        <p><strong>Rationale:</strong> Peaked T waves and widened QRS complexes are signs of severe hyperkalemia causing cardiac toxicity, which is a medical emergency. IV regular insulin administered with dextrose (D50W to prevent hypoglycemia) works rapidly to shift potassium from the extracellular fluid into the intracellular space, thus temporarily reducing the serum potassium level and stabilizing cardiac membranes. Kayexalate works slowly in the GI tract to remove potassium and is not for acute emergencies. Furosemide may not be effective in ESRD if the client is anuric or has minimal urine output and won't work quickly enough for cardiac toxicity. Sevelamer is a phosphate binder, not for acute hyperkalemia.</p>
+        <p><strong>Correct Answer Text:</strong> Regular insulin 10 units IV along with D50W.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q37">
+        <p><strong>Rationale:</strong> First-pass metabolism means that after oral administration, a significant portion of the drug is metabolized by the liver before it reaches systemic circulation. This reduces the drug's bioavailability. To achieve the same therapeutic concentration in the blood as an IV dose (which has 100% bioavailability as it bypasses the liver initially), a much higher oral dose is typically required to compensate for the drug lost during the first pass.</p>
+        <p><strong>Correct Answer Text:</strong> The PO dose would be significantly higher than the IV dose.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q38">
+        <p><strong>Rationale:</strong> Flushing the tube with water before and after each medication helps ensure the medication is cleared from the tube and prevents adherence and clogging. Warm water (not hot) can sometimes help dissolve medication residues better than cold water. Administering medications separately and flushing between each one prevents potential physical or chemical incompatibilities between drugs and ensures each dose is delivered fully. Enteric-coated and sustained-release tablets should generally NOT be crushed as it alters their absorption and release properties. Mixing medications can lead to incompatibilities and tube clogging.</p>
+        <p><strong>Correct Answer Texts:</strong> Flushing the tube with at least 15-30 mL of water before and after each medication., Using warm water for flushing if not contraindicated., Administering each medication separately, flushing in between if multiple meds are given at the same time.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q39">
+        <p><strong>Rationale:</strong> Hypertonic saline (like 3% NaCl) creates an osmotic gradient, drawing water from the interstitial and intracellular spaces (including edematous brain tissue) into the intravascular compartment. This reduces cerebral edema and helps lower ICP. It does not provide free water; in fact, it can cause cellular dehydration if not carefully monitored. While it does expand intravascular volume, its primary purpose in this context is to reduce ICP. It can correct hyponatremia, but its use for ICP management is independent of that, though hyponatremia can worsen cerebral edema.</p>
+        <p><strong>Correct Answer Text:</strong> Pull fluid from the brain tissue into the intravascular space, reducing cerebral edema.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q40">
+        <p><strong>Rationale:</strong> Confusion, agitation, and urinary retention are signs of significant central and peripheral anticholinergic toxicity, which can be severe with scopolamine, especially in older adults or with prolonged use. Removing the patch (the source of the drug) is the first step. The HCP needs to be notified for further assessment and management, which might include supportive care or an antidote like physostigmine in severe cases. Administering a sedative could worsen confusion or respiratory depression. Forcing fluids won't resolve anticholinergic-induced urinary retention. These are not temporary side effects to ignore when they are this pronounced.</p>
+        <p><strong>Correct Answer Text:</strong> Remove the scopolamine patch and notify the healthcare provider.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q41">
+        <p><strong>Rationale:</strong> Metoclopramide is a dopamine antagonist that can cause extrapyramidal symptoms (EPS). Tardive dyskinesia (TD) is a serious, often irreversible EPS characterized by involuntary movements, especially of the face, lips, tongue, and extremities (e.g., lip smacking, frowning, blinking, chewing movements). It typically develops with long-term use. Acute dystonic reaction involves sudden muscle spasms. Akathisia is motor restlessness. Neuroleptic malignant syndrome is a rare but life-threatening reaction with fever, rigidity, autonomic dysfunction, and altered mental status.</p>
+        <p><strong>Correct Answer Text:</strong> Tardive dyskinesia.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q42">
+        <p><strong>Rationale:</strong> Misoprostol is a synthetic prostaglandin E1 analog. NSAIDs cause gastric mucosal injury primarily by inhibiting prostaglandin synthesis. Prostaglandins play a crucial role in maintaining mucosal integrity by stimulating mucus and bicarbonate secretion and maintaining mucosal blood flow. Misoprostol replaces these protective prostaglandins, thus preventing NSAID-induced ulcers. PPIs inhibit the proton pump. Antacids neutralize acid. Sucralfate forms a protective coating.</p>
+        <p><strong>Correct Answer Text:</strong> Replacing protective prostaglandins that are diminished by NSAID therapy.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q43">
+        <p><strong>Rationale:</strong> Flushing, chills, and fever are hallmark signs of a febrile non-hemolytic transfusion reaction, the most common type, but they can also herald more severe reactions like sepsis or an acute hemolytic reaction. The absolute priority is to stop the transfusion immediately to prevent further exposure to the blood product. The tubing should also be disconnected (while maintaining IV access with normal saline) to prevent any more blood from infusing. Then, the HCP is notified, and further supportive measures are taken. Continuing or slowing the transfusion is unsafe when a reaction is suspected.</p>
+        <p><strong>Correct Answer Text:</strong> Stop the transfusion immediately and disconnect the PRBC tubing from the IV catheter.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q44">
+        <p><strong>Rationale:</strong> PPIs (e.g., omeprazole) work by irreversibly inhibiting the H+/K+-ATPase enzyme system (the proton pump) in gastric parietal cells, which is the final common pathway for gastric acid secretion. This leads to a more profound and prolonged reduction in acid production compared to H2 receptor antagonists, which competitively block histamine at H2 receptors on parietal cells. PPIs don't neutralize acid; antacids do. They don't provide a protective coating; sucralfate does. H2 blockers and antacids often have a faster onset for immediate relief, but PPIs provide more potent and sustained acid suppression for healing.</p>
+        <p><strong>Correct Answer Text:</strong> Irreversibly block the final step of gastric acid secretion.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q45">
+        <p><strong>Rationale:</strong> Magnesium is excreted by the kidneys. In clients with renal insufficiency, even mild, the ability to excrete magnesium is impaired, leading to a risk of accumulation and hypermagnesemia if magnesium-containing antacids are used. Symptoms of hypermagnesemia include hypotension, bradycardia, respiratory depression, diminished or absent deep tendon reflexes, and drowsiness. Constipation and phosphate depletion are associated with aluminum antacids. Metabolic alkalosis (not acidosis) can occur with excessive antacid use. C. difficile risk is more linked to PPIs or antibiotics.</p>
+        <p><strong>Correct Answer Text:</strong> Signs of hypermagnesemia such as hypotension and diminished deep tendon reflexes.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q46">
+        <p><strong>Rationale:</strong> An air embolism is a life-threatening emergency. Placing the client in Trendelenburg position on their left side (Durant's maneuver) helps trap the air in the right ventricle, preventing it from entering the pulmonary circulation. Administering high-flow oxygen helps treat hypoxia. Stopping the source of air entry by clamping the catheter is crucial. Immediate notification of the RRT/HCP is essential for advanced care. Attempting to aspirate air is a valid intervention but usually follows the immediate life-saving positioning and oxygenation, and clamping the line to prevent further air entry is a higher initial priority among catheter manipulations.</p>
+        <p><strong>Correct Answer Texts:</strong> Immediately place the client in Trendelenburg position on their left side., Administer oxygen at a high flow rate., Stop the TPN infusion and clamp the central line catheter., Notify the Rapid Response Team and healthcare provider immediately.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q47">
+        <p><strong>Rationale:</strong> Diphenhydramine is an antihistamine with sedative properties. While effective for occasional insomnia, tolerance to its sedative effects can develop quickly with regular use (typically within days to weeks), making it less effective. It is not recommended for chronic nightly use for insomnia. The other statements are correct: (A) addresses sedative effects, (C) addresses anticholinergic side effects, and (D) is important as anticholinergics are contraindicated in narrow-angle glaucoma.</p>
+        <p><strong>Correct Answer Text:</strong> "I can take this medication every night if I have trouble sleeping."</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q48">
+        <p><strong>Rationale:</strong> Low serum albumin (hypoalbuminemia) reduces plasma oncotic pressure, contributing to fluid shifting from the intravascular space into the interstitial space, leading to edema and ascites in liver disease. Infusing concentrated albumin (like 25% albumin) helps to increase oncotic pressure, drawing fluid back into the intravascular compartment, which can temporarily reduce ascites and improve circulatory volume. Isotonic crystalloids or hypotonic/isotonic dextrose solutions would not correct the underlying oncotic pressure deficit and could potentially worsen fluid overload if not used judiciously with diuretics.</p>
+        <p><strong>Correct Answer Text:</strong> Albumin 25%</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q49">
+        <p><strong>Rationale:</strong> Beta2-agonists (e.g., albuterol) generally have a faster onset of action and work to open the airways more quickly. Administering the beta2-agonist first can help to open the airways, allowing for better deposition and effectiveness of the subsequently administered anticholinergic bronchodilator (e.g., ipratropium), which often has a slower onset but longer duration. Waiting about 5 minutes between inhalers allows the first medication to take effect. Concurrent administration is generally not done with separate MDI inhalers. Sequence can matter for optimal effect.</p>
+        <p><strong>Correct Answer Text:</strong> Administer the beta2-agonist first, wait 5 minutes, then administer the anticholinergic.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q50">
+        <p><strong>Rationale:</strong> Kava Kava has been associated with severe liver injury, including hepatitis, cirrhosis, and liver failure. Jaundice (yellowing of the skin/eyes), dark urine, and elevated liver enzymes are classic signs of liver damage. Serotonin syndrome presents with autonomic hyperactivity, neuromuscular abnormalities, and mental status changes. Anxiety exacerbation would not directly cause these physical signs. While impurities can be a concern with herbals, Kava itself is linked to hepatotoxicity.</p>
+        <p><strong>Correct Answer Text:</strong> Hepatotoxicity related to Kava Kava use.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q51">
+        <p><strong>Rationale:</strong> Ceftriaxone is a cephalosporin antibiotic. There is a potential for cross-sensitivity between penicillins and cephalosporins due to their similar beta-lactam ring structure. While the risk is relatively low (especially with later-generation cephalosporins if the penicillin allergy was not severe/anaphylactic), it's a critical consideration, and the prescriber should be aware or alternative chosen if allergy was severe. Vancomycin (a glycopeptide), ciprofloxacin (a fluoroquinolone), and clindamycin (a lincosamide) have different chemical structures and do not typically pose a cross-sensitivity risk with penicillin.</p>
+        <p><strong>Correct Answer Text:</strong> Ceftriaxone</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q52">
+        <p><strong>Rationale:</strong> Chlordiazepoxide is a long-acting benzodiazepine commonly used in alcohol withdrawal protocols. It helps to control autonomic hyperactivity (tremors, tachycardia, hypertension), reduce anxiety and agitation, and most importantly, prevent more severe withdrawal complications such as seizures and delirium tremens (DTs) by substituting for alcohol's effects on GABA receptors. Thiamine is given for Wernicke's. Antipsychotics may be used for psychosis but benzodiazepines are primary for withdrawal. Naltrexone or acamprosate are used for cravings/abstinence maintenance, not acute detox.</p>
+        <p><strong>Correct Answer Text:</strong> Manage withdrawal symptoms and prevent seizures and delirium tremens.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q53">
+        <p><strong>Rationale:</strong> Pseudoephedrine is a sympathomimetic agent that can increase blood pressure. MAOIs prevent the breakdown of catecholamines like norepinephrine. When pseudoephedrine is taken with an MAOI, there can be an excessive accumulation of norepinephrine, leading to a potentially life-threatening hypertensive crisis (markedly elevated blood pressure, severe headache, tachycardia, etc.). Sedation is not typical. Serotonin syndrome is more associated with SSRIs/SNRIs and other serotonergic drugs combined with MAOIs. Bradycardia is not expected; tachycardia is more likely.</p>
+        <p><strong>Correct Answer Text:</strong> Hypertensive crisis.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q54">
+        <p><strong>Rationale:</strong> Intravenous (IV) administration delivers the drug directly into the bloodstream, providing immediate and 100% bioavailability. Sublingual (SL) administration involves placing the drug under the tongue, where it is absorbed through the oral mucosa directly into systemic circulation, bypassing the first-pass metabolism in the liver. This also leads to rapid onset. Oral meds undergo first-pass metabolism. Transdermal provides slow, sustained release. Intramuscular is faster than oral for many drugs but slower than IV and subject to local absorption factors.</p>
+        <p><strong>Correct Answer Texts:</strong> Intravenous (IV), Sublingual (SL)</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q55">
+        <p><strong>Rationale:</strong> Current guidelines often suggest that for GRVs between 250-500 mL, the residual should be re-instilled (unless it appears abnormal), the feeding held temporarily (e.g., 1-2 hours), and then the GRV rechecked. The patient should also be assessed for other signs of intolerance (nausea, distension). Simply continuing with a high residual increases aspiration risk. Discarding large residuals can lead to fluid/electrolyte imbalances and nutrient loss. Stopping feeding and immediately requesting a prokinetic might be a later step if residuals remain high, but initial management involves holding and re-evaluating.</p>
+        <p><strong>Correct Answer Text:</strong> Re-instill the residual, hold the feeding for 1-2 hours, and then recheck GRV.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q56">
+        <p><strong>Rationale:</strong> D5 0.45% NaCl (D5 1/2 NS) is technically hypertonic in the bag due to the combined osmolarity of dextrose and sodium chloride. However, once infused, the dextrose is rapidly metabolized by cells, leaving behind a 0.45% NaCl solution, which is hypotonic. This hypotonic solution then provides free water that moves into cells, helping to treat intracellular dehydration, while the sodium helps maintain or expand extracellular fluid (ECF) volume to a lesser extent than isotonic solutions. It is not primarily for rapid volume expansion like 0.9% NS or LR. While it's hypertonic initially, its ultimate effect after dextrose metabolism is key. It does provide free water but its initial osmolarity is higher than just a hypotonic solution alone.</p>
+        <p><strong>Correct Answer Text:</strong> Isotonic in the bag but becomes hypotonic; provide calories and expand ECF.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q57">
+        <p><strong>Rationale:</strong> Eradication of H. pylori typically requires combination therapy with at least two antibiotics to prevent the development of resistance and increase efficacy. The PPI is crucial as it suppresses acid production, which promotes ulcer healing and can also enhance the effectiveness of some antibiotics by raising gastric pH. Option A is too general. Option C misrepresents the roles (e.g., amoxicillin/clarithromycin are both antibiotics, neither primarily coats). H. pylori is transmissible but "highly contagious" is an overstatement, and not the reason for triple therapy's composition.</p>
+        <p><strong>Correct Answer Text:</strong> "Using multiple antibiotics prevents bacterial resistance, and the PPI reduces acid to help the ulcer heal and antibiotics work better."</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q58">
+        <p><strong>Rationale:</strong> Urticaria and itching without other systemic signs (like hypotension, dyspnea, fever) often indicate a mild allergic (urticarial) transfusion reaction. For mild allergic reactions, the transfusion may be temporarily stopped or slowed, an antihistamine administered, and then, if symptoms resolve and there's no progression, the transfusion may be cautiously resumed per institutional policy and physician order. Immediately stopping and sending everything to lab is for more severe reactions. Epinephrine/intubation is for anaphylaxis. Discontinuing and starting a new unit isn't the first step for a mild, isolated urticarial reaction.</p>
+        <p><strong>Correct Answer Text:</strong> Slowing the transfusion rate and administering an IV antihistamine like diphenhydramine.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q59">
+        <p><strong>Rationale:</strong> Promethazine is known to be very irritating to tissues and can cause severe damage if injected subcutaneously or if it leaks from the IM site. Deep IM injection into a large, well-developed muscle is essential. The ventrogluteal site is preferred over the dorsogluteal due to less risk of nerve/vascular injury. The Z-track method helps seal the medication within the muscle and prevent tracking back into subcutaneous tissue. Promethazine is not given subcutaneously. Rapid injection doesn't mitigate irritation risk, and dorsogluteal is less preferred. While dilution is sometimes used for IV promethazine (with extreme caution), for IM, proper site selection and Z-track are key for minimizing irritation of the concentrated IM form.</p>
+        <p><strong>Correct Answer Text:</strong> Deep IM injection into a large muscle mass, preferably the ventrogluteal site, using the Z-track method.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q60">
+        <p><strong>Rationale:</strong> Lactulose is a non-absorbable disaccharide that is metabolized by colonic bacteria into acidic compounds (lactic acid, acetic acid). This acidification of the gut lumen promotes the conversion of diffusible ammonia (NH3) into the non-diffusible ammonium ion (NH4+). NH4+ is "trapped" in the colon and then excreted in the feces. Lactulose also has an osmotic laxative effect, which further aids in the expulsion of the trapped ammonium. It does not directly neutralize ammonia in blood, stimulate liver enzymes for ammonia metabolism, or primarily bind ammonia in portal circulation in that manner.</p>
+        <p><strong>Correct Answer Text:</strong> Conversion of ammonia (NH3) to ammonium ion (NH4+) in the gut, which is poorly absorbed, and promotion of its excretion.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q61">
+        <p><strong>Rationale:</strong> Thiazide diuretics can cause hypokalemia. Hypokalemia potentiates the effects of digoxin and increases the risk of digoxin toxicity. Signs and symptoms of digoxin toxicity include bradycardia (and other arrhythmias), visual disturbances (such as blurred vision, yellow or green halos around lights), nausea, vomiting, anorexia, and fatigue. Hyperkalemia is not caused by thiazides (they cause hypokalemia). Increased BP and fluid retention would indicate diuretic ineffectiveness. Hyperglycemia and thirst can be side effects of thiazides but are not direct signs of a digoxin-thiazide interaction leading to toxicity.</p>
+        <p><strong>Correct Answer Text:</strong> Bradycardia, visual disturbances (yellow halos), and nausea.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q62">
+        <p><strong>Rationale:</strong> Common causes of nausea and cramping with tube feedings include formula that is too cold or administered too rapidly. These are easily correctable factors that should be assessed first. While auscultating bowel sounds and palpating is a good assessment, the rate/temp are more directly linked to acute intolerance during/after feeding. Administering an antiemetic treats the symptom, not the potential cause. Changing formula is a later consideration after ruling out simpler causes.</p>
+        <p><strong>Correct Answer Text:</strong> Check the temperature and rate of the feeding administration.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q63">
+        <p><strong>Rationale:</strong> Sodium bicarbonate is an alkaline substance. Excessive ingestion can neutralize gastric acid and lead to systemic absorption of bicarbonate, increasing the body's alkali reserve and causing metabolic alkalosis. This is characterized by an elevated serum pH and elevated serum bicarbonate (HCO3-).</p>
+        <p><strong>Correct Answer Text:</strong> Metabolic alkalosis</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q64">
+        <p><strong>Rationale:</strong> Promethazine is a first-generation antihistamine with potent sedative effects due to its CNS depressant and anticholinergic properties. This drowsiness can significantly impair a person's ability to perform tasks requiring alertness, such as driving or operating machinery. While paradoxical excitation can occur, especially in children and the elderly, sedation is more common. Orthostatic hypotension can occur but is less universally limiting than sedation. Dry mouth is a common anticholinergic effect, but sedation often has a greater impact on daily activities.</p>
+        <p><strong>Correct Answer Text:</strong> Significant drowsiness or sedation.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q65">
+        <p><strong>Rationale:</strong> The client is exhibiting signs of fluid volume overload (FVO). The immediate priority is to reduce the amount of fluid being infused. Slowing the infusion to a KVO rate (or stopping it if policy allows, then KVO with saline lock) is the first action to prevent worsening the FVO. Placing the client in high Fowler's will help with breathing and is done concurrently or immediately after. Notifying the HCP is essential, as is potentially administering a diuretic if ordered, but stopping or significantly reducing the fluid intake is the most direct and immediate intervention to address the cause.</p>
+        <p><strong>Correct Answer Text:</strong> Slow the IV infusion to a keep-vein-open (KVO) rate.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q66">
+        <p><strong>Rationale:</strong> Long-term PPI use can lead to hypomagnesemia. Magnesium is crucial for normal cardiac function and neuromuscular activity. Deficiency can result in arrhythmias (e.g., Torsades de Pointes, ventricular tachycardia), prolonged QT interval, and neuromuscular symptoms like muscle weakness, tremors, tetany, and seizures. While other electrolytes are important, magnesium is specifically linked to these severe complications with chronic PPI use.</p>
+        <p><strong>Correct Answer Text:</strong> Serum magnesium</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q67">
+        <p><strong>Rationale:</strong> Thiamine (Vitamin B1) is a critical cofactor for carbohydrate metabolism, including glucose. In a thiamine-deficient individual (common in alcohol abuse), administering glucose without first providing thiamine can rapidly deplete the already low thiamine stores as the body tries to metabolize the glucose. This acute depletion can precipitate or worsen Wernicke's encephalopathy, a serious neurological condition. Therefore, thiamine should always be given before or concurrently with glucose in at-risk patients.</p>
+        <p><strong>Correct Answer Text:</strong> Wernicke's encephalopathy.</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q68">
+        <p><strong>Rationale:</strong> Sucralfate works by forming a protective coating over the ulcer site. It requires an acidic environment to be activated and to bind effectively. Taking it on an empty stomach (typically 1 hour before meals and at bedtime) ensures it doesn't bind with food and has optimal contact with the ulcer. Taking it with meals or with antacids can reduce its effectiveness as antacids raise gastric pH and food can interfere with its coating action. While some forms may be crushable or available as a suspension, the key principle for efficacy is timing relative to food and other medications like antacids.</p>
+        <p><strong>Correct Answer Text:</strong> "I need to take this medication on an empty stomach, about 1 hour before meals and at bedtime."</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q69">
+        <p><strong>Rationale:</strong> In cases of infectious diarrhea, especially Clostridium difficile, anti-motility agents (like opioid-based antidiarrheals such as loperamide or diphenoxylate/atropine) are generally contraindicated. These medications slow intestinal peristalsis, which can prolong the retention of toxins produced by C. difficile in the gut, potentially worsening the infection and increasing the risk of complications like toxic megacolon. PPIs are a risk factor for C. diff but not acutely avoided during treatment unless specified. Antiemetics might be needed for nausea. Stool softeners are not typically used for acute diarrhea.</p>
+        <p><strong>Correct Answer Text:</strong> Opioid-based antidiarrheals</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_q70">
+        <p><strong>Rationale:</strong> In cirrhosis with ascites, secondary hyperaldosteronism is common, leading to sodium and water retention and potassium excretion. Spironolactone is an aldosterone antagonist and a potassium-sparing diuretic. It is used to manage ascites by promoting sodium and water excretion while preventing hypokalemia, which is a risk with other diuretics. The hyponatremia in cirrhosis is often dilutional due to fluid retention, not true sodium deficit. Spironolactone doesn't aggressively correct hyponatremia; in fact, it can sometimes worsen it. It doesn't primarily target BUN. While it causes diuresis, its main benefit here is aldosterone antagonism and potassium sparing.</p>
+        <p><strong>Correct Answer Text:</strong> To manage ascites by promoting diuresis while conserving potassium, as hyperaldosteronism is common in cirrhosis.</p>
+    </div>
+
+    <div class="rationale-text-hidden" id="r_dc1">
+        <p><strong>Rationale:</strong>
+        1.  Calculate the concentration of heparin: 25,000 units / 500 mL = 50 units/mL.
+        2.  Calculate the flow rate in mL/hr: (Ordered units/hr) / (Concentration units/mL) = mL/hr.
+            1,000 units/hr / 50 units/mL = 20 mL/hr.
+        </p>
+        <p><strong>Correct Answer:</strong> 20</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_dc2">
+        <p><strong>Rationale:</strong>
+        1.  Convert weight to kg: 44 lbs / 2.2 lbs/kg = 20 kg.
+        2.  Calculate total daily dose: 30 mg/kg/day * 20 kg = 600 mg/day.
+        3.  Calculate dose per administration: 600 mg/day / 3 doses = 200 mg/dose.
+        4.  Calculate volume to administer: (Desired dose / Have dose) * Volume per Have.
+            (200 mg / 125 mg) * 5 mL = 1.6 * 5 mL = 8 mL.
+        </p>
+        <p><strong>Correct Answer:</strong> 8</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_dc3">
+        <p><strong>Rationale:</strong>
+        1.  Convert L to mL: 1 L = 1000 mL.
+        2.  Convert hours to minutes: 8 hours * 60 minutes/hour = 480 minutes.
+        3.  Calculate mL/min: 1000 mL / 480 minutes = 2.0833 mL/min.
+        4.  Calculate gtt/min: (mL/min * drop factor) = gtt/min.
+            2.0833 mL/min * 15 gtt/mL = 31.2495 gtt/min.
+        5.  Round to the nearest whole number: 31 gtt/min.
+        </p>
+        <p><strong>Correct Answer:</strong> 31</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_dc4">
+        <p><strong>Rationale:</strong>
+        1.  Use the formula: (Desired dose / Have dose) * Volume per Have.
+            (12.5 mg / 25 mg) * 1 mL = 0.5 mL.
+        </p>
+        <p><strong>Correct Answer:</strong> 0.5</p>
+    </div>
+    <div class="rationale-text-hidden" id="r_dc5">
+        <p><strong>Rationale:</strong>
+        1. Use the formula: (Desired dose / Dose on hand) * Quantity on hand.
+        (4 mg / 10 mg) * 1 mL = 0.4 mL.
+        </p>
+        <p><strong>Correct Answer:</strong> 0.4</p>
+    </div>
+
+    <script>
+        // --- DATA SETUP ---
+        const questionsDataSetup = [
+            // NCLEX Q1-Q5
+            {
+                originalId: 'q1', text: "A client with severe diarrhea unresponsive to loperamide is admitted. The client has a history of inflammatory bowel disease. The physician suspects Clostridium difficile infection. Which order should the nurse question regarding antidiarrheal medication?", type: 'radio',
+                options: ["Administer diphenoxylate/atropine.", "Prepare for stool specimen collection.", "Initiate contact precautions.", "Administer IV fluids as prescribed."],
+                correctAnswer: "Administer diphenoxylate/atropine."
+            },
+            {
+                originalId: 'q2', text: "A client is receiving promethazine IV postoperatively for nausea. The IV site appears erythematous and edematous, and the client complains of severe burning pain. What is the nurse's priority action?", type: 'radio',
+                options: ["Slow the infusion rate.", "Administer the prescribed analgesic.", "Stop the infusion immediately.", "Apply a warm compress to the site."],
+                correctAnswer: "Stop the infusion immediately."
+            },
+            {
+                originalId: 'q3', text: "An elderly client with chronic constipation is prescribed a bulk-forming laxative. Which instruction is most critical for the nurse to provide?", type: 'radio',
+                options: ["\"Take this medication with at least 8 ounces of fluid.\"", "\"You can expect a bowel movement within 1-2 hours.\"", "\"Avoid taking this medication with other drugs.\"", "\"Discontinue use if you experience any abdominal cramping.\""],
+                correctAnswer: "\"Take this medication with at least 8 ounces of fluid.\""
+            },
+            {
+                originalId: 'q4', text: "A client with hepatic encephalopathy is receiving lactulose. Which finding best indicates the medication is having its desired therapeutic effect?", type: 'radio',
+                options: ["Two to three soft stools per day.", "Serum ammonia level decreased from 150 mcg/dL to 120 mcg/dL.", "Client reports decreased abdominal distension.", "Improved level of consciousness and orientation."],
+                correctAnswer: "Improved level of consciousness and orientation."
+            },
+            {
+                originalId: 'q5', text: "A client is prescribed an aluminum hydroxide antacid for GERD. The nurse should assess the client for which potential side effect associated with this specific type of antacid?", type: 'radio',
+                options: [ "Diarrhea", "Constipation", "Hypermagnesemia", "Metabolic alkalosis" ],
+                correctAnswer: "Constipation"
+            },
+            // NCLEX Q6 (SATA)
+            { 
+                originalId: 'q6', text: "A client has been taking omeprazole (a PPI) for 2 years. The nurse should prioritize monitoring for which potential long-term complications? (Select all that apply.)", type: 'checkbox',
+                options: ["Increased risk of Clostridium difficile infection", "Hypomagnesemia", "Vitamin B12 deficiency", "Increased risk of osteoporosis and fractures", "Acute interstitial nephritis", "Hyperglycemia", "Peripheral neuropathy" ],
+                correctAnswer: ["Increased risk of Clostridium difficile infection", "Hypomagnesemia", "Vitamin B12 deficiency", "Increased risk of osteoporosis and fractures", "Acute interstitial nephritis"]
+            },
+            // NCLEX Q7-Q20 (Populated)
+            {
+                originalId: 'q7', text: "A client is prescribed sucralfate and phenytoin. The nurse's instructions regarding administration should emphasize:", type: 'radio',
+                options: ["Take sucralfate and phenytoin together for optimal absorption.", "Administer phenytoin 30 minutes before sucralfate.", "Administer sucralfate at least 2 hours apart from phenytoin.", "Crush sucralfate and mix with phenytoin suspension if the client has dysphagia."],
+                correctAnswer: "Administer sucralfate at least 2 hours apart from phenytoin."
+            },
+            {
+                originalId: 'q8', text: "A client with allergic rhinitis is prescribed a first-generation H1 antihistamine. Which information is most crucial for the nurse to include in patient teaching to ensure safety?", type: 'radio',
+                options: ["\"This medication may cause an increase in appetite.\"", "\"Avoid operating heavy machinery or driving until you know how this drug affects you.\"", "\"You may experience dry mouth, which can be managed with sugarless candy.\"", "\"Take this medication on an empty stomach for better absorption.\""],
+                correctAnswer: "\"Avoid operating heavy machinery or driving until you know how this drug affects you.\""
+            },
+            {
+                originalId: 'q9', text: "A client is prescribed an anticholinergic medication for irritable bowel syndrome. The nurse should assess for a history of which condition, as it may be a contraindication?", type: 'radio',
+                options: ["Hypothyroidism", "Narrow-angle glaucoma", "Peptic ulcer disease", "Hypertension"],
+                correctAnswer: "Narrow-angle glaucoma"
+            },
+            {
+                originalId: 'q10', text: "A client on warfarin therapy reports starting St. John's Wort for mild depression. The nurse anticipates the need to:", type: 'radio',
+                options: ["Increase the St. John's Wort dosage for better antidepressant effect.", "Decrease the warfarin dosage due to increased bleeding risk.", "Monitor the INR more frequently and anticipate a potential need to increase the warfarin dose.", "Advise the client to take St. John's Wort and warfarin at least 4 hours apart."],
+                correctAnswer: "Monitor the INR more frequently and anticipate a potential need to increase the warfarin dose."
+            },
+            {
+                originalId: 'q11', text: "The nurse is preparing to administer a medication known to be highly irritating to subcutaneous tissue via intramuscular injection. Which technique is most appropriate to minimize tissue irritation and prevent tracking of the medication?", type: 'radio',
+                options: ["Using a 25-gauge, 5/8-inch needle.", "Administering the injection at a 45-degree angle.", "Applying vigorous massage to the site after injection.", "Employing the Z-track injection method."],
+                correctAnswer: "Employing the Z-track injection method."
+            },
+            {
+                originalId: 'q12', text: "A client with a history of chronic alcohol abuse is admitted with confusion, ataxia, and nystagmus. The nurse anticipates administering which vitamin parenterally to prevent Wernicke-Korsakoff syndrome?", type: 'radio',
+                options: ["Vitamin B12 (Cyanocobalamin)", "Vitamin K (Phytonadione)", "Vitamin B1 (Thiamine)", "Vitamin D (Cholecalciferol)"],
+                correctAnswer: "Vitamin B1 (Thiamine)"
+            },
+            {
+                originalId: 'q13', text: "A client reports using several over-the-counter (OTC) medications for cold symptoms, including a nasal decongestant, an antihistamine, and a cough suppressant containing dextromethorphan. The client has a history of hypertension and benign prostatic hyperplasia (BPH). Which OTC component is of most concern?", type: 'radio',
+                options: ["Dextromethorphan, due to risk of serotonin syndrome.", "The antihistamine, due to potential for urinary retention.", "The nasal decongestant (e.g., pseudoephedrine), due to risk of increased blood pressure and urinary retention.", "All components are generally safe if taken as directed."],
+                correctAnswer: "The nasal decongestant (e.g., pseudoephedrine), due to risk of increased blood pressure and urinary retention."
+            },
+            {
+                originalId: 'q14', text: "A pregnant client in her first trimester has severe nausea and vomiting. The provider is considering prescribing an antiemetic. Which statement reflects a critical understanding of medication use during pregnancy?", type: 'radio',
+                options: ["Most antiemetics are Category A and safe to use throughout pregnancy.", "The benefits of treating severe nausea must outweigh the potential risks to the fetus, especially in the first trimester.", "Transdermal scopolamine is the first-line treatment for nausea in pregnancy due to minimal systemic absorption.", "If a medication is available over-the-counter, it is generally safe for use during pregnancy."],
+                correctAnswer: "The benefits of treating severe nausea must outweigh the potential risks to the fetus, especially in the first trimester."
+            },
+            {
+                originalId: 'q15', text: "A client receiving gentamicin has the following lab results: BUN 45 mg/dL, Serum Creatinine 2.8 mg/dL, Potassium 5.8 mEq/L. What is the nurse's priority action?", type: 'radio',
+                options: ["Administer a potassium-sparing diuretic.", "Encourage increased oral fluid intake.", "Hold the next dose of gentamicin and notify the healthcare provider.", "Administer calcium gluconate as ordered for hyperkalemia."],
+                correctAnswer: "Hold the next dose of gentamicin and notify the healthcare provider."
+            },
+            {
+                originalId: 'q16', text: "What is the primary advantage of administering a medication intravenously (IV) compared to the oral (PO) route?", type: 'radio',
+                options: ["Lower risk of systemic side effects.", "Avoidance of the first-pass effect, leading to 100% bioavailability.", "More convenient for long-term administration.", "Reduced likelihood of drug-drug interactions."],
+                correctAnswer: "Avoidance of the first-pass effect, leading to 100% bioavailability."
+            },
+            {
+                originalId: 'q17', text: "A client receiving multiple medications via a PEG tube develops persistent diarrhea. The nurse considers that many liquid medications are formulated in a hyperosmolar base. Which action demonstrates the best clinical judgment?", type: 'radio',
+                options: ["Request an order for an antidiarrheal medication immediately.", "Dilute the hyperosmolar liquid medications with sterile water before administration, if appropriate.", "Switch all liquid medications to crushed tablets mixed with water.", "Stop the tube feeding and notify the physician about potential malabsorption."],
+                correctAnswer: "Dilute the hyperosmolar liquid medications with sterile water before administration, if appropriate."
+            },
+            {
+                originalId: 'q18', text: "A client in hypovolemic shock is to receive a rapid infusion of crystalloids. Which solution is most appropriate for initial, rapid volume expansion in this scenario?", type: 'radio',
+                options: ["0.45% Sodium Chloride (1/2 NS)", "Dextrose 5% in Water (D5W)", "Lactated Ringer's (LR) solution", "3% Sodium Chloride"],
+                correctAnswer: "Lactated Ringer's (LR) solution"
+            },
+            {
+                originalId: 'q19', text: "A client using a scopolamine patch for motion sickness reports blurred vision, dry mouth, and drowsiness. The nurse should interpret these findings as:", type: 'radio',
+                options: ["An allergic reaction to the medication.", "Expected anticholinergic side effects.", "Symptoms of medication overdose requiring immediate patch removal.", "An indication the patch is not applied correctly."],
+                correctAnswer: "Expected anticholinergic side effects."
+            },
+            {
+                originalId: 'q20', text: "A client undergoing chemotherapy is experiencing severe nausea and vomiting. The oncologist prescribes ondansetron. The nurse should monitor the client for which potential adverse effect specifically associated with this class of antiemetics?", type: 'radio',
+                options: ["Extrapyramidal symptoms (EPS)", "Significant sedation and respiratory depression", "Headache and QT interval prolongation", "Tardive dyskinesia with long-term use"],
+                correctAnswer: "Headache and QT interval prolongation"
+            },
+            // NCLEX Q21-Q40 (Populated)
+            {
+                originalId: 'q21', text: "A client with peptic ulcer disease caused by NSAID use is prescribed misoprostol. Which instruction is absolutely critical if this client is a female of childbearing potential?", type: 'radio',
+                options: ["\"Take this medication with food to reduce GI upset.\"", "\"You must use effective contraception during and for one month after misoprostol therapy.\"", "\"Report any occurrence of diarrhea to your healthcare provider.\"", "\"This medication will help heal your ulcer by reducing stomach acid.\""],
+                correctAnswer: "\"You must use effective contraception during and for one month after misoprostol therapy.\""
+            },
+            {
+                originalId: 'q22', text: "A client with severe anemia (Hgb 6.2 g/dL) and active gastrointestinal bleeding is to receive a blood transfusion. Which blood product is most appropriate to rapidly increase oxygen-carrying capacity with minimal volume?", type: 'radio',
+                options: ["Whole blood", "Packed red blood cells (PRBCs)", "Fresh frozen plasma (FFP)", "Platelets"],
+                correctAnswer: "Packed red blood cells (PRBCs)"
+            },
+            {
+                originalId: 'q23', text: "A client receiving an IV infusion of promethazine complains of intense pain at the IV site. The nurse notes swelling and redness. After stopping the infusion, which action should the nurse prioritize?", type: 'radio',
+                options: ["Administer a prescribed oral analgesic immediately.", "Apply a warm compress to the site to disperse the medication.", "Notify the healthcare provider and prepare for potential administration of an antidote or further treatment for extravasation.", "Document the event and continue to monitor the site hourly."],
+                correctAnswer: "Notify the healthcare provider and prepare for potential administration of an antidote or further treatment for extravasation."
+            },
+            {
+                originalId: 'q24', text: "A client with chronic renal failure who is on fluid restriction is experiencing constipation. Which type of laxative would require the most caution and careful monitoring in this client?", type: 'radio',
+                options: ["Psyllium (bulk-forming)", "Docusate sodium (stool softener)", "Magnesium hydroxide (osmotic - saline)", "Bisacodyl suppositories (stimulant)"],
+                correctAnswer: "Magnesium hydroxide (osmotic - saline)"
+            },
+            {
+                originalId: 'q25', text: "Lactulose is administered to a client with advanced liver disease and rising ammonia levels. The nurse evaluates that the medication is effective if which of the following occurs, in addition to improved mental status?", type: 'radio',
+                options: ["Serum potassium level increases to 4.5 mEq/L.", "The client experiences frequent, watery diarrhea.", "The client has 2-3 soft, formed stools per day and reduced asterixis.", "Blood urea nitrogen (BUN) normalizes."],
+                correctAnswer: "The client has 2-3 soft, formed stools per day and reduced asterixis."
+            },
+            {
+                originalId: 'q26', text: "A client taking a high dose of an aluminum-based antacid and furosemide concurrently is at increased risk for which adverse effect related to drug interactions and side effects?", type: 'radio',
+                options: ["Hypercalcemia due to phosphate binding.", "Severe diarrhea leading to hypokalemia.", "Worsening constipation and potential hypophosphatemia.", "Metabolic acidosis from antacid overuse."],
+                correctAnswer: "Worsening constipation and potential hypophosphatemia."
+            },
+            {
+                originalId: 'q27', text: "A client on long-term proton pump inhibitor (PPI) therapy is admitted with new-onset tetany, muscle weakness, and an ECG showing a prolonged QT interval and Torsades de Pointes. The nurse should suspect an imbalance of which electrolyte?", type: 'radio',
+                options: ["Hyperkalemia", "Hyponatremia", "Hypomagnesemia", "Hypercalcemia"],
+                correctAnswer: "Hypomagnesemia"
+            },
+            {
+                originalId: 'q28', text: "A client is prescribed sucralfate 1g QID and ciprofloxacin 500mg BID for a complicated UTI. To ensure optimal medication efficacy, the nurse should instruct the client to:", type: 'radio',
+                options: ["Take sucralfate and ciprofloxacin at the same time to enhance ciprofloxacin absorption.", "Administer ciprofloxacin at least 2 hours before or 6 hours after sucralfate.", "Crush the sucralfate and mix it with the ciprofloxacin tablet in applesauce.", "Take sucralfate with meals and ciprofloxacin on an empty stomach."],
+                correctAnswer: "Administer ciprofloxacin at least 2 hours before or 6 hours after sucralfate."
+            },
+            {
+                originalId: 'q29', text: "A client with severe allergic reactions is prescribed an H1 blocker (e.g., diphenhydramine) and an H2 blocker (e.g., famotidine) concurrently. What is the primary rationale for this combination therapy?", type: 'radio',
+                options: ["To provide potentiation of sedative effects for better rest.", "To target both H1 and H2 receptors involved in systemic allergic responses, especially urticaria and anaphylaxis.", "To prevent gastric acid hypersecretion often triggered by severe allergic stress.", "To reduce the anticholinergic side effects common to H1 blockers alone."],
+                correctAnswer: "To target both H1 and H2 receptors involved in systemic allergic responses, especially urticaria and anaphylaxis."
+            },
+            {
+                originalId: 'q30', text: "A client with myasthenia gravis is inadvertently prescribed a medication with strong anticholinergic properties for urinary incontinence. The nurse recognizes this as a significant concern because anticholinergics can:", type: 'radio',
+                options: ["Potentiate the effects of pyridostigmine, leading to cholinergic crisis.", "Exacerbate muscle weakness and precipitate a myasthenic crisis.", "Cause severe hypertension by blocking muscarinic receptors in blood vessels.", "Interfere with the absorption of essential nutrients needed for muscle function."],
+                correctAnswer: "Exacerbate muscle weakness and precipitate a myasthenic crisis."
+            },
+            {
+                originalId: 'q31', text: "A client taking warfarin (Coumadin) for atrial fibrillation reports consuming large amounts of kale and spinach daily. The client also mentions starting Ginkgo Biloba for memory. Which combination of effects should the nurse be most concerned about?", type: 'radio',
+                options: ["Increased INR from Ginkgo and decreased INR from Vitamin K-rich foods, leading to unpredictable anticoagulation.", "Decreased INR from Ginkgo and increased INR from Vitamin K-rich foods, requiring a lower warfarin dose.", "Markedly increased INR due to synergistic effects of Ginkgo and Vitamin K on bleeding.", "Significant decrease in INR from both Ginkgo's enzyme induction and Vitamin K antagonism."],
+                correctAnswer: "Increased INR from Ginkgo and decreased INR from Vitamin K-rich foods, leading to unpredictable anticoagulation."
+            },
+            {
+                originalId: 'q32', text: "The Z-track method of intramuscular injection is particularly indicated for medications that are known to: (Select all that apply.)", type: 'checkbox',
+                options: ["Be highly viscous.", "Cause irritation or damage to subcutaneous tissue.", "Stain the skin.", "Require rapid absorption into the bloodstream.", "Be administered in very small volumes (less than 0.5 mL)."],
+                correctAnswer: ["Cause irritation or damage to subcutaneous tissue.", "Stain the skin."]
+            },
+            {
+                originalId: 'q33', text: "A homeless client with a history of severe alcohol use disorder is admitted with tremors, agitation, elevated heart rate, and diaphoresis. Twenty-four hours after admission, the client experiences a generalized tonic-clonic seizure. This is most likely indicative of:", type: 'radio',
+                options: ["Wernicke's encephalopathy progressing to Korsakoff's psychosis.", "Severe alcohol withdrawal syndrome, specifically withdrawal seizures.", "Hepatic encephalopathy due to underlying liver cirrhosis.", "A hypertensive crisis triggered by thiamine deficiency."],
+                correctAnswer: "Severe alcohol withdrawal syndrome, specifically withdrawal seizures."
+            },
+            {
+                originalId: 'q34', text: "A parent asks if it is safe to give their 5-year-old child an adult-strength OTC cough and cold medication if they \"just give a smaller amount.\" The nurse's best response is based on the understanding that:", type: 'radio',
+                options: ["Adult formulations may contain multiple ingredients, some of which are contraindicated or dosed differently for children.", "Children metabolize drugs much faster than adults, so a smaller adult dose might be subtherapeutic.", "As long as the dose is weight-adjusted, adult medications can be used in children.", "The main risk is underdosing, leading to ineffective symptom relief."],
+                correctAnswer: "Adult formulations may contain multiple ingredients, some of which are contraindicated or dosed differently for children."
+            },
+            {
+                originalId: 'q35', text: "A client who is 32 weeks pregnant develops a deep vein thrombosis (DVT) and is started on heparin therapy. Which lab value requires the most immediate intervention by the nurse?", type: 'radio',
+                options: ["aPTT of 70 seconds (control 25-35 seconds).", "Platelet count of 75,000/mm³.", "Hemoglobin of 11.5 g/dL.", "Potassium of 3.8 mEq/L."],
+                correctAnswer: "Platelet count of 75,000/mm³."
+            },
+            {
+                originalId: 'q36', text: "A client with end-stage renal disease (ESRD) has a serum potassium level of 6.8 mEq/L. The nurse observes peaked T waves and widened QRS complexes on the ECG. Which prescribed PRN medication should the nurse prepare to administer first?", type: 'radio',
+                options: ["Sodium polystyrene sulfonate (Kayexalate) 15g PO.", "Furosemide 40 mg IV.", "Regular insulin 10 units IV along with D50W.", "Sevelamer hydrochloride 800 mg PO."],
+                correctAnswer: "Regular insulin 10 units IV along with D50W."
+            },
+            {
+                originalId: 'q37', text: "A medication undergoes extensive first-pass metabolism in the liver. How would this affect the oral (PO) versus intravenous (IV) dosing of this medication to achieve the same therapeutic effect?", type: 'radio',
+                options: ["The PO dose would be significantly higher than the IV dose.", "The PO dose would be significantly lower than the IV dose.", "The PO and IV doses would be approximately equal.", "The route of administration does not affect dosing if bioavailability is considered."],
+                correctAnswer: "The PO dose would be significantly higher than the IV dose."
+            },
+            {
+                originalId: 'q38', text: "When administering medications through a PEG tube, which action is essential to prevent tube clogging and ensure medication delivery? (Select all that apply.)", type: 'checkbox',
+                options: ["Crushing enteric-coated or sustained-release tablets thoroughly.", "Flushing the tube with at least 15-30 mL of water before and after each medication.", "Mixing all scheduled medications together to reduce the number of administrations.", "Using warm water for flushing if not contraindicated.", "Administering each medication separately, flushing in between if multiple meds are given at the same time."],
+                correctAnswer: ["Flushing the tube with at least 15-30 mL of water before and after each medication.", "Using warm water for flushing if not contraindicated.", "Administering each medication separately, flushing in between if multiple meds are given at the same time."]
+            },
+            {
+                originalId: 'q39', text: "A client with traumatic brain injury and increased intracranial pressure (ICP) is prescribed an IV infusion of 3% Sodium Chloride. The nurse understands this hypertonic solution is used primarily to:", type: 'radio',
+                options: ["Provide free water to hydrate brain cells and improve perfusion.", "Rapidly expand intravascular volume to treat associated hypotension.", "Pull fluid from the brain tissue into the intravascular space, reducing cerebral edema.", "Correct severe hyponatremia that often accompanies head injuries."],
+                correctAnswer: "Pull fluid from the brain tissue into the intravascular space, reducing cerebral edema."
+            },
+            {
+                originalId: 'q40', text: "A client using a transdermal scopolamine patch for several days reports confusion, agitation, and difficulty urinating. Which is the nurse's most appropriate initial action?", type: 'radio',
+                options: ["Administer a PRN sedative to calm the client.", "Instruct the client to drink more fluids to promote urination.", "Remove the scopolamine patch and notify the healthcare provider.", "Reassure the client that these are temporary side effects."],
+                correctAnswer: "Remove the scopolamine patch and notify the healthcare provider."
+            },
+            // NCLEX Q41-Q70 (Populated)
+            {
+                originalId: 'q41', text: "A client receiving metoclopramide for gastroparesis develops uncontrollable lip smacking, frowning, and blinking. The nurse recognizes these signs as potentially indicative of:", type: 'radio',
+                options: ["Neuroleptic malignant syndrome.", "Acute dystonic reaction.", "Tardive dyskinesia.", "Akathisia."],
+                correctAnswer: "Tardive dyskinesia."
+            },
+            {
+                originalId: 'q42', text: "Misoprostol is prescribed for a client taking long-term NSAID therapy for rheumatoid arthritis. The primary mechanism by which misoprostol prevents NSAID-induced ulcers is by:", type: 'radio',
+                options: ["Irreversibly inhibiting the proton pump in parietal cells.", "Neutralizing gastric acid already present in the stomach.", "Replacing protective prostaglandins that are diminished by NSAID therapy.", "Forming a protective coating over the ulcer bed to promote healing."],
+                correctAnswer: "Replacing protective prostaglandins that are diminished by NSAID therapy."
+            },
+            {
+                originalId: 'q43', text: "During the transfusion of packed red blood cells (PRBCs), a client develops flushing, chills, and a temperature increase of 2°F from baseline. What is the nurse's immediate priority action?", type: 'radio',
+                options: ["Administer an antihistamine and continue the transfusion slowly.", "Slow the transfusion rate and notify the charge nurse.", "Stop the transfusion immediately and disconnect the PRBC tubing from the IV catheter.", "Document the vital signs and continue to monitor the client closely."],
+                correctAnswer: "Stop the transfusion immediately and disconnect the PRBC tubing from the IV catheter."
+            },
+            {
+                originalId: 'q44', text: "A client is switched from an H2 receptor antagonist to a proton pump inhibitor (PPI) for refractory GERD. The nurse explains that PPIs are generally more effective because they:", type: 'radio',
+                options: ["Neutralize stomach acid more completely than H2 blockers.", "Provide a protective coating over the esophageal lining.", "Irreversibly block the final step of gastric acid secretion.", "Have a much faster onset of action for immediate symptom relief."],
+                correctAnswer: "Irreversibly block the final step of gastric acid secretion."
+            },
+            {
+                originalId: 'q45', text: "When administering an antacid containing magnesium to a client with mild renal insufficiency, the nurse should prioritize monitoring for:", type: 'radio',
+                options: ["Constipation and phosphate depletion.", "Signs of hypermagnesemia such as hypotension and diminished deep tendon reflexes.", "Metabolic acidosis and rebound hyperacidity.", "Increased risk of Clostridium difficile infection."],
+                correctAnswer: "Signs of hypermagnesemia such as hypotension and diminished deep tendon reflexes."
+            },
+            {
+                originalId: 'q46', text: "A client receiving total parenteral nutrition (TPN) via a central line suddenly becomes dyspneic, cyanotic, and hypotensive. The nurse suspects an air embolism. What are the priority nursing interventions? (Select all that apply.)", type: 'checkbox',
+                options: ["Immediately place the client in Trendelenburg position on their left side.", "Administer oxygen at a high flow rate.", "Stop the TPN infusion and clamp the central line catheter.", "Notify the Rapid Response Team and healthcare provider immediately.", "Attempt to aspirate air from the central line catheter."],
+                correctAnswer: ["Immediately place the client in Trendelenburg position on their left side.", "Administer oxygen at a high flow rate.", "Stop the TPN infusion and clamp the central line catheter.", "Notify the Rapid Response Team and healthcare provider immediately."]
+            },
+            {
+                originalId: 'q47', text: "Which statement by a client indicates a need for further education regarding the use of over-the-counter (OTC) diphenhydramine for insomnia?", type: 'radio',
+                options: ["\"I should avoid driving or operating machinery after taking this medication.\"", "\"I can take this medication every night if I have trouble sleeping.\"", "\"I might experience dry mouth or constipation with this drug.\"", "\"I should check with my doctor before taking this if I have glaucoma.\""],
+                correctAnswer: "\"I can take this medication every night if I have trouble sleeping.\""
+            },
+            {
+                originalId: 'q48', text: "A client with severe liver cirrhosis has ascites and a serum albumin level of 2.1 g/dL (Normal: 3.5-5.0 g/dL). The nurse anticipates that an infusion of which of the following might be ordered to help manage the ascites?", type: 'radio',
+                options: ["0.9% Sodium Chloride", "Albumin 25%", "Dextrose 5% in 0.45% Sodium Chloride", "Lactated Ringer's solution"],
+                correctAnswer: "Albumin 25%"
+            },
+            {
+                originalId: 'q49', text: "A client is prescribed an anticholinergic bronchodilator and a beta2-agonist inhaler for COPD. Which instruction regarding the administration sequence is most appropriate to maximize bronchodilation?", type: 'radio',
+                options: ["Administer the anticholinergic first, wait 5 minutes, then administer the beta2-agonist.", "Administer the beta2-agonist first, wait 5 minutes, then administer the anticholinergic.", "Administer both inhalers concurrently by using a Y-connector on the nebulizer.", "The sequence of administration does not significantly impact the therapeutic effect."],
+                correctAnswer: "Administer the beta2-agonist first, wait 5 minutes, then administer the anticholinergic."
+            },
+            {
+                originalId: 'q50', text: "A client taking Kava Kava for anxiety presents with jaundice, dark urine, and elevated liver enzymes (AST, ALT). The nurse should suspect:", type: 'radio',
+                options: ["Serotonin syndrome due to interaction with other medications.", "Hepatotoxicity related to Kava Kava use.", "An acute exacerbation of underlying anxiety disorder.", "Renal insufficiency caused by impurities in the herbal product."],
+                correctAnswer: "Hepatotoxicity related to Kava Kava use."
+            },
+            {
+                originalId: 'q51', text: "A client with a documented allergy to penicillin requires antibiotic therapy for a severe infection. Which of the following antibiotic orders would prompt the nurse to seek clarification due to potential cross-sensitivity?", type: 'radio',
+                options: ["Vancomycin", "Ciprofloxacin", "Ceftriaxone", "Clindamycin"],
+                correctAnswer: "Ceftriaxone"
+            },
+            {
+                originalId: 'q52', text: "A client admitted for alcohol detoxification is prescribed chlordiazepoxide (Librium). The nurse understands this medication is used primarily to:", type: 'radio',
+                options: ["Prevent thiamine deficiency and Wernicke's encephalopathy.", "Treat alcohol-induced psychosis and hallucinations.", "Manage withdrawal symptoms and prevent seizures and delirium tremens.", "Reduce cravings for alcohol and support long-term abstinence."],
+                correctAnswer: "Manage withdrawal symptoms and prevent seizures and delirium tremens."
+            },
+            {
+                originalId: 'q53', text: "A client is taking an OTC medication containing pseudoephedrine for nasal congestion. The client also takes a monoamine oxidase inhibitor (MAOI) for depression. This combination places the client at significant risk for:", type: 'radio',
+                options: ["Severe sedation and respiratory depression.", "Hypertensive crisis.", "Serotonin syndrome.", "Paradoxical bradycardia."],
+                correctAnswer: "Hypertensive crisis."
+            },
+            {
+                originalId: 'q54', text: "Which medication route provides the most rapid onset of action due to direct absorption into the systemic circulation, bypassing the liver? (Select all that apply.)", type: 'checkbox',
+                options: ["Oral (PO)", "Intravenous (IV)", "Sublingual (SL)", "Transdermal", "Intramuscular (IM)"],
+                correctAnswer: ["Intravenous (IV)", "Sublingual (SL)"]
+            },
+            {
+                originalId: 'q55', text: "A client receiving continuous PEG tube feedings at 75 mL/hr has a gastric residual volume (GRV) of 350 mL when checked by the nurse. What is the most appropriate initial nursing action?", type: 'radio',
+                options: ["Continue the feeding as ordered and recheck the residual in 4 hours.", "Re-instill the residual, hold the feeding for 1-2 hours, and then recheck GRV.", "Discard the residual amount and notify the physician immediately.", "Stop the feeding, notify the physician, and prepare to administer a prokinetic agent."],
+                correctAnswer: "Re-instill the residual, hold the feeding for 1-2 hours, and then recheck GRV."
+            },
+            {
+                originalId: 'q56', text: "A dehydrated elderly client with gastroenteritis is to receive IV fluids. The provider orders D5 0.45% NaCl. The nurse understands this solution is initially _____ and primarily used to _____.", type: 'radio',
+                options: ["Isotonic; rapidly expand intravascular volume.", "Hypertonic; draw fluid from cells into the intravascular space.", "Hypotonic; provide free water and treat intracellular dehydration.", "Isotonic in the bag but becomes hypotonic; provide calories and expand ECF."],
+                correctAnswer: "Isotonic in the bag but becomes hypotonic; provide calories and expand ECF."
+            },
+            {
+                originalId: 'q57', text: "A client with a new diagnosis of peptic ulcer disease (PUD) and H. pylori infection is prescribed triple therapy including a PPI, clarithromycin, and amoxicillin. The client asks why three medications are needed. The nurse's best explanation is:", type: 'radio',
+                options: ["\"The combination ensures rapid pain relief and ulcer healing while preventing side effects.\"", "\"Using multiple antibiotics prevents bacterial resistance, and the PPI reduces acid to help the ulcer heal and antibiotics work better.\"", "\"One antibiotic kills H. pylori, the other coats the stomach, and the PPI reduces nighttime acid production.\"", "\"This aggressive therapy is needed because H. pylori is highly contagious and can spread easily.\""],
+                correctAnswer: "\"Using multiple antibiotics prevents bacterial resistance, and the PPI reduces acid to help the ulcer heal and antibiotics work better.\""
+            },
+            {
+                originalId: 'q58', text: "A client receiving packed red blood cell (PRBC) transfusion develops urticaria (hives) and itching, but vital signs remain stable and there are no respiratory symptoms. The nurse anticipates which intervention is most likely?", type: 'radio',
+                options: ["Immediately stopping the transfusion and sending the blood bag and tubing to the lab.", "Slowing the transfusion rate and administering an IV antihistamine like diphenhydramine.", "Administering epinephrine subcutaneously and preparing for intubation.", "Discontinuing the transfusion and starting a new unit of PRBCs from a different donor."],
+                correctAnswer: "Slowing the transfusion rate and administering an IV antihistamine like diphenhydramine."
+            },
+            {
+                originalId: 'q59', text: "A client is prescribed promethazine 25 mg IM for severe nausea. To minimize local irritation and risk of tissue injury, the nurse should administer this medication using which technique?", type: 'radio',
+                options: ["Subcutaneously into the deltoid muscle.", "Deep IM injection into a large muscle mass, preferably the ventrogluteal site, using the Z-track method.", "Rapid IM injection into the dorsogluteal site using a 1-inch needle.", "Diluted with normal saline and administered slowly into the vastus lateralis."],
+                correctAnswer: "Deep IM injection into a large muscle mass, preferably the ventrogluteal site, using the Z-track method."
+            },
+            {
+                originalId: 'q60', text: "A client with end-stage liver disease is prescribed lactulose. The primary pharmacodynamic effect that aids in reducing serum ammonia levels is:", type: 'radio',
+                options: ["Direct neutralization of ammonia in the bloodstream.", "Conversion of ammonia (NH3) to ammonium ion (NH4+) in the gut, which is poorly absorbed, and promotion of its excretion.", "Stimulation of liver enzymes to increase ammonia metabolism.", "Binding with ammonia in the portal circulation before it reaches the systemic circulation."],
+                correctAnswer: "Conversion of ammonia (NH3) to ammonium ion (NH4+) in the gut, which is poorly absorbed, and promotion of its excretion."
+            },
+            {
+                originalId: 'q61', text: "A client is taking digoxin and has recently been started on a thiazide diuretic for hypertension. The nurse should prioritize assessment for which signs and symptoms indicating a potential adverse interaction?", type: 'radio',
+                options: ["Hyperkalemia and muscle weakness.", "Bradycardia, visual disturbances (yellow halos), and nausea.", "Increased blood pressure and fluid retention.", "Hyperglycemia and increased thirst."],
+                correctAnswer: "Bradycardia, visual disturbances (yellow halos), and nausea."
+            },
+            {
+                originalId: 'q62', text: "A client receiving intermittent PEG tube feedings complains of nausea and abdominal cramping shortly after a feeding. Which nursing action is most appropriate to investigate first?", type: 'radio',
+                options: ["Administer a prescribed antiemetic immediately.", "Check the temperature and rate of the feeding administration.", "Auscultate bowel sounds and palpate for abdominal distension.", "Notify the physician to consider changing the formula."],
+                correctAnswer: "Check the temperature and rate of the feeding administration."
+            },
+            {
+                originalId: 'q63', text: "A client who has been self-treating heartburn with large quantities of sodium bicarbonate (baking soda) for several weeks is at risk for developing which acid-base imbalance?", type: 'radio',
+                options: ["Metabolic acidosis", "Metabolic alkalosis", "Respiratory acidosis", "Respiratory alkalosis"],
+                correctAnswer: "Metabolic alkalosis"
+            },
+            {
+                originalId: 'q64', text: "A client is prescribed oral promethazine syrup. The nurse explains that a common, expected side effect limiting daily activities for some individuals is:", type: 'radio',
+                options: ["Paradoxical excitation and insomnia.", "Significant drowsiness or sedation.", "Orthostatic hypotension upon standing.", "Metallic taste and dry mouth."],
+                correctAnswer: "Significant drowsiness or sedation."
+            },
+            {
+                originalId: 'q65', text: "A client is receiving 0.9% Sodium Chloride (Normal Saline) at 125 mL/hr. Suddenly, the client develops crackles in the lungs, shortness of breath, and jugular vein distension. The nurse should first:", type: 'radio',
+                options: ["Notify the healthcare provider immediately.", "Slow the IV infusion to a keep-vein-open (KVO) rate.", "Place the client in a high Fowler's position.", "Administer a prescribed PRN diuretic."],
+                correctAnswer: "Slow the IV infusion to a keep-vein-open (KVO) rate."
+            },
+            {
+                originalId: 'q66', text: "Which specific laboratory value is most critical to monitor for a client prescribed long-term therapy with a proton pump inhibitor (PPI) due to its association with cardiac arrhythmias and neuromuscular excitability if deficient?", type: 'radio',
+                options: ["Serum sodium", "Serum potassium", "Serum magnesium", "Serum calcium"],
+                correctAnswer: "Serum magnesium"
+            },
+            {
+                originalId: 'q67', text: "A client with a history of alcohol abuse is found to have a thiamine deficiency. The nurse understands that administering glucose before thiamine in this client can precipitate:", type: 'radio',
+                options: ["Hypoglycemia.", "Lactic acidosis.", "Wernicke's encephalopathy.", "Hyperkalemia."],
+                correctAnswer: "Wernicke's encephalopathy."
+            },
+            {
+                originalId: 'q68', text: "A client is prescribed sucralfate for duodenal ulcer management. Which statement by the client indicates an understanding of how to take this medication effectively?", type: 'radio',
+                options: ["\"I should take this medication with my meals to help coat my stomach.\"", "\"I will take my antacid at the same time as sucralfate for better acid control.\"", "\"I need to take this medication on an empty stomach, about 1 hour before meals and at bedtime.\"", "\"It's okay to crush this pill and mix it with food if I have trouble swallowing.\""],
+                correctAnswer: "\"I need to take this medication on an empty stomach, about 1 hour before meals and at bedtime.\""
+            },
+            {
+                originalId: 'q69', text: "A client develops severe watery diarrhea after a course of broad-spectrum antibiotics. Stool culture confirms Clostridium difficile. In addition to antibiotic therapy for C. difficile, the nurse would anticipate an order to AVOID which type of medication?", type: 'radio',
+                options: ["Proton pump inhibitors", "Antiemetics", "Opioid-based antidiarrheals", "Stool softeners"],
+                correctAnswer: "Opioid-based antidiarrheals"
+            },
+            {
+                originalId: 'q70', text: "A client with chronic liver disease and ascites has a serum sodium level of 128 mEq/L (Normal: 135-145 mEq/L) and a BUN of 8 mg/dL (Normal: 10-20 mg/dL). They are receiving spironolactone. What is the most likely rationale for using spironolactone in this client despite the hyponatremia?", type: 'radio',
+                options: ["To aggressively correct the hyponatremia by promoting sodium reabsorption.", "To manage ascites by promoting diuresis while conserving potassium, as hyperaldosteronism is common in cirrhosis.", "To lower BUN levels by increasing renal excretion of urea.", "To treat the dilutional hyponatremia by causing significant free water excretion."],
+                correctAnswer: "To manage ascites by promoting diuresis while conserving potassium, as hyperaldosteronism is common in cirrhosis."
+            },
+            // Dosage Calculation Questions (DC1-DC5)
+            { 
+                originalId: 'dc1', text: "The healthcare provider orders heparin 25,000 units in 500 mL D5W to infuse at 1,000 units/hour. Calculate the IV flow rate in mL/hr. (Enter numerical value only)", type: 'text',
+                correctAnswer: '20', unit: 'mL/hr'
+            },
+            { 
+                originalId: 'dc2', text: "A client is to receive amoxicillin 30 mg/kg/day PO in three divided doses. The client weighs 44 lbs. The pharmacy supplies amoxicillin suspension 125 mg/5 mL. How many mL will the nurse administer per dose? (Round to the nearest tenth. Enter numerical value only)", type: 'text',
+                correctAnswer: '8', unit: 'mL'
+            },
+            {
+                originalId: 'dc3', text: "Order: Administer 1 L of 0.9% NaCl over 8 hours. The IV tubing has a drop factor of 15 gtt/mL. Calculate the flow rate in gtt/min. (Round to the nearest whole number. Enter numerical value only)", type: 'text',
+                correctAnswer: '31', unit: 'gtt/min'
+            },
+            {
+                originalId: 'dc4', text: "A client is prescribed promethazine 12.5 mg IV. The vial contains promethazine 25 mg/mL. How many mL will the nurse draw up to administer the correct dose? (Enter numerical value only)", type: 'text',
+                correctAnswer: '0.5', unit: 'mL'
+            },
+            {
+                originalId: 'dc5', text: "The order is for morphine sulfate 4 mg IV push. The available vial is labeled morphine sulfate 10 mg/mL. How many mL will the nurse administer? (Round to the nearest tenth. Enter numerical value only)", type: 'text',
+                correctAnswer: '0.4', unit: 'mL'
+            }
+        ];
+
+        let questionsData = []; 
+        let shuffledExamQuestions = [];
+        let examSubmitted = false;
+        let timerInterval;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return String(str); 
+            return str.replace(/[&<>"']/g, function (match) {
+                return {
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+                }[match];
+            });
+        }
+
+        function formatTime(totalSeconds) {
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return [
+                hours.toString().padStart(2, '0'),
+                minutes.toString().padStart(2, '0'),
+                seconds.toString().padStart(2, '0')
+            ].join(':');
+        }
+
+        function loadQuestionsAndRationales() {
+            questionsData = questionsDataSetup.map(qSetup => {
+                const rationaleDiv = document.getElementById('r_' + qSetup.originalId);
+                return {
+                    ...qSetup,
+                    rationaleText: rationaleDiv ? rationaleDiv.innerHTML : '<p>Rationale information is not available for this question ID: r_' + qSetup.originalId + '</p>'
+                };
+            });
+             if(questionsData.length === 0) {
+                console.error("Question data is empty. Check questionsDataSetup array and rationale div IDs.");
+                const examFormContainer = document.getElementById('examFormContainer');
+                examFormContainer.innerHTML = "<p style='color:red; text-align:center; font-size:1.2em;'>Error: Exam questions could not be loaded. Please ensure question data is correctly populated in the script and rationale divs exist in the HTML with matching IDs (e.g., r_q1, r_dc1).</p>";
+            }
+        }
+
+        function renderExam() {
+            const examFormContainer = document.getElementById('examFormContainer');
+            examFormContainer.innerHTML = ''; 
+            let formHTML = '';
+
+            if (questionsData.length === 0) { 
+                return; 
+            }
+
+            shuffledExamQuestions = [...questionsData]; 
+            shuffleArray(shuffledExamQuestions);
+
+            shuffledExamQuestions.forEach((q, index) => {
+                formHTML += `<div class="question-block" id="qb_${index}">`;
+                formHTML += `<h3>Question ${index + 1}: ${escapeHTML(q.text)}</h3>`;
+                
+                let questionOptions = q.options ? [...q.options] : [];
+                if (q.type === 'radio' || q.type === 'checkbox') {
+                    shuffleArray(questionOptions); 
+                    questionOptions.forEach((optionText) => { 
+                        formHTML += `
+                            <label>
+                                <input type="${q.type}" name="q_options_${index}" value="${escapeHTML(optionText)}">
+                                ${escapeHTML(optionText)}
+                            </label>
+                        `;
+                    });
+                } else if (q.type === 'text') {
+                    formHTML += `<input type="text" class="dosage-input" id="q_input_${index}" name="q_input_${index}" placeholder="Enter answer"> ${q.unit ? escapeHTML(q.unit) : ''}`;
+                }
+                formHTML += `</div>`;
+            });
+
+            formHTML += '<button type="button" id="submitBtn" onclick="submitExam()">Submit Exam</button>';
+            examFormContainer.innerHTML = formHTML;
+        }
+
+        function startTimer(durationInSeconds) {
+            let timer = durationInSeconds;
+            const timerDisplay = document.getElementById('timerDisplay');
+            if(!timerDisplay) { console.error("Timer display element not found"); return; }
+            timerDisplay.textContent = "Time Remaining: " + formatTime(timer);
+
+            timerInterval = setInterval(() => {
+                timer--;
+                if (timer < 0) {
+                    clearInterval(timerInterval);
+                    if (!examSubmitted) {
+                        alert("Time's up! The exam will now be submitted.");
+                        submitExam();
+                    }
+                } else {
+                    timerDisplay.textContent = "Time Remaining: " + formatTime(timer);
+                }
+            }, 1000);
+        }
+
+        function submitExam() {
+            if (examSubmitted) return;
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            let score = 0;
+            const answerReviewDiv = document.getElementById('answerReview');
+            answerReviewDiv.innerHTML = '';
+
+            shuffledExamQuestions.forEach((q, index) => {
+                let userAnswerDisplay = '<p class="user-answer-display">Your answer: ';
+                let isCorrect = false;
+                let userSelectedAnswersText = [];
+
+                if (q.type === 'radio') {
+                    const selectedOptionInput = document.querySelector(`input[name="q_options_${index}"]:checked`);
+                    if (selectedOptionInput) {
+                        const userAnswer = selectedOptionInput.value;
+                        userSelectedAnswersText.push(userAnswer);
+                        if (userAnswer === q.correctAnswer) {
+                            score += 3;
+                            isCorrect = true;
+                        }
+                    }
+                } else if (q.type === 'checkbox') {
+                    const checkedOptionInputs = Array.from(document.querySelectorAll(`input[name="q_options_${index}"]:checked`));
+                    const userAnswers = checkedOptionInputs.map(input => input.value);
+                    userSelectedAnswersText = userAnswers;
+
+                    const correctAnswersSet = new Set(q.correctAnswer); 
+                    const userAnswersSet = new Set(userAnswers);
+                    if (q.correctAnswer && q.correctAnswer.length > 0 && userAnswersSet.size === correctAnswersSet.size && [...userAnswersSet].every(ans => correctAnswersSet.has(ans))) {
+                        score += 3;
+                        isCorrect = true;
+                    }
+                } else if (q.type === 'text') {
+                    const userInputElement = document.getElementById(`q_input_${index}`);
+                    const userInput = userInputElement ? userInputElement.value.trim() : "";
+                    userSelectedAnswersText.push(userInput || "No answer");
+                    // Special handling for dc2 answer due to potential '.0'
+                    if (q.originalId === 'dc2' && (userInput === '8' || userInput === '8.0')) {
+                        isCorrect = true;
+                        score += 3;
+                    } else if (userInput.toLowerCase() === String(q.correctAnswer).toLowerCase()) { // Case-insensitive for text answers
+                        isCorrect = true;
+                        score += 3;
+                    }
+                }
+
+                userAnswerDisplay += `${userSelectedAnswersText.length > 0 ? userSelectedAnswersText.map(escapeHTML).join(', ') : 'No answer selected'}</p>`;
+                const resultClass = isCorrect ? 'correct' : 'incorrect';
+                const correctnessText = isCorrect ? 'Correct' : 'Incorrect';
+
+                answerReviewDiv.innerHTML += `
+                    <div class="question-block">
+                        <h3>Question ${index + 1}: ${escapeHTML(q.text)}
+                            <span class="correct-answer-text-indicator ${resultClass}">(${correctnessText})</span>
+                        </h3>
+                        ${userAnswerDisplay}
+                        <div class="rationale-display">${q.rationaleText}</div>
+                    </div>
+                `;
+            });
+
+            const totalQuestions = shuffledExamQuestions.length;
+            const maxScore = totalQuestions * 3;
+            const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
+            document.getElementById('score').innerText = `You scored ${score} out of ${maxScore} (${percentage.toFixed(2)}%).`;
+
+            let feedbackMsg = "Keep studying!";
+            if (percentage >= 90) feedbackMsg = "Excellent work! You have a strong understanding.";
+            else if (percentage >= 75) feedbackMsg = "Good job! Focus on the areas you missed.";
+            else if (percentage >= 60) feedbackMsg = "You're making progress. Review the rationales carefully.";
+            else feedbackMsg = "This was a tough exam. Use the rationales to guide your study.";
+
+            document.getElementById('feedback').innerText = feedbackMsg;
+            document.getElementById('resultsDisplay').style.display = 'block';
+            const submitButton = document.getElementById('submitBtn');
+            if (submitButton) submitButton.disabled = true;
+            
+            const resultsEl = document.getElementById('resultsDisplay');
+            if(resultsEl) resultsEl.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.onload = function() {
+            loadQuestionsAndRationales(); 
+            renderExam(); 
+            startTimer(2 * 60 * 60); 
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lower Respiratory Disorders - Pharmacology - Diagnostic Exam </title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .quiz-wrapper {
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .quiz-header {
+            background-color: #4a5568;
+            color: white;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid #2c3e50;
+            position: relative;
+        }
+        .logo {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.8rem;
+            font-weight: 900;
+            font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+            color: #f6ad55;
+            letter-spacing: 1px;
+        }
+        .quiz-header h1 { margin: 0; font-size: 1.75rem; }
+        #timer-display { font-size: 1.25rem; margin-top: 0.5rem; font-weight: bold; color: #f6ad55; }
+        .quiz-content { padding: 1.5rem 2rem; flex-grow: 1; }
+        #initial-screen { text-align: center; }
+        #initial-screen h2 { color: #2c3e50; }
+        #initial-screen p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 1rem auto; }
+        #question-container { margin-bottom: 1.5rem; }
+        .question-header { font-size: 1.1rem; color: #718096; margin-bottom: 1rem; }
+        .question-text { font-size: 1.3rem; font-weight: bold; margin-bottom: 1.5rem; line-height: 1.5; }
+        .question-scenario {
+            background-color: #f9f9f9;
+            border-left: 4px solid #5bc0de;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .options-container label { display: block; background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 1rem; margin-bottom: 0.75rem; border-radius: 8px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+        .options-container label:hover { background-color: #e2e8f0; border-color: #cbd5e0; }
+        .options-container input[type="radio"], .options-container input[type="checkbox"] { margin-right: 10px; }
+        /* Style for text input answers */
+        #dosage-input, .text-answer-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.2rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            margin-top: 1rem;
+            box-sizing: border-box;
+        }
+        .flag-container { margin-top: 1.5rem; text-align: right; }
+        .flag-container label { cursor: pointer; color: #4a5568; font-weight: bold; }
+        .flag-container input[type="checkbox"] { margin-right: 5px; transform: scale(1.2); }
+        #navigation-btn, #start-btn, #print-btn { display: block; width: 100%; padding: 1rem; font-size: 1.2rem; font-weight: bold; color: white; background-color: #3182ce; border: none; border-radius: 8px; cursor: pointer; margin-top: 1rem; transition: background-color 0.2s; }
+        #navigation-btn:hover, #start-btn:hover, #print-btn:hover { background-color: #2b6cb0; }
+        #print-btn { background-color: #68d391; }
+        #print-btn:hover { background-color: #48bb78; }
+        #results-area { line-height: 1.7; }
+        #results-summary { text-align: center; background-color: #ebf8ff; border: 1px solid #90cdf4; padding: 1.5rem; margin-bottom: 2rem; border-radius: 8px; }
+        #results-summary h2 { margin-top: 0; }
+        .result-question { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; }
+        .result-question p strong { display: block; margin-bottom: 1rem; font-size: 1.2em; }
+        .result-question ul { list-style-type: none; padding: 0; margin: 0; }
+        .result-question li { padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; border: 1px solid #e2e8f0; }
+        .correct-answer-label { background-color: #c6f6d5 !important; border-color: #9ae6b4 !important; }
+        .incorrect-answer-label { background-color: #fed7d7 !important; border-color: #feb2b2 !important; }
+        .missed-correct-answer-label { border: 2px solid #68d391 !important; }
+        .typed-answer-result { margin-top: 1rem; }
+        .typed-answer-result .user-answer.correct { color: #38a169; }
+        .typed-answer-result .user-answer.incorrect { color: #e53e3e; text-decoration: line-through; }
+        .typed-answer-result .correct-answer-text { color: #38a169; font-weight: bold; }
+        .rationale { margin-top: 1rem; padding: 1rem; border-radius: 6px; border-left: 5px solid #a0aec0; background-color: #f7fafc; }
+        .rationale strong { display: block; margin-bottom: 0.5rem; }
+        .time-spent-info { font-style: italic; color: #718096; margin-top: 0.5rem; display: block; }
+        .time-flagged-rationale { background-color: #e9d8fd !important; border-left-color: #9f7aea !important; }
+        .flagged-rationale { background-color: #fefcbf !important; border-left-color: #f6e05e !important; }
+        #study-focus { margin-top: 2.5rem; padding: 1.5rem; background-color: #fefcbf; border: 1px solid #f6e05e; border-radius: 8px; }
+        #study-focus h3 { margin-top: 0; color: #2d3748; border-bottom: 2px solid #f6e05e; padding-bottom: 0.5rem; }
+        #study-focus ul { list-style-type: '👉'; padding-left: 2rem; }
+        #study-focus li { padding-left: 0.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .hidden { display: none; }
+
+        #pause-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1010;
+            background-color: #f6ad55;
+            color: #2d3748;
+            border: 2px solid #2d3748;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        #pause-btn:hover {
+            background-color: #f687b3;
+            transform: scale(1.1);
+        }
+        #pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(226, 232, 240, 0.95);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+        }
+        #pause-overlay .pause-content h1 {
+            font-size: 5rem;
+            color: #e53e3e;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        #pause-overlay .pause-content .stop-sign {
+            font-size: 8rem;
+        }
+        #pause-overlay .pause-content p {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-top: 1rem;
+        }
+
+        #study-guide-printable {
+            display: none;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #study-guide-printable, #study-guide-printable * {
+                visibility: visible;
+            }
+            #study-guide-printable {
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                font-family: 'Times New Roman', Times, serif;
+                color: #000;
+                padding: 20px; /* Add padding for better print layout */
+                box-sizing: border-box; /* Include padding in width */
+            }
+            .study-guide-item {
+                page-break-inside: avoid;
+                margin-bottom: 2rem;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 1rem;
+            }
+            .study-guide-item h2, .study-guide-item h3 {
+                font-size: 14pt;
+                margin-bottom: 1rem;
+                color: #000;
+            }
+            .study-guide-item h1 {
+                font-size: 24pt;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            .study-guide-item p {
+                font-size: 12pt;
+                line-height: 1.4;
+                margin: 0.5rem 0;
+            }
+            .study-guide-item .print-rationale {
+                margin-top: 1rem;
+                padding: 0.5rem;
+                border-left: 3px solid #ccc;
+                background-color: #f0f0f0 !important;
+                font-style: italic;
+            }
+            .study-guide-item .print-rationale strong {
+                font-style: normal;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="pause-btn" class="hidden">||</button>
+    <div id="pause-overlay">
+        <div class="pause-content">
+            <div class="stop-sign">🛑</div>
+            <h1>EXAM PAUSED</h1>
+            <p>Click the pause button in the corner to resume.</p>
+        </div>
+    </div>
+
+    <div class="quiz-wrapper">
+        <header class="quiz-header">
+            <div class="logo">VSREP</div>
+            <h1>Lower Respiratory Disorders - Pharmacology - Diagnostic Exam</h1>
+            <div id="timer-display">Time Left: 35:00</div>
+        </header>
+
+        <main class="quiz-content">
+            <div id="initial-screen">
+                <h2>Welcome to the Advanced Exam</h2>
+                <p>This is a timed, 30-question quiz on lower respiratory disorders, diagnostics, and pharmacology. Many questions are designed to be challenging and test critical thinking. The time limit is <strong>35 minutes</strong>. You can flag questions for review. Click "Start Quiz" when you are ready to begin.</p>
+                <button id="start-btn">Start Quiz</button>
+            </div>
+
+            <form id="quiz-form" class="hidden">
+                <div id="question-container"></div>
+                <div class="flag-container">
+                    <label><input type="checkbox" id="flag-for-review"> Flag for Review</label>
+                </div>
+                <button type="submit" id="navigation-btn" class="hidden">Next Question</button>
+            </form>
+
+            <div id="results-area" class="hidden">
+                <div id="results-summary"></div>
+                <div id="results-details"></div>
+                <div id="study-focus"></div>
+                <button id="print-btn" class="hidden">🖨️ Print Study Guide</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="study-guide-printable"></div>
+
+<script>
+    // --- START: QUESTION BANK ---
+    const fullQuizData = [
+    {
+        "scenario": "A 68-year-old male with a history of COPD, BPH, and atrial fibrillation controlled with a beta-blocker presents with an acute asthma exacerbation.",
+        "questionText": "The provider orders nebulized ipratropium and albuterol. The nurse should identify which component of the patient's history as the strongest potential contraindication for using ipratropium?",
+        "options": {"A": "History of COPD", "B": "Atrial fibrillation", "C": "Concurrent use of a beta-blocker", "D": "Benign prostatic hyperplasia (BPH)"},
+        "correctAnswer": "D",
+        "rationale": "This is a trick question forcing you to differentiate between cautions and contraindications. Ipratropium is an anticholinergic. Anticholinergics can cause urinary retention, which can acutely worsen BPH. While it's used in COPD (A), and its effects on the heart (B) are minimal compared to other bronchodilators, the risk of causing acute urinary obstruction makes BPH the most significant concern. The beta-blocker (C) is a concern with albuterol, not ipratropium.",
+        "section": "Anticholinergics"
+    },
+    {
+        "questionText": "A patient with chronic bronchitis is experiencing increased mucous secretion and airway obstruction. This pathophysiology is primarily caused by:",
+        "options": {"A": "Destruction of the alveolar walls, leading to air trapping.", "B": "Bronchial inflammation and excessive mucous secretion.", "C": "Loss of elastic recoil in the lung parenchyma.", "D": "An antigen-antibody reaction on mast cells."},
+        "correctAnswer": "B",
+        "rationale": "The text defines chronic bronchitis as a progressive lung disease characterized by bronchial inflammation and excessive mucous secretion, resulting in airway obstruction. Alveolar wall destruction (A) is the hallmark of emphysema.",
+        "section": "Pathophysiology"
+    },
+    {
+        "questionText": "A patient's serum theophylline level is 18 mcg/mL. The patient reports feeling restless and having mild nausea. What is the nurse's priority action?",
+        "options": {"A": "Administer the next dose as scheduled to maintain the therapeutic level.", "B": "Notify the provider immediately as this is a toxic level.", "C": "Assess the patient for seizures and cardiac dysrhythmias.", "D": "Hold the next dose and document the patient's symptoms as potential signs of toxicity."},
+        "correctAnswer": "D",
+        "rationale": "This is a trick question about therapeutic ranges. The therapeutic range for theophylline is 5-15 mcg/mL. Toxicity is LIKELY to occur >20 mcg/mL. A level of 18 is high-normal/borderline toxic, and the patient is showing early signs of toxicity (restlessness, nausea). The most prudent action is to hold the next dose to prevent the level from rising into the clearly toxic range and to document/report these findings. It is not yet a full-blown emergency requiring immediate provider notification over the initial nursing action of holding the dose.",
+        "section": "Methylxanthines"
+    },
+    {
+        "questionText": "Which statement best describes the mechanism of action for albuterol?",
+        "options": {"A": "It blocks muscarinic cholinergic receptors to prevent bronchoconstriction.", "B": "It inhibits the enzyme phosphodiesterase, leading to increased cAMP.", "C": "It stimulates beta2-adrenergic receptors in the lungs, causing bronchodilation.", "D": "It suppresses the release of histamine and other inflammatory mediators from mast cells."},
+        "correctAnswer": "C",
+        "rationale": "Albuterol is a selective beta2-adrenergic agonist. Its primary mechanism of action is to stimulate beta2 receptors on the smooth muscle of the bronchi, which relaxes the muscle and results in bronchodilation.",
+        "section": "Sympathomimetics"
+    },
+    {
+        "questionText": "A patient is prescribed a combination inhaler of fluticasone and salmeterol for long-term COPD management. The nurse's teaching should include which of the following points? (Select All That Apply)",
+        "options": {"A": "Use this inhaler as needed for sudden wheezing.", "B": "Rinse your mouth with water after each use.", "C": "This medication contains a steroid to reduce inflammation.", "D": "You can expect to feel immediate bronchodilation after the first puff.", "E": "This inhaler is taken on a daily schedule, usually twice a day."},
+        "correctAnswer": ["B", "C", "E"],
+        "rationale": "This is a SATA trick question testing understanding of combination inhalers. A is incorrect; this is a long-term controller, not a rescue inhaler. D is a tricky distractor; while salmeterol is a bronchodilator, its onset is not immediate like albuterol. B, C, and E are all correct teaching points: rinse mouth to prevent thrush from the steroid (fluticasone), it contains a steroid, and it's a scheduled maintenance drug.",
+        "section": "Combination Drugs"
+    },
+    {
+        "questionText": "A patient with asthma asks why they need to use cromolyn sodium every day, even when they don't have symptoms. What is the nurse's best response?",
+        "options": {"A": "It's a potent bronchodilator that keeps your airways open all the time.", "B": "It must be taken daily because it is not effective for treating acute asthma attacks.",
+        "C": "It acts by inhibiting the release of histamine from mast cells to prevent an attack from starting.", "D": "Daily use helps reduce mucous production in your airways."},
+        "correctAnswer": "C",
+        "rationale": "Cromolyn is a mast cell stabilizer. Its mechanism is prophylactic; it prevents the degranulation of mast cells, thus inhibiting the release of inflammatory mediators like histamine that cause an asthma attack. It is not a bronchodilator and is useless for acute attacks.",
+        "section": "Cromolyn"
+    },
+    {
+        "questionText": "A central chemoreceptor in the medulla responds to which primary stimulus to increase ventilation?",
+        "options": {"A": "A decrease in blood oxygen level below 60 mm Hg.", "B": "An increase in blood carbon dioxide and a decrease in pH.", "C": "An increase in blood pH and a decrease in carbon dioxide.", "D": "A decrease in blood pressure detected by baroreceptors."},
+        "correctAnswer": "B",
+        "rationale": "The text states that central chemoreceptors, located in the medulla, respond to an increase in CO2 and a decrease in pH by increasing ventilation. A decrease in oxygen is the primary stimulus for the peripheral chemoreceptors.",
+        "section": "Physiology"
+    },
+    {
+        "questionText": "A patient is prescribed montelukast for exercise-induced asthma. Which statement by the patient indicates a need for further teaching?",
+        "options": {"A": "I should take this pill about 2 hours before I go for a run.", "B": "If I start wheezing during my run, I should take another dose of this pill immediately.", "C": "I should not take aspirin for pain while I am on this medication if I have an aspirin sensitivity.", "D": "I need to let my doctor know if I feel depressed or have unusual mood changes."},
+        "correctAnswer": "B",
+        "rationale": "This is a negative format question. Montelukast is a prophylactic and maintenance drug; it is NOT a rescue medication for an acute attack. The patient should use their short-acting beta-agonist (e.g., albuterol) for acute symptoms. Statements A, C, and D are all correct teaching points for montelukast.",
+        "section": "Leukotriene Receptor Antagonists"
+    },
+    {
+        "questionText": "The nurse is administering an MDI of albuterol to a patient. Which action demonstrates correct technique?",
+        "options": {"A": "Instructing the patient to inhale quickly as they activate the canister.", "B": "Pushing the canister and having the patient inhale 5 seconds later.", "C": "Having the patient hold their breath for a few seconds after inhalation.", "D": "Administering two puffs in rapid succession without waiting."},
+        "correctAnswer": "C",
+        "rationale": "The text outlines the correct MDI technique, which includes: 'Hold the breath for a few seconds; exhale slowly through pursed lips.' This allows the medication to be deposited deep within the lungs. The patient should inhale slowly, and there should be a wait time between puffs.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A patient is receiving IV aminophylline. The nurse knows that tobacco smoking affects the metabolism of this drug in what way?",
+        "options": {"A": "Smoking decreases the metabolism of theophylline, requiring a lower dose.", "B": "Smoking has no effect on theophylline metabolism.", "C": "Smoking increases the metabolism of theophylline, requiring a higher dose.", "D": "Smoking increases the risk of theophylline-induced seizures."},
+        "correctAnswer": "C",
+        "rationale": "The text states, 'Tobacco smoking increases metabolism of theophylline drugs, thereby decreasing the half-life.' This means the drug is eliminated faster, so a smoker would require a higher or more frequent dose to maintain a therapeutic serum level compared to a nonsmoker.",
+        "section": "Pharmacokinetics"
+    },
+    {
+        "questionText": "A patient with severe, persistent asthma is being treated with high-dose inhaled glucocorticoids and a long-acting beta-agonist. The provider adds montelukast to the regimen. What is the primary rationale for adding montelukast?",
+        "options": {"A": "To replace the need for the inhaled glucocorticoid.", "B": "To provide rapid relief during an acute asthma attack.", "C": "To target the leukotriene pathway of inflammation, providing an additional mechanism of action.", "D": "To increase the patient's heart rate and improve bronchodilation."},
+        "correctAnswer": "C",
+        "rationale": "Leukotriene modifiers are not potent enough to replace glucocorticoids in severe asthma (A) and they are not rescue drugs (B). Their role is as an add-on therapy. They work by blocking the leukotriene inflammatory pathway, which is different from how steroids work. This provides a complementary anti-inflammatory effect.",
+        "section": "Leukotriene Receptor Antagonists"
+    },
+    {
+        "questionText": "A patient using a beclomethasone inhaler develops a white coating in their mouth. The nurse recognizes this as a sign of what condition?",
+        "options": {"A": "A systemic allergic reaction", "B": "Oral candidiasis (thrush)", "C": "Leukoplakia", "D": "Gingivitis"},
+        "correctAnswer": "B",
+        "rationale": "The text states that 'Oral, laryngeal, and pharyngeal fungal infections have occurred' with inhaled glucocorticoids. A white coating is the classic presentation of Candida albicans infection (thrush), a common local side effect.",
+        "section": "Glucocorticoids"
+    },
+    {
+        "questionText": "The nurse is reviewing a patient's medication list which includes theophylline, propranolol, and lithium. The nurse should be most concerned about which potential interaction?",
+        "options": {"A": "Propranolol can decrease theophylline levels, leading to bronchospasm.", "B": "Theophylline can decrease lithium levels, increasing the risk of manic episodes.", "C": "Lithium can increase theophylline levels, leading to toxicity.", "D": "Theophylline and propranolol have a synergistic effect that can cause severe hypotension."},
+        "correctAnswer": "B",
+        "rationale": "The text states that propranolol DECREASES the metabolism of theophylline, thus INCREASING its levels (making A incorrect). It also states that theophylline DECREASES the effects of lithium (B). This is a critical interaction as subtherapeutic lithium levels can lead to a relapse of bipolar disorder. C and D are incorrect statements.",
+        "section": "Drug Interactions"
+    },
+    {
+        "questionText": "What is the therapeutic serum range for theophylline?",
+        "options": {"A": "1-5 mcg/mL", "B": "5-15 mcg/mL", "C": "15-25 mcg/mL", "D": "20-30 mcg/mL"},
+        "correctAnswer": "B",
+        "rationale": "The text explicitly states that theophylline has a narrow desired therapeutic range of 5 to 15 mcg/mL. This is a critical value for nurses to know to prevent toxicity.",
+        "section": "Methylxanthines"
+    },
+    {
+        "questionText": "Which factor is primarily responsible for the pathophysiology of emphysema?",
+        "options": {"A": "Hypersecretion of mucus from hypertrophied goblet cells.", "B": "Abnormal dilation of the bronchi and bronchioles.", "C": "Destruction of the alveolar walls by proteolytic enzymes.", "D": "Inflammation and edema of the bronchial airways triggered by allergens."},
+        "correctAnswer": "C",
+        "rationale": "The hallmark of emphysema, as described in the text, is the destruction of the alveolar walls. This is caused by proteolytic enzymes, leading to a loss of the fiber and elastin network, enlarged alveoli, and trapped air.",
+        "section": "Pathophysiology"
+    },
+    {
+        "questionText": "A patient is prescribed tiotropium via HandiHaler. Which instructions should the nurse include in the teaching plan? (Select All That Apply)",
+        "options": {"A": "This inhaler is for maintenance treatment, not acute attacks.", "B": "You should swallow the capsule whole with a glass of water.", "C": "Dry mouth and constipation are possible side effects.", "D": "If a capsule is opened and not used, save it for the next day.", "E": "This medication works by blocking muscarinic receptors to cause bronchodilation."},
+        "correctAnswer": ["A", "C", "E"],
+        "rationale": "A, C, and E are all correct statements. Tiotropium is a maintenance anticholinergic. B is incorrect; the capsule is placed in the HandiHaler device to be pierced and the powder inhaled. D is incorrect; the text states to discard any opened, unused capsules.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A patient with asthma who has a known aspirin sensitivity should also be advised to avoid which other class of medication?",
+        "options": {"A": "Acetaminophen", "B": "Opioids", "C": "Nonsteroidal antiinflammatory drugs (NSAIDs)", "D": "Anticholinergics"},
+        "correctAnswer": "C",
+        "rationale": "The Clinical Judgment section for Leukotriene Receptor Antagonists states, 'Advise patients with known aspirin sensitivity to avoid a bronchoconstrictor response by avoiding aspirin and nonsteroidal antiinflammatory drugs (NSAIDs) while taking montelukast.' Aspirin-exacerbated respiratory disease involves a cross-reactivity with NSAIDs.",
+        "section": "Contraindications"
+    },
+    {
+        "questionText": "A patient is experiencing an acute bronchospasm with wheezing and dyspnea. The nurse has orders for epinephrine, albuterol MDI, and oral prednisone. For this uncomplicated bronchospasm, which medication is the first line of defense?",
+        "options": {"A": "Oral prednisone to reduce inflammation.", "B": "Epinephrine via subcutaneous injection.", "C": "Albuterol via metered-dose inhaler.", "D": "A bolus of IV aminophylline."},
+        "correctAnswer": "C",
+        "rationale": "For a standard acute asthmatic attack, the text states 'the short-acting sympathomimetics (beta2-adrenergic agonists) are the first line of defense.' This makes albuterol the correct choice. Epinephrine (B) is reserved for more severe, life-threatening anaphylactic reactions. Prednisone (A) is for managing inflammation but is not a first-line rescue drug. Aminophylline (D) is no longer a first-line drug.",
+        "section": "Sympathomimetics"
+    },
+    {
+        "questionText": "What effect does the parasympathetic nervous system have on the bronchial smooth muscle?",
+        "options": {"A": "It releases epinephrine, causing bronchodilation.", "B": "It stimulates beta2 receptors, causing bronchodilation.", "C": "It releases acetylcholine, causing bronchoconstriction.", "D": "It has no effect on the bronchial smooth muscle."},
+        "correctAnswer": "C",
+        "rationale": "The text states, 'The vagus nerve (parasympathetic nervous system) releases acetylcholine, which causes bronchoconstriction.' This is the opposite effect of the sympathetic nervous system.",
+        "section": "Physiology"
+    },
+    {
+        "questionText": "A patient reports tremors, nervousness, and a racing heart after using their albuterol inhaler. The nurse understands this is due to:",
+        "options": {"A": "An allergic reaction to the medication.", "B": "Stimulation of beta1 receptors at high doses.", "C": "The medication's anticholinergic effects.", "D": "Inhibition of the enzyme phosphodiesterase."},
+        "correctAnswer": "B",
+        "rationale": "Albuterol is a selective beta2 agonist, but the text states, 'High doses or overuse of the beta2-adrenergic agents for asthma may cause some degree of beta1 response, such as nervousness, tremor, and increased pulse rate.' Beta1 receptors are primarily in the heart.",
+        "section": "Adverse Effects"
+    },
+    {
+        "questionText": "A patient is switched from an oral systemic decongestant to an intranasal glucocorticoid spray for long-term management of allergic rhinitis. The patient states, 'This steroid spray doesn't work as fast as my pill did.' What is the nurse's best response?",
+        "options": {"A": "You are correct, it may take several days to a week to notice the full benefits of this preventative medication.", "B": "You may not be using the spray correctly; let's review the technique.", "C": "That's unusual; these sprays should provide very rapid relief of congestion.", "D": "The systemic pill has more side effects, so this is a necessary trade-off for safety."},
+        "correctAnswer": "A",
+        "rationale": "This question tests therapeutic communication and knowledge. The 'trick' is to directly address the patient's valid observation. Intranasal glucocorticoids do not provide immediate relief like sympathomimetic decongestants. Their effect is anti-inflammatory and builds over days. Option A validates the patient's experience and provides correct education. While B is a good general practice, it doesn't address the specific timing issue. C is incorrect. D is true but dismisses the patient's concern.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A patient taking a multi-symptom cold remedy containing acetaminophen, guaifenesin, and phenylephrine calls the nurse. Which statement requires the MOST immediate intervention?",
+        "options": {"A": "I still have a phlegmy cough.", "B": "I took an extra dose of Tylenol for a bad headache.", "C": "I feel a bit restless and can't sleep.", "D": "My nose is still stuffy."},
+        "correctAnswer": "B",
+        "rationale": "This is a priority question. While C and D are bothersome side effects/lack of efficacy, and A is an expected finding with an expectorant, B is the most dangerous statement. It indicates a potential acetaminophen overdose, which is hepatotoxic and a medical emergency. The nurse must immediately intervene to assess how much was taken and instruct the patient.",
+        "section": "Patient Safety"
+    },
+    {
+        "questionText": "A 78-year-old male patient is prescribed diphenhydramine for insomnia. The nurse should prioritize assessing for which adverse effect?",
+        "options": {"A": "Diarrhea", "B": "Urinary retention", "C": "Productive cough", "D": "Orthostatic hypotension"},
+        "correctAnswer": "B",
+        "rationale": "This question asks for the priority assessment. While orthostatic hypotension (D) is a risk, older adults, especially males who may have underlying benign prostatic hypertrophy, are highly susceptible to the anticholinergic effect of urinary retention. An inability to void is a more acute problem than postural blood pressure changes. This makes assessing for urinary retention the priority.",
+        "section": "Antihistamines"
+    },
+    {
+        "questionText": "A patient asks if it is safe to take dextromethorphan with their prescribed sertraline (an SSRI) and an MAOI they stopped taking yesterday. The nurse's best response would be based on the knowledge that this combination has a high risk for what condition?",
+        "options": {"A": "Hypertensive crisis", "B": "Respiratory alkalosis", "C": "Serotonin syndrome", "D": "Tardive dyskinesia"},
+        "correctAnswer": "C",
+        "rationale": "This is a trick question due to the timing of the MAOI. MAOIs have a 'washout' period of at least 14 days. Stopping it 'yesterday' means it is still fully active. Combining dextromethorphan (which has weak serotonergic properties) with both an SSRI and an MAOI creates a very high risk for life-threatening serotonin syndrome. The MAOI is the most critical piece of information here.",
+        "section": "Drug Interactions"
+    },
+    {
+        "questionText": "A patient taking an oral decongestant reports feeling restless and having difficulty sleeping. All of the following are appropriate nursing instructions EXCEPT:",
+        "options": {"A": "Take the last dose of the day several hours before bedtime.", "B": "Avoid other stimulants like caffeine while taking this medication.", "C": "Increase the dose to overcome these side effects.", "D": "Report any palpitations or chest pain to your provider."},
+        "correctAnswer": "C",
+        "rationale": "This is a negative format (EXCEPT) question. A, B, and D are all appropriate instructions for managing the CNS stimulant side effects of decongestants. Increasing the dose (C) would only worsen the side effects of restlessness and insomnia and is dangerous advice.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A patient is taking cyproheptadine and reports a significant increase in appetite and weight gain. The nurse's first action should be to:",
+        "options": {"A": "Instruct the patient to stop the medication immediately.", "B": "Assess if this side effect is problematic for the patient.", "C": "Recommend a low-calorie diet and exercise plan.", "D": "Notify the provider that the patient is having a toxic reaction."},
+        "correctAnswer": "B",
+        "rationale": "This is a trick question about assessment vs. intervention. Increased appetite is a known side effect of cyproheptadine due to its antiserotonergic properties. It is not a toxic or allergic reaction. Before intervening (A, C, D), the nurse must first assess. For some patients (e.g., an underweight patient), this side effect might be neutral or even beneficial. The first step is to assess the patient's perspective and the clinical significance of the side effect.",
+        "section": "Nursing Process"
+    },
+    {
+        "questionText": "A patient with a history of cardiac dysrhythmias should be advised to avoid which class of upper respiratory medication?",
+        "options": {"A": "Intranasal glucocorticoids", "B": "Expectorants", "C": "Systemic decongestants", "D": "Second-generation antihistamines"},
+        "correctAnswer": "C",
+        "rationale": "Systemic decongestants (pseudoephedrine, phenylephrine) are sympathomimetics that can cause tachycardia, palpitations, and dysrhythmias, especially in susceptible individuals. Their use should be avoided or undertaken with extreme caution in patients with a history of cardiac disease.",
+        "section": "Contraindications"
+    },
+    {
+        "questionText": "A patient is prescribed the combination product of azelastine and fluticasone (Dymista). The nurse knows this combines which two mechanisms of action?",
+        "options": {"A": "Antihistamine and decongestant", "B": "Antihistamine and intranasal glucocorticoid", "C": "Decongestant and antitussive", "D": "Intranasal glucocorticoid and expectorant"},
+        "correctAnswer": "B",
+        "rationale": "As listed in Table 38.1, azelastine is an H1 antihistamine and fluticasone is an intranasal glucocorticoid. This combination product targets allergic rhinitis symptoms through two different pathways: blocking histamine and reducing inflammation.",
+        "section": "Combination Drugs"
+    },
+    {
+        "questionText": "A patient states, 'I have a terrible cold, I need antibiotics.' Which statement by the nurse is most therapeutic and accurate?",
+        "options": {"A": "You are correct, a bacterial infection requires antibiotics.", "B": "Antibiotics are never used for colds, so I cannot give you any.", "C": "I understand you feel awful. Colds are caused by viruses, so antibiotics won't help. However, if your symptoms worsen or don't improve, we can re-evaluate for a secondary bacterial infection.", "D": "You should try an expectorant first to see if that helps before we consider antibiotics."},
+        "correctAnswer": "C",
+        "rationale": "This question tests therapeutic communication. Option A is incorrect and gives false validation. B is true but dismissive ('never,' 'I cannot'). D gives inappropriate medical advice. C is the best answer because it validates the patient's feelings ('I understand you feel awful'), provides correct education (viruses vs. bacteria), and offers a collaborative plan for the future, which builds trust.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A student nurse is explaining the properties of second-generation H1 antagonists. The preceptor would intervene if the student made which of the following statements? (Select All That Apply)",
+        "options": {"A": "They have minimal anticholinergic side effects compared to older drugs.", "B": "They are completely free of sedative effects in all patients.", "C": "They are a good choice for someone who needs to drive or operate machinery.", "D": "They all have a short half-life, requiring frequent dosing.", "E": "They are only available by prescription."},
+        "correctAnswer": ["B", "D", "E"],
+        "rationale": "This is a negative format SATA question. The preceptor intervenes on incorrect statements. A and C are correct statements. B is incorrect because while they are 'non-sedating,' some patients can still experience mild drowsiness, so 'completely free' is a false absolute. D is incorrect; they have long half-lives. E is incorrect; many are available OTC (loratadine, cetirizine, fexofenadine).",
+        "section": "Antihistamines"
+    },
+    {
+        "questionText": "The nurse is applying the 'Recognize Cues' step for a patient starting oxymetazoline nasal spray for severe congestion. Which cues are most critical to obtain before administration? (Select All That Apply)",
+        "options": {"A": "Baseline blood pressure.", "B": "The last time the patient used the spray.", "C": "Patient's preferred flavor of cough drop.", "D": "Patient's history of MAOI use.", "E": "The patient reports a history of hyperthyroidism.", "F": "The patient's insurance coverage."},
+        "correctAnswer": ["A", "B", "D", "E"],
+        "rationale": "This is a SATA question with 'red herring' distractors. Critical assessment cues include BP (A) due to risk of systemic effects, last use (B) to prevent overdose/rebound congestion, MAOI use (D) due to hypertensive crisis risk, and hyperthyroidism (E) which is a caution. The patient's flavor preference (C) and insurance (F) are irrelevant to safe administration.",
+        "section": "Nursing Process"
+    },
+    {
+        "questionText": "A nurse is teaching a patient about preventing the common cold. Which statements are accurate and should be included? (Select All That Apply)",
+        "options": {"A": "The flu vaccine will prevent you from getting the most common type of cold.", "B": "Frequent hand washing is the most effective way to prevent transmission.", "C": "You are only contagious to others when your nasal discharge turns green.", "D": "Cold viruses can live on surfaces like doorknobs for several days.", "E": "Transmission is more common from touching your face than from inhaling sneezed droplets."},
+        "correctAnswer": ["B", "D", "E"],
+        "rationale": "This question contains plausible but incorrect distractors. A is incorrect; the flu vaccine is for influenza virus, not rhinovirus (the common cold). C is a common myth; contagion is highest in the first few days, regardless of mucus color. B, D, and E are all factual statements supported by the text regarding handwashing, fomite survival, and the primary mode of transmission.",
+        "section": "Patient Teaching"
+    },
+    {
+        "scenario": "A 72-year-old female is admitted with pneumonia. She has a productive cough with thick, yellow sputum and her WBC count is 16,500. Her medication list includes guaifenesin 600 mg twice daily. The patient states, 'This cough pill isn't working, I'm still coughing so much.' Her daily fluid intake has been approximately 500 mL per day.",
+        "questionText": "What is the nurse's most appropriate initial intervention?",
+        "options": {"A": "Request an order for an antitussive like codeine to stop the cough.", "B": "Explain that guaifenesin is working as intended and encourage increased fluid intake.", "C": "Notify the provider about the patient's WBC count and productive cough.", "D": "Hold the next dose of guaifenesin as it is clearly ineffective."},
+        "correctAnswer": "B",
+        "rationale": "This is a trick of prioritization. While the WBC count is high (C), this is an expected finding in pneumonia and doesn't require immediate action over the current problem. The patient's statement indicates a misunderstanding of the medication's purpose. The most appropriate *initial* intervention is to address the patient's statement with education and encourage fluids, which is essential for the expectorant to work. Suppressing a productive cough (A) would be dangerous. Holding the med (D) is incorrect.",
+        "section": "Case Study"
+    },
+    {
+        "questionText": "A patient who smokes two packs of cigarettes a day complains of a chronic, hacking cough and requests a strong cough suppressant like hydrocodone. The nurse understands this is contraindicated primarily because:",
+        "options": {"A": "The patient is at high risk for developing an addiction to the hydrocodone.", "B": "The cough is a necessary protective reflex to clear secretions caused by smoking.", "C": "Hydrocodone interacts negatively with the nicotine from cigarettes.", "D": "A non-opioid antitussive like dextromethorphan would be more effective for a smoker's cough."},
+        "correctAnswer": "B",
+        "rationale": "This is a trick question about physiological priority versus psychosocial risks. While addiction (A) is a very important consideration, the primary physiological reason to avoid suppressing the cough is that it's a protective mechanism. Retained secretions can lead to pneumonia and atelectasis, which is a more acute threat. The nurse must prioritize the physiological need to clear the airway.",
+        "section": "Contraindications"
+    },
+    {
+        "questionText": "The nurse is reviewing the 'Generate Solutions' and 'Take Action' steps for a patient taking an antihistamine. All of the following are appropriate nursing interventions or goals EXCEPT:",
+        "options": {"A": "Goal: Patient will have decreased nasal congestion and mucosal secretions.", "B": "Intervention: Administer the oral form with food to decrease gastric distress.", "C": "Goal: Patient will achieve 6 to 8 hours of sleep per night.", "D": "Intervention: Administer the IM form of diphenhydramine via subcutaneous injection."},
+        "correctAnswer": "D",
+        "rationale": "This is a negative format (EXCEPT) question. A, B, and C are all appropriate goals and interventions from the text. The text specifically states 'Avoid subcutaneous injection' for the IM form of diphenhydramine. This is a critical safety point that makes this intervention incorrect.",
+        "section": "Nursing Process"
+    },
+    {
+        "questionText": "A patient is prescribed both codeine and benzonatate for a severe, intractable cough. The nurse understands that administering these two drugs together primarily carries a risk for:",
+        "options": {"A": "Additive respiratory depression.", "B": "Increased risk of serotonin syndrome.", "C": "Potentiated anticholinergic effects.", "D": "Synergistic sedative effects."},
+        "correctAnswer": "D",
+        "rationale": "This is a trick question about the primary combined effect. While codeine causes respiratory depression (A), benzonatate does not, so the effect isn't additive. Neither drug has significant serotonergic or anticholinergic properties (B, C). However, both drugs list drowsiness and dizziness as common side effects. The primary risk of combining them is the synergistic CNS depression, leading to profound sedation and an increased risk for falls or accidents.",
+        "section": "Drug Interactions"
+    },
+    {
+        "questionText": "A patient with seasonal allergies reports that cetirizine works well for their sneezing but not for their severe nasal congestion. What is the nurse's best explanation for this?",
+        "options": {"A": "The patient has likely developed a tolerance to cetirizine.", "B": "Antihistamines are excellent for histamine-mediated symptoms like sneezing and itching, but have little effect on congestion, which is better treated with a decongestant or intranasal steroid.", "C": "The patient should switch to a first-generation antihistamine like diphenhydramine, which is more effective for congestion.", "D": "The cetirizine is likely expired and has lost its effectiveness."},
+        "correctAnswer": "B",
+        "rationale": "This is a trick question about drug class efficacy. Patients often expect one pill to fix everything. The correct explanation is that different drug classes target different symptoms. Antihistamines block histamine (sneezing, itching, rhinorrhea) but are poor decongestants. Congestion is caused by vasodilation, which requires a vasoconstrictor (decongestant) or a potent anti-inflammatory (intranasal steroid).",
+        "section": "Pharmacology"
+    },
+    {
+        "scenario": "A 58-year-old truck driver with a history of hyperthyroidism complains of a runny nose and sneezing. He asks for 'the strongest thing you have' so he can keep working.",
+        "questionText": "Which medication is the most inappropriate choice for this specific patient?",
+        "options": {"A": "Diphenhydramine", "B": "Loratadine", "C": "Pseudoephedrine", "D": "Guaifenesin"},
+        "correctAnswer": "C",
+        "rationale": "This is a trick of prioritizing contraindications. While diphenhydramine (A) is a poor choice due to sedation, it is not strictly contraindicated. Pseudoephedrine (C) is a sympathomimetic amine that should be used with extreme caution in patients with hyperthyroidism due to the risk of exacerbating symptoms like tachycardia and anxiety. This makes it the most inappropriate and dangerous choice.",
+        "section": "Case Study"
+    },
+    {
+        "questionText": "A patient with a new prescription for an inhaled glucocorticoid asks how it will help their asthma. The nurse explains that it works by:",
+        "options": {"A": "Immediately relaxing the muscles around the airways to stop an attack.", "B": "Reducing inflammation in the airways to make them less reactive over time.", "C": "Thinning mucous secretions so they are easier to cough up.", "D": "Blocking histamine release from mast cells."},
+        "correctAnswer": "B",
+        "rationale": "Glucocorticoids are the most effective anti-inflammatory drugs for asthma. Their primary role is to reduce airway inflammation and bronchial hyperresponsiveness. They do not provide immediate bronchodilation (A). They do not thin mucus (C) and they do not block histamine release like cromolyn (D).",
+        "section": "Glucocorticoids"
+    },
+    {
+        "questionText": "A patient with a new diagnosis of allergic rhinitis is prescribed a first-generation antihistamine. Which side effect should the nurse emphasize the most regarding patient safety?",
+        "options": {"A": "Dry mouth", "B": "Drowsiness", "C": "Constipation", "D": "Skin rash"},
+        "correctAnswer": "B",
+        "rationale": "While all are possible side effects, drowsiness poses the greatest safety risk. It can impair the patient's ability to drive, operate machinery, or perform other tasks requiring alertness, potentially leading to serious accidents.",
+        "section": "Patient Safety"
+    },
+    {
+        "questionText": "A patient with a history of emphysema and hypertension is seeking a cough remedy. They have a nonproductive, irritating cough. Which medication should the nurse question if ordered?",
+        "options": {"A": "Benzonatate capsules", "B": "Guaifenesin syrup", "C": "A combination syrup of guaifenesin and dextromethorphan.", "D": "A combination syrup of homatropine and hydrocodone."},
+        "correctAnswer": "D",
+        "rationale": "This is a trick question requiring you to analyze the components of a combination drug. While the patient needs an antitussive, hydrocodone (an opioid) causes respiratory depression, which is dangerous in a patient with emphysema. Furthermore, homatropine is an anticholinergic, which can thicken secretions, also dangerous in COPD. A, B, and C are all safer options.",
+        "section": "Contraindications"
+    },
+    {
+        "questionText": "A patient is having their serum theophylline level monitored. The nurse knows that which food item, if consumed in large quantities, could affect theophylline levels?",
+        "options": {"A": "Leafy green vegetables", "B": "Dairy products", "C": "Citrus fruits", "D": "Chocolate"},
+        "correctAnswer": "D",
+        "rationale": "The text advises patients to avoid caffeinated products. Chocolate contains theobromine, a methylxanthine similar to theophylline and caffeine. Consuming large amounts can have an additive effect, increasing the risk of side effects like tachycardia and nervousness.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "Rebound bronchospasm is a serious, paradoxical side effect associated with the abrupt discontinuation of which medication?",
+        "options": {"A": "Albuterol", "B": "Theophylline", "C": "Cromolyn sodium", "D": "Montelukast"},
+        "correctAnswer": "C",
+        "rationale": "The text specifically states, 'Rebound bronchospasm is a serious side effect of cromolyn. The drug should not be discontinued abruptly because a rebound asthmatic attack can result.'",
+        "section": "Cromolyn"
+    },
+    {
+        "questionText": "Which medication is classified as an anticholinergic bronchodilator?",
+        "options": {"A": "Salmeterol", "B": "Montelukast", "C": "Theophylline", "D": "Ipratropium"},
+        "correctAnswer": "D",
+        "rationale": "Ipratropium bromide is the prototype anticholinergic bronchodilator discussed in the text. Salmeterol is a beta2-agonist, montelukast is a leukotriene antagonist, and theophylline is a methylxanthine.",
+        "section": "Anticholinergics"
+    },
+    {
+        "questionText": "An older adult patient with a history of osteoporosis is prescribed long-term medication for their severe asthma. Which medication class would be of most concern for exacerbating their bone density loss?",
+        "options": {"A": "Beta2-adrenergic agonists", "B": "Glucocorticoids", "C": "Leukotriene receptor antagonists", "D": "Anticholinergics"},
+        "correctAnswer": "B",
+        "rationale": "The text explicitly states that frequent use of glucocorticoids in older adults can increase the risk of developing cataracts, osteoporosis, and diabetes mellitus. Loss of bone density is a hallmark systemic side effect of long-term steroid use.",
+        "section": "Glucocorticoids"
+    },
+    {
+        "questionText": "A patient is prescribed both an albuterol MDI and a cromolyn MDI. The nurse should instruct the patient to use the inhalers in which order?",
+        "options": {"A": "Use the cromolyn first to stabilize mast cells, then the albuterol.", "B": "Use the albuterol first to open the airways, then the cromolyn.", "C": "The order does not matter as they work on different pathways.", "D": "They should be used at different times of the day, never together."},
+        "correctAnswer": "B",
+        "rationale": "The principle of administering a bronchodilator before other inhaled medications applies here. The albuterol (bronchodilator) should be used first to open the airways, which allows for better penetration and deposition of the cromolyn (mast cell stabilizer).",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "Which is a life-threatening adverse reaction of montelukast listed in the prototype drug chart?",
+        "options": {"A": "Cardiac dysrhythmias", "B": "Suicidal ideation", "C": "Rebound bronchospasm", "D": "Renal failure"},
+        "correctAnswer": "B",
+        "rationale": "The drug chart for Montelukast explicitly lists 'suicidal ideation' under the 'Life-threatening' adverse reactions category, along with anaphylaxis and Stevens-Johnson syndrome.",
+        "section": "Adverse Effects"
+    },
+    {
+        "questionText": "A patient with a history of seizures should not be prescribed which class of bronchodilators due to its CNS stimulant effects?",
+        "options": {"A": "Anticholinergics", "B": "Beta2-adrenergic agonists", "C": "Methylxanthines", "D": "Inhaled glucocorticoids"},
+        "correctAnswer": "C",
+        "rationale": "The text states that theophylline is not prescribed for patients with seizure disorders because of its CNS stimulant effects, which can lower the seizure threshold. Adverse CNS reactions like seizures are a known risk.",
+        "section": "Contraindications"
+    },
+    {
+        "questionText": "The nurse is reviewing the plan of care for a patient taking a bronchodilator. Which outcome would be the most appropriate to evaluate the effectiveness of the drug therapy?",
+        "options": {"A": "Patient reports a decrease in anxiety.", "B": "Patient's serum theophylline level is 10 mcg/mL.", "C": "Patient is free from wheezing and lung fields are clear.", "D": "Patient verbalizes how to correctly use their inhaler."},
+        "correctAnswer": "C",
+        "rationale": "This is a trick question about evaluating outcomes vs. interventions or lab values. While A, B, and D are all positive things, they are not the direct measure of the drug's therapeutic effectiveness. The primary goal of a bronchodilator is to relieve bronchoconstriction. Therefore, the most direct evaluation of its effectiveness is the resolution of wheezing and the clearing of lung fields (C).",
+        "section": "Nursing Process"
+    },
+    {
+        "questionText": "A patient with COPD who takes theophylline daily calls the nurse. He states, 'I went on a diet and I'm eating mostly grilled chicken and vegetables and I've noticed my breathing is worse.' What is the nurse's best interpretation?",
+        "options": {"A": "The patient is likely having an allergic reaction to the new diet.", "B": "The patient's COPD is worsening, and he needs to see the provider.", "C": "A high-protein, low-carbohydrate diet can increase theophylline elimination, making his dose subtherapeutic.", "D": "The patient is experiencing anxiety about his new diet which is causing his shortness of breath."},
+        "correctAnswer": "C",
+        "rationale": "This is a very subtle trick question from the 'Diet' section of the patient teaching box. The text states: 'a high-protein, low-carbohydrate diet increases theophylline elimination.' This patient's new diet would cause his theophylline level to drop, leading to a return of his COPD symptoms. This is a direct pharmacokinetic interaction.",
+        "section": "Drug Interactions"
+    },
+    {
+        "questionText": "An older adult patient with a history of cardiac disease is prescribed a nebulized beta2-adrenergic agonist. Which assessment finding requires the most immediate follow-up?",
+        "options": {"A": "Patient report of a fine tremor in the hands.", "B": "Patient's heart rate increases from 80 to 95 bpm during treatment.", "C": "Patient complains of a dry mouth after the nebulizer treatment.", "D": "Patient develops chest pain during the nebulizer treatment."},
+        "correctAnswer": "D",
+        "rationale": "This is a priority question. While A, B, and C are all known and somewhat expected side effects, the development of chest pain (D) during treatment is the most critical finding. It could indicate cardiac ischemia triggered by the beta1-stimulation of the drug and requires immediate cessation of the treatment and notification of the provider.",
+        "section": "Case Study"
+    },
+    {
+        "questionText": "A patient with COPD is prescribed umeclidinium/vilanterol (Anoro Ellipta) one inhalation daily. The patient also has an order for albuterol MDI, 2 puffs every 6 hours as needed for shortness of breath. The patient asks if they should stop using the albuterol now that they have a new daily inhaler. What is the nurse's best response?",
+        "options": {"A": "Yes, the new inhaler replaces your albuterol.", "B": "No, the umeclidinium/vilanterol is for daily maintenance, and the albuterol is your rescue inhaler for sudden symptoms.", "C": "You should use the albuterol first every day to open your airways before using the new inhaler.", "D": "You can use either one, but not both on the same day."},
+        "correctAnswer": "B",
+        "rationale": "This is a critical patient safety and teaching question. Umeclidinium/vilanterol is a long-acting maintenance medication (LAMA/LABA). Albuterol is a short-acting rescue medication (SABA). Patients on maintenance therapy must still have and know how to use their rescue inhaler for acute symptoms. A is dangerous advice. C is incorrect; the sequence is important for SABA/ICS, but this is a scheduled daily medication. D is incorrect.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "According to the Prototype Drug Chart, which is a life-threatening adverse reaction of albuterol?",
+        "options": {"A": "Thrombocytopenia", "B": "Stevens-Johnson syndrome", "C": "Suicidal ideation", "D": "Tachycardia"},
+        "correctAnswer": "B",
+        "rationale": "The prototype drug chart for albuterol lists Dysrhythmia, angioedema, bronchospasm, and Stevens-Johnson syndrome as life-threatening adverse reactions.",
+        "section": "Adverse Effects"
+    },
+    {
+        "questionText": "The nurse knows that the primary reason for a patient to rinse their mouth after using a fluticasone inhaler is to prevent what?",
+        "options": {"A": "Systemic absorption of the steroid.", "B": "Staining of the teeth.", "C": "Local fungal infections.", "D": "Rebound bronchoconstriction."},
+        "correctAnswer": "C",
+        "rationale": "Inhaled corticosteroids can suppress the normal flora of the oropharynx, allowing for the overgrowth of Candida albicans. Rinsing the mouth with water removes residual medication from the oral cavity, significantly reducing the risk of developing oral thrush (fungal infection).",
+        "section": "Glucocorticoids"
+    },
+    {
+        "questionText": "A patient's medication list includes theophylline and erythromycin. The nurse should be alert for:",
+        "options": {"A": "Decreased theophylline levels.", "B": "Increased theophylline levels and potential toxicity.", "C": "Decreased erythromycin levels.", "D": "No significant interaction between these two drugs."},
+        "correctAnswer": "B",
+        "rationale": "The text states that erythromycin 'decrease[s] the liver metabolism rate and increase[s] the half-life and effects of theophylline.' This interaction increases the risk of theophylline toxicity.",
+        "section": "Drug Interactions"
+    },
+    {
+        "questionText": "Which chemical mediator is specifically targeted by drugs like montelukast and zafirlukast?",
+        "options": {"A": "Histamine", "B": "Bradykinin", "C": "Leukotrienes", "D": "Serotonin"},
+        "correctAnswer": "C",
+        "rationale": "Montelukast and zafirlukast are leukotriene receptor antagonists. They work by blocking the action of leukotrienes, which are chemical mediators that cause inflammation, bronchoconstriction, and mucus production in asthma.",
+        "section": "Leukotriene Receptor Antagonists"
+    },
+    {
+        "questionText": "A patient is prescribed a combination product of indacaterol and glycopyrrolate. The nurse identifies these two drug classes as:",
+        "options": {"A": "A short-acting beta2-agonist and a glucocorticoid.", "B": "A long-acting beta2-agonist and an anticholinergic.", "C": "An anticholinergic and a leukotriene antagonist.", "D": "A methylxanthine and a mast cell stabilizer."},
+        "correctAnswer": "B",
+        "rationale": "From Table 39.1, indacaterol is a long-acting beta2-agonist (LABA) and glycopyrrolate is a long-acting muscarinic antagonist (LAMA), which is an anticholinergic. This is a common LAMA/LABA combination for COPD.",
+        "section": "Combination Drugs"
+    },
+    {
+        "questionText": "A patient fails to get relief from their albuterol inhaler during an asthma attack. The nurse knows that failure to respond to a previously effective dose may indicate what?",
+        "options": {"A": "The patient has developed an allergy to albuterol.", "B": "The canister is likely empty or the technique is faulty.", "C": "Worsening asthma that requires reevaluation.", "D": "Both B and C are possible reasons."},
+        "correctAnswer": "D",
+        "rationale": "The text states: 'If the patient does not receive effective relief from the inhaler, either the technique is faulty or the canister is empty.' It later adds, 'Failure to respond to a previously effective dose may indicate worsening asthma that requires reevaluation...'",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A patient with COPD is prescribed arformoterol tartrate. The nurse should advise the patient that this medication is typically administered how often?",
+        "options": {"A": "Once a day", "B": "Every 12 hours", "C": "Every 4-6 hours as needed", "D": "Once a week"},
+        "correctAnswer": "B",
+        "rationale": "Table 39.1 lists the dosage for arformoterol tartrate as '15 mcg q12h,' indicating it is a long-acting medication administered twice daily.",
+        "section": "Sympathomimetics"
+    },
+    {
+        "questionText": "Which is a life-threatening adverse reaction associated with the monoclonal antibody reslizumab?",
+        "options": {"A": "Thrombocytopenia", "B": "Anaphylaxis", "C": "Hepatotoxicity", "D": "Adrenal suppression"},
+        "correctAnswer": "B",
+        "rationale": "Table 39.1 lists potential life-threatening reactions for monoclonal antibodies. Although not explicitly stated for reslizumab in this specific table, anaphylaxis is a known and critical risk for all infused monoclonal antibodies, and hypotension is listed as a potential adverse reaction.",
+        "section": "Monoclonal Antibodies"
+    },
+    {
+        "questionText": "A patient is prescribed both an albuterol MDI and a fluticasone MDI. Which statement indicates the patient understands the proper use?",
+        "options": {"A": "I will use the fluticasone when I feel an attack coming on, and the albuterol every day.", "B": "I will use the albuterol first, wait 5 minutes, then use the fluticasone.", "C": "I will alternate them; one puff of albuterol, then one puff of fluticasone immediately after.", "D": "I can use either one first, it doesn't make a difference."},
+        "correctAnswer": "B",
+        "rationale": "The correct procedure is to use the bronchodilator (albuterol) first to open the airways. After waiting a few minutes, the corticosteroid (fluticasone) is used, which can now penetrate deeper into the lungs.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "For which patient would the nurse question an order for theophylline?",
+        "options": {"A": "A 25-year-old with exercise-induced asthma.", "B": "A 50-year-old with chronic stable asthma.", "C": "A 65-year-old with a history of seizure disorder.", "D": "A 40-year-old smoker with COPD."},
+        "correctAnswer": "C",
+        "rationale": "The text explicitly states that theophylline is 'not prescribed for patients with seizure disorders or cardiac, renal, or liver disease.' The CNS stimulant effects of theophylline can lower the seizure threshold.",
+        "section": "Contraindications"
+    },
+    {
+        "scenario": "A patient with stable COPD is prescribed a new medication. The nurse's teaching includes the instruction, 'This drug works by inhibiting phosphodiesterase, but you must be aware of its narrow therapeutic index and the risk of cardiac dysrhythmias.'",
+        "questionText": "Which medication is the nurse most likely describing?",
+        "options": {"A": "Ipratropium", "B": "Salmeterol", "C": "Theophylline", "D": "Roflumilast"},
+        "correctAnswer": "C",
+        "rationale": "This is a trick question requiring differentiation between two phosphodiesterase inhibitors. Roflumilast (D) is a PDE-4 inhibitor mentioned in the tables, but theophylline (C) is the classic methylxanthine known for inhibiting phosphodiesterase, having a narrow therapeutic index (5-15 mcg/mL), and causing severe cardiac side effects, which perfectly matches the nurse's teaching.",
+        "section": "Methylxanthines"
+    },
+    {
+        "questionText": "A patient with emphysema exhibits a barrel chest. This physical finding is a direct result of which pathophysiological change?",
+        "options": {"A": "Increased lung compliance and chronic air trapping.", "B": "Decreased lung compliance and lung tissue stiffening.", "C": "Bronchial inflammation and excessive mucus production.", "D": "Hypertrophy of the diaphragm muscle from increased work of breathing."},
+        "correctAnswer": "A",
+        "rationale": "The destruction of alveolar walls in emphysema leads to a loss of elastic recoil. This increases lung compliance (the lungs stretch easily but don't snap back) and causes air to become trapped in the alveoli. This chronic hyperinflation forces the chest cage into the characteristic barrel shape.",
+        "section": "Pathophysiology"
+    },
+    {
+        "questionText": "A patient taking long-term high-dose inhaled beclomethasone should be monitored for all the following adverse effects EXCEPT:",
+        "options": {"A": "Oral candidiasis", "B": "Hoarseness", "C": "Adrenal suppression", "D": "Acute bronchospasm"},
+        "correctAnswer": "D",
+        "rationale": "This is a negative format trick question. A, B, and C are all potential side effects of inhaled corticosteroids. Oral candidiasis and hoarseness are local effects, while adrenal suppression is a systemic risk with high doses. Acute bronchospasm (D) is what the medication helps prevent; it is not a side effect of the drug itself, unlike the paradoxical bronchospasm seen with overuse of sympathomimetics.",
+        "section": "Glucocorticoids"
+    },
+    {
+        "questionText": "What is the primary advantage of a selective beta2-adrenergic agonist like albuterol over a non-selective sympathomimetic like epinephrine for treating routine asthma symptoms?",
+        "options": {"A": "Albuterol has a much faster onset of action.", "B": "Albuterol has fewer systemic side effects, particularly cardiac effects.", "C": "Albuterol also possesses potent anti-inflammatory properties.", "D": "Albuterol has a longer half-life, requiring less frequent dosing."},
+        "correctAnswer": "B",
+        "rationale": "Epinephrine stimulates alpha1, beta1, and beta2 receptors, causing significant side effects like hypertension and tachycardia. Albuterol selectively targets beta2 receptors in the lungs, resulting in effective bronchodilation with far fewer systemic and cardiac side effects, making it much safer for routine use.",
+        "section": "Sympathomimetics"
+    },
+    {
+        "scenario": "A patient with severe COPD is receiving IV aminophylline. The patient's current serum theophylline level is 12 mcg/mL. The patient is also taking ciprofloxacin for a UTI.",
+        "questionText": "What action should the nurse prioritize?",
+        "options": {"A": "Continue the infusion as ordered, as the level is therapeutic.", "B": "Advocate for decreasing the aminophylline infusion rate.", "C": "Request an order to stop the ciprofloxacin immediately.", "D": "Assess the patient for signs of a new infection."},
+        "correctAnswer": "B",
+        "rationale": "This is a complex drug interaction trick question. Although not in the text, ciprofloxacin (a fluoroquinolone antibiotic) is a potent inhibitor of the liver enzymes that metabolize theophylline. This interaction will cause theophylline levels to rise, potentially to toxic levels. Even though the current level is therapeutic, the nurse must anticipate this dangerous interaction and advocate for a pre-emptive reduction in the infusion rate.",
+        "section": "Drug Interactions"
+    },
+    {
+        "questionText": "A patient with asthma is prescribed salmeterol. The nurse must emphasize that this medication should always be used in combination with what other class of medication for asthma treatment?",
+        "options": {"A": "A short-acting beta2-agonist (SABA)", "B": "An inhaled glucocorticoid (ICS)", "C": "An anticholinergic", "D": "A leukotriene receptor antagonist"},
+        "correctAnswer": "B",
+        "rationale": "This is a critical safety question. Due to the black box warning, long-acting beta2-agonists (LABAs) like salmeterol should not be used as monotherapy for asthma. They must always be combined with an inhaled corticosteroid to manage the underlying inflammation and reduce the risk of a severe asthma attack.",
+        "section": "Patient Safety"
+    },
+    {
+        "questionText": "Which statement accurately describes the difference between restrictive and obstructive lung disease?",
+        "options": {"A": "Restrictive disease is characterized by increased airway resistance, while obstructive disease involves decreased lung volume.", "B": "Restrictive disease involves difficulty getting air out, while obstructive disease involves difficulty getting air in.", "C": "Restrictive disease shows decreased total lung capacity, while obstructive disease shows decreased FEV1.", "D": "Restrictive disease is caused by smoking, while obstructive disease is caused by fluid accumulation."},
+        "correctAnswer": "C",
+        "rationale": "This question requires precise definitions. The text defines restrictive disease as a decrease in total lung capacity. It defines obstructive disease (COPD) by increased airway resistance, which is measured by a decrease in FEV1. This is the most accurate and defining distinction provided.",
+        "section": "Pathophysiology"
+    },
+    {
+        "questionText": "The nurse is administering a nebulized treatment of levalbuterol. The nurse knows that levalbuterol is a stereoisomer of which other common bronchodilator?",
+        "options": {"A": "Salmeterol", "B": "Formoterol", "C": "Metaproterenol", "D": "Albuterol"},
+        "correctAnswer": "D",
+        "rationale": "This is a specific pharmacology question. Levalbuterol is the R-isomer of albuterol. It was developed with the theory that it would provide the same bronchodilation with fewer side effects, although clinical significance is debated.",
+        "section": "Sympathomimetics"
+    },
+    {
+        "questionText": "(SATA) A patient with asthma has an elevated eosinophil count. The nurse recognizes that this finding is directly related to which aspects of asthma's pathophysiology? (Select All That Apply)",
+        "options": {"A": "The antigen-antibody reaction on mast cells", "B": "The inflammatory process occurring in the airways", "C": "The release of Eosinophil Chemotactic Factor of Anaphylaxis (ECF-A)", "D": "The stimulation of beta2 receptors", "E": "The inhibition of phosphodiesterase"},
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "The text states that 'The mast cells stimulate the release of chemical mediators such as...eosinophil chemotactic factor of anaphylaxis (ECF-A)' as part of the allergic cascade (A). It also states 'Eosinophil counts are usually elevated during an allergic reaction, which indicates that an inflammatory process is occurring' (B). ECF-A (C) is the specific factor that attracts eosinophils.",
+        "section": "Pathophysiology"
+    },
+    {
+        "questionText": "(Trick) A patient is prescribed formoterol 20 mcg via nebulizer BID. The patient asks if they can use this medication for an acute asthma attack. The nurse's BEST response is:",
+        "options": {"A": "No, formoterol is a long-acting medication and should not be used for acute attacks.", "B": "Yes, formoterol is a fast-acting bronchodilator suitable for rescue use.", "C": "While formoterol is long-acting, it has a faster onset than salmeterol, but your short-acting albuterol is still the preferred rescue inhaler.", "D": "You should only use formoterol with a glucocorticoid for rescue therapy."},
+        "correctAnswer": "C",
+        "rationale": "This is a high-level trick question. While generally LABAs are not for rescue (making 'A' seem correct), formoterol is unique in that it has both a fast onset of action (similar to albuterol) AND a long duration. Some guidelines approve its use as a rescue inhaler *when used in a combination inhaler with an ICS*. However, the most accurate and safest response is C, which acknowledges its fast onset but correctly prioritizes the patient's designated SABA for rescue use.",
+        "section": "Pharmacology"
+    },
+    {
+        "questionText": "The nurse knows that an anticholinergic bronchodilator like ipratropium bromide is contraindicated for a patient with a known hypersensitivity to which substance?",
+        "options": {"A": "Milk proteins", "B": "Soy or peanuts", "C": "Penicillin", "D": "Aspirin"},
+        "correctAnswer": "B",
+        "rationale": "This is a specific contraindication. Ipratropium bromide inhalers can contain soy lecithin as a surfactant, which may have cross-reactivity in patients with severe peanut or soy allergies. Milk protein hypersensitivity is a caution for some DPIs, but not specifically ipratropium.",
+        "section": "Anticholinergics"
+    },
+    {
+        "questionText": "Which medication acts as a monoclonal antibody that binds to IgE, preventing it from binding to mast cells?",
+        "options": {"A": "Reslizumab", "B": "Dupilumab", "C": "Omalizumab", "D": "Benralizumab"},
+        "correctAnswer": "C",
+        "rationale": "Table 39.1 describes omalizumab and notes that its dosage is based on total IgE serum levels. Its mechanism is to bind to IgE, making it a key therapy for severe allergic asthma.",
+        "section": "Monoclonal Antibodies"
+    },
+    {
+        "questionText": "A patient with end-stage emphysema is likely to exhibit which of the following as a compensatory mechanism for chronic hypoxia?",
+        "options": {"A": "Leukocytosis", "B": "Thrombocytopenia", "C": "Polycythemia", "D": "Anemia"},
+        "correctAnswer": "C",
+        "rationale": "In response to chronic hypoxemia, the kidneys release erythropoietin, which stimulates the bone marrow to produce more red blood cells to increase the oxygen-carrying capacity of the blood. This condition is known as secondary polycythemia.",
+        "section": "Pathophysiology"
+    },
+    {
+        "questionText": "(SATA Trick) The nurse is creating a teaching plan for a patient starting on theophylline. Which points must be included to ensure safety? (Select All That Apply)",
+        "options": {"A": "You must have your serum drug levels monitored regularly.", "B": "If you decide to quit smoking, your dose may need to be decreased.", "C": "This medication is safe to take with all other cardiac medications.", "D": "Report any symptoms like severe headaches or palpitations to your provider.", "E": "It is safe to drink coffee and tea while on this medication."},
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "This is a SATA trick question asking for correct safety teaching. A, B, and D are all critical points from the text. C is dangerously incorrect, as theophylline interacts with beta-blockers and has additive effects with other stimulants. E is also incorrect; the text specifically advises avoiding caffeine due to additive effects and increased risk of toxicity.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "Which adverse effect is shared by both albuterol and theophylline due to their stimulant properties?",
+        "options": {"A": "Hypoglycemia", "B": "Bradycardia", "C": "Tachycardia", "D": "Constipation"},
+        "correctAnswer": "C",
+        "rationale": "Both beta2-agonists (through some beta1 stimulation) and methylxanthines are CNS and cardiac stimulants. Therefore, tachycardia and palpitations are potential adverse effects of both drug classes.",
+        "section": "Adverse Effects"
+    },
+    {
+        "questionText": "(Trick) A patient with asthma is well controlled on a daily inhaled glucocorticoid. The patient asks if they can stop taking it since they haven't had an attack in months. The nurse's best response is:",
+        "options": {"A": "Yes, as long as you feel well, you can stop the medication.", "B": "You should never stop this medication, as your asthma will immediately return.", "C": "It sounds like the medication is working perfectly by controlling the underlying inflammation. You should continue taking it daily to prevent future attacks.", "D": "You can cut the dose in half and see if you remain symptom-free."},
+        "correctAnswer": "C",
+        "rationale": "This tests therapeutic communication and understanding of maintenance therapy. A and D constitute giving medical advice beyond the nurse's scope and are unsafe. B is alarmist. C is the best response because it reinforces the medication's purpose (controlling inflammation), explains *why* the patient feels well (because the med is working), and provides the correct rationale for continuing it.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "Which medication is a leukotriene synthesis inhibitor, as opposed to a receptor antagonist?",
+        "options": {"A": "Montelukast", "B": "Zafirlukast", "C": "Zileuton", "D": "Pranlukast"},
+        "correctAnswer": "C",
+        "rationale": "The text and Table 39.4 clearly categorize zafirlukast and montelukast as leukotriene receptor antagonists, while zileuton is classified as a leukotriene synthesis inhibitor. It works further up the inflammatory cascade.",
+        "section": "Leukotriene Receptor Antagonists"
+    },
+    {
+        "questionText": "(SATA) Which of the following are potential side effects of inhaled anticholinergics like tiotropium?",
+        "options": {"A": "Dry mouth", "B": "Diarrhea", "C": "Urinary retention", "D": "Blurred vision", "E": "Sedation"},
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "Dry mouth, urinary retention, and blurred vision are classic anticholinergic side effects. The text lists these for tiotropium. Diarrhea is incorrect (constipation is more likely). Inhaled anticholinergics have minimal systemic absorption and do not typically cause sedation.",
+        "section": "Anticholinergics"
+    },
+    {
+        "questionText": "(Trick) A serum theophylline level is drawn from a patient who is a heavy smoker. The level is 4 mcg/mL. The patient's respiratory status is poor. The nurse anticipates the provider will:",
+        "options": {"A": "Discontinue the theophylline due to its ineffectiveness.", "B": "Increase the theophylline dose.", "C": "Add a beta-blocker to potentiate the theophylline.", "D": "Decrease the theophylline dose."},
+        "correctAnswer": "B",
+        "rationale": "This is a clinical judgment trick question. The level is subtherapeutic (normal 5-15). The text states that smokers have a shorter half-life and may require a higher dose. Given the poor respiratory status, the most likely intervention is to increase the dose to get the patient into the therapeutic range. A is premature. C is dangerous. D is the opposite of what is needed.",
+        "section": "Pharmacokinetics"
+    },
+    {
+        "questionText": "The primary cause of bronchoconstriction during an allergic asthma attack is the release of mediators from which type of cell?",
+        "options": {"A": "Neutrophils", "B": "Type II alveolar cells", "C": "Goblet cells", "D": "Mast cells"},
+        "correctAnswer": "D",
+        "rationale": "The text states, 'Mast cells found in connective tissue throughout the body are directly involved in the asthmatic response...the mast cells stimulate the release of chemical mediators such as histamines...'",
+        "section": "Pathophysiology"
+    },
+    {
+        "questionText": "(Trick) Which drug is NOT a bronchodilator but is used for prophylactic treatment of bronchial asthma?",
+        "options": {"A": "Albuterol", "B": "Ipratropium", "C": "Cromolyn sodium", "D": "Theophylline"},
+        "correctAnswer": "C",
+        "rationale": "This question is a trick of classification. Albuterol, ipratropium, and theophylline are all bronchodilators. The text explicitly states that cromolyn 'does not have bronchodilator properties but instead acts by inhibiting release of histamine... to prevent an asthma attack.'",
+        "section": "Cromolyn"
+    },
+    {
+        "questionText": "(SATA Trick) The nurse is teaching a patient with a new diagnosis of COPD. Which statements indicate an accurate understanding of the disease? (Select All That Apply)",
+        "options": {"A": "If I quit smoking now, my lung damage will reverse and be cured.", "B": "My disease means my airways are obstructed and it's hard to get air out.", "C": "I should expect to have decreased lung compliance as the disease progresses.", "D": "Asthma is considered a type of COPD.", "E": "The most important thing I can do is quit smoking to slow the disease process."},
+        "correctAnswer": ["B", "D", "E"],
+        "rationale": "This SATA trick question tests for precise understanding. A is incorrect; the damage is irreversible. B, D, and E are all correct statements from the text. C is a subtle trick; COPD is associated with INCREASED, not decreased, lung compliance due to loss of elastic recoil.",
+        "section": "Pathophysiology"
+    },
+    {
+        "questionText": "A patient taking zileuton should be advised that this medication interacts with which of the following?",
+        "options": {"A": "Beta blockers", "B": "Calcium channel blockers", "C": "Theophylline", "D": "Aspirin"},
+        "correctAnswer": "C",
+        "rationale": "While not in the main text body, specific drug-drug interactions are key knowledge. Zileuton is a known inhibitor of liver enzymes and can increase levels of other drugs metabolized by the same pathway, including theophylline, increasing the risk for toxicity.",
+        "section": "Drug Interactions"
+    },
+    {
+        "questionText": "The nurse is assessing a patient with bronchiectasis. The nurse understands the hallmark of this disease is:",
+        "options": {"A": "Wheezing and airway hyperresponsiveness.", "B": "Loss of alveolar elasticity.", "C": "Abnormal and permanent dilation of the bronchi and bronchioles.", "D": "Increased surface tension in the alveoli."},
+        "correctAnswer": "C",
+        "rationale": "The text defines bronchiectasis as 'dilation of the bronchi and bronchioles is abnormal secondary to frequent infection and inflammation.' This permanent dilation is its defining characteristic.",
+        "section": "Pathophysiology"
+    },
+    {
+        "questionText": "(Trick) A patient with asthma is taking an oral glucocorticoid. The nurse should instruct the patient to take this medication:",
+        "options": {"A": "On an empty stomach to increase absorption.", "B": "With food to prevent gastric irritation.", "C": "At bedtime to prevent insomnia.", "D": "Only when wheezing is present."},
+        "correctAnswer": "B",
+        "rationale": "This is a safety-based trick question. While steroids can cause insomnia (making C incorrect advice), the more immediate and common issue is GI distress. The text states, 'Glucocorticoids can irritate the gastric mucosa and should be taken with food to avoid ulceration.'",
+        "section": "Glucocorticoids"
+    },
+    {
+        "questionText": "A patient is ordered IV aminophylline at an infusion rate of 0.4 mg/kg/hr. The patient weighs 165 lbs. The pharmacy supplies a standard bag of aminophylline 500 mg in 500 mL of D5W. What rate should the nurse set the infusion pump to in mL/hr?",
+        "correctAnswer": "30",
+        "rationale": "Step 1: Convert weight: 165 lbs / 2.2 lbs/kg = 75 kg. \nStep 2: Calculate the required dose in mg/hr: 0.4 mg/kg/hr * 75 kg = 30 mg/hr. \nStep 3: Determine the concentration of the IV bag: 500 mg / 500 mL = 1 mg/mL. \nStep 4: Calculate the infusion rate: (Dose in mg/hr) / (Concentration in mg/mL) = (30 mg/hr) / (1 mg/mL) = 30 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A child weighing 66 lbs is prescribed an oral albuterol solution. The order is for 0.1 mg/kg/dose, not to exceed 4 mg per dose. The solution is available as 2 mg/5 mL. How many mL will the nurse administer for a single dose?",
+        "correctAnswer": "7.5",
+        "rationale": "Step 1: Convert weight: 66 lbs / 2.2 lbs/kg = 30 kg. \nStep 2: Calculate the dose in mg: 0.1 mg/kg * 30 kg = 3.0 mg. \nStep 3: Check against the maximum dose. 3.0 mg is less than the 4 mg max, so the calculated dose is safe. \nStep 4: Calculate the volume to administer: (Desired dose / Have dose) * Volume = (3.0 mg / 2 mg) * 5 mL = 1.5 * 5 mL = 7.5 mL.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A patient is to receive reslizumab 3 mg/kg IV. The patient weighs 220 lbs. The medication is supplied in a 100 mg/10 mL vial. The total dose will be diluted in 50 mL of NS and infused over 25 minutes. How many mL of reslizumab will the nurse draw from the vial?",
+        "correctAnswer": "30",
+        "rationale": "This question contains distractor information (the NS volume and infusion time). The question only asks for the volume of drug to be drawn up. \nStep 1: Convert weight: 220 lbs / 2.2 lbs/kg = 100 kg. \nStep 2: Calculate the total dose in mg: 3 mg/kg * 100 kg = 300 mg. \nStep 3: Determine the concentration of the vial: 100 mg / 10 mL = 10 mg/mL. \nStep 4: Calculate the volume to draw up: (300 mg desired) / (10 mg/mL) = 30 mL.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "An order for a patient with COPD is for roflumilast 500 mcg PO daily. The pharmacy supplies 0.25 mg tablets. The nurse should recognize this as a:",
+        "options": {"A": "Correct dose, and should administer two tablets.", "B": "Potentially dangerous underdose and should clarify the order.", "C": "Correct dose, and should administer half a tablet.", "D": "Potentially dangerous overdose and should clarify the order."},
+        "correctAnswer": "A",
+        "rationale": "This is a unit conversion trick question. First, convert the units to be the same. 0.25 mg = 250 mcg. The order is for 500 mcg. Therefore, the nurse needs to administer two 250 mcg tablets to achieve the 500 mcg dose. The text also notes that roflumilast is often started at 250 mcg and increased to a maintenance dose of 500 mcg, so this is a standard dose.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A patient is prescribed terbutaline sulfate 0.25 mg subcutaneously for acute bronchospasm. The medication is available as 1 mg/mL. How many mL will the nurse administer?",
+        "correctAnswer": "0.25",
+        "rationale": "This is a straightforward calculation. Use the formula: (Desired dose / Have dose) * Volume = (0.25 mg / 1 mg) * 1 mL = 0.25 mL.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A patient's theophylline infusion is running at 25 mL/hr. The IV bag is labeled 'Theophylline 400 mg in 500 mL D5W'. How many mg of theophylline is the patient receiving per hour?",
+        "correctAnswer": "20",
+        "rationale": "Step 1: Determine the concentration of the solution: 400 mg / 500 mL = 0.8 mg/mL. Step 2: Calculate the dose the patient is receiving per hour: (Concentration in mg/mL) * (Rate in mL/hr) = 0.8 mg/mL * 25 mL/hr = 20 mg/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "An order is for oral montelukast granules 4 mg for a child. The pharmacy provides 4 mg packets. The nurse's instructions to the parents should include which statement?",
+        "options": {"A": "Dissolve the granules in 4 oz of water before administering.", "B": "You can mix the granules with a spoonful of applesauce and it must be given within 15 minutes.", "C": "You can mix the granules in a full cup of milk or formula for the child to drink.", "D": "Open the packet and pour the granules directly into the child's mouth."},
+        "correctAnswer": "B",
+        "rationale": "This is a dosage/administration trick question based on specific instructions from the text. The text states for montelukast oral granules: 'After opening a packet, the dose must be administered within 15 minutes. If mixed with baby formula or an approved food (applesauce, carrots, rice, or ice cream), do not store for future use.' Mixing with applesauce is an approved method.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A patient is to receive an IV loading dose of aminophylline 6 mg/kg. The patient weighs 198 lbs. The medication is available in a vial containing 250 mg in 10 mL. How many mL will the nurse draw up for this dose?",
+        "correctAnswer": "21.6",
+        "rationale": "Step 1: Convert weight: 198 lbs / 2.2 lbs/kg = 90 kg. Step 2: Calculate total dose in mg: 6 mg/kg * 90 kg = 540 mg. Step 3: Determine concentration: 250 mg / 10 mL = 25 mg/mL. Step 4: Calculate volume: (540 mg desired) / (25 mg/mL) = 21.6 mL.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "An order is for dupilumab 400 mg subcutaneously. The pharmacy provides prefilled syringes containing 200 mg/1.14 mL. How many injections will the nurse need to administer?",
+        "options": {"A": "1 injection", "B": "2 injections", "C": "3 injections", "D": "0.5 injections"},
+        "correctAnswer": "B",
+        "rationale": "This question tests understanding of dose preparation from prefilled syringes. The order is for 400 mg. Each syringe contains 200 mg. Therefore, 400 mg / 200 mg/syringe = 2 syringes, which means 2 separate injections are required.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A patient is prescribed formoterol 20 mcg via nebulizer BID. The medication is supplied in 2 mL unit dose vials containing 20 mcg. The patient uses the nebulizer for 10 minutes. How many micrograms did the patient receive in the morning dose?",
+        "correctAnswer": "20",
+        "rationale": "This is a trick question with a time distractor. The dose is contained in the unit vial. As long as the entire vial is used in the nebulizer, the patient receives the full dose, regardless of the time it takes to nebulize it. The dose is 20 mcg.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A child weighing 20 kg is ordered albuterol 0.15 mg/kg PO TID. The available albuterol syrup has a concentration of 2 mg/5 mL. How many total mL of syrup will the child receive per day?",
+        "correctAnswer": "22.5",
+        "rationale": "Step 1: Calculate the single dose in mg: 0.15 mg/kg * 20 kg = 3 mg. Step 2: Calculate the volume for a single dose: (3 mg desired / 2 mg have) * 5 mL = 7.5 mL. Step 3: Calculate the total daily volume. TID means three times a day. 7.5 mL/dose * 3 doses/day = 22.5 mL/day.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A patient's IV theophylline order is to infuse at 25 mg/hr. The IV bag contains 400 mg of theophylline in 250 mL of D5W. At what rate, in mL/hr, should the nurse set the infusion pump? (Round to the nearest whole number)",
+        "correctAnswer": "16",
+        "rationale": "Step 1: Find the concentration of the IV solution: 400 mg / 250 mL = 1.6 mg/mL. Step 2: Calculate the infusion rate in mL/hr: (Ordered dose in mg/hr) / (Concentration in mg/mL) = 25 mg/hr / 1.6 mg/mL = 15.625 mL/hr. Rounded to the nearest whole number, the rate is 16 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "The provider orders 'terbutaline 0.5 mg subcut q4h PRN for wheezing'. The vial reads '1 mg per 1 mL'. Four hours after the first dose, the patient is wheezing again. How many mL will the nurse administer for this second dose?",
+        "correctAnswer": "0.5",
+        "rationale": "This is a straightforward calculation with a time distractor. The question asks for the volume of the second dose, which is the same as the first. (Desired dose / Have dose) * Volume = (0.5 mg / 1 mg) * 1 mL = 0.5 mL.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A patient is to receive a loading dose of aminophylline 400 mg IV over 20 minutes. Pharmacy provides a bag containing 1000 mg in 500 mL of NS. What rate should the nurse set the infusion pump in mL/hr?",
+        "correctAnswer": "600",
+        "rationale": "Step 1: Find the volume for the dose. Concentration = 1000 mg / 500 mL = 2 mg/mL. Volume = 400 mg / 2 mg/mL = 200 mL. Step 2: Calculate the rate. The dose (200 mL) must be infused over 20 minutes. Rate = (Volume / Time in min) * 60 min/hr = (200 mL / 20 min) * 60 = 10 * 60 = 600 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "An order is for omalizumab 300 mg subcutaneously. The medication is supplied in 150 mg/1.2 mL prefilled syringes. The nurse should prepare to administer:",
+        "options": {"A": "1 injection of 1.2 mL", "B": "2 injections, for a total of 2.4 mL", "C": "1 injection of 2.4 mL", "D": "2 injections, for a total of 1.2 mL"},
+        "correctAnswer": "B",
+        "rationale": "The total dose is 300 mg. Each syringe contains 150 mg. Therefore, the patient needs 2 syringes (300 mg / 150 mg/syringe = 2). The volume per syringe is 1.2 mL, so the total volume is 2 * 1.2 mL = 2.4 mL. This will be given as two separate injections.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "(Dosage Calculation) An order is for oral theophylline ER 450 mg once daily. The pharmacy provides 300 mg extended-release tablets. How many tablets will the nurse administer?",
+        "correctAnswer": "1.5",
+        "rationale": "Desired dose / Have dose = 450 mg / 300 mg = 1.5 tablets. Extended-release tablets that are scored can be split, so this is a valid dose to administer.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "(Dosage Calculation Trick) A child weighs 40 kg and is ordered a loading dose of IV aminophylline at 6 mg/kg over 30 minutes. The standard mixture available is 250 mg in 250 mL of D5W. What is the total volume to be infused, and at what rate in mL/hr?",
+        "options": {"A": "240 mL at 240 mL/hr", "B": "480 mL at 480 mL/hr", "C": "240 mL at 480 mL/hr", "D": "480 mL at 240 mL/hr"},
+        "correctAnswer": "C",
+        "rationale": "This is a two-part calculation trick. Step 1: Calculate total dose: 6 mg/kg * 40 kg = 240 mg. Step 2: Calculate volume. Concentration = 250 mg / 250 mL = 1 mg/mL. So, 240 mg requires 240 mL. Step 3: Calculate rate. To infuse 240 mL in 30 minutes (0.5 hr), the rate must be 240 mL / 0.5 hr = 480 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "(Dosage Calculation) A patient is prescribed formoterol 12 mcg inhalation every 12 hours. The medication is available as a single-use vial containing 20 mcg/2 mL. How many mL should the nurse place in the nebulizer for the correct dose?",
+        "correctAnswer": "1.2",
+        "rationale": "Step 1: Determine the concentration: 20 mcg / 2 mL = 10 mcg/mL. Step 2: Calculate the required volume: (12 mcg desired) / (10 mcg/mL) = 1.2 mL.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "(Dosage Calculation) A patient needs a continuous infusion of albuterol at 10 mcg/min. Pharmacy provides a bag of 5000 mcg of albuterol in 500 mL of NS. At what rate in mL/hr will the nurse set the pump?",
+        "correctAnswer": "60",
+        "rationale": "Step 1: Calculate dose per hour: 10 mcg/min * 60 min/hr = 600 mcg/hr. Step 2: Determine concentration: 5000 mcg / 500 mL = 10 mcg/mL. Step 3: Calculate rate: (600 mcg/hr) / (10 mcg/mL) = 60 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "(Dosage Calculation Trick) An order is for IV methylprednisolone 60 mg. The vial contains 125 mg of powder. The instructions say to reconstitute with 2 mL of sterile water to yield 125 mg/2 mL. The patient is also receiving IV aminophylline. What is the volume in mL of methylprednisolone to administer?",
+        "correctAnswer": "0.96",
+        "rationale": "This question contains a red herring (the aminophylline). The focus is the math. Step 1: Concentration is 125 mg / 2 mL = 62.5 mg/mL. Step 2: Calculate volume: (60 mg desired) / (62.5 mg/mL) = 0.96 mL.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "(Dosage Calculation) The order is for Revefenacin 175 mcg via nebulizer once daily. The pharmacy provides single-dose vials containing 175 mcg in 3 mL. How many vials will the patient use in one week?",
+        "correctAnswer": "7",
+        "rationale": "This is a simple calculation with a time component. The dose is once daily, so over 7 days, the patient will use 7 vials.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "(Dosage Calculation Trick) The provider orders 'albuterol MDI 2 puffs q4-6h PRN' and 'fluticasone MDI 2 puffs BID'. The albuterol canister contains 200 inhalations. If the patient uses the albuterol an average of 3 times a day and the fluticasone as ordered, how many days will the albuterol canister last? (Round down to the nearest whole day).",
+        "correctAnswer": "33",
+        "rationale": "This trick question contains a red herring (the fluticasone information). Focus on the albuterol. Doses per day = 3 times/day * 2 puffs/time = 6 puffs/day. Total days = Total puffs / Puffs per day = 200 puffs / 6 puffs/day = 33.33 days. Rounding down gives 33 full days.",
+        "section": "Dosage Calculation"
+    },
+    // New and distinct pharmacology questions to replace duplicates
+    {
+        "questionText": "A patient is prescribed oral prednisone for a severe asthma exacerbation. The nurse should include which instruction for the patient regarding discontinuation?",
+        "options": {"A": "Stop the medication immediately once symptoms resolve.", "B": "Gradually taper the dose down as instructed by the provider.", "C": "You can stop the medication after 7 days, regardless of symptoms.", "D": "Take a double dose for the last two days before stopping."},
+        "correctAnswer": "B",
+        "rationale": "Oral glucocorticoids used for short-term bursts (like for exacerbations) must be tapered to prevent adrenal insufficiency. Abrupt discontinuation can lead to a potentially life-threatening adrenal crisis.",
+        "section": "Glucocorticoids"
+    },
+    {
+        "questionText": "When teaching a patient about their new prescription for a dry powder inhaler (DPI) like tiotropium, the nurse should emphasize:",
+        "options": {"A": "It creates a fine mist that you should inhale slowly and deeply.", "B": "You need to shake it vigorously before each use.", "C": "You should inhale quickly and deeply to ensure the powder is delivered.", "D": "It is designed to be used with a spacer device."},
+        "correctAnswer": "C",
+        "rationale": "DPIs require a rapid, deep inhalation to effectively disperse the powdered medication. MDIs create a mist and are often used with spacers, while DPIs require a strong inspiratory effort and usually no shaking.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A patient with COPD is prescribed umeclidinium, a long-acting muscarinic antagonist (LAMA). The nurse understands that this medication works by:",
+        "options": {"A": "Stimulating beta2-adrenergic receptors to cause bronchodilation.", "B": "Blocking acetylcholine at muscarinic receptors, leading to bronchodilation.", "C": "Inhibiting phosphodiesterase, leading to increased cAMP.", "D": "Stabilizing mast cells to prevent the release of inflammatory mediators."},
+        "correctAnswer": "B",
+        "rationale": "Umeclidinium is an anticholinergic (LAMA). It works by blocking the action of acetylcholine at muscarinic receptors on bronchial smooth muscle, which prevents bronchoconstriction and promotes bronchodilation.",
+        "section": "Anticholinergics"
+    },
+    {
+        "scenario": "A nurse is preparing to administer the first dose of omalizumab to a patient with severe allergic asthma.",
+        "questionText": "Before administration, the nurse must ensure the patient has which of the following available at the bedside?",
+        "options": {"A": "A peak flow meter for baseline measurements.", "B": "An epinephrine autoinjector and emergency equipment.", "C": "Oral prednisone for symptom control.", "D": "A warm blanket for comfort during infusion."},
+        "correctAnswer": "B",
+        "rationale": "Omalizumab is a monoclonal antibody that carries a black box warning for anaphylaxis, which can be severe and delayed. Therefore, ensuring immediate access to epinephrine and emergency resuscitation equipment is paramount for patient safety during and after administration.",
+        "section": "Monoclonal Antibodies"
+    },
+    {
+        "questionText": "A patient taking high-dose inhaled corticosteroids for asthma reports nosebleeds and irritation. The nurse should advise the patient to:",
+        "options": {"A": "Increase the dose to reduce inflammation.", "B": "Stop the medication and notify the provider.", "C": "Use a saline nasal spray before the corticosteroid to moisten the mucosa.", "D": "Switch to an oral corticosteroid.", "E": "Inhale more forcefully when using the spray."},
+        "correctAnswer": "C",
+        "rationale": "Local irritation and nosebleeds are common side effects of inhaled corticosteroids. Using a saline nasal spray can help moisturize the nasal passages and reduce irritation. Increasing the dose (A) would worsen it. Stopping immediately (B) is usually not advised without provider consultation for a chronic condition. Switching to oral (D) increases systemic side effects. Inhaling more forcefully (E) could worsen irritation.",
+        "section": "Glucocorticoids"
+    },
+    {
+        "questionText": "A patient with stable COPD is prescribed roflumilast. The nurse's teaching should include which of the following regarding this medication?",
+        "options": {"A": "It is a bronchodilator that provides rapid relief of symptoms.", "B": "It is an anti-inflammatory drug used to reduce exacerbations.", "C": "It should be taken only when experiencing an acute flare-up.", "D": "It works by suppressing the cough reflex."},
+        "correctAnswer": "B",
+        "rationale": "Roflumilast is a phosphodiesterase-4 (PDE4) inhibitor, which is an oral anti-inflammatory agent used to reduce the risk of COPD exacerbations in patients with severe COPD and chronic bronchitis. It is not a bronchodilator (A), is not for acute use (C), and does not directly suppress cough (D).",
+        "section": "Phosphodiesterase-4 Inhibitors"
+    },
+    {
+        "questionText": "Which assessment finding would indicate that a patient's long-acting beta2-agonist (LABA) medication, such as salmeterol, is effective?",
+        "options": {"A": "The patient reports needing their rescue inhaler more frequently.", "B": "Improved peak expiratory flow rates (PEFR) in the mornings.", "C": "Increased episodes of nocturnal cough.", "D": "Elevated heart rate throughout the day."},
+        "correctAnswer": "B",
+        "rationale": "LABAs are maintenance medications that provide sustained bronchodilation, typically leading to better overall lung function. Improved morning PEFR indicates better airway patency and less nocturnal bronchoconstriction, signifying effectiveness. A, C, and D would indicate worsening control or adverse effects.",
+        "section": "Sympathomimetics"
+    },
+    {
+        "questionText": "A patient with allergic asthma asks about avoiding triggers. The nurse explains that common indoor allergens include:",
+        "options": {"A": "Pollen from trees and grasses.", "B": "Mold spores and dust mites.", "C": "Vehicle exhaust and industrial pollutants.", "D": "Pet dander and certain food additives."},
+        "correctAnswer": "B",
+        "rationale": "Mold spores and dust mites are common indoor allergens that can trigger asthma symptoms. Pollen is typically an outdoor allergen. Vehicle exhaust and pollutants are irritants, not allergens. Pet dander is an indoor allergen, but food additives are less common triggers for respiratory allergic reactions.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "The nurse is preparing to administer subcutaneous epinephrine for a severe allergic reaction causing bronchospasm. Which parameter is critical for the nurse to monitor closely after administration?",
+        "options": {"A": "Blood glucose levels.", "B": "Urine output.", "C": "Cardiac rhythm and blood pressure.", "D": "Pupil dilation."},
+        "correctAnswer": "C",
+        "rationale": "Epinephrine is a potent non-selective adrenergic agonist. Its beta1 effects on the heart can cause significant tachycardia, dysrhythmias, and hypertension. Therefore, close monitoring of cardiac rhythm and blood pressure is essential due to the high risk of cardiovascular adverse effects.",
+        "section": "Sympathomimetics"
+    },
+    {
+        "questionText": "A patient is transitioned from oral prednisone to an inhaled corticosteroid (ICS) like budesonide for long-term asthma control. The nurse should instruct the patient about the potential for which adverse effect due to the transition?",
+        "options": {"A": "Increased risk of oral candidiasis.", "B": "Adrenal crisis if oral prednisone is stopped abruptly.", "C": "Immediate onset of bronchodilation.", "D": "Weight gain and fluid retention."},
+        "correctAnswer": "B",
+        "rationale": "This is a key safety teaching point for transitioning from systemic to inhaled steroids. The patient needs to understand that oral prednisone must be tapered to prevent adrenal insufficiency, as the HPA axis has been suppressed by the systemic steroid. Oral candidiasis (A) is a risk of ICS but not related to the transition from oral. C and D are incorrect.",
+        "section": "Glucocorticoids"
+    },
+    {
+        "questionText": "(SATA) A patient with severe asthma is prescribed a new medication that targets Interleukin-5 (IL-5). Which medications are in this class? (Select All That Apply)",
+        "options": {"A": "Omalizumab", "B": "Mepolizumab", "C": "Reslizumab", "D": "Benralizumab", "E": "Montelukast"},
+        "correctAnswer": ["B", "C", "D"],
+        "rationale": "Mepolizumab, Reslizumab, and Benralizumab are all monoclonal antibodies that target IL-5 or its receptor, used for severe eosinophilic asthma. Omalizumab targets IgE, and Montelukast is a leukotriene receptor antagonist.",
+        "section": "Monoclonal Antibodies"
+    },
+    {
+        "questionText": "A patient with COPD who is taking an anticholinergic bronchodilator reports significant dry mouth. Which nursing intervention would be most appropriate?",
+        "options": {"A": "Advise the patient to stop the medication immediately.", "B": "Instruct the patient to increase fluid intake and use sugar-free hard candies.", "C": "Suggest rinsing the mouth with an alcohol-based mouthwash.", "D": "Notify the provider for an order for a stronger bronchodilator."},
+        "correctAnswer": "B",
+        "rationale": "Dry mouth is a common anticholinergic side effect. Increasing fluid intake and using sugar-free hard candies or chewing gum are effective symptomatic relief measures. Stopping the medication (A) is inappropriate without provider consultation. Alcohol-based mouthwashes (C) can worsen dryness. A stronger bronchodilator (D) doesn't address the dry mouth side effect.",
+        "section": "Anticholinergics"
+    },
+    {
+        "questionText": "The nurse is reviewing the function of surfactant in the lungs. Surfactant's primary role is to:",
+        "options": {"A": "Increase the surface tension of the alveoli, preventing collapse.", "B": "Decrease the surface tension of the alveoli, preventing collapse.", "C": "Facilitate gas exchange by thickening the alveolar-capillary membrane.", "D": "Protect the lungs from inhaled pathogens by trapping them."},
+        "correctAnswer": "B",
+        "rationale": "Surfactant is a lipoprotein that coats the alveoli. Its crucial role is to reduce the surface tension, which prevents the tiny air sacs from collapsing during exhalation, thus maintaining lung volume and facilitating gas exchange.",
+        "section": "Physiology"
+    },
+    {
+        "questionText": "A patient taking a leukotriene receptor antagonist reports experiencing nightmares. The nurse should instruct the patient to:",
+        "options": {"A": "Take the medication in the morning instead of at night.", "B": "Increase the dose to better control their asthma.", "C": "Report this symptom to their healthcare provider for evaluation.", "D": "Take an over-the-counter sleep aid to counteract the effect."},
+        "correctAnswer": "C",
+        "rationale": "Neuropsychiatric events, including nightmares, agitation, and suicidal ideation, are known potential adverse effects of montelukast and related drugs. Patients should be advised to report such symptoms to their provider immediately for assessment and potential medication adjustment or discontinuation.",
+        "section": "Leukotriene Receptor Antagonists"
+    },
+    {
+        "questionText": "A patient with chronic stable asthma is advised to use a step-up approach if their symptoms are not well-controlled. What is the rationale behind this strategy?",
+        "options": {"A": "To quickly achieve bronchodilation during an acute attack.", "B": "To ensure the lowest effective dose of medication is used to minimize side effects.", "C": "To avoid developing tolerance to asthma medications.", "D": "To replace oral medications with inhaled ones for better efficacy."},
+        "correctAnswer": "B",
+        "rationale": "The step-up/step-down approach in asthma management (e.g., GINA guidelines) aims to achieve and maintain asthma control with the minimum effective dose of medication. This strategy balances efficacy with the goal of reducing potential adverse effects, especially from corticosteroids.",
+        "section": "Pharmacology"
+    },
+    {
+        "questionText": "(Dosage Calculation) A child weighing 30 kg is ordered oral prednisone 1 mg/kg/day divided into two daily doses. The available prednisone solution is 15 mg/5 mL. How many mL will the child receive per dose?",
+        "correctAnswer": "5",
+        "rationale": "Step 1: Calculate total daily dose: 1 mg/kg/day * 30 kg = 30 mg/day. Step 2: Calculate dose per administration (divided into two doses): 30 mg/day / 2 doses = 15 mg/dose. Step 3: Calculate volume to administer per dose: (Desired dose / Have dose) * Volume = (15 mg / 15 mg) * 5 mL = 5 mL.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "(Dosage Calculation) An order is for albuterol nebulizer solution 2.5 mg every 6 hours. The vial contains 0.5% albuterol solution. How many mL will the nurse draw up for one dose?",
+        "correctAnswer": "0.5",
+        "rationale": "Step 1: Convert percentage to mg/mL. 0.5% means 0.5 grams per 100 mL, or 500 mg per 100 mL, which simplifies to 5 mg/mL. Step 2: Calculate volume: (Desired dose / Have concentration) = 2.5 mg / 5 mg/mL = 0.5 mL.",
+        "section": "Dosage Calculation"
+    }
+    ];
+    // --- END: QUESTION BANK ---
+
+    // --- SCRIPT LOGIC ---
+    let finalQuizData = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let timeSpentOnQuestions = {};
+    let timeFlaggedQuestions = new Set();
+    let flaggedForReview = new Set();
+    let overallTimerInterval;
+    let timeLeft = 60 * 60; // 35 minutes
+    let questionStartTime;
+    const TIME_THRESHOLD = 90; // 90 seconds for a question to be auto-flagged for review
+    let isPaused = false;
+
+    // DOM Element references
+    const initialScreen = document.getElementById('initial-screen');
+    const startBtn = document.getElementById('start-btn');
+    const quizForm = document.getElementById('quiz-form');
+    const questionContainer = document.getElementById('question-container');
+    const navigationBtn = document.getElementById('navigation-btn');
+    const timerDisplay = document.getElementById('timer-display');
+    const flagCheckbox = document.getElementById('flag-for-review');
+    const resultsArea = document.getElementById('results-area');
+    const resultsSummary = document.getElementById('results-summary');
+    const resultsDetails = document.getElementById('results-details');
+    const studyFocusContainer = document.getElementById('study-focus');
+    const pauseBtn = document.getElementById('pause-btn');
+    const pauseOverlay = document.getElementById('pause-overlay');
+    const printBtn = document.getElementById('print-btn');
+    const printableStudyGuide = document.getElementById('study-guide-printable');
+
+    // Function to remove duplicates and prepare quiz data
+    function prepareQuizData() {
+        const uniqueQuestions = [];
+        const seenQuestions = new Set();
+
+        fullQuizData.forEach(q => {
+            const questionIdentifier = JSON.stringify({
+                text: q.questionText,
+                options: q.options,
+                correct: q.correctAnswer
+            });
+            if (!seenQuestions.has(questionIdentifier)) {
+                uniqueQuestions.push(q);
+                seenQuestions.add(questionIdentifier);
+            }
+        });
+
+        const dosageQuestions = uniqueQuestions.filter(q => q.section && q.section.includes("Dosage Calculation"));
+        const standardQuestions = uniqueQuestions.filter(q => !q.section || !q.section.includes("Dosage Calculation"));
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        shuffleArray(dosageQuestions);
+        shuffleArray(standardQuestions);
+
+        // Ensure we always have at least 3 dosage questions if available, up to a max
+        const selectedDosage = dosageQuestions.slice(0, Math.min(dosageQuestions.length, 5)); // Increased to allow for more dosage questions
+        const numStandardQuestions = 30 - selectedDosage.length;
+        const selectedStandard = standardQuestions.slice(0, numStandardQuestions);
+
+        finalQuizData = [...selectedStandard, ...selectedDosage];
+        shuffleArray(finalQuizData);
+    }
+
+    function startQuiz() {
+        prepareQuizData();
+
+        if (finalQuizData.length === 0) {
+            questionContainer.innerHTML = `<p class="question-text">There are no questions loaded in this quiz.</p>`;
+            initialScreen.classList.add('hidden');
+            quizForm.classList.remove('hidden');
+            timerDisplay.textContent = "Quiz Not Started";
+            return;
+        }
+
+        initialScreen.classList.add('hidden');
+        quizForm.classList.remove('hidden');
+        navigationBtn.classList.remove('hidden');
+        pauseBtn.classList.remove('hidden');
+        startOverallTimer();
+        displayCurrentQuestion();
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        if (isPaused) {
+            clearInterval(overallTimerInterval);
+            pauseOverlay.style.display = 'flex';
+            quizForm.style.visibility = 'hidden';
+            navigationBtn.style.visibility = 'hidden';
+        } else {
+            startOverallTimer();
+            pauseOverlay.style.display = 'none';
+            quizForm.style.visibility = 'visible';
+            navigationBtn.style.visibility = 'visible';
+        }
+    }
+
+    function startOverallTimer() {
+        clearInterval(overallTimerInterval);
+        overallTimerInterval = setInterval(() => {
+            if (timeLeft <= 0) {
+                submitQuiz();
+                return;
+            }
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function displayCurrentQuestion() {
+        questionStartTime = new Date();
+        const qData = finalQuizData[currentQuestionIndex];
+        const isSATA = Array.isArray(qData.correctAnswer);
+        const isTyped = qData.section === 'Dosage Calculation' && !qData.options;
+
+        let questionBodyHTML = '';
+        if (qData.scenario) {
+            questionBodyHTML += `<div class="question-scenario">${qData.scenario}</div>`;
+        }
+        questionBodyHTML += `<p class="question-text">${qData.questionText}</p>`;
+
+        let contentHTML = '';
+        if(isTyped) {
+            const userAnswer = userAnswers[currentQuestionIndex] || '';
+            contentHTML = `<div class="options-container"><input type="text" id="dosage-input" class="text-answer-input" placeholder="Enter numerical answer..." value="${userAnswer}"></div>`;
+        } else {
+            let optionsHTML = '';
+            for (const key in qData.options) {
+                let checked = '';
+                const currentAnswers = userAnswers[currentQuestionIndex];
+                if (currentAnswers) {
+                    if (isSATA && currentAnswers.includes(key)) {
+                        checked = 'checked';
+                    } else if (!isSATA && currentAnswers === key) {
+                        checked = 'checked';
+                    }
+                }
+                optionsHTML += `<label><input type="${isSATA ? 'checkbox' : 'radio'}" name="answer" value="${key}" ${checked}> ${key}: ${qData.options[key]}</label>`;
+            }
+            contentHTML = `<div class="options-container">${optionsHTML}</div>`
+        }
+
+        questionContainer.innerHTML = `
+            <div class="question-header">Question ${currentQuestionIndex + 1} of ${finalQuizData.length}${isSATA ? ' (Select All That Apply)' : ''}</div>
+            ${questionBodyHTML}
+            ${contentHTML}
+        `;
+        flagCheckbox.checked = flaggedForReview.has(currentQuestionIndex);
+        navigationBtn.textContent = (currentQuestionIndex === finalQuizData.length - 1) ? "Submit Quiz" : "Next Question";
+    }
+
+    function saveAnswerAndState() {
+        const qData = finalQuizData[currentQuestionIndex];
+        if (!qData) return;
+
+        const isTyped = qData.section === 'Dosage Calculation' && !qData.options;
+
+        if (isTyped) {
+            const inputElement = document.getElementById('dosage-input');
+            userAnswers[currentQuestionIndex] = inputElement.value.trim();
+        } else {
+            const isSATA = Array.isArray(qData.correctAnswer);
+            const selectedOptions = document.querySelectorAll('input[name="answer"]:checked');
+            userAnswers[currentQuestionIndex] = isSATA
+                ? Array.from(selectedOptions).map(cb => cb.value)
+                : (selectedOptions.length ? selectedOptions[0].value : null);
+        }
+
+        const timeSpent = Math.round((new Date() - questionStartTime) / 1000);
+        timeSpentOnQuestions[currentQuestionIndex] = (timeSpentOnQuestions[currentQuestionIndex] || 0) + timeSpent;
+        if (timeSpent > TIME_THRESHOLD) {
+            timeFlaggedQuestions.add(currentQuestionIndex);
+        }
+        if (flagCheckbox.checked) {
+            flaggedForReview.add(currentQuestionIndex);
+        } else {
+            flaggedForReview.delete(currentQuestionIndex);
+        }
+    }
+
+    function handleNavigation() {
+        saveAnswerAndState();
+        if (currentQuestionIndex < finalQuizData.length - 1) {
+            currentQuestionIndex++;
+            displayCurrentQuestion();
+        } else {
+            submitQuiz();
+        }
+    }
+
+    function submitQuiz() {
+        clearInterval(overallTimerInterval);
+        saveAnswerAndState();
+        quizForm.classList.add('hidden');
+        navigationBtn.classList.add('hidden');
+        pauseBtn.classList.add('hidden');
+        timerDisplay.textContent = "Quiz Finished";
+        displayResults();
+    }
+
+    function checkAnswerCorrectness(qData, userAnswer) {
+        if (qData.section === 'Dosage Calculation' && !qData.options) {
+            // For dosage calculation, compare numerical values, allowing for slight floating point variations
+            const expected = parseFloat(qData.correctAnswer);
+            const actual = parseFloat(userAnswer);
+            return !isNaN(actual) && Math.abs(actual - expected) < 0.001; // Tolerance for floating point
+        }
+        if (Array.isArray(qData.correctAnswer)) { // SATA
+            const sortedUserAnswer = userAnswer ? [...userAnswer].sort() : [];
+            const sortedCorrectAnswer = [...qData.correctAnswer].sort();
+            return JSON.stringify(sortedUserAnswer) === JSON.stringify(sortedCorrectAnswer);
+        }
+        return userAnswer === qData.correctAnswer;
+    }
+
+    function displayResults() {
+        resultsArea.classList.remove('hidden');
+        let correctCount = 0;
+        let incorrectCount = 0;
+
+        finalQuizData.forEach((qData, index) => {
+            if (checkAnswerCorrectness(qData, userAnswers[index])) {
+                correctCount++;
+            } else {
+                incorrectCount++;
+            }
+        });
+
+        const score = (correctCount / finalQuizData.length) * 100;
+        resultsSummary.innerHTML = `<h2>Quiz Complete!</h2><p>Your Score: <strong>${score.toFixed(1)}%</strong> (${correctCount} out of ${finalQuizData.length} correct)</p>`;
+
+        let detailsHTML = '';
+        finalQuizData.forEach((qData, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = checkAnswerCorrectness(qData, userAnswer);
+            const isTyped = qData.section === 'Dosage Calculation' && !qData.options;
+
+            let questionHeaderText = qData.questionText;
+            if (qData.scenario) {
+                questionHeaderText = `<div class='question-scenario'>${qData.scenario}</div>` + questionHeaderText;
+            }
+
+            let resultBodyHTML = '';
+            if(isTyped){
+                const userAnswerDisplay = userAnswer || "No answer";
+                const userClass = isCorrect ? 'correct' : 'incorrect';
+                resultBodyHTML += `<div class="typed-answer-result"><p>Your Answer: <span class="user-answer ${userClass}">${userAnswerDisplay}</span></p>`;
+                if (!isCorrect) {
+                    resultBodyHTML += `<p>Correct Answer: <span class="correct-answer-text">${qData.correctAnswer}</span></p>`;
+                }
+                resultBodyHTML += `</div>`;
+            } else {
+                let optionsList = '<ul>';
+                for (const key in qData.options) {
+                    let li_class = '';
+                    const isCorrectOption = Array.isArray(qData.correctAnswer) ? qData.correctAnswer.includes(key) : key === qData.correctAnswer;
+                    const isUserSelection = Array.isArray(userAnswer) ? (userAnswer && userAnswer.includes(key)) : key === userAnswer;
+
+                    if (isCorrectOption) li_class = 'correct-answer-label';
+                    if (isUserSelection && !isCorrectOption) li_class = 'incorrect-answer-label';
+                    if (!isUserSelection && isCorrectOption && !isCorrect) li_class += ' missed-correct-answer-label';
+
+                    optionsList += `<li class="${li_class}">${key}: ${qData.options[key]}</li>`;
+                }
+                optionsList += '</ul>';
+                resultBodyHTML = optionsList;
+            }
+
+            let rationaleHTML = '';
+            // Rationale always shown now for learning purposes
+            let rationaleClasses = 'rationale';
+            if (timeFlaggedQuestions.has(index)) rationaleClasses += ' time-flagged-rationale';
+            if (flaggedForReview.has(index)) rationaleClasses += ' flagged-rationale';
+            rationaleHTML = `<div class="${rationaleClasses}"><strong>Rationale:</strong> ${qData.rationale.replace(/\n/g, '<br>')}<span class="time-spent-info">You spent ${timeSpentOnQuestions[index] || 0} seconds on this question. ${flaggedForReview.has(index) ? '(You flagged this for review)' : ''}</span></div>`;
+
+            detailsHTML += `<div class="result-question"><p><strong>Question ${index + 1}: ${questionHeaderText}</strong></p>${resultBodyHTML}${rationaleHTML}</div>`;
+        });
+        resultsDetails.innerHTML = detailsHTML;
+        generateStudyFocus();
+
+        if (incorrectCount > 0 || flaggedForReview.size > 0 || timeFlaggedQuestions.size > 0) { // Show print button if anything to study
+            generatePrintableStudyGuide();
+            printBtn.classList.remove('hidden');
+        }
+    }
+
+    function generateStudyFocus() {
+        const topicCounts = {};
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const isTimeFlagged = timeFlaggedQuestions.has(index);
+            const isUserFlagged = flaggedForReview.has(index);
+
+            if (!isCorrect || isTimeFlagged || isUserFlagged) {
+                const topic = qData.section;
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+            }
+        });
+
+        const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+        let focusHTML = '<h3>Personalized Study Focus Guide</h3>';
+        if (sortedTopics.length > 0) {
+            focusHTML += '<p>Based on your performance, focus your review on these topics:</p><ul>';
+            sortedTopics.forEach(topic => {
+                focusHTML += `<li><strong>${topic[0]}</strong> (${topic[1]} item${topic[1] > 1 ? 's' : ''} noted)</li>`;
+            });
+            focusHTML += '</ul>';
+        } else {
+            focusHTML += '<p>Excellent work! No specific weak areas were identified.</p>';
+        }
+        studyFocusContainer.innerHTML = focusHTML;
+    }
+
+    function generatePrintableStudyGuide() {
+        let printHTML = '<h1>Lower Respiratory Disorders - Study Guide</h1>';
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const isTimeFlagged = timeFlaggedQuestions.has(index);
+            const isUserFlagged = flaggedForReview.has(index);
+
+            if (!isCorrect || isTimeFlagged || isUserFlagged) { // Only include incorrect or flagged questions in print
+                const userAnswer = userAnswers[index];
+                const isTyped = qData.section === 'Dosage Calculation' && !qData.options;
+                let userAnswerText = 'No answer selected.';
+                let correctAnswerText = '';
+
+                let questionContentForPrint = qData.questionText;
+                if (qData.scenario) {
+                    questionContentForPrint = `Scenario: ${qData.scenario}\nQuestion: ${qData.questionText}`;
+                }
+
+                if (isTyped) {
+                    userAnswerText = userAnswer || 'No answer';
+                    correctAnswerText = qData.correctAnswer;
+                } else {
+                    if (Array.isArray(qData.correctAnswer)) { // SATA
+                        userAnswerText = userAnswer && userAnswer.length > 0 ? userAnswer.map(key => `${key}: ${qData.options[key]}`).join('<br>') : 'No answer selected.';
+                        correctAnswerText = qData.correctAnswer.map(key => `${key}: ${qData.options[key]}`).join('<br>');
+                    } else { // MC
+                        userAnswerText = userAnswer ? `${userAnswer}: ${qData.options[userAnswer]}` : 'No answer selected.';
+                        correctAnswerText = `${qData.correctAnswer}: ${qData.options[qData.correctAnswer]}`;
+                    }
+                }
+
+                printHTML += `
+                    <div class="study-guide-item">
+                        <h3>Question ${index + 1}: ${questionContentForPrint.replace(/\n/g, '<br>')}</h3>
+                        <p><strong>Your Answer:</strong><br>${userAnswerText}</p>
+                        <p><strong>Correct Answer:</strong><br>${correctAnswerText}</p>
+                        <div class="print-rationale">
+                            <strong>Rationale:</strong> ${qData.rationale.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        printableStudyGuide.innerHTML = printHTML;
+    }
+
+
+    // Event Listeners
+    startBtn.addEventListener('click', startQuiz);
+    pauseBtn.addEventListener('click', togglePause);
+    printBtn.addEventListener('click', () => {
+        window.print();
+    });
+
+    quizForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        handleNavigation();
+    });
+</script>
+
+</body>
+</html>

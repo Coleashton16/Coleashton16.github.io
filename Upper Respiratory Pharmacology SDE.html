@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upper Respiratory Disorders - Pharmacology - Diagnostic Exam </title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .quiz-wrapper {
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .quiz-header {
+            background-color: #4a5568;
+            color: white;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid #2c3e50;
+            position: relative; 
+        }
+        .logo {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.8rem;
+            font-weight: 900;
+            font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+            color: #f6ad55;
+            letter-spacing: 1px;
+        }
+        .quiz-header h1 { margin: 0; font-size: 1.75rem; }
+        #timer-display { font-size: 1.25rem; margin-top: 0.5rem; font-weight: bold; color: #f6ad55; }
+        .quiz-content { padding: 1.5rem 2rem; flex-grow: 1; }
+        #initial-screen { text-align: center; }
+        #initial-screen h2 { color: #2c3e50; }
+        #initial-screen p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 1rem auto; }
+        #question-container { margin-bottom: 1.5rem; }
+        .question-header { font-size: 1.1rem; color: #718096; margin-bottom: 1rem; }
+        .question-text { font-size: 1.3rem; font-weight: bold; margin-bottom: 1.5rem; line-height: 1.5; }
+        .question-scenario {
+            background-color: #f9f9f9;
+            border-left: 4px solid #5bc0de;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .options-container label { display: block; background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 1rem; margin-bottom: 0.75rem; border-radius: 8px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+        .options-container label:hover { background-color: #e2e8f0; border-color: #cbd5e0; }
+        .options-container input[type="radio"], .options-container input[type="checkbox"] { margin-right: 10px; }
+        /* Style for text input answers */
+        #dosage-input, .text-answer-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.2rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            margin-top: 1rem;
+            box-sizing: border-box;
+        }
+        .flag-container { margin-top: 1.5rem; text-align: right; }
+        .flag-container label { cursor: pointer; color: #4a5568; font-weight: bold; }
+        .flag-container input[type="checkbox"] { margin-right: 5px; transform: scale(1.2); }
+        #navigation-btn, #start-btn, #print-btn { display: block; width: 100%; padding: 1rem; font-size: 1.2rem; font-weight: bold; color: white; background-color: #3182ce; border: none; border-radius: 8px; cursor: pointer; margin-top: 1rem; transition: background-color 0.2s; }
+        #navigation-btn:hover, #start-btn:hover, #print-btn:hover { background-color: #2b6cb0; }
+        #print-btn { background-color: #68d391; }
+        #print-btn:hover { background-color: #48bb78; }
+        #results-area { line-height: 1.7; }
+        #results-summary { text-align: center; background-color: #ebf8ff; border: 1px solid #90cdf4; padding: 1.5rem; margin-bottom: 2rem; border-radius: 8px; }
+        #results-summary h2 { margin-top: 0; }
+        .result-question { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; }
+        .result-question p strong { display: block; margin-bottom: 1rem; font-size: 1.2em; }
+        .result-question ul { list-style-type: none; padding: 0; margin: 0; }
+        .result-question li { padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; border: 1px solid #e2e8f0; }
+        .correct-answer-label { background-color: #c6f6d5 !important; border-color: #9ae6b4 !important; }
+        .incorrect-answer-label { background-color: #fed7d7 !important; border-color: #feb2b2 !important; }
+        .missed-correct-answer-label { border: 2px solid #68d391 !important; }
+        .typed-answer-result { margin-top: 1rem; }
+        .typed-answer-result .user-answer.correct { color: #38a169; }
+        .typed-answer-result .user-answer.incorrect { color: #e53e3e; text-decoration: line-through; }
+        .typed-answer-result .correct-answer-text { color: #38a169; font-weight: bold; }
+        .rationale { margin-top: 1rem; padding: 1rem; border-radius: 6px; border-left: 5px solid #a0aec0; background-color: #f7fafc; }
+        .rationale strong { display: block; margin-bottom: 0.5rem; }
+        .time-spent-info { font-style: italic; color: #718096; margin-top: 0.5rem; display: block; }
+        .time-flagged-rationale { background-color: #e9d8fd !important; border-left-color: #9f7aea !important; }
+        .flagged-rationale { background-color: #fefcbf !important; border-left-color: #f6e05e !important; }
+        #study-focus { margin-top: 2.5rem; padding: 1.5rem; background-color: #fefcbf; border: 1px solid #f6e05e; border-radius: 8px; }
+        #study-focus h3 { margin-top: 0; color: #2d3748; border-bottom: 2px solid #f6e05e; padding-bottom: 0.5rem; }
+        #study-focus ul { list-style-type: '👉'; padding-left: 2rem; }
+        #study-focus li { padding-left: 0.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .hidden { display: none; }
+
+        #pause-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1010; 
+            background-color: #f6ad55;
+            color: #2d3748;
+            border: 2px solid #2d3748;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        #pause-btn:hover {
+            background-color: #f687b3;
+            transform: scale(1.1);
+        }
+        #pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(226, 232, 240, 0.95);
+            z-index: 1000;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+        }
+        #pause-overlay .pause-content h1 {
+            font-size: 5rem;
+            color: #e53e3e; 
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        #pause-overlay .pause-content .stop-sign {
+             font-size: 8rem;
+        }
+        #pause-overlay .pause-content p {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-top: 1rem;
+        }
+
+        #study-guide-printable {
+             display: none;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #study-guide-printable, #study-guide-printable * {
+                visibility: visible;
+            }
+            #study-guide-printable {
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                font-family: 'Times New Roman', Times, serif;
+                color: #000;
+            }
+            .study-guide-item {
+                page-break-inside: avoid;
+                margin-bottom: 2rem;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 1rem;
+            }
+            .study-guide-item h2, .study-guide-item h3 {
+                font-size: 14pt;
+                margin-bottom: 1rem;
+                color: #000;
+            }
+             .study-guide-item h1 {
+                font-size: 24pt;
+                text-align: center;
+                margin-bottom: 2rem;
+             }
+            .study-guide-item p {
+                font-size: 12pt;
+                line-height: 1.4;
+                margin: 0.5rem 0;
+            }
+            .study-guide-item .print-rationale {
+                margin-top: 1rem;
+                padding: 0.5rem;
+                border-left: 3px solid #ccc;
+                background-color: #f0f0f0 !important;
+                font-style: italic;
+            }
+            .study-guide-item .print-rationale strong {
+                font-style: normal;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="pause-btn" class="hidden">||</button>
+    <div id="pause-overlay">
+        <div class="pause-content">
+            <div class="stop-sign">🛑</div>
+            <h1>EXAM PAUSED</h1>
+            <p>Click the pause button in the corner to resume.</p>
+        </div>
+    </div>
+
+    <div class="quiz-wrapper">
+        <header class="quiz-header">
+            <div class="logo">VSREP</div>
+            <h1>Upper Respiratory Disorders - Pharmacology - Diagnostic Exam</h1>
+            <div id="timer-display">Time Left: 35:00</div>
+        </header>
+
+        <main class="quiz-content">
+            <div id="initial-screen">
+                <h2>Welcome to the Advanced Exam</h2>
+                <p>This is a timed, 30-question quiz on upper respiratory disorders, diagnostics, and pharmacology. Many questions are designed to be challenging and test critical thinking. The time limit is <strong>35 minutes</strong>. You can flag questions for review. Click "Start Quiz" when you are ready to begin.</p>
+                <button id="start-btn">Start Quiz</button>
+            </div>
+
+            <form id="quiz-form" class="hidden">
+                <div id="question-container"></div>
+                <div class="flag-container">
+                    <label><input type="checkbox" id="flag-for-review"> Flag for Review</label>
+                </div>
+                 <button type="submit" id="navigation-btn" class="hidden">Next Question</button>
+            </form>
+
+            <div id="results-area" class="hidden">
+                <div id="results-summary"></div>
+                <div id="results-details"></div>
+                <div id="study-focus"></div>
+                <button id="print-btn" class="hidden">🖨️ Print Study Guide</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="study-guide-printable"></div>
+
+<script>
+   
+     const fullQuizData = [
+    // Question 1 (Trick Question)
+    {
+        "questionText": "A patient with a history of narrow-angle glaucoma, BPH, and a recent DVT is now taking warfarin. He reports cold symptoms and asks for advice. Which statement by the nurse is the highest priority?",
+        "options": {
+            "A": "You should avoid taking first-generation antihistamines like diphenhydramine due to your glaucoma and BPH.",
+            "B": "It's important to avoid systemic decongestants like pseudoephedrine as they can increase blood pressure.",
+            "C": "Make sure to not take any products containing aspirin or NSAIDs while you are on warfarin.",
+            "D": "You should only take second-generation antihistamines like loratadine as they are safest."
+        },
+        "correctAnswer": "C",
+        "rationale": "This is a priority question with multiple 'correct' teaching points. A and B are true statements regarding his co-morbidities. However, the most immediate life-threatening risk is bleeding from the combination of warfarin and NSAIDs/aspirin. Preventing a major hemorrhage is a higher priority than managing the potential side effects of antihistamines or decongestants. This question tricks you into focusing on the respiratory drugs when a more critical drug interaction is present.",
+        "section": "Drug Interactions"
+    },
+    // Question 2 (Trick Question)
+    {
+        "questionText": "A patient has been using an oxymetazoline nasal spray four times a day for a week. They present with severe nasal congestion, a headache, and a blood pressure of 150/90 mmHg. What is the nurse's priority action?",
+        "options": {
+            "A": "Instruct the patient to stop the spray to manage rebound congestion.",
+            "B": "Assess for signs of a secondary sinus infection.",
+            "C": "Notify the provider of the patient's hypertensive state.",
+            "D": "Recommend a saline nasal spray as a safer alternative."
+        },
+        "correctAnswer": "C",
+        "rationale": "This question tests prioritization of an actual vs. potential problem. While rebound congestion is occurring (A) and saline is a good recommendation (D), the elevated blood pressure indicates a current and dangerous systemic adverse effect. The nurse's priority action is to report this critical finding to the provider. Systemic vasoconstriction can lead to stroke or cardiac events and is a more immediate threat than local discomfort.",
+        "section": "Nasal Decongestants"
+    },
+    // Question 3
+    {
+        "questionText": "A patient taking a monoamine oxidase inhibitor (MAOI) for depression requires a decongestant. Which of the following would be contraindicated?",
+        "options": {"A": "Guaifenesin", "B": "Cetirizine", "C": "Pseudoephedrine", "D": "Budesonide nasal spray"},
+        "correctAnswer": "C",
+        "rationale": "Systemic decongestants like pseudoephedrine are sympathomimetic amines. When taken with an MAOI, they can cause a hypertensive crisis due to the additive adrenergic effects. This is a life-threatening interaction.",
+        "section": "Drug Interactions"
+    },
+    // Question 4
+    {
+        "questionText": "What is the primary mechanism of action for intranasal glucocorticoids in the management of allergic rhinitis?",
+        "options": {"A": "They stimulate alpha-adrenergic receptors, causing immediate vasoconstriction.", "B": "They exert a local anti-inflammatory effect, reducing all major symptoms over time.", "C": "They block H1 receptors, preventing histamine-mediated symptoms.", "D": "They act on the medullary cough center to suppress the sneeze reflex."},
+        "correctAnswer": "B",
+        "rationale": "Intranasal glucocorticoids (e.g., fluticasone, budesonide) are effective for allergic rhinitis because of their potent anti-inflammatory action. They decrease the synthesis and release of inflammatory mediators, thereby reducing all major symptoms like rhinorrhea, sneezing, and congestion.",
+        "section": "Intranasal Glucocorticoids"
+    },
+    // Question 5 (Trick Question)
+    {
+        "questionText": "A parent asks the nurse why their child's pediatrician recommended loratadine over diphenhydramine. Which statement reflects the MOST accurate and comprehensive understanding?",
+        "options": {
+            "A": "Loratadine has a much faster onset of action for acute allergic reactions.",
+            "B": "Diphenhydramine is not effective for treating allergic rhinitis in children.",
+            "C": "Loratadine is preferred because it has minimal CNS effects and a lower risk of paradoxical excitement in children.",
+            "D": "Loratadine is the only antihistamine that also treats nasal congestion."
+        },
+        "correctAnswer": "C",
+        "rationale": "This question is tricky because other options have elements of truth, but C is the most complete answer. The primary advantage is fewer CNS effects (sedation). Additionally, the text notes that children are more susceptible to paradoxical excitement (nightmares, irritability) with first-generation antihistamines, making C the most comprehensive reason for the recommendation. D is incorrect. A is incorrect; diphenhydramine often works faster.",
+        "section": "Antihistamines"
+    },
+    // Question 6
+    {
+        "questionText": "A patient presents with a dry, hacking, nonproductive cough that is interfering with sleep. Which medication would be most appropriate to recommend?",
+        "options": {"A": "Guaifenesin", "B": "Dextromethorphan", "C": "Oxymetazoline", "D": "Cetirizine"},
+        "correctAnswer": "B",
+        "rationale": "Antitussives, such as dextromethorphan, are used to suppress a nonproductive cough. They act on the cough control center in the medulla. Guaifenesin is an expectorant, used to make a productive cough more effective, and would not be the first choice for a dry, irritating cough.",
+        "section": "Antitussives"
+    },
+    // Question 7
+    {
+        "questionText": "The nurse is teaching a patient about using fluticasone nasal spray. Which instruction is essential to include to prevent a common local side effect?",
+        "options": {"A": "Inhale forcefully as you administer the spray to ensure deep penetration.", "B": "Aim the spray away from the nasal septum.", "C": "Use the spray only when symptoms are severe to prevent dependence.", "D": "Warm the spray bottle in your hands for 5 minutes before each use."},
+        "correctAnswer": "B",
+        "rationale": "Directing the spray away from the nasal septum helps prevent local irritation, drying, and potential epistaxis (nosebleeds), which are common side effects of intranasal glucocorticoids.",
+        "section": "Intranasal Glucocorticoids"
+    },
+    // Question 8
+    {
+        "questionText": "Which statement correctly differentiates between ventilation, perfusion, and diffusion in the respiratory process?",
+        "options": {"A": "Ventilation is gas exchange, perfusion is air movement, and diffusion is blood flow.", "B": "Ventilation is air movement, perfusion is blood flow, and diffusion is the movement of gases across the membrane.", "C": "Ventilation is diffusion, perfusion is gas exchange, and respiration is air movement.", "D": "All three terms describe the mechanical process of breathing."},
+        "correctAnswer": "B",
+        "rationale": "The text clearly defines these three distinct phases of respiration: Ventilation is the movement of air. Perfusion is the blood flow at the alveolar-capillary bed. Diffusion is the movement of gases (O2 and CO2) across the alveolar-capillary membrane.",
+        "section": "Physiology"
+    },
+    // Question 9 (Trick Question)
+    {
+        "questionText": "A patient with hypertension controlled by a beta-blocker also has a new diagnosis of asthma. The patient asks if they can take an OTC cold remedy with phenylephrine. Which factor is the primary reason to advise against this?",
+        "options": {
+            "A": "Phenylephrine can cause dangerous rebound congestion.",
+            "B": "Phenylephrine can counteract the effect of the beta-blocker, increasing blood pressure.",
+            "C": "Phenylephrine's beta-adrenergic agonist activity can trigger bronchospasm.",
+            "D": "The combination of a beta-blocker and phenylephrine will cause profound sedation."
+        },
+        "correctAnswer": "B",
+        "rationale": "This question contains a subtle trick. Phenylephrine is primarily an ALPHA-adrenergic agonist. Its main danger in this patient is increasing blood pressure, counteracting the beta-blocker (B). Option C is incorrect because phenylephrine has minimal beta-agonist activity; a beta-agonist like albuterol is used to treat, not cause, bronchospasm. The trick is to not confuse the properties of alpha- and beta-agonists. Rebound congestion (A) is an issue with topical, not systemic, use in this context.",
+        "section": "Drug Interactions"
+    },
+    // Question 10
+    {
+        "questionText": "What is the primary purpose of hydration when a patient has a productive cough and is using an expectorant like guaifenesin?",
+        "options": {"A": "To prevent the systemic side effects of the expectorant.", "B": "To counteract the drying effects of the medication.", "C": "To liquefy and thin bronchial secretions, making them easier to expel.", "D": "To increase the absorption of the guaifenesin from the GI tract."},
+        "correctAnswer": "C",
+        "rationale": "Hydration is considered the best natural expectorant. When combined with a medication like guaifenesin, adequate fluid intake (e.g., 8 glasses of water per day) is crucial for thinning and loosening mucus, which facilitates its removal through coughing.",
+        "section": "Expectorants"
+    },
+    // Question 11
+    {
+        "questionText": "A patient is prescribed codeine for a severe cough. The nurse should prioritize monitoring for which adverse effect?",
+        "options": {"A": "Hypertensive crisis", "B": "Rebound congestion", "C": "Respiratory depression", "D": "Paradoxical excitement"},
+        "correctAnswer": "C",
+        "rationale": "Codeine is an opioid antitussive. The most serious potential adverse effect of opioids is respiratory depression, caused by suppression of the respiratory control center in the brainstem. This risk is increased when combined with other CNS depressants.",
+        "section": "Antitussives"
+    },
+    // Question 12 (Trick Question)
+    {
+        "questionText": "Which finding in a patient with acute pharyngitis is the most definitive indication for antibiotic therapy?",
+        "options": {"A": "A fever of 102.4°F (39.1°C) and visible tonsillar exudate.", "B": "A throat culture positive for beta-hemolytic streptococci.", "C": "A complaint of a severe 'sandpaper' sore throat for 3 days.", "D": "Nasal discharge that has changed from clear to yellow-green."},
+        "correctAnswer": "B",
+        "rationale": "This question is a trap of clinical signs vs. definitive diagnosis. While A and C are strong clinical indicators of bacterial pharyngitis ('strep throat'), they can also be caused by viruses like mononucleosis. The only definitive indication for antibiotics is a positive laboratory confirmation, such as the throat culture mentioned in option B. Green nasal discharge (D) is not a reliable indicator of a bacterial throat infection.",
+        "section": "Pathophysiology"
+    },
+    // Question 13
+    {
+        "questionText": "A patient is taking diphenhydramine for allergic rhinitis. The nurse should caution the patient about a potential drug interaction with which of the following?",
+        "options": {"A": "Grapefruit juice", "B": "Acetaminophen", "C": "Alcohol", "D": "Calcium supplements"},
+        "correctAnswer": "C",
+        "rationale": "Diphenhydramine is a first-generation antihistamine with significant CNS depressant effects (drowsiness, sedation). Combining it with other CNS depressants like alcohol, opioids, or hypnotics can cause additive depression, leading to profound sedation and impaired motor skills.",
+        "section": "Drug Interactions"
+    },
+    // Question 14
+    {
+        "questionText": "The half-life (t½) of loratadine is approximately 3-20 hours. How does this characteristic influence its dosing schedule compared to diphenhydramine (t½: 2-8 hours)?",
+        "options": {"A": "Loratadine is metabolized more rapidly by the liver.", "B": "Diphenhydramine has a higher protein binding percentage.", "C": "Loratadine can be dosed once daily, while diphenhydramine requires more frequent dosing.", "D": "The half-life does not impact the dosing schedule, only the duration of side effects."},
+        "correctAnswer": "C",
+        "rationale": "A longer half-life means the drug remains at therapeutic levels in the body for a longer period. The extended half-life of second-generation antihistamines like loratadine allows for convenient once-daily dosing, whereas the shorter half-life of diphenhydramine necessitates dosing every 4-6 hours.",
+        "section": "Pharmacokinetics"
+    },
+    // Question 15
+    {
+        "questionText": "A patient is prescribed benzonatate for a cough. Which administration instruction is critical for the nurse to provide to ensure safety?",
+        "options": {"A": "Take the medication with a full glass of milk to prevent GI upset.", "B": "Swallow the capsule whole; do not chew or crush it.", "C": "If you miss a dose, double the next dose to maintain therapeutic levels.", "D": "This medication can be dissolved in water if you have difficulty swallowing."},
+        "correctAnswer": "B",
+        "rationale": "Benzonatate is a non-opioid antitussive that anesthetizes stretch receptors in the respiratory passages. If the capsule is chewed or crushed, it can cause local anesthesia of the oropharyngeal mucosa, leading to a risk of choking and laryngospasm.",
+        "section": "Antitussives"
+    },
+    // Question 16
+    {
+        "questionText": "The common cold is most frequently caused by which pathogen?",
+        "options": {"A": "Influenza virus", "B": "Rhinovirus", "C": "Streptococcus pyogenes", "D": "Haemophilus influenzae"},
+        "correctAnswer": "B",
+        "rationale": "The text explicitly states that the common cold is caused by the rhinovirus and primarily affects the nasopharyngeal tract.",
+        "section": "Pathophysiology"
+    },
+    // Question 17
+    {
+        "questionText": "A patient taking fexofenadine reports that the medication is not as effective when taken with orange juice. The nurse understands that this is likely due to:",
+        "options": {"A": "An increase in gastric pH caused by the juice.", "B": "Competition for protein-binding sites.", "C": "Inhibition of drug transporters in the gut.", "D": "A chemical reaction between the drug and citric acid."},
+        "correctAnswer": "C",
+        "rationale": "Fruit juices like orange, grapefruit, and apple juice can inhibit organic anion transporting polypeptides (OATPs) in the intestine, which are responsible for the absorption of fexofenadine. This leads to significantly reduced bioavailability and effectiveness of the drug. This is a key counseling point for fexofenadine.",
+        "section": "Drug Interactions"
+    },
+    // Question 18
+    {
+        "questionText": "Which physiological process is primarily influenced by alveolar pressure and must be matched by adequate ventilation for effective gas exchange to occur?",
+        "options": {"A": "Diffusion", "B": "Respiration", "C": "Perfusion", "D": "Ventilation"},
+        "correctAnswer": "C",
+        "rationale": "The text states that perfusion involves blood flow at the alveolar-capillary bed and is influenced by alveolar pressure. For gas exchange to occur, the perfusion of each alveolus must be matched by adequate ventilation.",
+        "section": "Physiology"
+    },
+    // Question 19
+    {
+        "questionText": "A patient with chronic obstructive pulmonary disease (COPD) is taking diphenhydramine for an allergic reaction. The nurse should be most concerned about which potential adverse effect?",
+        "options": {"A": "Hypertension", "B": "Tachycardia", "C": "Thickening of bronchial secretions", "D": "Increased urine output"},
+        "correctAnswer": "C",
+        "rationale": "The anticholinergic properties of first-generation antihistamines like diphenhydramine cause drying of secretions. In a patient with COPD, who may already have difficulty clearing mucus, this can lead to thickened secretions, airway obstruction, and exacerbation of their condition.",
+        "section": "Antihistamines"
+    },
+    // Question 20 (Trick Question)
+    {
+        "questionText": "A patient is switched from an oral systemic decongestant to an intranasal glucocorticoid spray for long-term management of allergic rhinitis. The patient states, 'This steroid spray doesn't work as fast as my pill did.' What is the nurse's best response?",
+        "options": {
+            "A": "You are correct, it may take several days to a week to notice the full benefits of this preventative medication.",
+            "B": "You may not be using the spray correctly; let's review the technique.",
+            "C": "That's unusual; these sprays should provide very rapid relief of congestion.",
+            "D": "The systemic pill has more side effects, so this is a necessary trade-off for safety."
+        },
+        "correctAnswer": "A",
+        "rationale": "This question tests therapeutic communication and knowledge. The 'trick' is to directly address the patient's valid observation. Intranasal glucocorticoids do not provide immediate relief like sympathomimetic decongestants. Their effect is anti-inflammatory and builds over days. Option A validates the patient's experience and provides correct education. While B is a good general practice, it doesn't address the specific timing issue. C is incorrect. D is true but dismisses the patient's concern.",
+        "section": "Patient Teaching"
+    },
+    // Question 21
+    {
+        "questionText": "Which statement accurately describes the pharmacodynamics of dextromethorphan?",
+        "options": {"A": "It competitively blocks H1 receptors in the nasopharynx.", "B": "It stimulates alpha-adrenergic receptors in the nasal mucosa.", "C": "It increases the production of respiratory tract fluid to thin mucus.", "D": "It acts on the cough control center in the medulla to suppress the cough reflex."},
+        "correctAnswer": "D",
+        "rationale": "Dextromethorphan is a centrally acting antitussive. Its mechanism of action is to increase the cough threshold in the medullary cough center, thereby suppressing the cough reflex.",
+        "section": "Antitussives"
+    },
+    // Question 22
+    {
+        "questionText": "During which period is a person with a common cold typically most contagious?",
+        "options": {"A": "During the last 3 days of symptoms.", "B": "Only when a fever is present.", "C": "1 to 4 days before the onset of symptoms and during the first 3 days of the cold.", "D": "After the nasal discharge has turned yellow or green."},
+        "correctAnswer": "C",
+        "rationale": "The text states the common cold is most contagious during the incubation period (1-4 days before symptoms) and the first 3 days of the cold. This is a critical patient education point for preventing transmission.",
+        "section": "Pathophysiology"
+    },
+    // Question 23 (Trick Question)
+    {
+        "questionText": "A patient taking a combination cold product containing acetaminophen, guaifenesin, and phenylephrine calls the nurse. Which statement requires the MOST immediate intervention?",
+        "options": {
+            "A": "I still have a phlegmy cough.",
+            "B": "I took an extra dose of Tylenol for a bad headache.",
+            "C": "I feel a bit restless and can't sleep.",
+            "D": "My nose is still stuffy."
+        },
+        "correctAnswer": "B",
+        "rationale": "This is a priority question. While C and D are bothersome side effects/lack of efficacy, and A is an expected finding with an expectorant, B is the most dangerous statement. It indicates a potential acetaminophen overdose, which is hepatotoxic and a medical emergency. The nurse must immediately intervene to assess how much was taken and instruct the patient.",
+        "section": "Patient Safety"
+    },
+    // Question 24
+    {
+        "questionText": "A patient with allergic rhinitis is prescribed azelastine nasal spray. The nurse should inform the patient about which common side effect?",
+        "options": {"A": "A bitter taste in the mouth (dysgeusia).", "B": "Rebound congestion after the first dose.", "C": "Hypertension and tachycardia.", "D": "Significant drowsiness comparable to oral diphenhydramine."},
+        "correctAnswer": "A",
+        "rationale": "Azelastine is a second-generation antihistamine administered as a nasal spray. A common and often bothersome side effect is dysgeusia, or a distorted sense of taste. While it can cause some drowsiness, it's typically less than first-generation oral agents.",
+        "section": "Antihistamines"
+    },
+    // Question 25
+    {
+        "questionText": "What is the rationale behind the national regulatory measures controlling the sale of pseudoephedrine?",
+        "options": {"A": "To prevent fatal overdoses in the pediatric population.", "B": "To limit its use due to a high risk of rebound congestion.", "C": "To track its sales due to reports of cardiac dysrhythmias.", "D": "To prevent its diversion for the illicit manufacturing of methamphetamine."},
+        "correctAnswer": "D",
+        "rationale": "The text alludes to national regulatory measures (ID scanning, purchase limits). The primary reason for this tight regulation (Combat Methamphetamine Epidemic Act of 2005) is that pseudoephedrine is a key precursor chemical in the illegal synthesis of methamphetamine.",
+        "section": "Nasal Decongestants"
+    },
+    // Question 26
+    {
+        "questionText": "Stimulation of H1 receptors causes which of the following effects, which is counteracted by antihistamines?",
+        "options": {"A": "Increased gastric acid secretion.", "B": "Vasoconstriction of capillaries in the nasal cavity.", "C": "Bronchodilation and decreased mucus production.", "D": "Increased capillary permeability and swelling."},
+        "correctAnswer": "D",
+        "rationale": "Histamine binding to H1 receptors causes vasodilation and increased permeability of capillaries, leading to fluid leakage into extravascular spaces, which manifests as swelling and edema in the nasal cavity. Antihistamines block this effect.",
+        "section": "Physiology"
+    },
+    // Question 27 (Trick Question)
+    {
+        "questionText": "A 78-year-old male patient is prescribed diphenhydramine for insomnia. The nurse should prioritize assessing for which adverse effect?",
+        "options": {"A": "Diarrhea", "B": "Urinary retention", "C": "Productive cough", "D": "Orthostatic hypotension"},
+        "correctAnswer": "B",
+        "rationale": "This question asks for the priority assessment. While orthostatic hypotension (D) is a risk, older adults, especially males who may have underlying benign prostatic hypertrophy, are highly susceptible to the anticholinergic effect of urinary retention. An inability to void is a more acute problem than postural blood pressure changes. This makes assessing for urinary retention the priority.",
+        "section": "Antihistamines"
+    },
+    // Question 28
+    {
+        "questionText": "Which of these medications for upper respiratory symptoms works by thinning bronchial secretions?",
+        "options": {"A": "Dextromethorphan", "B": "Loratadine", "C": "Guaifenesin", "D": "Pseudoephedrine"},
+        "correctAnswer": "C",
+        "rationale": "Guaifenesin is an expectorant. Its mechanism of action is to increase the volume and reduce the viscosity of secretions in the trachea and bronchi, facilitating their removal via coughing.",
+        "section": "Expectorants"
+    },
+    // Question 29
+    {
+        "questionText": "A patient using triamcinolone nasal spray calls the clinic complaining of a white coating in their nose and a sore throat. The nurse suspects:",
+        "options": {"A": "A systemic allergic reaction.", "B": "Nasal candidiasis (thrush).", "C": "Rebound congestion.", "D": "Acute bacterial sinusitis."},
+        "correctAnswer": "B",
+        "rationale": "A potential side effect of intranasal glucocorticoids is the development of localized fungal infections, such as Candida albicans. A white, cottage-cheese-like coating is characteristic of candidiasis.",
+        "section": "Intranasal Glucocorticoids"
+    },
+    // Question 30
+    {
+        "questionText": "Which antihistamine is classified as a second-generation agent and is known for its long half-life, allowing for once-daily dosing?",
+        "options": {"A": "Diphenhydramine", "B": "Chlorpheniramine", "C": "Clemastine", "D": "Desloratadine"},
+        "correctAnswer": "D",
+        "rationale": "Desloratadine, an active metabolite of loratadine, is a second-generation antihistamine with a very long half-life (20-30 hours), making it suitable for once-daily administration.",
+        "section": "Antihistamines"
+    },
+    // Question 31 (Trick Question)
+    {
+        "questionText": "A patient asks if it is safe to take dextromethorphan with their prescribed sertraline (an SSRI) and an MAOI they stopped taking yesterday. The nurse's best response would be based on the knowledge that this combination has a high risk for what condition?",
+        "options": {"A": "Hypertensive crisis", "B": "Respiratory alkalosis", "C": "Serotonin syndrome", "D": "Tardive dyskinesia"},
+        "correctAnswer": "C",
+        "rationale": "This is a trick question due to the timing of the MAOI. MAOIs have a 'washout' period of at least 14 days. Stopping it 'yesterday' means it is still fully active. Combining dextromethorphan (which has weak serotonergic properties) with both an SSRI and an MAOI creates a very high risk for life-threatening serotonin syndrome. The MAOI is the most critical piece of information here.",
+        "section": "Drug Interactions"
+    },
+    // Question 32
+    {
+        "questionText": "In the context of respiratory physiology, what does 'diffusion' refer to?",
+        "options": {"A": "The movement of air into and out of the lungs.", "B": "The flow of blood through the pulmonary capillaries.", "C": "The movement of oxygen and carbon dioxide across the alveolar-capillary membrane.", "D": "The active transport of oxygen onto hemoglobin molecules."},
+        "correctAnswer": "C",
+        "rationale": "The text defines diffusion as the movement of molecules from higher to lower concentrations, specifically when oxygen passes into the capillary bed and carbon dioxide leaves it.",
+        "section": "Physiology"
+    },
+    // Question 33
+    {
+        "questionText": "A patient presents with acute sinusitis. The nurse anticipates that management may include a systemic decongestant, but understands an antibiotic will only be prescribed if:",
+        "options": {"A": "The symptoms have lasted longer than 48 hours.", "B": "The patient also has a cough.", "C": "There are signs of a secondary bacterial infection.", "D": "The patient requests it for faster relief."},
+        "correctAnswer": "C",
+        "rationale": "Sinusitis is often viral. Antibiotics are not effective against viruses and should be reserved for cases where a bacterial infection is suspected, often indicated by persistent symptoms (e.g., >10 days), high fever, purulent nasal discharge, and facial pain.",
+        "section": "Pathophysiology"
+    },
+    // Question 34 (Trick Question)
+    {
+        "questionText": "A patient taking an oral decongestant reports feeling restless and having difficulty sleeping. All of the following are appropriate nursing instructions EXCEPT:",
+        "options": {
+            "A": "Take the last dose of the day several hours before bedtime.",
+            "B": "Avoid other stimulants like caffeine while taking this medication.",
+            "C": "Increase the dose to overcome these side effects.",
+            "D": "Report any palpitations or chest pain to your provider."
+        },
+        "correctAnswer": "C",
+        "rationale": "This is a negative format (EXCEPT) question. A, B, and D are all appropriate instructions for managing the CNS stimulant side effects of decongestants. Increasing the dose (C) would only worsen the side effects of restlessness and insomnia and is dangerous advice.",
+        "section": "Patient Teaching"
+    },
+    // Question 35
+    {
+        "questionText": "Which of the following is an advantage of systemic decongestants over nasal decongestant sprays?",
+        "options": {"A": "They have a much lower risk of causing hypertension.", "B": "They do not cause rebound congestion.", "C": "They have a more rapid onset of action.", "D": "They are associated with fewer CNS side effects."},
+        "correctAnswer": "B",
+        "rationale": "Rebound congestion (rhinitis medicamentosa) is a phenomenon specifically associated with the prolonged topical use of nasal decongestant sprays. Systemic decongestants, while having more systemic side effects, do not cause this local rebound effect.",
+        "section": "Nasal Decongestants"
+    },
+    // Question 36
+    {
+        "questionText": "What is the primary therapeutic effect of an expectorant?",
+        "options": {"A": "To suppress the cough reflex.", "B": "To reduce inflammation in the nasal passages.", "C": "To loosen bronchial secretions.", "D": "To block the release of histamine."},
+        "correctAnswer": "C",
+        "rationale": "Expectorants like guaifenesin work by making coughs more productive. They do this by loosening and thinning mucus, making it easier to cough up and clear from the airways.",
+        "section": "Expectorants"
+    },
+    // Question 37 (Trick Question)
+    {
+        "questionText": "A patient is taking cyproheptadine and reports a significant increase in appetite and weight gain. The nurse's first action should be to:",
+        "options": {
+            "A": "Instruct the patient to stop the medication immediately.",
+            "B": "Assess if this side effect is problematic for the patient.",
+            "C": "Recommend a low-calorie diet and exercise plan.",
+            "D": "Notify the provider that the patient is having a toxic reaction."
+        },
+        "correctAnswer": "B",
+        "rationale": "This is a trick question about assessment vs. intervention. Increased appetite is a known side effect of cyproheptadine due to its antiserotonergic properties. It is not a toxic or allergic reaction. Before intervening (A, C, D), the nurse must first assess. For some patients (e.g., an underweight patient), this side effect might be neutral or even beneficial. The first step is to assess the patient's perspective and the clinical significance of the side effect.",
+        "section": "Nursing Process"
+    },
+    // Question 38
+    {
+        "questionText": "A patient with a history of cardiac dysrhythmias should be advised to avoid which class of upper respiratory medication?",
+        "options": {"A": "Intranasal glucocorticoids", "B": "Expectorants", "C": "Systemic decongestants", "D": "Second-generation antihistamines"},
+        "correctAnswer": "C",
+        "rationale": "Systemic decongestants (pseudoephedrine, phenylephrine) are sympathomimetics that can cause tachycardia, palpitations, and dysrhythmias, especially in susceptible individuals. Their use should be avoided or undertaken with extreme caution in patients with a history of cardiac disease.",
+        "section": "Contraindications"
+    },
+    // Question 39
+    {
+        "questionText": "What is the primary mode of transmission for the common cold virus?",
+        "options": {"A": "Exclusively through inhalation of aerosolized droplets from a cough.", "B": "Through contact with blood or bodily fluids.", "C": "More from touching contaminated surfaces then the face than from viral droplets.", "D": "Only through direct kissing."},
+        "correctAnswer": "C",
+        "rationale": "The text specifically states that transmission occurs more frequently from touching contaminated surfaces and then touching the nose or mouth than it does from contact with viral droplets released by sneezing.",
+        "section": "Pathophysiology"
+    },
+    // Question 40
+    {
+        "questionText": "A patient is prescribed the combination product of azelastine and fluticasone (Dymista). The nurse knows this combines which two mechanisms of action?",
+        "options": {"A": "Antihistamine and decongestant", "B": "Antihistamine and intranasal glucocorticoid", "C": "Decongestant and antitussive", "D": "Intranasal glucocorticoid and expectorant"},
+        "correctAnswer": "B",
+        "rationale": "As listed in Table 38.1, azelastine is an H1 antihistamine and fluticasone is an intranasal glucocorticoid. This combination product targets allergic rhinitis symptoms through two different pathways: blocking histamine and reducing inflammation.",
+        "section": "Combination Drugs"
+    },
+    // Question 41
+    {
+        "questionText": "What is the therapeutic effect of an antitussive medication?",
+        "options": {"A": "To increase clearance of airway secretions.", "B": "To suppress the cough reflex.", "C": "To relieve nasal congestion.", "D": "To reverse bronchospasm."},
+        "correctAnswer": "B",
+        "rationale": "Antitussives, such as dextromethorphan and codeine, act on the cough control center in the medulla to suppress the urge to cough. They are indicated for nonproductive, irritating coughs.",
+        "section": "Antitussives"
+    },
+    // Question 42 (Trick Question)
+    {
+        "questionText": "A patient states, 'I have a terrible cold, I need antibiotics.' Which statement by the nurse is most therapeutic and accurate?",
+        "options": {
+            "A": "You are correct, a bacterial infection requires antibiotics.",
+            "B": "Antibiotics are never used for colds, so I cannot give you any.",
+            "C": "I understand you feel awful. Colds are caused by viruses, so antibiotics won't help. However, if your symptoms worsen or don't improve, we can re-evaluate for a secondary bacterial infection.",
+            "D": "You should try an expectorant first to see if that helps before we consider antibiotics."
+        },
+        "correctAnswer": "C",
+        "rationale": "This question tests therapeutic communication. Option A is incorrect and gives false validation. B is true but dismissive ('never,' 'I cannot'). D gives inappropriate medical advice. C is the best answer because it validates the patient's feelings ('I understand you feel awful'), provides correct education (viruses vs. bacteria), and offers a collaborative plan for the future, which builds trust.",
+        "section": "Patient Teaching"
+    },
+    // Question 43
+    {
+        "questionText": "When teaching a patient about the use of nasal decongestant drops, what is the most important point to emphasize?",
+        "options": {"A": "Use them for at least one week for maximum effect.", "B": "Limit use to no more than 3 days to avoid rebound congestion.", "C": "Share the drops with family members who have similar symptoms.", "D": "Administer the drops immediately after using a glucocorticoid spray."},
+        "correctAnswer": "B",
+        "rationale": "The text and general pharmacology principles emphasize that frequent or prolonged use of topical nasal decongestants (beyond 3-5 days) can lead to rhinitis medicamentosa, or rebound congestion, where the nasal passages become more congested.",
+        "section": "Patient Teaching"
+    },
+    // Question 44
+    {
+        "questionText": "Which statement by a patient indicates a need for further teaching about guaifenesin?",
+        "options": {"A": "I will take this pill with a large glass of water.", "B": "This medicine should stop my dry, hacking cough.", "C": "I should try to cough deeply to bring up the phlegm.", "D": "If my cough lasts more than a week, I will call my doctor."},
+        "correctAnswer": "B",
+        "rationale": "This is a negative format question. Guaifenesin is an expectorant; it makes a productive cough more effective, it does not suppress a cough. An antitussive like dextromethorphan would be used to stop a dry, hacking cough. A, C, and D are all correct statements reflecting good understanding.",
+        "section": "Expectorants"
+    },
+    // Question 45
+    {
+        "questionText": "The nurse identifies that the patient is at risk for a drug interaction between pseudoephedrine and which of the following drug classes?",
+        "options": {"A": "Beta blockers", "B": "Calcium channel blockers", "C": "Statins", "D": "Proton pump inhibitors"},
+        "correctAnswer": "A",
+        "rationale": "The text states that pseudoephedrine may decrease the effect of beta blockers. Pseudoephedrine (an alpha/beta agonist) can cause vasoconstriction and increase heart rate, which directly counteracts the therapeutic effects of beta blockers used for hypertension and heart rate control.",
+        "section": "Drug Interactions"
+    },
+    // Question 46
+    {
+        "questionText": "A patient with acute rhinitis has nasal secretions that are tenacious, mucoid, and yellow-green. The nurse interprets this as a potential sign of:",
+        "options": {"A": "A typical viral common cold.", "B": "Allergic rhinitis caused by pollen.", "C": "A secondary bacterial infection.", "D": "An adverse reaction to an antihistamine."},
+        "correctAnswer": "C",
+        "rationale": "The text explains that while initial cold symptoms produce clear, watery discharge (rhinorrhea), a secondary bacterial infection can cause the discharge to become tenacious, mucoid, and discolored (yellow or green) due to the presence of white blood cells and cellular debris.",
+        "section": "Pathophysiology"
+    },
+    // Question 47 (SATA)
+    {
+        "questionText": "A nurse is providing discharge instructions to a 68-year-old male patient prescribed diphenhydramine for urticaria. The nurse should include which of the following precautions? (Select All That Apply)",
+        "options": {"A": "You may experience confusion or dizziness.", "B": "Avoid operating your vehicle after taking this medication.", "C": "You may have difficulty with urination.", "D": "Take this medication with a glass of wine to help you sleep.", "E": "Use sugarless candy or ice chips for a dry mouth."},
+        "correctAnswer": ["A", "B", "C", "E"],
+        "rationale": "Older adults are more sensitive to the anticholinergic and CNS effects of first-generation antihistamines. This includes confusion, dizziness, drowsiness (making driving unsafe), and urinary retention. Dry mouth is a common anticholinergic side effect. Alcohol must be avoided due to additive CNS depression.",
+        "section": "Patient Teaching"
+    },
+    // Question 48 (SATA)
+    {
+        "questionText": "A patient with hypertension, coronary artery disease, and type 2 diabetes asks for an over-the-counter cold medication. The nurse should advise the patient to avoid products containing which of the following ingredients? (Select All That Apply)",
+        "options": {"A": "Guaifenesin", "B": "Phenylephrine", "C": "Dextromethorphan", "D": "Pseudoephedrine", "E": "Cetirizine"},
+        "correctAnswer": ["B", "D"],
+        "rationale": "Systemic decongestants like phenylephrine and pseudoephedrine are sympathomimetic amines that stimulate alpha-adrenergic receptors. This can lead to vasoconstriction (worsening hypertension and CAD) and increased blood glucose levels, making them hazardous for this patient. Guaifenesin, dextromethorphan, and cetirizine do not have these direct effects and are generally safer choices.",
+        "section": "Contraindications"
+    },
+    // Question 49 (SATA)
+    {
+        "questionText": "A nurse is teaching a patient about the proper use of a mometasone nasal spray. Which instructions are appropriate to include? (Select All That Apply)",
+        "options": {"A": "Direct the spray away from the center of your nose (the septum).", "B": "You should expect immediate relief of your congestion within minutes.", "C": "This medication is for long-term prevention, so use it daily as prescribed.", "D": "A headache and nasal irritation are possible side effects.", "E": "Sniff gently after administering the spray."},
+        "correctAnswer": ["A", "C", "D", "E"],
+        "rationale": "Proper technique includes aiming away from the septum to prevent irritation and sniffing gently. These drugs work best for prevention and require consistent daily use, with full effects taking days to weeks. Headache and local irritation are common side effects. Relief is not immediate like a decongestant spray.",
+        "section": "Patient Teaching"
+    },
+    // Question 50 (SATA Trick)
+    {
+        "questionText": "A student nurse is explaining the properties of second-generation H1 antagonists. The preceptor would intervene if the student made which of the following statements? (Select All That Apply)",
+        "options": {
+            "A": "They have minimal anticholinergic side effects compared to older drugs.",
+            "B": "They are completely free of sedative effects in all patients.",
+            "C": "They are a good choice for someone who needs to drive or operate machinery.",
+            "D": "They all have a short half-life, requiring frequent dosing.",
+            "E": "They are only available by prescription."
+        },
+        "correctAnswer": ["B", "D", "E"],
+        "rationale": "This is a negative format SATA question. The preceptor intervenes on incorrect statements. A and C are correct statements. B is incorrect because while they are 'non-sedating,' some patients can still experience mild drowsiness, so 'completely free' is a false absolute. D is incorrect; they have long half-lives. E is incorrect; many are available OTC (loratadine, cetirizine, fexofenadine).",
+        "section": "Antihistamines"
+    },
+    // Question 51 (SATA)
+    {
+        "questionText": "A patient is prescribed a combination antitussive/expectorant containing guaifenesin and dextromethorphan. The nurse should provide which of the following educational points? (Select All That Apply)",
+        "options": {"A": "This medication will help suppress your cough and thin your mucus.", "B": "It is important to maintain adequate fluid intake while on this medication.", "C": "This medication will cure the underlying infection.", "D": "You should not take this medication if you are taking an MAOI antidepressant.", "E": "Drowsiness or dizziness can occur."},
+        "correctAnswer": ["A", "B", "D", "E"],
+        "rationale": "This combination product's purpose is to suppress cough (dextromethorphan) and thin mucus (guaifenesin). Adequate hydration is key for expectorants to work. Dextromethorphan interacts dangerously with MAOIs (risk of serotonin syndrome). Drowsiness is a potential side effect. The medication treats symptoms, not the underlying viral cause.",
+        "section": "Combination Drugs"
+    },
+    // Question 52 (SATA Trick)
+    {
+        "questionText": "The nurse is applying the 'Recognize Cues' step for a patient starting oxymetazoline nasal spray for severe congestion. Which cues are most critical to obtain before administration? (Select All That Apply)",
+        "options": {"A": "Baseline blood pressure.", "B": "The last time the patient used the spray.", "C": "Patient's preferred flavor of cough drop.", "D": "Patient's history of MAOI use.", "E": "The patient reports a history of hyperthyroidism.", "F": "The patient's insurance coverage."},
+        "correctAnswer": ["A", "B", "D", "E"],
+        "rationale": "This is a SATA question with 'red herring' distractors. Critical assessment cues include BP (A) due to risk of systemic effects, last use (B) to prevent overdose/rebound congestion, MAOI use (D) due to hypertensive crisis risk, and hyperthyroidism (E) which is a caution. The patient's flavor preference (C) and insurance (F) are irrelevant to safe administration.",
+        "section": "Nursing Process"
+    },
+    // Question 53 (SATA)
+    {
+        "questionText": "Which of the following are potential anticholinergic side effects associated with first-generation antihistamines? (Select All That Apply)",
+        "options": {"A": "Dry mouth", "B": "Rhinorrhea", "C": "Urinary retention", "D": "Blurred vision", "E": "Diarrhea", "F": "Tachycardia"},
+        "correctAnswer": ["A", "C", "D", "F"],
+        "rationale": "Anticholinergic effects stem from blocking acetylcholine. This leads to drying of mucous membranes (dry mouth), urinary retention, blurred vision (due to cycloplegia and mydriasis), and can also cause tachycardia. Rhinorrhea (runny nose) would be a symptom treated by, not caused by, the drug. Constipation, not diarrhea, is the typical GI anticholinergic effect.",
+        "section": "Antihistamines"
+    },
+    // Question 54 (SATA)
+    {
+        "questionText": "Use of systemic decongestants requires caution or is contraindicated in patients with which of the following conditions? (Select All That Apply)",
+        "options": {"A": "Hypertension", "B": "Urticaria", "C": "Cardiac disease", "D": "Hyperthyroidism", "E": "Diabetes mellitus"},
+        "correctAnswer": ["A", "C", "D", "E"],
+        "rationale": "The text explicitly states: 'These drugs are contraindicated or used with extreme caution in patients with hypertension, cardiac disease, hyperthyroidism, and diabetes mellitus.' Urticaria (hives) is an indication for antihistamines, not a contraindication for decongestants.",
+        "section": "Contraindications"
+    },
+    // Question 55 (SATA)
+    {
+        "questionText": "A patient is diagnosed with acute pharyngitis. Which non-pharmacologic and symptomatic treatments may be indicated? (Select All That Apply)",
+        "options": {"A": "A 10-day course of antibiotics.", "B": "Saline gargles.", "C": "Increased fluid intake.", "D": "Acetaminophen for fever.", "E": "An opioid antitussive for cough."},
+        "correctAnswer": ["B", "C", "D"],
+        "rationale": "The text states that saline gargles, lozenges, and increased fluid intake are usually indicated for acute pharyngitis. Acetaminophen may be taken for fever. A 10-day antibiotic course (A) is only indicated if the pharyngitis is confirmed to be bacterial (strep throat). An antitussive (E) may or may not be needed depending on the presence and type of cough.",
+        "section": "Pathophysiology"
+    },
+    // Question 56 (SATA Trick)
+    {
+        "questionText": "A nurse is teaching a patient about preventing the common cold. Which statements are accurate and should be included? (Select All That Apply)",
+        "options": {
+            "A": "The flu vaccine will prevent you from getting the most common type of cold.",
+            "B": "Frequent hand washing is the most effective way to prevent transmission.",
+            "C": "You are only contagious to others when your nasal discharge turns green.",
+            "D": "Cold viruses can live on surfaces like doorknobs for several days.",
+            "E": "Transmission is more common from touching your face than from inhaling sneezed droplets."
+        },
+        "correctAnswer": ["B", "D", "E"],
+        "rationale": "This question contains plausible but incorrect distractors. A is incorrect; the flu vaccine is for influenza virus, not rhinovirus (the common cold). C is a common myth; contagion is highest in the first few days, regardless of mucus color. B, D, and E are all factual statements supported by the text regarding handwashing, fomite survival, and the primary mode of transmission.",
+        "section": "Patient Teaching"
+    },
+    // Question 57 (Case Study)
+    {
+        "scenario": "A 24-year-old student presents with a 2-week history of sneezing, clear watery rhinorrhea, and itchy eyes. He states he has been taking diphenhydramine, but it makes him too drowsy to study.",
+        "questionText": "Based on this presentation, which medication would be the most appropriate next step to recommend?",
+        "options": {"A": "Continue diphenhydramine but at a lower dose.", "B": "Switch to an oral decongestant like pseudoephedrine.", "C": "Initiate a course of antibiotics for chronic sinusitis.", "D": "Start a second-generation antihistamine like fexofenadine or an intranasal glucocorticoid like fluticasone."},
+        "correctAnswer": "D",
+        "rationale": "The patient's symptoms are classic for allergic rhinitis. His primary complaint with diphenhydramine is sedation. The most appropriate step is to switch to a non-sedating option. A second-generation antihistamine (fexofenadine) or a first-line therapy like an intranasal glucocorticoid (fluticasone) would be ideal.",
+        "section": "Case Study"
+    },
+    // Question 58 (Case Study)
+    {
+        "scenario": "A 45-year-old male with a history of hypertension and benign prostatic hyperplasia (BPH) presents with severe nasal congestion and sinus pressure for two days. He wants a 'quick fix' and grabs a box of pseudoephedrine.",
+        "questionText": "What is the nurse's priority action in this situation?",
+        "options": {"A": "Tell the patient to take the pseudoephedrine with a full glass of water.", "B": "Advise the patient that this drug is contraindicated due to his medical history and recommend a safer alternative.", "C": "Instruct the patient to cut the pseudoephedrine tablets in half to reduce the side effects.", "D": "Recommend he also purchase an antihistamine to take with the decongestant."},
+        "correctAnswer": "B",
+        "rationale": "Pseudoephedrine is a systemic decongestant that can exacerbate both hypertension (due to vasoconstriction) and BPH (due to smooth muscle contraction in the prostate, worsening urinary retention). This is a direct contraindication. The nurse's priority is patient safety, which involves advising against the use of this drug and suggesting alternatives like an intranasal glucocorticoid spray or saline nasal spray, which have minimal systemic effects.",
+        "section": "Case Study"
+    },
+    // Question 59 (Case Study Trick)
+    {
+        "scenario": "A 72-year-old female is admitted with pneumonia. She has a productive cough with thick, yellow sputum and her WBC count is 16,500. Her medication list includes guaifenesin 600 mg twice daily. The patient states, 'This cough pill isn't working, I'm still coughing so much.' Her daily fluid intake has been approximately 500 mL per day.",
+        "questionText": "What is the nurse's most appropriate initial intervention?",
+        "options": {
+            "A": "Request an order for an antitussive like codeine to stop the cough.",
+            "B": "Explain that guaifenesin is working as intended and encourage increased fluid intake.",
+            "C": "Notify the provider about the patient's WBC count and productive cough.",
+            "D": "Hold the next dose of guaifenesin as it is clearly ineffective."
+        },
+        "correctAnswer": "B",
+        "rationale": "This question is a trick of prioritization. While the WBC count is high (C), this is an expected finding in pneumonia and doesn't require immediate action over the current problem. The patient's statement indicates a misunderstanding of the medication's purpose. The most appropriate *initial* intervention is to address the patient's statement with education and encourage fluids, which is essential for the expectorant to work. Suppressing a productive cough (A) would be dangerous. Holding the med (D) is incorrect.",
+        "section": "Case Study"
+    },
+    // Question 60 (Case Study)
+    {
+        "scenario": "A 5-year-old child is brought to the pediatrician with a harsh cough. The parent reports the child has been irritable and having nightmares since they started giving him an OTC 'cold and cough' syrup.",
+        "questionText": "The nurse suspects the syrup likely contains which ingredient that is causing the child's behavioral changes?",
+        "options": {"A": "Guaifenesin", "B": "A first-generation antihistamine (e.g., diphenhydramine or chlorpheniramine).", "C": "Acetaminophen", "D": "Dextromethorphan"},
+        "correctAnswer": "B",
+        "rationale": "The text specifically mentions that children are more susceptible to the side effects of antihistamines and that 'Nightmares, nervousness, and irritability are more likely to occur in children.' This paradoxical excitement is a well-documented phenomenon with first-generation antihistamines in the pediatric population.",
+        "section": "Case Study"
+    },
+    // Question 61
+    {
+        "questionText": "Why is diphenhydramine contraindicated in a patient with an acute asthma exacerbation?",
+        "options": { "A": "It can cause bronchoconstriction.", "B": "Its anticholinergic effects can thicken bronchial mucus, impairing clearance.", "C": "It can cause a precipitous drop in blood pressure.", "D": "It can mask the signs of worsening hypoxia."},
+        "correctAnswer": "B",
+        "rationale": "The primary reason for caution with asthma is the drying effect of diphenhydramine's anticholinergic properties. This can make mucus thicker and more difficult to expectorate, potentially leading to mucus plugging and worsening airway obstruction.",
+        "section": "Contraindications"
+    },
+    // Question 62
+    {
+        "questionText": "A patient with allergic rhinitis uses a beclomethasone nasal inhaler. He states he also takes an oral pseudoephedrine tablet whenever his nose feels 'really stuffy.' What is the best patient education the nurse can provide regarding the use of these two medications?",
+         "options": {
+            "A": "This is a dangerous combination and you should stop one of them immediately.",
+            "B": "You should use the pseudoephedrine first to open the nasal passages, allowing the beclomethasone spray to penetrate deeper.",
+            "C": "You should use the beclomethasone spray first to reduce inflammation, which will enhance the effect of the pseudoephedrine.",
+            "D": "Continue taking both as you are, as this is standard practice for severe allergies."
+        },
+        "correctAnswer": "B",
+        "rationale": "For a patient with severe congestion, using a decongestant (either oral or topical) shortly before the intranasal steroid can be beneficial. The decongestant shrinks the swollen nasal mucosa, clearing the passages so that the steroid medication can be more effectively distributed within the nasal cavity to exert its anti-inflammatory effect.",
+         "section": "Patient Teaching"
+    },
+    // Question 63 (Trick Question)
+    {
+        "scenario": "A parent calls the nurse advice line. Her 4-year-old son has a 'terrible cold' and a fever of 101.5°F (38.6°C). She has been giving him an OTC multi-symptom cold remedy every 4 hours. She now wants to give him a dose of acetaminophen for the fever.",
+        "questionText": "What is the nurse's priority instruction for this parent?",
+         "options": {
+            "A": "It's fine to give the acetaminophen, as fever can be dangerous.",
+            "B": "Check the ingredients of the multi-symptom remedy to see if it already contains acetaminophen before giving any more.",
+            "C": "You should alternate between the cold remedy and ibuprofen every 3 hours.",
+            "D": "Bring the child to the emergency department immediately."
+        },
+        "correctAnswer": "B",
+        "rationale": "The greatest immediate risk is an unintentional overdose of acetaminophen. Many multi-symptom cold preparations contain acetaminophen for pain/fever relief. Administering additional acetaminophen could easily exceed the maximum safe daily dose, leading to hepatotoxicity. The nurse's first and most critical action is to advise the parent to check for this to ensure safety.",
+         "section": "Case Study"
+    },
+    // Question 64 (Trick Question)
+    {
+        "questionText": "A patient with a dry, irritating cough that worsens at night is using a combination product containing guaifenesin 200 mg and dextromethorphan 20 mg. Which statement by the patient indicates a correct understanding of the medication's purpose?",
+        "options": {
+            "A": "The guaifenesin will stop my cough, and the dextromethorphan will thin the mucus.",
+            "B": "This pill is designed to suppress my cough reflex while also making any potential mucus easier to cough up.",
+            "C": "I should only take this medication if my cough becomes wet and productive.",
+            "D": "Both ingredients in this pill work together to stop my dry cough."
+        },
+        "correctAnswer": "B",
+        "rationale": "This is a trick question testing the understanding of combination products. Option A has the roles reversed. Option C is incorrect because the antitussive is for a dry cough. Option D is incorrect because guaifenesin doesn't suppress a cough. Option B correctly identifies the distinct role of each component: dextromethorphan (suppress reflex) and guaifenesin (thin mucus), even though the patient's current cough is dry.",
+        "section": "Combination Drugs"
+    },
+    // Question 65
+    {
+        "questionText": "A patient with a new diagnosis of allergic rhinitis is prescribed a first-generation antihistamine. Which side effect should the nurse emphasize the most regarding patient safety?",
+        "options": {"A": "Dry mouth", "B": "Drowsiness", "C": "Constipation", "D": "Skin rash"},
+        "correctAnswer": "B",
+        "rationale": "While all are possible side effects, drowsiness poses the greatest safety risk. It can impair the patient's ability to drive, operate machinery, or perform other tasks requiring alertness, potentially leading to serious accidents.",
+        "section": "Patient Safety"
+    },
+    // Question 66
+    {
+        "questionText": "Which statement about the protein binding of diphenhydramine is accurate according to the text?",
+        "options": {"A": "It is poorly absorbed from the GI tract.", "B": "It has a protein binding of 70%.", "C": "It is highly protein bound at 98%.", "D": "It does not bind to protein, allowing for rapid action."},
+        "correctAnswer": "C",
+        "rationale": "The prototype drug chart for Diphenhydramine explicitly states under Pharmacokinetics, 'Distribution: PB: 98%'. This indicates it is highly protein-bound.",
+        "section": "Pharmacokinetics"
+    },
+    // Question 67 (Trick Question)
+    {
+        "questionText": "A patient who smokes two packs of cigarettes a day complains of a chronic, hacking cough and requests a strong cough suppressant like hydrocodone. The nurse understands this is contraindicated primarily because:",
+        "options": {
+            "A": "The patient is at high risk for developing an addiction to the hydrocodone.",
+            "B": "The cough is a necessary protective reflex to clear secretions caused by smoking.",
+            "C": "Hydrocodone interacts negatively with the nicotine from cigarettes.",
+            "D": "A non-opioid antitussive like dextromethorphan would be more effective for a smoker's cough."
+        },
+        "correctAnswer": "B",
+        "rationale": "This is a trick question about physiological priority versus psychosocial risks. While addiction (A) is a very important consideration, the primary physiological reason to avoid suppressing the cough is that it's a protective mechanism. Retained secretions can lead to pneumonia and atelectasis, which is a more acute threat. The nurse must prioritize the physiological need to clear the airway.",
+        "section": "Contraindications"
+    },
+    // Question 68
+    {
+        "questionText": "Which phase of respiration involves blood flow at the alveolar-capillary bed and is influenced by alveolar pressure?",
+        "options": {"A": "Ventilation", "B": "Respiration", "C": "Diffusion", "D": "Perfusion"},
+        "correctAnswer": "D",
+        "rationale": "The text explicitly states, 'Perfusion involves blood flow at the alveolar-capillary bed. Perfusion is influenced by alveolar pressure.' This is a core definition from the chapter.",
+        "section": "Physiology"
+    },
+    // Question 69 (Trick Question)
+    {
+        "questionText": "The nurse is reviewing the 'Generate Solutions' and 'Take Action' steps for a patient taking an antihistamine. All of the following are appropriate nursing interventions or goals EXCEPT:",
+        "options": {
+            "A": "Goal: Patient will have decreased nasal congestion and mucosal secretions.",
+            "B": "Intervention: Administer the oral form with food to decrease gastric distress.",
+            "C": "Goal: Patient will achieve 6 to 8 hours of sleep per night.",
+            "D": "Intervention: Administer the IM form of diphenhydramine via subcutaneous injection."
+        },
+        "correctAnswer": "D",
+        "rationale": "This is a negative format (EXCEPT) question. A, B, and C are all appropriate goals and interventions from the text. The text specifically states 'Avoid subcutaneous injection' for the IM form of diphenhydramine. This is a critical safety point that makes this intervention incorrect.",
+        "section": "Nursing Process"
+    },
+    // Question 70
+    {
+        "questionText": "What is a key difference in the pharmacodynamics of first- vs. second-generation antihistamines regarding CNS penetration?",
+        "options": {"A": "First-generation agents are highly protein-bound, preventing CNS entry.", "B": "Second-generation agents are more lipophilic, allowing them to cross the blood-brain barrier easily.", "C": "First-generation agents are more lipophilic and readily cross the blood-brain barrier, causing sedation.", "D": "Second-generation agents are actively transported into the CNS by P-glycoprotein."},
+        "correctAnswer": "C",
+        "rationale": "The sedating properties of first-generation antihistamines (e.g., diphenhydramine) are due to their lipophilic nature, which allows them to easily penetrate the blood-brain barrier and antagonize H1 receptors in the central nervous system. Second-generation agents are less lipophilic and are often substrates of efflux pumps like P-glycoprotein, limiting their CNS access.",
+        "section": "Pharmacodynamics"
+    },
+    // Question 71 (SATA Trick)
+    {
+        "questionText": "A patient taking a new prescription for an oral decongestant calls to report side effects. The nurse would be MOST concerned about which of the following reports? (Select All That Apply)",
+        "options": {"A": "I feel a little restless.", "B": "My mouth feels dry.", "C": "I'm having heart palpitations.", "D": "I had trouble falling asleep last night.", "E": "My chest feels tight."},
+        "correctAnswer": ["C", "E"],
+        "rationale": "This is a trick question that requires sorting common/expected side effects from serious adverse effects. Restlessness (A), dry mouth (B), and insomnia (D) are common, expected CNS stimulant effects of decongestants. However, heart palpitations (C) and chest tightness (E) could indicate a dangerous cardiac or hypertensive event and are the most concerning findings that require immediate follow-up.",
+        "section": "Adverse Effects"
+    },
+    // Question 72
+    {
+        "questionText": "A patient with acute bacterial pharyngitis is prescribed a 10-day course of antibiotics. The patient feels better after 4 days and wants to stop taking the medication. What is the nurse's best response?",
+        "options": {"A": "Since you feel better, it is okay to stop the medication now.", "B": "You should continue the medication for at least 3 more days to be safe.", "C": "It is critical to complete the full 10-day course to eradicate the bacteria and prevent complications.", "D": "You can stop the oral antibiotic and switch to an antibiotic throat lozenge."},
+        "correctAnswer": "C",
+        "rationale": "Incomplete antibiotic courses are a primary driver of antibiotic resistance. For streptococcal pharyngitis, completing the full course is also essential to prevent serious post-streptococcal complications like rheumatic fever and glomerulonephritis.",
+        "section": "Patient Teaching"
+    },
+    // Question 73
+    {
+        "questionText": "What is the therapeutic classification of dextromethorphan?",
+        "options": {"A": "Expectorant", "B": "Decongestant", "C": "Antihistamine", "D": "Antitussive"},
+        "correctAnswer": "D",
+        "rationale": "Dextromethorphan is a non-opioid antitussive. It acts on the cough control center in the medulla to suppress the cough reflex.",
+        "section": "Pharmacology"
+    },
+    // Question 74 (Trick Question)
+    {
+        "questionText": "A patient is prescribed both codeine and benzonatate for a severe, intractable cough. The nurse understands that administering these two drugs together primarily carries a risk for:",
+        "options": {"A": "Additive respiratory depression.", "B": "Increased risk of serotonin syndrome.", "C": "Potentiated anticholinergic effects.", "D": "Synergistic sedative effects."},
+        "correctAnswer": "D",
+        "rationale": "This is a trick question about the primary combined effect. While codeine causes respiratory depression (A), benzonatate does not, so the effect isn't additive. Neither drug has significant serotonergic or anticholinergic properties (B, C). However, both drugs list drowsiness and dizziness as common side effects. The primary risk of combining them is the synergistic CNS depression, leading to profound sedation and an increased risk for falls or accidents.",
+        "section": "Drug Interactions"
+    },
+    // Question 75
+    {
+        "questionText": "Which type of rhinitis is caused by pollen or a foreign substance like animal dander?",
+        "options": {"A": "Acute rhinitis", "B": "Infectious rhinitis", "C": "Allergic rhinitis", "D": "Vasomotor rhinitis"},
+        "correctAnswer": "C",
+        "rationale": "The text defines allergic rhinitis, often called hay fever, as being caused by pollen or a foreign substance such as animal dander. This is distinct from acute rhinitis which usually accompanies the common cold.",
+        "section": "Pathophysiology"
+    },
+    // Question 76
+    {
+        "questionText": "According to the Prototype Drug Chart, which is a life-threatening adverse reaction of diphenhydramine?",
+        "options": {"A": "Seizures", "B": "Respiratory depression", "C": "Thrombocytopenia", "D": "Serotonin syndrome"},
+        "correctAnswer": "C",
+        "rationale": "The drug chart for diphenhydramine explicitly lists 'Thrombocytopenia' under the 'Life-threatening' adverse reactions category.",
+        "section": "Adverse Effects"
+    },
+    // Question 77 (Trick Question)
+    {
+        "questionText": "A patient is taking an OTC combination product that contains 10 mg of loratadine and 240 mg of pseudoephedrine. Which statement indicates the patient understands the action of the pseudoephedrine component?",
+        "options": {
+            "A": "This part of the medicine will stop my nose from itching.",
+            "B": "This part of the medicine will relieve my stuffy nose.",
+            "C": "This part of the medicine will keep me from getting drowsy.",
+            "D": "This part of the medicine will thin my mucus."
+        },
+        "correctAnswer": "B",
+        "rationale": "The trick here is to isolate the action of the specific drug component. Loratadine is the antihistamine that helps with itching (A) and prevents drowsiness (C is a property, not an action). Pseudoephedrine is the decongestant whose purpose is to relieve nasal congestion (a stuffy nose). D describes an expectorant.",
+        "section": "Combination Drugs"
+    },
+    // Question 78
+    {
+        "questionText": "The text cautions that intranasal glucocorticoids should be directed away from what specific anatomical structure to prevent irritation?",
+        "options": {"A": "The turbinates", "B": "The floor of the nasal cavity", "C": "The nasal septum", "D": "The pharynx"},
+        "correctAnswer": "C",
+        "rationale": "The text explicitly states, 'The spray should be directed away from the nasal septum, and the patient should sniff gently.' This is to prevent dryness, irritation, and potential epistaxis.",
+        "section": "Intranasal Glucocorticoids"
+    },
+    // Question 79
+    {
+        "questionText": "What is the primary difference between sinusitis and pharyngitis?",
+        "options": {"A": "Sinusitis is viral while pharyngitis is bacterial.", "B": "Sinusitis is inflammation of the sinuses, while pharyngitis is inflammation of the throat.", "C": "Sinusitis always requires antibiotics, while pharyngitis does not.", "D": "Sinusitis causes cough, while pharyngitis causes nasal congestion."},
+        "correctAnswer": "B",
+        "rationale": "This is a basic definition question. The text defines sinusitis as inflammation of the mucous membranes of the sinuses and pharyngitis as inflammation of the throat.",
+        "section": "Pathophysiology"
+    },
+    // Question 80 (Trick Question)
+    {
+        "questionText": "A patient with a history of emphysema and hypertension is seeking a cough remedy. They have a nonproductive, irritating cough. Which medication should the nurse question if ordered?",
+        "options": {"A": "Benzonatate capsules", "B": "Guaifenesin syrup", "C": "A combination syrup of guaifenesin and dextromethorphan.", "D": "A combination syrup of homatropine and hydrocodone."},
+        "correctAnswer": "D",
+        "rationale": "This is a trick question requiring you to analyze the components of a combination drug. While the patient needs an antitussive, hydrocodone (an opioid) causes respiratory depression, which is dangerous in a patient with emphysema. Furthermore, homatropine is an anticholinergic, which can thicken secretions, also dangerous in COPD. A, B, and C are all safer options.",
+        "section": "Contraindications"
+    },
+    // Question 81
+    {
+        "questionText": "What is the maximum recommended daily dose of codeine for an adult cough, according to Table 38.4?",
+        "options": {"A": "60 mg/d", "B": "120 mg/d", "C": "240 mg/d", "D": "300 mg/d"},
+        "correctAnswer": "B",
+        "rationale": "Table 38.4, under Opioid Antitussives for Codeine, clearly lists 'max: 120 mg/d'.",
+        "section": "Pharmacology"
+    },
+    // Question 82
+    {
+        "questionText": "According to the Clinical Judgment section for Oxymetazoline, which finding is indicative of a bronchial infection?",
+        "options": {"A": "Clear, watery mucus.", "B": "A temperature of 99.5°F (37.5°C).", "C": "A persistent nonproductive cough.", "D": "Yellow or green mucus."},
+        "correctAnswer": "D",
+        "rationale": "The text states under the 'Take Action' interventions: 'Observe the color of bronchial secretions. Yellow or green mucus is indicative of a bronchial infection.'",
+        "section": "Nursing Process"
+    },
+    // Question 83 (SATA)
+    {
+        "questionText": "According to the Prototype Drug Chart, dextromethorphan use requires caution in which patient populations? (Select All That Apply)",
+        "options": {"A": "Patients with asthma or emphysema.", "B": "Patients with diabetes.", "C": "Patients with hepatic disease.", "D": "Older adults.", "E": "Patients who smoke tobacco."},
+        "correctAnswer": ["A", "C", "D", "E"],
+        "rationale": "The 'Caution' section for the Dextromethorphan chart lists: Asthma, emphysema, hepatic disease, older adults, pregnancy, breastfeeding, and tobacco smoking.",
+        "section": "Contraindications"
+    },
+    // Question 84 (SATA)
+    {
+        "questionText": "The nurse is evaluating the outcomes for a patient who has been taking OTC cold remedies for three days. Which findings would indicate successful management? (Select All That Apply)",
+        "options": {"A": "Patient is afebrile.", "B": "Patient reports uninterrupted sleep.", "C": "Patient's nasal discharge has changed from clear to yellow-green.", "D": "Patient's nonproductive cough is diminished.", "E": "Patient reports maintaining an adequate fluid intake."},
+        "correctAnswer": ["A", "B", "D", "E"],
+        "rationale": "The evaluation section of the nursing process for nasal decongestants lists desirable outcomes as being free from cough, maintaining fluid intake and rest, and being afebrile. Uninterrupted sleep is also a goal. A change to yellow-green mucus suggests a secondary bacterial infection, which is a negative outcome.",
+        "section": "Nursing Process"
+    },
+    // Question 85 (Trick Question)
+    {
+        "questionText": "A patient with seasonal allergies reports that cetirizine works well for their sneezing but not for their severe nasal congestion. What is the nurse's best explanation for this?",
+        "options": {
+            "A": "The patient has likely developed a tolerance to cetirizine.",
+            "B": "Antihistamines are excellent for histamine-mediated symptoms like sneezing and itching, but have little effect on congestion, which is better treated with a decongestant or intranasal steroid.",
+            "C": "The patient should switch to a first-generation antihistamine like diphenhydramine, which is more effective for congestion.",
+            "D": "The cetirizine is likely expired and has lost its effectiveness."
+        },
+        "correctAnswer": "B",
+        "rationale": "This question is a subtle trick about drug class efficacy. Patients often expect one pill to fix everything. The correct explanation is that different drug classes target different symptoms. Antihistamines block histamine (sneezing, itching, rhinorrhea) but are poor decongestants. Congestion is caused by vasodilation, which requires a vasoconstrictor (decongestant) or a potent anti-inflammatory (intranasal steroid).",
+        "section": "Pharmacology"
+    },
+    // Question 86 (Case Study Trick)
+    {
+        "scenario": "A 58-year-old truck driver with a history of hyperthyroidism complains of a runny nose and sneezing. He asks for 'the strongest thing you have' so he can keep working.",
+        "questionText": "Which medication is the most inappropriate choice for this specific patient?",
+        "options": {"A": "Diphenhydramine", "B": "Loratadine", "C": "Pseudoephedrine", "D": "Guaifenesin"},
+        "correctAnswer": "C",
+        "rationale": "This is a trick of prioritizing contraindications. While diphenhydramine (A) is a poor choice due to sedation, it is not strictly contraindicated. Pseudoephedrine (C) is a sympathomimetic amine that should be used with extreme caution in patients with hyperthyroidism due to the risk of exacerbating symptoms like tachycardia and anxiety. This makes it the most inappropriate and dangerous choice.",
+        "section": "Case Study"
+    },
+    // Question 87 (SATA Trick)
+    {
+        "questionText": "The nurse's discharge teaching for a patient using various OTC cold remedies should include which of the following warnings? (Select All That Apply)",
+        "options": {
+            "A": "It is safe to take extra acetaminophen if a multi-symptom product isn't controlling your fever.",
+            "B": "Do not use a nasal decongestant spray for more than 3 days to avoid rebound congestion.",
+            "C": "Antihistamines can cause drowsiness, so avoid driving until you know how they affect you.",
+            "D": "Systemic decongestants must be taken with food to prevent GI upset.",
+            "E": "Check all product labels as many contain the same ingredients, leading to potential overdose."
+        },
+        "correctAnswer": ["B", "C", "E"],
+        "rationale": "This is a SATA question asking to identify correct teaching, but it contains incorrect/dangerous advice. A is dangerous advice due to overdose risk. D is not a required instruction. B, C, and E are all critical safety teaching points for OTC cold remedy use.",
+        "section": "Patient Safety"
+    },
+    // Question 88 (Dosage Calculation)
+    {
+        "questionText": "A child weighing 44 lbs needs diphenhydramine oral solution. The order is for 1.25 mg/kg PO q6h. The available oral solution has a concentration of 12.5 mg/5 mL. How many TOTAL milliliters (mL) will the child receive in a 24-hour period?",
+        "correctAnswer": "40",
+        "rationale": "This is a multi-step calculation trick. First, find the single dose, then find the daily total. Step 1: Convert weight: 44 lbs / 2.2 lbs/kg = 20 kg. Step 2: Calculate single dose in mg: 1.25 mg/kg * 20 kg = 25 mg. Step 3: Calculate volume per dose: (25 mg / 12.5 mg) * 5 mL = 10 mL. Step 4: Calculate doses per day: 24 hours / 6 hours = 4 doses. Step 5: Calculate total daily volume: 10 mL/dose * 4 doses = 40 mL.",
+        "section": "Dosage Calculation"
+    },
+    // Question 89 (Dosage Calculation Trick)
+    {
+        "questionText": "The order is for codeine 15 mg PO. The available solution contains guaifenesin 100 mg and codeine 10 mg per 5 mL. The patient reports they are also taking Tylenol #3 (300 mg acetaminophen/30 mg codeine) for pain. What is the nurse's priority action?",
+        "options": {"A": "Administer 7.5 mL of the solution as ordered.", "B": "Hold the dose and contact the provider about potential codeine overdose.", "C": "Administer the dose but advise the patient to skip their next dose of Tylenol #3.", "D": "Document the patient's report and administer the medication."},
+        "correctAnswer": "B",
+        "rationale": "This is a dosage calculation question hidden inside a clinical safety problem. The calculation for the ordered dose would be 7.5 mL. However, the patient is already taking another opioid. Combining the ordered 15 mg of codeine with the 30 mg of codeine in the Tylenol #3 could lead to excessive sedation and respiratory depression. The priority is not to administer the medication, but to ensure patient safety by clarifying the orders and preventing a potential overdose.",
+        "section": "Dosage Calculation"
+    },
+    // Question 90 (Dosage Calculation Trick)
+    {
+        "questionText": "An order is for dextromethorphan 30 mg PO. The label on the syrup reads 'Dextromethorphan HBr, 15 mg/5 mL'. The bottle also contains 200 mg of guaifenesin per 5mL. How many mg of guaifenesin will the patient receive per dose?",
+        "correctAnswer": "400",
+        "rationale": "This is a trick calculation that asks for the amount of the 'other' drug in the solution. Step 1: Calculate the volume needed for the dextromethorphan dose: (30 mg desired / 15 mg have) * 5 mL = 10 mL. Step 2: Calculate the amount of guaifenesin in that volume. The concentration is 200 mg/5 mL, which is 40 mg/mL. Step 3: 40 mg/mL * 10 mL = 400 mg of guaifenesin.",
+        "section": "Dosage Calculation"
+    }
+];
+    // --- SCRIPT LOGIC (Unaltered from your original code) ---
+    let finalQuizData = [];
+
+    function prepareQuizData() {
+        const dosageQuestions = fullQuizData.filter(q => q.section && q.section.includes("Dosage Calculation"));
+        const standardQuestions = fullQuizData.filter(q => !q.section || !q.section.includes("Dosage Calculation"));
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        shuffleArray(dosageQuestions);
+        shuffleArray(standardQuestions);
+
+        const selectedDosage = dosageQuestions.slice(0, 3);
+        const selectedStandard = standardQuestions.slice(0, 27);
+
+        finalQuizData = [...selectedStandard, ...selectedDosage];
+        shuffleArray(finalQuizData);
+    }
+
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let timeSpentOnQuestions = {};
+    let timeFlaggedQuestions = new Set();
+    let flaggedForReview = new Set();
+    let overallTimerInterval;
+    let timeLeft = 35 * 60;
+    let questionStartTime;
+    const TIME_THRESHOLD = 90; 
+    
+    let isPaused = false;
+
+    const initialScreen = document.getElementById('initial-screen');
+    const startBtn = document.getElementById('start-btn');
+    const quizForm = document.getElementById('quiz-form');
+    const questionContainer = document.getElementById('question-container');
+    const navigationBtn = document.getElementById('navigation-btn');
+    const timerDisplay = document.getElementById('timer-display');
+    const flagCheckbox = document.getElementById('flag-for-review');
+    const resultsArea = document.getElementById('results-area');
+    const resultsSummary = document.getElementById('results-summary');
+    const resultsDetails = document.getElementById('results-details');
+    const studyFocusContainer = document.getElementById('study-focus');
+    const pauseBtn = document.getElementById('pause-btn');
+    const pauseOverlay = document.getElementById('pause-overlay');
+    const printBtn = document.getElementById('print-btn');
+    const printableStudyGuide = document.getElementById('study-guide-printable');
+
+
+    function startQuiz() {
+        prepareQuizData();
+
+        if (finalQuizData.length === 0) {
+            questionContainer.innerHTML = `<p class="question-text">There are no questions loaded in this quiz.</p>`;
+            initialScreen.classList.add('hidden');
+            quizForm.classList.remove('hidden');
+            timerDisplay.textContent = "Quiz Not Started";
+            return;
+        }
+        
+        initialScreen.classList.add('hidden');
+        quizForm.classList.remove('hidden');
+        navigationBtn.classList.remove('hidden');
+        pauseBtn.classList.remove('hidden'); 
+        startOverallTimer();
+        displayCurrentQuestion();
+    }
+    
+    function togglePause() {
+        isPaused = !isPaused;
+        if (isPaused) {
+            clearInterval(overallTimerInterval);
+            pauseOverlay.style.display = 'flex';
+            quizForm.style.visibility = 'hidden'; 
+            navigationBtn.style.visibility = 'hidden';
+        } else {
+            startOverallTimer();
+            pauseOverlay.style.display = 'none';
+            quizForm.style.visibility = 'visible';
+            navigationBtn.style.visibility = 'visible';
+        }
+    }
+
+    function startOverallTimer() {
+        clearInterval(overallTimerInterval);
+        overallTimerInterval = setInterval(() => {
+            if (timeLeft <= 0) {
+                submitQuiz();
+                return;
+            }
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function displayCurrentQuestion() {
+        questionStartTime = new Date();
+        const qData = finalQuizData[currentQuestionIndex];
+        const isSATA = Array.isArray(qData.correctAnswer);
+        const isTyped = qData.section === 'Dosage Calculation' && !qData.options;
+        
+        let questionBodyHTML = '';
+        if (qData.scenario) {
+            questionBodyHTML += `<div class="question-scenario">${qData.scenario}</div>`;
+        }
+        questionBodyHTML += `<p class="question-text">${qData.questionText}</p>`;
+
+        let contentHTML = '';
+        if(isTyped) {
+            const userAnswer = userAnswers[currentQuestionIndex] || '';
+            contentHTML = `<div class="options-container"><input type="text" id="dosage-input" class="text-answer-input" placeholder="Enter numerical answer..." value="${userAnswer}"></div>`;
+        } else {
+             let optionsHTML = '';
+             for (const key in qData.options) {
+                 let checked = '';
+                 const currentAnswers = userAnswers[currentQuestionIndex];
+                 if (currentAnswers) {
+                     if (isSATA && currentAnswers.includes(key)) {
+                         checked = 'checked';
+                     } else if (!isSATA && currentAnswers === key) {
+                         checked = 'checked';
+                     }
+                 }
+                 optionsHTML += `<label><input type="${isSATA ? 'checkbox' : 'radio'}" name="answer" value="${key}" ${checked}> ${key}: ${qData.options[key]}</label>`;
+             }
+            contentHTML = `<div class="options-container">${optionsHTML}</div>`
+        }
+
+        questionContainer.innerHTML = `
+            <div class="question-header">Question ${currentQuestionIndex + 1} of ${finalQuizData.length}${isSATA ? ' (Select All That Apply)' : ''}</div>
+            ${questionBodyHTML}
+            ${contentHTML}
+        `;
+        flagCheckbox.checked = flaggedForReview.has(currentQuestionIndex);
+        navigationBtn.textContent = (currentQuestionIndex === finalQuizData.length - 1) ? "Submit Quiz" : "Next Question";
+    }
+
+    function saveAnswerAndState() {
+        const qData = finalQuizData[currentQuestionIndex];
+        if (!qData) return;
+        
+        const isTyped = qData.section === 'Dosage Calculation' && !qData.options;
+
+        if (isTyped) {
+            const inputElement = document.getElementById('dosage-input');
+            userAnswers[currentQuestionIndex] = inputElement.value.trim();
+        } else {
+             const isSATA = Array.isArray(qData.correctAnswer);
+             const selectedOptions = document.querySelectorAll('input[name="answer"]:checked');
+             userAnswers[currentQuestionIndex] = isSATA
+                 ? Array.from(selectedOptions).map(cb => cb.value)
+                 : (selectedOptions.length ? selectedOptions[0].value : null);
+        }
+
+        const timeSpent = Math.round((new Date() - questionStartTime) / 1000);
+        timeSpentOnQuestions[currentQuestionIndex] = (timeSpentOnQuestions[currentQuestionIndex] || 0) + timeSpent;
+        if (timeSpent > TIME_THRESHOLD) {
+            timeFlaggedQuestions.add(currentQuestionIndex);
+        }
+        if (flagCheckbox.checked) {
+            flaggedForReview.add(currentQuestionIndex);
+        } else {
+            flaggedForReview.delete(currentQuestionIndex);
+        }
+    }
+
+    function handleNavigation() {
+        saveAnswerAndState();
+        if (currentQuestionIndex < finalQuizData.length - 1) {
+            currentQuestionIndex++;
+            displayCurrentQuestion();
+        } else {
+            submitQuiz();
+        }
+    }
+
+    function submitQuiz() {
+        clearInterval(overallTimerInterval);
+        saveAnswerAndState();
+        quizForm.classList.add('hidden');
+        navigationBtn.classList.add('hidden');
+        pauseBtn.classList.add('hidden'); 
+        timerDisplay.textContent = "Quiz Finished";
+        displayResults();
+    }
+    
+    function checkAnswerCorrectness(qData, userAnswer) {
+        if (qData.section === 'Dosage Calculation' && !qData.options) {
+            return userAnswer === qData.correctAnswer;
+        }
+        if (Array.isArray(qData.correctAnswer)) { // SATA
+            const sortedUserAnswer = userAnswer ? [...userAnswer].sort() : [];
+            const sortedCorrectAnswer = [...qData.correctAnswer].sort();
+            return JSON.stringify(sortedUserAnswer) === JSON.stringify(sortedCorrectAnswer);
+        }
+        return userAnswer === qData.correctAnswer;
+    }
+
+    function displayResults() {
+        resultsArea.classList.remove('hidden');
+        let correctCount = 0;
+        let incorrectCount = 0;
+
+        finalQuizData.forEach((qData, index) => {
+            if (checkAnswerCorrectness(qData, userAnswers[index])) {
+                correctCount++;
+            } else {
+                incorrectCount++;
+            }
+        });
+
+        const score = (correctCount / finalQuizData.length) * 100;
+        resultsSummary.innerHTML = `<h2>Quiz Complete!</h2><p>Your Score: <strong>${score.toFixed(1)}%</strong> (${correctCount} out of ${finalQuizData.length} correct)</p>`;
+
+        let detailsHTML = '';
+        finalQuizData.forEach((qData, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = checkAnswerCorrectness(qData, userAnswer);
+            const isTyped = qData.section === 'Dosage Calculation' && !qData.options;
+            
+            let questionHeaderText = qData.questionText;
+            if (qData.scenario) {
+                questionHeaderText = `<div class='question-scenario'>${qData.scenario}</div>` + questionHeaderText;
+            }
+
+            let resultBodyHTML = '';
+            if(isTyped){
+                 const userAnswerDisplay = userAnswer || "No answer";
+                 const userClass = isCorrect ? 'correct' : 'incorrect';
+                 resultBodyHTML += `<div class="typed-answer-result"><p>Your Answer: <span class="user-answer ${userClass}">${userAnswerDisplay}</span></p>`;
+                 if (!isCorrect) {
+                      resultBodyHTML += `<p>Correct Answer: <span class="correct-answer-text">${qData.correctAnswer}</span></p>`;
+                 }
+                  resultBodyHTML += `</div>`;
+            } else {
+                 let optionsList = '<ul>';
+                 for (const key in qData.options) {
+                     let li_class = '';
+                     const isCorrectOption = Array.isArray(qData.correctAnswer) ? qData.correctAnswer.includes(key) : key === qData.correctAnswer;
+                     const isUserSelection = Array.isArray(userAnswer) ? (userAnswer && userAnswer.includes(key)) : key === userAnswer;
+
+                     if (isCorrectOption) li_class = 'correct-answer-label';
+                     if (isUserSelection && !isCorrectOption) li_class = 'incorrect-answer-label';
+                     if (!isUserSelection && isCorrectOption && !isCorrect) li_class += ' missed-correct-answer-label';
+                     
+                     optionsList += `<li class="${li_class}">${key}: ${qData.options[key]}</li>`;
+                 }
+                 optionsList += '</ul>';
+                 resultBodyHTML = optionsList;
+            }
+
+            let rationaleHTML = '';
+            if (!isCorrect) {
+                 let rationaleClasses = 'rationale';
+                 if (timeFlaggedQuestions.has(index)) rationaleClasses += ' time-flagged-rationale';
+                 if (flaggedForReview.has(index)) rationaleClasses += ' flagged-rationale';
+                 rationaleHTML = `<div class="${rationaleClasses}"><strong>Rationale:</strong> ${qData.rationale.replace(/\n/g, '<br>')}<span class="time-spent-info">You spent ${timeSpentOnQuestions[index] || 0} seconds on this question. ${flaggedForReview.has(index) ? '(You flagged this for review)' : ''}</span></div>`;
+            }
+
+            detailsHTML += `<div class="result-question"><p><strong>Question ${index + 1}: ${questionHeaderText}</strong></p>${resultBodyHTML}${rationaleHTML}</div>`;
+        });
+        resultsDetails.innerHTML = detailsHTML;
+        generateStudyFocus();
+        
+        if (incorrectCount > 0) {
+            generatePrintableStudyGuide();
+            printBtn.classList.remove('hidden');
+        }
+    }
+
+    function generateStudyFocus() {
+        const topicCounts = {};
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const isTimeFlagged = timeFlaggedQuestions.has(index);
+            const isUserFlagged = flaggedForReview.has(index);
+
+            if (!isCorrect || isTimeFlagged || isUserFlagged) {
+                const topic = qData.section;
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+            }
+        });
+
+        const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+        let focusHTML = '<h3>Personalized Study Focus Guide</h3>';
+        if (sortedTopics.length > 0) {
+            focusHTML += '<p>Based on your performance, focus your review on these topics:</p><ul>';
+            sortedTopics.forEach(topic => {
+                focusHTML += `<li><strong>${topic[0]}</strong> (${topic[1]} item${topic[1] > 1 ? 's' : ''} noted)</li>`;
+            });
+            focusHTML += '</ul>';
+        } else {
+            focusHTML += '<p>Excellent work! No specific weak areas were identified.</p>';
+        }
+        studyFocusContainer.innerHTML = focusHTML;
+    }
+
+    function generatePrintableStudyGuide() {
+        let printHTML = '<h1>Upper Respiratory Disorders - Study Guide</h1>';
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            if (!isCorrect) {
+                const userAnswer = userAnswers[index];
+                const isTyped = qData.section === 'Dosage Calculation' && !qData.options;
+                let userAnswerText = 'No answer selected.';
+                let correctAnswerText = '';
+                
+                let questionHeaderText = qData.questionText;
+                if (qData.scenario) {
+                    questionHeaderText = `Scenario: ${qData.scenario}\nQuestion: ${qData.questionText}`;
+                }
+
+                if (isTyped) {
+                    userAnswerText = userAnswer || 'No answer';
+                    correctAnswerText = qData.correctAnswer;
+                } else {
+                    if (Array.isArray(qData.correctAnswer)) { // SATA
+                        userAnswerText = userAnswer ? userAnswer.map(key => `${key}: ${qData.options[key]}`).join('<br>') : 'No answer selected.';
+                        correctAnswerText = qData.correctAnswer.map(key => `${key}: ${qData.options[key]}`).join('<br>');
+                    } else { // MC
+                        userAnswerText = userAnswer ? `${userAnswer}: ${qData.options[userAnswer]}` : 'No answer selected.';
+                        correctAnswerText = `${qData.correctAnswer}: ${qData.options[qData.correctAnswer]}`;
+                    }
+                }
+                
+                printHTML += `
+                    <div class="study-guide-item">
+                        <h3>Question: ${questionHeaderText.replace(/\n/g, '<br>')}</h3>
+                        <p><strong>Your Answer:</strong><br>${userAnswerText}</p>
+                        <p><strong>Correct Answer:</strong><br>${correctAnswerText}</p>
+                        <div class="print-rationale">
+                            <strong>Rationale:</strong> ${qData.rationale.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        printableStudyGuide.innerHTML = printHTML;
+    }
+
+
+    startBtn.addEventListener('click', startQuiz);
+    pauseBtn.addEventListener('click', togglePause);
+    printBtn.addEventListener('click', () => {
+        window.print();
+    });
+
+    quizForm.addEventListener('submit', (event) => {
+        event.preventDefault(); 
+        handleNavigation();   
+    });
+
+</script>
+
+</body>
+</html>

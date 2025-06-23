@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antidiabetics Learning Module (ADHD Friendly)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@400;600&display=swap');
+
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --secondary-color: #28a745; /* Green */
+            --accent-color: #ffc107; /* Yellow */
+            --alert-color: #dc3545; /* Red */
+            --info-color: #17a2b8; /* Cyan */
+            --text-color: #333;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --border-color: #dee2e6;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --focus-border: #6c757d; /* Gray for focus boxes */
+            --quiz-bg: #d4edda; /* Light green for quizzes */
+            --reveal-bg: #e9ecef; /* Light gray for revealed content */
+            --drug-card-bg: #f0f0f0; /* Light gray for drug quiz card */
+            --button-mastered: #28a745; /* Green for Yes */
+            --button-missed: #dc3545; /* Red for No */
+            --progress-bar-bg: #e0e0e0;
+            --progress-bar-fill: #4CAF50; /* Green fill */
+            --break-prompt-bg: #ffebee; /* Light red for break prompts */
+            --break-prompt-border: #ef9a9a; /* Medium red for border */
+        }
+
+        /* Crucial adjustments for iframe scrolling */
+        html, body {
+            height: 100%; /* Make sure HTML and Body fill the iframe */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scrollbar */
+            overflow-y: auto; /* Allow vertical scrolling within the iframe */
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+            transition: font-size 0.2s ease, filter 0.5s ease-in-out; /* Smooth text size change and blur */
+        }
+
+        /* Styles for blurring the background content */
+        body.blurred > *:not(#clockOutOverlay) {
+            filter: blur(5px);
+            pointer-events: none; /* Disables interaction with blurred content */
+            user-select: none; /* Prevents text selection on blurred content */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            min-height: calc(100vh - 40px); /* Ensure container is tall enough to trigger scroll */
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative; /* For progress bar positioning */
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+
+        /* Module Progress Bar */
+        #moduleProgressBarContainer {
+            width: 90%;
+            height: 10px;
+            background-color: var(--progress-bar-bg);
+            border-radius: 5px;
+            margin: 15px auto 0;
+            overflow: hidden;
+        }
+
+        #moduleProgressBar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--progress-bar-fill);
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 10px 0;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            margin: 5px 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer; /* Keep pointer cursor as they are clickable via JS */
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        nav ul li a.completed {
+            background-color: #1e7e34; /* Darker green for completed */
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+        }
+
+
+        h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h2 {
+            font-size: 2em;
+        }
+
+        h3 {
+            font-size: 1.5em;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        section:hover {
+            transform: translateY(-3px);
+        }
+
+        .objectives ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .objective-item {
+            margin-bottom: 8px;
+        }
+
+        .info-card {
+            background-color: var(--bg-light);
+            border-left: 5px solid var(--info-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .reveal-button {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            display: block; /* Make button full width */
+            width: fit-content; /* Adjust width to content */
+        }
+
+        .reveal-button:hover {
+            background-color: #ffda6a;
+        }
+
+        .reveal-content {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: var(--reveal-bg);
+            border-left: 3px solid var(--secondary-color);
+            border-radius: 5px;
+        }
+
+        .question-card {
+            background-color: var(--quiz-bg);
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-card p {
+            font-weight: 600;
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .question-card .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .question-card .options input[type="radio"],
+        .question-card .options input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .question-card .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .question-card .feedback.correct {
+            background-color: #d1ecf1; /* light blue */
+            color: #0c5460; /* dark blue */
+            border: 1px solid #bee5eb;
+        }
+
+        .question-card .feedback.incorrect {
+            background-color: #f8d7da; /* light red */
+            color: #721c24; /* dark red */
+            border: 1px solid #f5c6cb;
+        }
+
+        .question-card .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .question-card .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+
+        .prototype-drug-chart {
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        .prototype-drug-chart th, .prototype-drug-chart td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .prototype-drug-chart th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .prototype-drug-chart tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .note, .focus-prompt, .quick-fact {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .note {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+        }
+
+        .focus-prompt {
+            background-color: #d1ecf1; /* light blue */
+            border-left: 5px solid #0c5460; /* dark blue */
+            color: #0c5460;
+        }
+
+        .quick-fact {
+            background-color: #e2f0d9; /* very light green */
+            border-left: 5px solid #6ab04c; /* medium green */
+            color: #4a7d32;
+        }
+
+        .highlight {
+            background-color: #ffe082; /* Light yellow for highlighting key terms */
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .nclex-next-gen {
+            background-color: #e6f7ff;
+            border: 2px solid #a6d9f5;
+            padding: 25px;
+            margin: 40px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .nclex-next-gen h3 {
+            color: #2196f3;
+            border-bottom: 1px dashed #a6d9f5;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .nclex-next-gen .case-study {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .nclex-next-gen .fill-in-the-blank {
+            margin-top: 20px;
+        }
+
+        .nclex-next-gen .fill-in-the-blank input[type="text"] {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            width: calc(100% - 20px);
+            margin-top: 10px;
+        }
+
+        .nclex-next-gen .fill-in-the-blank button {
+            margin-top: 15px;
+        }
+
+        .nclex-next-gen .rationale {
+            background-color: #e0f2f7;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .nclex-next-gen .rationale p {
+            margin: 0;
+            font-size: 0.95em;
+        }
+
+        .figure-placeholder {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #eef;
+            border: 1px dashed #bbb;
+            border-radius: 5px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .recap {
+            background-color: #f0f8ff; /* Lighter blue */
+            border-left: 5px solid #add8e6; /* Light steel blue */
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .recap h4 {
+            color: #36a2eb;
+            border-bottom: 1px solid #add8e6;
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* Tooltip styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dotted var(--primary-color); /* Underline for tooltips */
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the text */
+            left: 50%;
+            margin-left: -125px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85em;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* At the bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Drug Mastery Quiz Specific Styles */
+        #drug-mastery-quiz .quiz-card {
+            background-color: var(--drug-card-bg);
+            border: 1px solid var(--primary-color);
+            padding: 25px;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            display: none; /* Hidden until quiz starts */
+            text-align: center;
+        }
+
+        #drug-mastery-quiz .quiz-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.8em;
+            border-bottom: none; /* Override default h4 border */
+        }
+
+        #drug-mastery-quiz .quiz-card p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        #drug-mastery-quiz .quiz-controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz .quiz-controls button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        #drug-mastery-quiz .quiz-controls button:active {
+            transform: translateY(1px);
+        }
+
+        #drug-mastery-quiz #startQuizBtn {
+            background-color: var(--secondary-color);
+            color: white;
+            display: block;
+            margin: 20px auto;
+            width: fit-content;
+            padding: 15px 30px;
+            font-size: 1.4em;
+        }
+        #drug-mastery-quiz #startQuizBtn:hover {
+            background-color: #218838;
+        }
+
+        #drug-mastery-quiz #showAnswerBtn {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+        #drug-mastery-quiz #showAnswerBtn:hover {
+            background-color: #e0a800;
+        }
+
+        #drug-mastery-quiz #answerFeedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--reveal-bg);
+            border: 1px dashed var(--info-color);
+            text-align: left;
+            display: none;
+        }
+
+        #drug-mastery-quiz #answerFeedback h5 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        #drug-mastery-quiz #masteryButtons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz #masteryButtons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn {
+            background-color: var(--button-mastered);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn:hover {
+            background-color: #218838;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn {
+            background-color: var(--button-missed);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn:hover {
+            background-color: #c82333;
+        }
+
+        /* Removed #nextCardBtn from quiz styles as it's now automatic */
+
+        #drug-mastery-quiz #quizSummary {
+            display: none;
+            padding: 25px;
+            background-color: #e6ffe6; /* Light green for success */
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            text-align: center;
+        }
+        #drug-mastery-quiz #quizSummary h4 {
+            color: var(--secondary-color);
+            font-size: 2em;
+            margin-bottom: 15px;
+            border-bottom: none;
+        }
+        #drug-mastery-quiz #quizSummary p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        #drug-mastery-quiz #quizSummary button {
+            margin: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn:hover {
+            background-color: #0056b3;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn {
+            background-color: var(--alert-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn:hover {
+            background-color: #c82333;
+        }
+
+        #drug-mastery-quiz .progress-tracker {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* ADHD-specific additions */
+        .quick-note-area {
+            background-color: #f7f7f7;
+            border: 1px dashed #ccc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .quick-note-area h3 {
+            color: #666;
+            border-bottom: 1px solid #ddd;
+            margin-top: 0;
+        }
+
+        .quick-note-area textarea {
+            width: calc(100% - 10px);
+            min-height: 100px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            resize: vertical; /* Allow vertical resizing */
+        }
+
+        .text-size-controls {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .text-size-controls button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .micro-break-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--break-prompt-bg);
+            border: 2px solid var(--break-prompt-border);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-weight: bold;
+            color: var(--alert-color);
+            display: none; /* Hidden by default */
+            animation: fadeInOut 8s forwards; /* Animation */
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        }
+
+        /* Clock Out Overlay Styles (Revised for improved centering and appearance) */
+        #clockOutOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000; /* Make sure it's on top of everything */
+            /* Start hidden and transition in */
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s ease-out; /* Delay visibility transition for smooth fade out */
+        }
+
+        #clockOutOverlay.active {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 0.5s ease-in; /* No delay for fade in */
+        }
+
+        #clockOutContent {
+            background-color: var(--bg-white);
+            color: var(--text-color);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 400px;
+            width: 90%; /* Responsive width */
+            /* Add some initial transform to make it "pop" when appearing */
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+
+        #clockOutOverlay.active #clockOutContent {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        #clockOutContent h2 {
+            color: var(--primary-color);
+            font-family: 'Roboto', sans-serif; /* Ensure Roboto font */
+            font-size: 2.8em; /* Slightly larger for impact */
+            margin-top: 0;
+            border-bottom: none; /* Override default h2 border */
+        }
+
+        #brainEmoji {
+            font-size: 6em; /* Make the emoji very large */
+            margin: 20px 0;
+            display: block; /* Ensure it takes full width for margin auto */
+            animation: floatUpDown 2s infinite alternate ease-in-out; /* Gentle animation */
+        }
+
+        @keyframes floatUpDown {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); } /* Increased float */
+        }
+
+        #countdownTimer {
+            font-family: 'Roboto', monospace; /* Monospace for consistent digit width */
+            font-size: 4.5em; /* Slightly larger timer */
+            font-weight: 700;
+            color: var(--alert-color); /* Red for urgency */
+            margin: 20px 0;
+        }
+
+        /* Mobile Responsiveness for Clock Out */
+        @media (max-width: 500px) {
+            #clockOutContent {
+                padding: 25px; /* Smaller padding on small screens */
+            }
+            #clockOutContent h2 {
+                font-size: 2em;
+            }
+            #brainEmoji {
+                font-size: 4em;
+            }
+            #countdownTimer {
+                font-size: 3.5em;
+            }
+        }
+
+
+        /* Mobile Responsiveness for overall layout */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li {
+                margin: 5px 0;
+            }
+
+            .prototype-drug-chart, .responsive-table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .prototype-drug-chart thead, .responsive-table thead {
+                display: none;
+            }
+
+            .prototype-drug-chart tbody tr, .responsive-table tbody tr {
+                display: block;
+                margin-bottom: 10px;
+                border: 1px solid var(--border-color);
+                border-radius: 5px;
+            }
+
+            .prototype-drug-chart tbody td, .responsive-table tbody td {
+                display: block;
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            .prototype-drug-chart tbody td::before, .responsive-table tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+
+            .micro-break-prompt {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Module 50: Antidiabetics</h1>
+            <p>Mastering Pharmacology for Nursing Care - ADHD Friendly!</p>
+            <div id="moduleProgressBarContainer">
+                <div id="moduleProgressBar"></div>
+            </div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a id="nav-objectives">Objectives</a></li>
+                <li><a id="nav-introduction">Intro</a></li>
+                <li><a id="nav-diabetes-mellitus">Diabetes Mellitus</a></li>
+                <li><a id="nav-insulin">Insulin</a></li>
+                <li><a id="nav-nursing-process-insulin">NP: Insulin</a></li>
+                <li><a id="nav-oral-antidiabetic">Oral Antidiabetics</a></li>
+                <li><a id="nav-nursing-process-oral-antidiabetics">NP: Oral Antidiabetics</a></li>
+                <li><a id="nav-other-antidiabetic-agents">Other Antidiabetics</a></li>
+                <li><a id="nav-hyperglycemic-drugs">Hyperglycemic Drugs</a></li>
+                <li><a id="nav-critical-thinking">Case Study</a></li>
+                <li><a id="nav-review-questions">Review Qs</a></li>
+                <li><a id="nav-drug-mastery-quiz">Drug Challenge!</a></li>
+            </ul>
+        </nav>
+
+        <div class="text-size-controls">
+            <button id="increaseText">A+</button>
+            <button id="decreaseText">A-</button>
+        </div>
+
+        <div class="micro-break-prompt" id="microBreakPrompt">
+            Quick Break! Stand up and stretch, or take a few deep breaths!
+        </div>
+
+        <section id="objectives" class="objectives">
+            <h2>Your Learning Adventure Starts Here!</h2>
+            <p>By the end of this module, you'll be able to:</p>
+            <ul>
+                <li class="objective-item"><strong>Compare type 1 and type 2 diabetes mellitus.</strong></li>
+                <li class="objective-item"><strong>Describe the symptoms of diabetes mellitus.</strong></li>
+                <li class="objective-item"><strong>Differentiate symptoms of hypoglycemic reaction and hyperglycemia.</strong></li>
+                <li class="objective-item"><strong>Compare onset, peak, and duration of rapid-acting, short-acting, intermediate-acting, and long-acting insulins.</strong></li>
+                <li class="objective-item"><strong>Compare the action of oral antidiabetic drugs and their side effects.</strong></li>
+                <li class="objective-item"><strong>Differentiate between the actions of insulin, oral antidiabetic agents, and glucagon.</strong></li>
+                <li class="objective-item"><strong>Apply the Clinical Judgment [Nursing Process]</strong> to the patient taking insulin and oral antidiabetic agents.</li>
+            </ul>
+            <p class="note"><strong>Bonus!</strong> For extra info and cool tools, check out <a href="http://evolve.elsevier.com/McCuistion/pharmacology" target="_blank">evolve.elsevier.com/McCuistion/pharmacology</a></p>
+        </section>
+
+        <div class="quick-note-area">
+            <h3>Quick Notes / Brain Dump Space</h3>
+            <textarea id="quickNotesTextarea" placeholder="Jot down thoughts, questions, or key takeaways here... (Note: These will try to save to your browser's local storage, but backup important info!)"></textarea>
+        </div>
+
+        <section id="introduction">
+            <h2>1. Introduction: The Pancreas - Your Glucose Boss!</h2>
+            <div class="info-card">
+                <p>The pancreas is a fascinating organ, tucked behind your stomach, doing double duty as both an exocrine and endocrine gland.</p>
+                <ul>
+                    <li><strong>Exocrine Pancreas:</strong> Secretes digestive enzymes into your small intestine.</li>
+                    <li><strong>Endocrine Pancreas:</strong> Contains special cell clusters called **islets of Langerhans**.
+                        <ul>
+                            <li>**Alpha cells:** Produce <span class="highlight">glucagon</span>, which breaks down glycogen into glucose in the liver, *raising* blood glucose.</li>
+                            <li>**Beta cells:** Secrete <span class="highlight">insulin</span>, which regulates glucose metabolism, *lowering* blood glucose.</li>
+                        </ul>
+                    </li>
+                </ul>
+                <button class="reveal-button">Why are Antidiabetic Drugs Essential?</button>
+                <div class="reveal-content">
+                    <p>This chapter focuses on <span class="highlight">antidiabetic drugs</span>, primarily used to control **diabetes mellitus**, a chronic disease affecting carbohydrate metabolism.</p>
+                    <p>The two main groups of antidiabetic agents are:</p>
+                    <ul>
+                        <li><span class="highlight">Insulin:</span> A protein from beta cells, vital for carbohydrate, protein, and fat metabolism.</li>
+                        <li><span class="highlight">Oral Antidiabetic (Hypoglycemic) Drugs:</span> Synthetic preparations that either stimulate insulin release or alter the body's metabolic response to high blood glucose. (We use "antidiabetic" to avoid confusion with "hypoglycemic reaction"!).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Pancreas & Glucose Basics</h4>
+                <ul>
+                    <li>Pancreas: Exocrine (digestive enzymes) & Endocrine (islets of Langerhans).</li>
+                    <li>Alpha cells: Glucagon (raises glucose). Beta cells: Insulin (lowers glucose).</li>
+                    <li>Antidiabetic drugs control diabetes mellitus.</li>
+                    <li>Two main types: Insulin & Oral Antidiabetic Drugs.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="diabetes-mellitus">
+            <h2>2. Diabetes Mellitus: When Glucose Goes Wild!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Diabetes Mellitus (DM)<span class="tooltip-text">A chronic metabolic disease caused by insufficient insulin secretion or insulin resistance, leading to high blood glucose (hyperglycemia). Characterized by polyuria, polydipsia, and polyphagia.</span></span> is a chronic disease caused by problems with glucose metabolism, primarily due to insufficient insulin secretion from the beta cells. This results in **high blood glucose (hyperglycemia)**.</p>
+                <p>The classic symptoms of diabetes mellitus are often called the "Three P's":</p>
+                <ul>
+                    <li><span class="highlight">Polyuria:</span> Increased urine output.</li>
+                    <li><span class="highlight">Polydipsia:</span> Increased thirst.</li>
+                    <li><span class="highlight">Polyphagia:</span> Increased hunger.</li>
+                </ul>
+                <div class="note">
+                    <h4>Don't Confuse!</h4>
+                    <p>Diabetes Mellitus is a **pancreas disorder**. <span class="highlight">Diabetes Insipidus</span> (Chapter 46) is a **posterior pituitary gland disorder** that affects water balance.</p>
+                </div>
+                <button class="reveal-button">Types of Diabetes & Key Info</button>
+                <div class="reveal-content">
+                    <h4>Types of Diabetes (Table 50.1 Preview):</h4>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Types of Diabetes Mellitus</th>
+                                <th>Percentage of Occurrences</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Type">Type 1</td>
+                                <td data-label="Percentage">10%–12%</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Type">Type 2</td>
+                                <td data-label="Percentage">85%–90%</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Type">Secondary Diabetes (medications, hormonal changes)</td>
+                                <td data-label="Percentage">2%–3%</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Type">Gestational Diabetes Mellitus (GDM)</td>
+                                <td data-label="Percentage">1% (2%–5% of all pregnancies)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Type 1 Diabetes Mellitus:</h4>
+                    <ul>
+                        <li>Causes: Viral infections, environmental conditions, genetic factors.</li>
+                        <li>Requires insulin replacement therapy.</li>
+                    </ul>
+                    <h4>Type 2 Diabetes Mellitus (Most Common!):</h4>
+                    <ul>
+                        <li>Major factors: <span class="highlight">Heredity and obesity</span>.</li>
+                        <li>Characteristic: Some beta-cell function with varying amounts of insulin secretion.</li>
+                        <li>Management: May be controlled with **oral antidiabetic drugs** and an **ADA-prescribed diet**. However, about one-third of patients eventually need insulin.</li>
+                    </ul>
+                    <h4>Secondary Diabetes Mellitus:</h4>
+                    <ul>
+                        <li>Certain drugs can increase blood glucose and cause hyperglycemia in prediabetic persons.</li>
+                        <li>Examples: <span class="highlight">Glucocorticoids (cortisone, prednisone)</span>, <span class="highlight">thiazide diuretics (hydrochlorothiazide)</span>, and <span class="highlight">epinephrine</span>.</li>
+                        <li>Usually reversible: Blood glucose typically returns to normal after the drug is discontinued.</li>
+                    </ul>
+                    <h4>Gestational Diabetes Mellitus (GDM):</h4>
+                    <ul>
+                        <li>Occurs during the second and third trimesters of pregnancy.</li>
+                        <li>Cause: Increased levels of hormones (progesterone, cortisol, human placental lactogen [hPL]) inhibit insulin usage.</li>
+                        <li>Post-pregnancy: Blood glucose may decrease, but some patients may develop full diabetes or type 2 diabetes later in life.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Diabetes Mellitus Types</h4>
+                <ul>
+                    <li>DM = deficient glucose metabolism -> hyperglycemia.</li>
+                    <li>Three P's: Polyuria, Polydipsia, Polyphagia.</li>
+                    <li>Type 1: Autoimmune, viral, genetic (requires insulin).</li>
+                    <li>Type 2: Heredity, obesity (some insulin function, managed with diet/oral drugs, may need insulin later).</li>
+                    <li>Secondary: Drug-induced (e.g., glucocorticoids, thiazides).</li>
+                    <li>Gestational: Pregnancy hormones inhibit insulin.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="insulin">
+            <h2>3. Insulin: The Key to Glucose Entry!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Insulin<span class="tooltip-text">A hormone secreted by the beta cells of the pancreas that promotes the uptake of glucose, amino acids, and fatty acids into body cells, lowering blood glucose levels.</span></span> is released from the pancreas's beta cells when blood glucose rises. It's like a key that unlocks your body's cells to let glucose, amino acids, and fatty acids in, storing them for energy and **lowering blood glucose**.</p>
+                <ul>
+                    <li>Normal fasting blood glucose: 70 to 99 mg/dL.</li>
+                    <li>Glycosuria (glucose in urine): Occurs when blood glucose > 180 mg/dL (acting as an osmotic diuretic, causing polyuria).</li>
+                    <li>Diabetes Mellitus Diagnosis: Blood glucose > 200 mg/dL.</li>
+                </ul>
+                <h3>Hemoglobin A1c (HbA1c): Your 3-Month Glucose Snapshot!</h3>
+                <button class="reveal-button">Understanding HbA1c</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>HbA1c reflects your **average blood glucose level over the past 3 months** (because RBCs live about 120 days).</li>
+                        <li>**Diagnostic levels (ADA recommendations):**
+                            <ul>
+                                <li>5% or less: No diabetes.</li>
+                                <li>5.7% to 6.4%: Prediabetes.</li>
+                                <li>6.5% or greater: Diabetes Mellitus diagnosis.</li>
+                            </ul>
+                        </li>
+                        <li>**Treatment Goal:** Keep diabetic patient's HbA1c **below 7%**.</li>
+                    </ul>
+                </div>
+                <h3>Insulin Secretion & Needs</h3>
+                <button class="reveal-button">How much insulin is needed?</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Pancreatic beta cells typically secrete 0.2 to 0.5 units/kg/day of insulin.</li>
+                        <li>Diabetic patients may require 0.2 to 1 unit/kg/day, with higher needs due to obesity, stress, or insulin resistance.</li>
+                        <li>**Important:** Illness and stress **increase the need for insulin**. **Do NOT withhold doses during illness** (infections, high fever) as this can lead to hyperglycemia and ketoacidosis.</li>
+                    </ul>
+                </div>
+                <h3>Commercially Prepared Insulin: Evolution and Administration</h3>
+                <button class="reveal-button">From Animal to Human, and How to Administer</button>
+                <div class="reveal-content">
+                    <h4>Evolution of Insulin:</h4>
+                    <ul>
+                        <li>Early insulins came from animal pancreases (pigs, cattle).</li>
+                        <li>Today: Biosynthetically manufactured using **recombinant DNA technology** (human insulin duplicates natural human insulin, e.g., Humulin R, Novolin N).</li>
+                        <li>Human insulin has a **low incidence of allergic effects and insulin resistance**.</li>
+                        <li>**Human insulin analogues:** Modified human insulin with altered onset and duration (e.g., insulin lispro, insulin aspart).</li>
+                    </ul>
+                    <h4>Administration of Insulin:</h4>
+                    <ul>
+                        <li>**Route:** Primarily administered **subcutaneously** (subcut) at a 45- to 90-degree angle (90 for more fat, 45-60 for thinner patients).</li>
+                        <li>**Only Regular insulin can be given intravenously (IV).**</li>
+                        <li>**Absorption:** Fastest in the **abdomen**, then thigh, then buttocks. Heat/massage increase absorption; cooling decreases it.</li>
+                        <li>**Injection Sites:** Rotate sites to prevent <span class="highlight">lipodystrophy</span> (tissue atrophy or hypertrophy), which interferes with absorption. Lipoatrophy is a depression (women/children); lipohypertrophy is a raised lump (men, from repeated injections in same site).
+                            <ul>
+                                <li>ADA Suggestion: Inject daily at a chosen site for 1 week, with injections 1.5 inches (knuckle length) apart. For twice-daily injections, use the right side in the morning, left side in the evening. (Fig. 50.1 shows sites.) Keep a record!</li>
+                            </ul>
+                        </li>
+                        <li>**Concentration:** Typically 100 units/mL (U100/mL). U500/mL is available for short-acting regular insulin, used rarely for severe insulin resistance.</li>
+                        <li>**Syringes:** **Always use insulin syringes** for accurate dosing, matching concentration with calibration.</li>
+                        <li>**Mixing:** Cloudy insulin bottles should be **rolled, not shaken**, to mix and prevent bubbles (inaccurate dose).</li>
+                    </ul>
+                </div>
+                <h3>Types of Insulin: Onset, Peak, Duration!</h3>
+                <p>This is CRITICAL for nursing! The <span class="highlight">peak action time</span> is especially important due to the risk of **hypoglycemic reaction (insulin shock)**.</p>
+                <table class="prototype-drug-chart responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Drug</th>
+                            <th>Onset</th>
+                            <th>Peak</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Action" rowspan="4">Rapid-Acting</td>
+                            <td data-label="Drug">Insulin Lispro</td>
+                            <td data-label="Onset">15–30 min</td>
+                            <td data-label="Peak">30–90 min</td>
+                            <td data-label="Duration">3–5 h</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Drug">Insulin Aspart</td>
+                            <td data-label="Onset">10–20 min</td>
+                            <td data-label="Peak">40–50 min</td>
+                            <td data-label="Duration">3–5 h</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Drug">Insulin Glulisine</td>
+                            <td data-label="Onset">20–30 min</td>
+                            <td data-label="Peak">55 min</td>
+                            <td data-label="Duration">1.5 h</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Drug">Oral Inhalation Insulin</td>
+                            <td data-label="Onset">12–15 min</td>
+                            <td data-label="Peak">53 min</td>
+                            <td data-label="Duration">2.5 h</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Action" rowspan="2">Short-Acting</td>
+                            <td data-label="Drug">Insulin Regular (Subcut)</td>
+                            <td data-label="Onset">30 min</td>
+                            <td data-label="Peak">1.5–3.5 h</td>
+                            <td data-label="Duration">4–12 h</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Drug">Insulin Regular (IV)</td>
+                            <td data-label="Onset">15 min</td>
+                            <td data-label="Peak">15–30 min</td>
+                            <td data-label="Duration">2–6 h</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Action">Intermediate-Acting</td>
+                            <td data-label="Drug">Insulin Isophane NPH</td>
+                            <td data-label="Onset">1.5 h</td>
+                            <td data-label="Peak">4–12 h</td>
+                            <td data-label="Duration">14–24 h</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Action" rowspan="3">Long-Acting</td>
+                            <td data-label="Drug">Insulin Glargine</td>
+                            <td data-label="Onset">1–1.5 h</td>
+                            <td data-label="Peak">None</td>
+                            <td data-label="Duration">24 h</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Drug">Insulin Detemir</td>
+                            <td data-label="Onset">1–2 h</td>
+                            <td data-label="Peak">6–8 h</td>
+                            <td data-label="Duration">24 h</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Drug">Insulin Degludec</td>
+                            <td data-label="Onset">1 h</td>
+                            <td data-label="Peak">12 h</td>
+                            <td data-label="Duration">42 h</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="reveal-button">More on Insulin Types and Usage</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>**Rapid-acting insulins:** (lispro, aspart, glulisine, human oral inhalation) Act faster than regular insulin. **Must be administered within 10-15 minutes before mealtime** (food *must* be present!). Often used with intermediate-acting insulin for basal needs.</li>
+                        <li>**Short-acting insulin:** (Regular) Can be given IV or subcut. Generally given 30-60 minutes before meals.</li>
+                        <li>**Intermediate-acting insulin:** (NPH) Contains protamine to prolong action.</li>
+                        <li>**Long-acting insulin:** (glargine, detemir, degludec) Provide even distribution over 24-42 hours. Administered once a day, usually at bedtime. Less nocturnal hypoglycemia with glargine due to continuous release. Glargine, detemir, and degludec are human insulin analogues.</li>
+                        <li>**Combination insulins:** Premixed (e.g., NPH 70/regular 30). Convenient, but some patients need custom ratios.</li>
+                        <li>**Mixing insulins:** Regular insulin can be mixed with NPH in the same syringe. Drawing up regular insulin **before** NPH. Mixing can alter absorption.</li>
+                    </ul>
+                    <h3>Insulin Resistance:</h3>
+                    <ul>
+                        <li>Can develop over time from antibodies (animal insulin), obesity, or genetic factors.</li>
+                        <li>Human and regular insulins produce fewer allergens.</li>
+                    </ul>
+                    <h3>Storage of Insulin:</h3>
+                    <ul>
+                        <li>**Unopened vials:** Refrigerate until needed.</li>
+                        <li>**Opened vials:** Room temperature for 1 month OR refrigerator for 3 months. (Room temp is less irritating upon injection.)</li>
+                        <li>**Do NOT freeze**, expose to direct sunlight, or high temperatures.</li>
+                        <li>**Prefilled syringes:** Store in refrigerator, use within 1-2 weeks.</li>
+                        <li>Opened vials lose strength after ~3 months.</li>
+                    </ul>
+                </div>
+                <div class="quick-fact">
+                    <h4>Insulin Delivery Devices!</h4>
+                    <p><strong>Insulin Pen Injectors:</strong> Resemble fountain pens, disposable needle/cartridge. More accurate than traditional syringe. Convenient, portable. Less injection pain.</p>
+                    <p><strong>Insulin Pumps:</strong> Computerized devices delivering continuous rapid-acting insulin. Can be implantable (intraperitoneal) or external (subcut). Provide tight glycemic control, reduce hypoglycemia risk. Patient programs basal and meal boluses. Only rapid-acting insulin used. Success depends on patient knowledge/compliance. Improves long-term diabetic complications and HbA1c.</p>
+                    <p><strong>Insulin Jet Injectors:</strong> Deliver insulin without a needle (high pressure). Can cause stinging, pain, bruising. Not for children/older adults. Expensive.</p>
+                </div>
+                <table class="prototype-drug-chart responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Drug Class</th>
+                            <th>Dosage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Drug Class">Antidiabetic: Insulin</td>
+                            <td data-label="Dosage">Must be individualized and varies according to patient’s blood glucose and health status.</td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                        </tr>
+                        <tr>
+                            <td data-label="Contraindications" colspan="2">
+                                Hypersensitivity, hypoglycemia, rosiglitazone use.<br>
+                                <strong>Caution:</strong> Hypokalemia, fever, surgery or trauma, vomiting, infection, diarrhea, ketoacidosis, renal or hepatic impairment, breastfeeding, and older adults.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                <strong>Increased hypoglycemic effect with:</strong> Aspirin, oral anticoagulants, alcohol, oral hypoglycemics, beta blockers, ACE inhibitors, ARBs, TCAs, MAOIs, and tetracycline.<br>
+                                <strong>Decreased hypoglycemic effect with:</strong> Thiazides, glucocorticoids, oral contraceptives, thyroid drugs, furosemide, bumetanide, phenytoin, fluoroquinolones, smoking, and green tea.
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>How it Moves (Pharmacokinetics)</th>
+                            <th>How it Works (Pharmacodynamics)</th>
+                        </tr>
+                        <tr>
+                            <td data-label="Pharmacokinetics">
+                                <strong>Absorption:</strong> Lispro and regular, rapidly absorbed from subcut injection site; NPH is absorbed at a slower rate; glargine is absorbed at a slow, evenly distributed rate.<br>
+                                <strong>Distribution:</strong> PB: UK. (Protein Binding: Unknown/Variable - commonly not highly protein bound for insulins)<br>
+                                <strong>Metabolism:</strong> t½: Varies with type of insulin. Metabolized by liver and muscle.<br>
+                                <strong>Excretion:</strong> Mostly in urine.
+                            </td>
+                            <td data-label="Pharmacodynamics">
+                                <strong>Therapeutic Effects/Uses:</strong> To control type 1 diabetes mellitus, to lower blood glucose. Promotes use of glucose by body cells.<br>
+                                <strong>Mechanism of Action:</strong> Promotes use of glucose by body cells. Active in storage of glucose as glycogen in muscles.<br>
+                                <strong>Onset, Peak, Duration (refer to table above).</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Side Effects</th>
+                            <th>Adverse Reactions</th>
+                        </tr>
+                        <tr>
+                            <td data-label="Side Effects">Headache, diarrhea, abdominal pain, infection, influenza, sinusitis, nasopharyngitis, weight gain, back pain, injection site reaction, lipodystrophy, peripheral neuropathy/edema.</td>
+                            <td data-label="Adverse Reactions">Tachycardia, hypoglycemia, Somogyi effect, hypokalemia.<br>
+                                <strong>Life-threatening:</strong> Insulin shock, anaphylaxis, angioedema, bronchospasm.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="recap">
+                <h4>Recap: Insulin Essentials</h4>
+                <ul>
+                    <li>Lowers blood glucose by promoting cell glucose uptake.</li>
+                    <li>HbA1c: 3-month average, goal <7%.</li>
+                    <li>Administer subcut (abdomen fastest), rotate sites (prevent lipodystrophy).</li>
+                    <li>**Types: Rapid (eat immediately), Short (30-60 min before), Intermediate, Long (basal).** Know onset, peak, duration.</li>
+                    <li>**Peak time = highest risk of hypoglycemia!**</li>
+                    <li>Store unopened vials in fridge; opened at room temp/fridge for 1-3 months.</li>
+                    <li>Illness/stress increase insulin need.</li>
+                    <li>Many drug interactions.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nursing-process-insulin">
+            <h2>4. Clinical Judgment: Nursing Process - Antidiabetics: Insulin</h2>
+            <div class="info-card">
+                <p>Let's apply our nursing judgment to **Insulin** therapy! Our core concept is: <span class="highlight">Glucose Regulation</span> (maintaining normal glucose levels).</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>Current Medications:</strong> Identify all drugs a patient takes. Note drugs that *increase* hypoglycemic effect (aspirin, alcohol, beta blockers, TCAs, MAOIs) and those that *decrease* (thiazides, glucocorticoids, oral contraceptives, thyroid drugs).</li>
+                        <li><strong>Insulin Type & Dosage:</strong> Note if given once or multiple times daily.</li>
+                        <li><strong>BP, HR, Blood Glucose:</strong> Monitor baseline and changes. Tachycardia/palpitations with hypoglycemia; hypotension with hyperglycemia.</li>
+                        <li><strong>Patient Knowledge:</strong> Determine understanding of DM and insulin use.</li>
+                        <li><strong>Symptoms:</strong> Check for signs of hypoglycemic reaction (insulin shock), hyperglycemia, or ketoacidosis.</li>
+                    </ul>
+
+                    <h3>Analyze Cues & Prioritize Hypothesis [Patient Problems]: What's the biggest issue?</h3>
+                    <ul>
+                        <li>Hypoglycemia.</li>
+                        <li>Metabolic acidosis (from ketoacidosis).</li>
+                        <li>Hyperglycemia.</li>
+                        <li>Reduced glucose regulation.</li>
+                        <li>Hyponatremia.</li>
+                        <li>Fatigue.</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li>The patient will maintain fasting blood glucose levels within normal values (80 to 130 mg/dL).</li>
+                        <li>The patient will self-administer insulin correctly.</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Monitor Vital Signs:</strong> Tachycardia can occur during insulin reaction.</li>
+                        <li><strong>Blood Glucose:</strong> Determine blood glucose levels and report changes.</li>
+                        <li><strong>HbA1c:</strong> Monitor patient’s HbA1c to provide feedback of diabetic control.</li>
+                        <li><strong>Teaching Plan:</strong> Prepare a teaching plan based on the patient’s knowledge of the health problem, diet, and drug therapy.</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General Advice:</h4>
+                    <ul>
+                        <li><strong>Hypoglycemic/Hyperglycemic Symptoms:</strong> Teach patients to recognize and immediately report symptoms of hypoglycemic (insulin) reaction (headache, nervousness, sweating, tremors, rapid pulse) and hyperglycemic reaction (thirst, increased urine output, sweet/fruity breath odor).</li>
+                        <li>**Hypoglycemia Peak:** Advise patients that hypoglycemic reactions are more likely to occur during **peak action time** of insulin.</li>
+                        <li>**Treating Hypoglycemia:** Explain that orange juice, sugar-containing drinks, or hard candy may be used when a hypoglycemic reaction begins.</li>
+                        <li>**Glucagon:** Teach family members to administer glucagon by injection if a patient has a hypoglycemic reaction and cannot ingest sugar-containing fluid.</li>
+                        <li>**Herbal Interactions:** Inform patients that certain herbs may interact with insulin (e.g., chromium, black cohosh, garlic, ginseng, bilberry, rosemary, stinging nettle, milk thistle, hawthorn, ginkgo, St. John's wort) causing hypo- or hyperglycemia.</li>
+                        <li>**Compliance:** Teach patients about the necessity of compliance with prescribed insulin therapy and diet. Emphasize that HbA1c provides the most accurate picture of optimal diabetic control.</li>
+                        <li>**MedicAlert ID:** Advise patients to carry a MedicAlert card, tag, or bracelet.</li>
+                    </ul>
+                    <h4>Self-Administration:</h4>
+                    <ul>
+                        <li><strong>Glucometer Use:</strong> Instruct patients on how to check blood glucose with a glucometer.</li>
+                        <li><strong>Insulin Mixing/Storage:</strong> Teach about care of containers/syringes. If mixing NPH with regular insulin, **regular insulin is drawn up before NPH insulin**.</li>
+                    </ul>
+                    <h4>Diet:</h4>
+                    <ul>
+                        <li>Advise patients taking insulin to eat the prescribed diet on a **consistent schedule**. Delaying or missing a meal can cause hypoglycemia.</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li>Evaluate the effectiveness of insulin therapy by noting whether the blood glucose level is within the accepted range.</li>
+                        <li>Establish the patient’s ability to perform self-care.</li>
+                        <li>Determine the patient’s knowledge of the signs and symptoms of hypoglycemic or hyperglycemic reaction.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: NP - Insulin</h4>
+                <ul>
+                    <li>**Assess:** Current meds, insulin type/dose, VS, blood glucose, patient knowledge, hypo/hyperglycemic signs.</li>
+                    <li>**Problems:** Hypo/hyperglycemia, glucose dysregulation.</li>
+                    <li>**Goals:** Normal blood glucose (80-130 mg/dL), correct self-administration.</li>
+                    <li>**Intervene:** Monitor VS/blood glucose/HbA1c. Prepare teaching plan.</li>
+                    <li>**Teach:** Recognize hypo/hyperglycemic symptoms, treat hypoglycemia (OJ, glucagon), herbal warnings, compliance, MedicAlert, glucometer use, insulin care (draw regular before NPH), consistent diet.</li>
+                    <li>**Evaluate:** Glucose within range, self-care ability, knowledge of symptoms.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="oral-antidiabetic">
+            <h2>5. Oral Antidiabetic (Hypoglycemic) Drugs: Not Just for Insulin!</h2>
+            <div class="info-card">
+                <p>Oral antidiabetic drugs are primarily for **Type 2 Diabetes Mellitus** patients who still have some insulin secretion from their pancreas. They are generally **NOT used for Type 1 Diabetes** (except pramlintide).</p>
+                <button class="reveal-button">Key Criteria & Drug Classes</button>
+                <div class="reveal-content">
+                    <h4>Criteria for Oral Antidiabetic Drug Use (Type 2 DM):</h4>
+                    <ul>
+                        <li>Onset of DM at 40 years of age or older.</li>
+                        <li>Diagnosis of diabetes within the past 5 years.</li>
+                        <li>Normal weight or overweight.</li>
+                        <li>Fasting blood glucose of 200 mg/dL or less.</li>
+                        <li>Fewer than 40 units of insulin required per day.</li>
+                        <li>Normal renal and hepatic function.</li>
+                    </ul>
+                    <h3>Sulfonylureas: Insulin Secretion Stimulators!</h3>
+                    <ul>
+                        <li>Chemically related to sulfonamides (but no antibacterial action).</li>
+                        <li>Mechanism: Stimulate pancreatic beta cells to secrete more insulin. Also increase insulin cell receptors for better binding.</li>
+                        <li>Classified as first- and second-generation drugs.</li>
+                        <li>**Second-generation sulfonylureas** (e.g., <span class="highlight">glipizide</span>, glimepiride):
+                            <ul>
+                                <li>Increase tissue response to insulin, decrease glucose production by liver.</li>
+                                <li>Greater hypoglycemic potency, lower doses, longer duration, fewer side effects than first-gen.</li>
+                                <li>Less protein-binding displacement by other highly protein-bound drugs (like salicylates, warfarin).</li>
+                                <li>**Caution:** Should not be used with liver or kidney dysfunction. Hypoglycemic reaction more likely in older adults.</li>
+                                <li>**Glimepiride:** Improves postprandial glucose, can combine with insulin in Type 2 DM. Side effects: blurred vision, diarrhea, weight gain, hyponatremia.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug Class</th>
+                                <th>Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug Class">Sulfonylurea, Second Generation</td>
+                                <td data-label="Dosage">
+                                    Regular release: A: PO: Initially 2.5–5 mg/d 30 min before breakfast; maint: 10–15 mg/d; max: 40 mg/d<br>
+                                    Extended release: A: PO: Initially 2.5–5 mg/d with breakfast; maint: 5–10 mg/d; max: 20 mg/d
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Contraindications" colspan="2">
+                                    Diabetic ketoacidosis, glipizide and sulfonamide hypersensitivity.<br>
+                                    <strong>Caution:</strong> Hepatic or renal impairment, older adults, malnutrition, adrenal or pituitary insufficiency, type 1 diabetes, trauma, infection, fever, surgery, G6PD deficiency, diarrhea, GI obstruction, vomiting, thyroid disease, breastfeeding.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                    <strong>Potentiate hypoglycemia:</strong> Alcohol (may produce disulfiram-like reaction), Beta blockers, aspirin, systemic azole antifungals, clarithromycin, oral anticoagulants, MAOIs, atypical antipsychotics, salicylates, probenecid, sulfonamides, antacids, cimetidine, clofibrate, phenylbutazone.<br>
+                                    <strong>Enhance hyperglycemia:</strong> Oral contraceptives, thiazide diuretics, glucocorticoids, phenothiazines, anticonvulsants.<br>
+                                    <strong>Lab:</strong> Altered liver function tests.<br>
+                                    <strong>Food:</strong> Green tea may potentiate hypoglycemia.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>How it Moves (Pharmacokinetics)</th>
+                                <th>How it Works (Pharmacodynamics)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Pharmacokinetics">
+                                    <strong>Absorption:</strong> Rapidly absorbed from GI tract.<br>
+                                    <strong>Distribution:</strong> PB: 99%.<br>
+                                    <strong>Metabolism:</strong> t½: 2–5 h. Metabolized by liver.<br>
+                                    <strong>Excretion:</strong> Primarily in urine.
+                                </td>
+                                <td data-label="Pharmacodynamics">
+                                    <strong>Regular release:</strong> PO: Onset: 90 min; Peak: 1–3 h; Duration: 12–24 h.<br>
+                                    <strong>Extended release:</strong> PO: Onset: UK; Peak: 6–12 h; Duration: UK.<br>
+                                    <strong>Therapeutic Effects/Uses:</strong> To control hyperglycemia in type 2 diabetes mellitus.<br>
+                                    <strong>Mechanism of Action:</strong> Directly stimulates beta cells in the pancreas to secrete insulin; indirectly alters sensitivity of peripheral insulin receptors, allowing increased insulin binding.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Side Effects</th>
+                                <th>Adverse Reactions</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Side Effects">Drowsiness, dizziness, headache, confusion, blurred vision, anxiety, hyperhidrosis, insomnia, dyspepsia, flatulence, nausea, vomiting, constipation, diarrhea, tremor, arthralgia, myalgia, weight gain, paresthesia.</td>
+                                <td data-label="Adverse Reactions">Hypoglycemia, hyponatremia, angioedema, porphyria, GI bleeding.<br>
+                                    <strong>Life-threatening:</strong> Agranulocytosis, aplastic anemia, leukopenia, thrombocytopenia, pancytopenia, hepatic failure, SIADH.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="note">
+                        <h4>Table 50.4 Alert!</h4>
+                        <p>Check your textbook's Table 50.4 for a list of sulfonylureas and other antidiabetics, their dosages, uses, and considerations.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Oral Antidiabetics (Sulfonylureas)</h4>
+                <ul>
+                    <li>Primarily for Type 2 DM (with some beta-cell function).</li>
+                    <li>Sulfonylureas: Stimulate beta cells to secrete insulin.</li>
+                    <li>Second-gen (Glipizide): More potent, longer acting, fewer side effects, less protein-binding issues.</li>
+                    <li>Major side effect: Hypoglycemia.</li>
+                    <li>Contraindicated in Type 1 DM, ketoacidosis. Caution with liver/kidney issues, older adults.</li>
+                    <li>Many drug/alcohol interactions (alcohol can cause disulfiram-like reaction).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nursing-process-oral-antidiabetics">
+            <h2>6. Clinical Judgment: Nursing Process - Oral Antidiabetics</h2>
+            <div class="info-card">
+                <p>Let's apply our nursing judgment to **Oral Antidiabetics**! Our core concept is: <span class="highlight">Glucose Regulation</span>.</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>Current Medications:</strong> Identify all drugs patient takes. Note increased hypoglycemic effect with aspirin, alcohol, sulfonamides, oral contraceptives, MAOIs, etc. Note increased blood glucose with glucocorticoids, thiazide diuretics, estrogen.</li>
+                        <li><strong>Vital Signs & Blood Glucose:</strong> Monitor and report abnormal findings.</li>
+                        <li><strong>Patient Knowledge:</strong> Determine understanding of DM and oral antidiabetics.</li>
+                    </ul>
+
+                    <h3>Analyze Cues & Prioritize Hypothesis [Patient Problems]: What's the biggest issue?</h3>
+                    <ul>
+                        <li>Hypoglycemia.</li>
+                        <li>Metabolic acidosis.</li>
+                        <li>Hyperglycemia.</li>
+                        <li>Reduced glucose regulation.</li>
+                        <li>Hyponatremia.</li>
+                        <li>Fatigue.</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li>The patient will maintain fasting blood glucose within normal serum levels (80 to 130 mg/dL).</li>
+                        <li>The patient will adhere to a prescribed diet, blood testing, and drug regimen.</li>
+                        <li>The patient will demonstrate knowledge of oral hypoglycemics and their importance.</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Determine Vital Signs:</strong> Oral antidiabetics can increase cardiac function and oxygen consumption, leading to cardiac dysrhythmias.</li>
+                        <li><strong>Administration:</strong> Administer oral antidiabetics **with food** to minimize gastric upset.</li>
+                        <li><strong>Blood Glucose:</strong> Monitor blood glucose levels and report changes.</li>
+                        <li><strong>Teaching Plan:</strong> Prepare a teaching plan based on the patient’s knowledge of health problems, diet, and drug therapy.</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General Advice:</h4>
+                    <ul>
+                        <li>**Hypoglycemic Reaction (Sulfonylureas):** Advise patients that a hypoglycemic reaction can occur, especially with sulfonylureas (which stimulate insulin release). **Oral antidiabetics are NOT insulin.** Patients with Type 1 DM (no functioning beta cells) should NOT take oral antidiabetics.</li>
+                        <li><strong>Hypoglycemic/Hyperglycemic Symptoms:</strong> Teach patients to recognize symptoms of hypoglycemia (headache, nervousness, sweating, tremors, rapid pulse) and hyperglycemia (thirst, increased urine output, sweet, fruity breath odor).</li>
+                        <li>**Insulin Needed During Stress:** Explain that insulin might be needed instead of an oral antidiabetic drug during stress, surgery, or serious infection, as blood glucose is usually elevated during stressful times.</li>
+                        <li>**Compliance:** Emphasize the necessity for compliance with diet and drug regimen.</li>
+                        <li>**MedicAlert ID:** Advise patients to carry a MedicAlert card, tag, or bracelet.</li>
+                    </ul>
+                    <h4>Self-Administration:</h4>
+                    <ul>
+                        <li><strong>Glucometer Use:</strong> Teach patients how to check blood glucose levels with a glucometer and report abnormal results.</li>
+                    </ul>
+                    <h4>Side Effects:</h4>
+                    <ul>
+                        <li>**Report Side Effects:** Advise patients to report side effects such as vomiting, diarrhea, and rash.</li>
+                    </ul>
+                    <h4>Diet:</h4>
+                    <ul>
+                        <li>**Alcohol:** Caution patients not to ingest alcohol with antidiabetic drugs to avoid a hypoglycemic reaction (e.g., disulfiram-like reaction with sulfonylureas).</li>
+                        <li>**Scheduled Meals:** Advise patients taking oral antidiabetics to eat the prescribed diet **on schedule**. Delaying or missing a meal can cause hypoglycemia.</li>
+                        <li>**Treating Hypoglycemia:** Explain the use of orange juice, sugar-containing drinks, or hard candy when a hypoglycemic reaction begins. Emphasize reporting such problems to a healthcare provider.</li>
+                        <li>**Administration with Food:** Direct patients to take oral antidiabetics **with food** to decrease gastric irritation.</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li>Evaluate the effectiveness of drug therapy by noting whether blood glucose levels are within the accepted range.</li>
+                        <li>Determine the patient’s knowledge of the diabetic regimen.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: NP - Oral Antidiabetics</h4>
+                <ul>
+                    <li>**Assess:** Current meds, VS, blood glucose, patient knowledge.</li>
+                    <li>**Problems:** Hypo/hyperglycemia, glucose dysregulation.</li>
+                    <li>**Goals:** Normal fasting glucose (80-130 mg/dL), regimen adherence, knowledge.</li>
+                    <li>**Intervene:** Monitor VS (cardiac function), administer with food, monitor blood glucose. Prepare teaching.</li>
+                    <li>**Teach:** Hypo/hyperglycemic symptoms, insulin switch during stress, compliance, MedicAlert, glucometer use, report side effects, avoid alcohol, eat on schedule, treat hypoglycemia (OJ), take with food.</li>
+                    <li>**Evaluate:** Glucose control, patient knowledge.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="other-antidiabetic-agents">
+            <h2>7. Other Antidiabetic Agents: Expanding the Arsenal!</h2>
+            <div class="info-card">
+                <p>Beyond insulin and sulfonylureas, other classes of antidiabetic drugs target different mechanisms to help control blood glucose in Type 2 Diabetes.</p>
+                <h3>Biguanides: Metformin (The Foundation Drug!)</h3>
+                <button class="reveal-button">Metformin: Actions & Considerations</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Drug Class: <span class="highlight">Biguanide</span>.</li>
+                        <li>Mechanism:
+                            <ul>
+                                <li>Decreases hepatic glucose production (from stored glycogen).</li>
+                                <li>Decreases glucose absorption from small intestine.</li>
+                                <li>Increases insulin receptor sensitivity & peripheral glucose uptake.</li>
+                            </ul>
+                        </li>
+                        <li>**Key Difference:** Unlike sulfonylureas, **Metformin does NOT produce hypoglycemia or hyperglycemia** when used as monotherapy.</li>
+                        <li>Side Effects: Can cause GI disturbances (nausea, vomiting, diarrhea, metallic taste, flatulence). Vitamin B12 deficiency is a possibility with long-term use.</li>
+                        <li>Administration: Often first-line therapy for Type 2 DM, can be monotherapy or combined with sulfonylureas. Take with meals.</li>
+                        <li>**Caution:** Not recommended for patients with **renal impairment**.</li>
+                        <li>**Important!** Withhold metformin for **48 hours before and after IV contrast administration** due to risk of lactic acidosis or acute renal failure.</li>
+                        <li>Elimination: Does not undergo hepatic metabolism; eliminated unchanged in urine.</li>
+                    </ul>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug Class</th>
+                                <th>Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug Class">Biguanide</td>
+                                <td data-label="Dosage">
+                                    Immediate release: A: PO: Initially 500 mg bid or 850 mg/d with meals; increase dose gradually; max: 2550 mg/d<br>
+                                    Extended release: A: PO: 500 mg/d with evening meal; max: 2500 mg/d
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Contraindications" colspan="2">
+                                    Hypersensitivity, diabetic ketoacidosis, renal failure.<br>
+                                    <strong>Caution:</strong> Pregnancy, children, infection, fever, trauma, surgery, hepatic dysfunction, adrenal insufficiency, alcohol abuse, cardiac disease, dehydration, diarrhea, breastfeeding, heart failure, older adults.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                    <strong>Potentiate hypoglycemia:</strong> ACE inhibitors, ARBs, calcium channel blockers, beta blockers, procainamide, quinidine, digoxin, MAOIs, furosemide, alcohol, cimetidine, ranitidine, sulfonamides, azole antifungals, trimethoprim, vancomycin, quinine.<br>
+                                    <strong>Cause hyperglycemia:</strong> Nicotine, triamterene, thiazide diuretics, niacin, phenytoin, phenothiazines, atypical antipsychotics, oral contraceptives.<br>
+                                    <strong>Lab:</strong> Altered liver function tests.<br>
+                                    <strong>Food:</strong> Green tea may lead to hypoglycemia.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>How it Moves (Pharmacokinetics)</th>
+                                <th>How it Works (Pharmacodynamics)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Pharmacokinetics">
+                                    <strong>Absorption:</strong> 51%–60% absorbed (small intestine).<br>
+                                    <strong>Distribution:</strong> PB: 0% (not protein bound).<br>
+                                    <strong>Metabolism:</strong> t½: 6.2–17.6 h. No hepatic metabolism.<br>
+                                    <strong>Excretion:</strong> Primarily in urine (unchanged).
+                                </td>
+                                <td data-label="Pharmacodynamics">
+                                    <strong>PO:</strong> Onset: UK; Peak: Regular release 2.5 h; extended release 4–8 h; Duration: UK.<br>
+                                    <strong>Therapeutic Effects/Uses:</strong> To control hyperglycemia in type 2 diabetes mellitus.<br>
+                                    <strong>Mechanism of Action:</strong> Increases binding of insulin to receptors, improves tissue sensitivity to insulin, increases glucose transport to skeletal muscles and fatty tissues, decreases glucose production in the liver by reducing gluconeogenesis, and reduces glucose absorption from intestines.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Side Effects</th>
+                                <th>Adverse Reactions</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Side Effects">Dizziness, headache, weakness, flushing, chills, dysgeusia (taste disturbance), hyperhidrosis, metallic taste, anorexia, dyspepsia, nausea, vomiting, flatulence, diarrhea, abdominal pain, weight loss, infection, vitamin B12 deficiency, myalgia.</td>
+                                <td data-label="Adverse Reactions">Palpitations, chest pain, hypoglycemia (rare as monotherapy), metabolic acidosis.<br>
+                                    <strong>Life-threatening:</strong> Lactic acidosis (serious!), megaloblastic anemia, hepatic impairment.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3>Alpha-Glucosidase Inhibitors: Slowing Carb Digestion</h3>
+                <button class="reveal-button">Acarbose & Miglitol</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Examples: <span class="highlight">Acarbose</span> and <span class="highlight">Miglitol</span>.</li>
+                        <li>Mechanism: Inhibit digestive enzymes in the small intestine, delaying the absorption of complex carbohydrates. This blunts the rise in blood glucose after meals.</li>
+                        <li>Do not cause hypoglycemia on their own, but can if taken with a sulfonylurea or insulin.</li>
+                        <li>Acarbose: Minimal systemic absorption.</li>
+                        <li>Miglitol: Absorbed from GI tract.</li>
+                    </ul>
+                </div>
+                <h3>Thiazolidinediones (Glitazones): Enhancing Insulin Sensitivity</h3>
+                <button class="reveal-button">Pioglitazone & Rosiglitazone</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Examples: <span class="highlight">Pioglitazone</span> and <span class="highlight">Rosiglitazone</span>.</li>
+                        <li>Mechanism: Decrease insulin resistance and improve blood glucose control by making tissues more sensitive to insulin.</li>
+                        <li>Can be monotherapy or combined with other oral antidiabetics/insulin.</li>
+                        <li>**Contraindicated in:** Class III and IV heart failure due to dose-related fluid retention.</li>
+                    </ul>
+                </div>
+                <h3>Meglitinides: Rapid Insulin Release</h3>
+                <button class="reveal-button">Repaglinide & Nateglinide</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Examples: <span class="highlight">Repaglinide</span> and <span class="highlight">Nateglinide</span>.</li>
+                        <li>Mechanism: Stimulate beta cells to release insulin (similar to sulfonylureas, but shorter acting).</li>
+                        <li>Short-acting antidiabetic drugs.</li>
+                        <li>Used alone or with metformin for Type 2 DM.</li>
+                        <li>**Caution:** Avoid or use with caution in patients with **liver dysfunction** due to possible decreased liver metabolism, which could lead to hypoglycemia.</li>
+                    </ul>
+                </div>
+                <h3>Dipeptidyl Peptidase 4 (DPP-4) Inhibitors (Gliptins): Incretin Modifiers</h3>
+                <button class="reveal-button">Sitagliptin & More</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Examples: <span class="highlight">Sitagliptin phosphate</span>, saxagliptin, linagliptin, alogliptin.</li>
+                        <li>Mechanism: Increase levels of <span class="highlight">incretin hormones</span>, which in turn increase insulin secretion and decrease glucagon secretion (reducing glucose production).</li>
+                        <li>Used as adjuncts to diet and exercise to reduce fasting and postprandial blood glucose.</li>
+                    </ul>
+                </div>
+                <h3>Selective Sodium-Glucose Co-Transporter 2 (SGLT2) Inhibitors (Gliflozins)</h3>
+                <button class="reveal-button">Canagliflozin & Friends</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Examples: <span class="highlight">Canagliflozin</span>, dapagliflozin, empagliflozin, ertugliflozin.</li>
+                        <li>Mechanism: Block glucose reabsorption in the kidneys, causing more glucose to be excreted in the urine.</li>
+                        <li>Side effects: Increased urination, genital yeast infections, urinary tract infections, dehydration.</li>
+                    </ul>
+                </div>
+                <h3>Amylin Analogues: Pramlintide</h3>
+                <button class="reveal-button">Pramlintide: Adjunct to Insulin</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Example: <span class="highlight">Pramlintide acetate</span>.</li>
+                        <li>Use: Approved for **Type 1 and Type 2 DM** as an **adjunct to insulin therapy** to improve postprandial glucose control.</li>
+                        <li>Mechanism: Suppresses glucagon secretion, slows gastric emptying, modulates appetite (inducing satiety).</li>
+                        <li>Route: Subcutaneous injection **before meals** in abdomen or thigh (never arm, unpredictable absorption).</li>
+                    </ul>
+                </div>
+                <h3>Glucagon-Like Peptide 1 (GLP-1) Agonists (Incretin Mimetics)</h3>
+                <button class="reveal-button">Exenatide & Liraglutide</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Examples: <span class="highlight">Exenatide</span>, liraglutide, dulaglutide, lixisenatide, semaglutide.</li>
+                        <li>Mechanism: Improve beta-cell responsiveness, enhance insulin secretion, suppress glucagon secretion, slow gastric emptying, reduce food intake.</li>
+                        <li>**Not a substitute for insulin.** Do not administer to Type 1 DM or DKA.</li>
+                        <li>Route: Injectable prefilled pens (e.g., Exenatide BID, Liraglutide daily, Dulaglutide weekly).</li>
+                        <li>Benefits: Improved HbA1c, weight loss.</li>
+                    </ul>
+                </div>
+                <h3>Fixed-Combination Oral Antidiabetic Drugs:</h3>
+                <button class="reveal-button">Two-in-One Power!</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Combine two different classes of oral antidiabetics (e.g., Glyburide-metformin, Sitagliptin-metformin).</li>
+                        <li>Used for Type 2 DM, offering combined benefits for better glucose control.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Other Oral Antidiabetics</h4>
+                <ul>
+                    <li>**Metformin (Biguanide):** Decreases hepatic glucose, absorption. **No hypoglycemia**. Withhold for IV contrast. Renal caution.</li>
+                    <li>**Alpha-Glucosidase Inhibitors (Acarbose):** Delay carb absorption. **No hypoglycemia alone**.</li>
+                    <li>**Thiazolidinediones (Pioglitazone):** Decrease insulin resistance. **Heart failure contraindication.**</li>
+                    <li>**Meglitinides (Repaglinide):** Stimulate insulin release, short-acting. Liver caution.</li>
+                    <li>**DPP-4 Inhibitors (Sitagliptin):** Increase incretin hormones, insulin, decrease glucagon.</li>
+                    <li>**SGLT2 Inhibitors (Canagliflozin):** Excrete glucose in urine. Causes diuresis, UTIs.</li>
+                    <li>**Amylin Analogues (Pramlintide):** Adjunct to insulin (Type 1 & 2). Suppress glucagon, slow emptying, modulate appetite. Injectable.</li>
+                    <li>**GLP-1 Agonists (Exenatide):** Enhance insulin, suppress glucagon, slow emptying, reduce food intake. Injectable.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="hyperglycemic-drugs">
+            <h2>8. Hyperglycemic Drugs: Raising Blood Glucose in a Pinch!</h2>
+            <div class="info-card">
+                <p>These drugs are used to **increase blood glucose levels**, primarily for severe hypoglycemia.</p>
+                <h3>Glucagon: The Emergency Rescue!</h3>
+                <button class="reveal-button">Glucagon Details</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Hormone secreted by alpha cells of the pancreas's islets of Langerhans.</li>
+                        <li>Mechanism: Increases blood glucose by stimulating <span class="highlight">glycogenolysis</span> (glycogen breakdown) in the liver.</li>
+                        <li>Purpose: Protects body cells (especially brain and retina) by providing immediate glucose.</li>
+                        <li>Route: Parenteral (subcutaneous, IM, IV).</li>
+                        <li>Use: Treats **insulin-induced hypoglycemia** when patient is semi-conscious/unconscious and cannot ingest sugar.</li>
+                        <li>**Emergency Use:** Patients prone to severe hypoglycemia should keep glucagon at home, and family members should be taught administration. Blood glucose increases within 10 minutes.</li>
+                    </ul>
+                </div>
+                <h3>Diazoxide: For Hyperinsulinism</h3>
+                <button class="reveal-button">Diazoxide Details</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Chemically related to thiazide diuretics.</li>
+                        <li>Mechanism: Increases blood glucose by **inhibiting insulin release from beta cells** and stimulating epinephrine release from adrenal medulla.</li>
+                        <li>Use: Treats **hypoglycemia caused by hyperinsulinism** (excess insulin production), NOT for typical hypoglycemic reactions.</li>
+                        <li>Pharmacokinetics: Long half-life, highly protein bound. Onset 1 hour, duration 8 hours. Excreted unchanged in urine.</li>
+                        <li>Side Effects: Dizziness, nausea, vomiting, weakness, hypotension, hyperuricemia, hyperglycemia, diabetic ketoacidosis.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Hyperglycemic Drugs</h4>
+                <ul>
+                    <li>**Glucagon:** Emergency treatment for insulin-induced hypoglycemia (when unconscious/unable to eat). Increases blood glucose by glycogen breakdown in liver.</li>
+                    <li>**Diazoxide:** Treats hypoglycemia due to hyperinsulinism (NOT typical hypoglycemia). Inhibits insulin release.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="critical-thinking" class="nclex-next-gen">
+            <h3>9. NCLEX Next Gen! Critical Thinking Single Episode Case Study</h3>
+            <p class="case-study"><strong>Cognitive Skill: Generate solutions [Matrix]</strong></p>
+            <p class="case-study">Objective: Care of a patient with type 2 diabetes mellitus prescribed an antidiabetic drug.</p>
+            <p class="case-study">A 62-year-old female with type 2 diabetes mellitus presented to the emergency department and was admitted to the hospital with a diagnosis of hypoglycemic reaction and a blood sugar of 50 mg/dL. The patient’s prescribed diabetic medication is repaglinide 2 mg/three times a day 30 minutes before meals. After reviewing the patient’s admit orders, the nurse notes that the patient forgot the morning dose of repaglinide and took the dose at bedtime. The next morning, the patient self-administered the ordered dose of repaglinide and did not eat breakfast, causing the patient to become hypoglycemic.</p>
+            <p class="case-study">The patient will be discharged today. The nurse is preparing the discharge teaching for this patient.</p>
+
+            <div class="fill-in-the-blank">
+                <p>Use an X for the nursing instruction that is indicated (appropriate or necessary) or contraindicated (could be harmful) for this patient’s care.</p>
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Nursing Instruction</th>
+                            <th>Indicated</th>
+                            <th>Contraindicated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Nursing Instruction">Take the 2 mg dose of repaglinide, as ordered, three times a day followed by a full meal.</td>
+                            <td><input type="checkbox" name="cs_q1_indicated" value="indicated"></td>
+                            <td><input type="checkbox" name="cs_q1_contraindicated" value="contraindicated"></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Nursing Instruction">You may increase the dose of repaglinide if your blood glucose increases without notifying your health care provider.</td>
+                            <td><input type="checkbox" name="cs_q2_indicated" value="indicated"></td>
+                            <td><input type="checkbox" name="cs_q2_contraindicated" value="contraindicated"></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Nursing Instruction">Adverse reactions associated with repaglinide are anxiety, diarrhea, infection, headache, drowsiness, and hypoglycemic reaction. If experienced, notify your provider.</td>
+                            <td><input type="checkbox" name="cs_q3_indicated" value="indicated"></td>
+                            <td><input type="checkbox" name="cs_q3_contraindicated" value="contraindicated"></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Nursing Instruction">Repaglinide is classified as an alpha-glucosidase inhibitor.</td>
+                            <td><input type="checkbox" name="cs_q4_indicated" value="indicated"></td>
+                            <td><input type="checkbox" name="cs_q4_contraindicated" value="contraindicated"></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Nursing Instruction">Take your blood sugar prior to self-administering repaglinide. If it is < 70 mg/dL (3.9 mmol/L), notify your health care provider before taking the drug.</td>
+                            <td><input type="checkbox" name="cs_q5_indicated" value="indicated"></td>
+                            <td><input type="checkbox" name="cs_q5_contraindicated" value="contraindicated"></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Nursing Instruction">A diabetic patient does not have to follow a special diet and may eat whatever they want.</td>
+                            <td><input type="checkbox" name="cs_q6_indicated" value="indicated"></td>
+                            <td><input type="checkbox" name="cs_q6_contraindicated" value="contraindicated"></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Nursing Instruction">Instruct the patient in signs of hypoglycemic reaction: headache, nervousness, sweating, trembling, and rapid pulse. If experienced, the patient should immediately drink a glass of orange juice, take their blood sugar, and notify their health care provider.</td>
+                            <td><input type="checkbox" name="cs_q7_indicated" value="indicated"></td>
+                            <td><input type="checkbox" name="cs_q7_contraindicated" value="contraindicated"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="submit-btn" id="submit_case_study">Check My Answers!</button>
+                <div class="feedback" id="case_study_feedback"></div>
+                <div class="rationale" id="case_study_rationale">
+                    <h4>Rationale: Why these answers are correct!</h4>
+                    <table class="responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Nursing Instruction</th>
+                                <th>Correct Response</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Nursing Instruction">Take the 2 mg dose of repaglinide, as ordered, three times a day followed by a full meal.</td>
+                                <td data-label="Correct Response"><strong>Indicated</strong></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Nursing Instruction">You may increase the dose of repaglinide if your blood glucose increases without notifying your health care provider.</td>
+                                <td data-label="Correct Response"><strong>Contraindicated</strong></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Nursing Instruction">Adverse reactions associated with repaglinide are anxiety, diarrhea, infection, headache, drowsiness, and hypoglycemic reaction. If experienced, notify your provider.</td>
+                                <td data-label="Correct Response"><strong>Indicated</strong></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Nursing Instruction">Repaglinide is classified as an alpha-glucosidase inhibitor.</td>
+                                <td data-label="Correct Response"><strong>Contraindicated</strong></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Nursing Instruction">Take your blood sugar prior to self-administering repaglinide. If it is < 70 mg/dL (3.9 mmol/L), notify your health care provider before taking the drug.</td>
+                                <td data-label="Correct Response"><strong>Indicated</strong></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Nursing Instruction">A diabetic patient does not have to follow a special diet and may eat whatever they want.</td>
+                                <td data-label="Correct Response"><strong>Contraindicated</strong></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Nursing Instruction">Instruct the patient in signs of hypoglycemic reaction: headache, nervousness, sweating, trembling, and rapid pulse. If experienced, the patient should immediately drink a glass of orange juice, take their blood sugar, and notify their health care provider.</td>
+                                <td data-label="Correct Response"><strong>Indicated</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>Repaglinide is an antidiabetic drug. It is classified as a meglitinide drug whose purpose is to treat type 2 diabetes by working in the pancreas to sequentially block certain potassium channels, create an influx of calcium, and induce insulin secretion. It is usually taken in tablet form and should be taken as ordered by the patient’s provider, with food, to avoid hypoglycemic reactions. Adverse reactions are correctly listed as anxiety, diarrhea, infection, headache, drowsiness, and hypoglycemic reaction. In following correct diabetes care, the patient should perform a glucometer check prior to administration and, if it is less than 70 mg/dL, hold the drug and notify their health care provider to avoid a hypoglycemic reaction. It is important for the nurse to review symptoms of a hypoglycemic reaction, correctly stated as headache, nervousness, sweating, trembling, and rapid pulse. It is also important to tell the patient to drink a glass of orange juice, which will increase the patient’s blood sugar, and to repeat the glucometer check and notify their health care provider. The patient should never increase or decrease the ordered dose of repaglinide without health care provider knowledge and new orders. Repaglinide is not classified as an alpha-glucosidase inhibitor. It is very important for a diabetic to follow a diabetic diet as ordered by their health care provider.</p>
+                    <p><strong>References:</strong></p>
+                    <ul>
+                        <li>McCuistion, L., et al, Pharmacology: A Patient-Centered Nursing Process Approach (10th ed), 1922, Chapter 47, pp. 623–635;</li>
+                        <li>Burchum R., & Rosenthal L. D., Lehne’s Pharmacology for Nursing Care (10th ed), 2019, Chapter 57, pp. 674–710</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Case Study Takeaways</h4>
+                <ul>
+                    <li>Repaglinide is a meglitinide for Type 2 DM, taken with meals.</li>
+                    <li>Always follow prescribed dose and timing. Never self-adjust.</li>
+                    <li>Monitor blood sugar *before* dose; hold for hypoglycemia and notify provider.</li>
+                    <li>Know and teach hypoglycemia symptoms and immediate treatment (fast-acting carbs).</li>
+                    <li>Diabetic diet adherence is critical.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="review-questions">
+            <h2>10. Module Review Questions: Test Your Knowledge!</h2>
+
+            <div class="question-card" id="q1">
+                <p>1. A patient is diagnosed with type 2 diabetes mellitus. The nurse is aware that which statement is true about this patient?</p>
+                <div class="options">
+                    <label><input type="radio" name="q1_option" value="a"> a. The patient is most likely a teenager.</label>
+                    <label><input type="radio" name="q1_option" value="b"> b. The patient is most likely a child younger than 10 years.</label>
+                    <label><input type="radio" name="q1_option" value="c"> c. Heredity and obesity are major causative factors.</label>
+                    <label><input type="radio" name="q1_option" value="d"> d. Viral infections contribute most to disease development.</label>
+                </div>
+                <button class="submit-btn" id="submit_q1">Check My Answer!</button>
+                <div class="feedback" id="q1_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q2">
+                <p>2. Antidiabetic drugs are designed to control signs and symptoms of diabetes mellitus. The nurse primarily expects a decrease in which?</p>
+                <div class="options">
+                    <label><input type="radio" name="q2_option" value="a"> a. Blood glucose</label>
+                    <label><input type="radio" name="q2_option" value="b"> b. Fat metabolism</label>
+                    <label><input type="radio" name="q2_option" value="c"> c. Glycogen storage</label>
+                    <label><input type="radio" name="q2_option" value="d"> d. Protein mobilization</label>
+                </div>
+                <button class="submit-btn" id="submit_q2">Check My Answer!</button>
+                <div class="feedback" id="q2_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q3">
+                <p>3. A patient is to receive insulin before breakfast, and the time of breakfast tray delivery is variable. The nurse knows that which insulin should not be administered until the breakfast tray has arrived and the patient is ready to eat?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3_option" value="a"> a. NPH</label>
+                    <label><input type="radio" name="q3_option" value="b"> b. Lispro</label>
+                    <label><input type="radio" name="q3_option" value="c"> c. Glargine</label>
+                    <label><input type="radio" name="q3_option" value="d"> d. Regular</label>
+                </div>
+                <button class="submit-btn" id="submit_q3">Check My Answer!</button>
+                <div class="feedback" id="q3_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q4">
+                <p>4. A patient is receiving a daily dose of NPH insulin at 7:30 a.m. The nurse expects the peak effect of this drug to occur at what time?</p>
+                <div class="options">
+                    <label><input type="radio" name="q4_option" value="a"> a. 8:15 a.m.</label>
+                    <label><input type="radio" name="q4_option" value="b"> b. 10:30 a.m.</label>
+                    <label><input type="radio" name="q4_option" value="c"> c. 5:00 p.m.</label>
+                    <label><input type="radio" name="q4_option" value="d"> d. 11:00 p.m.</label>
+                </div>
+                <button class="submit-btn" id="submit_q4">Check My Answer!</button>
+                <div class="feedback" id="q4_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q5">
+                <p>5. A patient is prescribed glipizide. The nurse knows that which side effects and adverse effects may be expected? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="q5_option" value="a"> a. Tachypnea</label>
+                    <label><input type="checkbox" name="q5_option" value="b"> b. Tachycardia</label>
+                    <label><input type="checkbox" name="q5_option" value="c"> c. Increased alertness</label>
+                    <label><input type="checkbox" name="q5_option" value="d"> d. Increased weight gain</label>
+                    <label><input type="checkbox" name="q5_option" value="e"> e. Visual disturbances</label>
+                    <label><input type="checkbox" name="q5_option" value="f"> f. Hyperhidrosis</label>
+                </div>
+                <button class="submit-btn" id="submit_q5">Check My Answer!</button>
+                <div class="feedback" id="q5_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q6">
+                <p>6. A nurse is teaching a patient how to recognize symptoms of hypoglycemia. Which symptoms should be included in the teaching? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="q6_option" value="a"> a. Headache</label>
+                    <label><input type="checkbox" name="q6_option" value="b"> b. Nervousness</label>
+                    <label><input type="checkbox" name="q6_option" value="c"> c. Bradycardia</label>
+                    <label><input type="checkbox" name="q6_option" value="d"> d. Sweating</label>
+                    <label><input type="checkbox" name="q6_option" value="e"> e. Thirst</label>
+                    <label><input type="checkbox" name="q6_option" value="f"> f. Sweet breath odor</label>
+                </div>
+                <button class="submit-btn" id="submit_q6">Check My Answer!</button>
+                <div class="feedback" id="q6_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q7">
+                <p>7. A patient is newly diagnosed with type 1 diabetes mellitus and requires daily insulin injections. Which instructions should the nurse include in the teaching of insulin administration? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="q7_option" value="a"> a. Teach family members how to administer glucagon by injection when the patient has a hyperglycemic reaction.</label>
+                    <label><input type="checkbox" name="q7_option" value="b"> b. Instruct the patient about the necessity for compliance with prescribed insulin therapy.</label>
+                    <label><input type="checkbox" name="q7_option" value="c"> c. Teach the patient that hypoglycemic reactions are more likely to occur at the onset of action time.</label>
+                    <label><input type="checkbox" name="q7_option" value="d"> d. Instruct the patient in the care and handling of the insulin container and syringe.</label>
+                </div>
+                <button class="submit-btn" id="submit_q7">Check My Answer!</button>
+                <div class="feedback" id="q7_feedback"></div>
+            </div>
+
+        </section>
+        <section id="drug-mastery-quiz">
+            <h2>11. Drug Mastery Challenge: Let's Master These Meds!</h2>
+            <p>Ready to test your knowledge on the drugs for Antidiabetics? Go through each card and see if you can recall the key information!</p>
+            <button id="startQuizBtn">Start Drug Mastery Challenge!</button>
+
+            <div class="quiz-card" id="drugQuizCard">
+                <div class="progress-tracker">Card <span id="currentCardNum">1</span> of <span id="totalCardsNum">0</span></div>
+                <h4 id="drugName">Drug Name Goes Here</h4>
+                <p id="drugQuestion">Question about the drug will appear here.</p>
+
+                <div class="quiz-controls">
+                    <button id="showAnswerBtn">Show Answer</button>
+                </div>
+
+                <div id="answerFeedback">
+                    <h5>Answer: <span id="answerType"></span></h5>
+                    <p id="answerContent"></p>
+                </div>
+
+                <div id="masteryButtons" style="display: none;">
+                    <p>Did you get it right?</p>
+                    <button id="correctBtn">Yes, I knew it!</button>
+                    <button id="incorrectBtn">No, I need to review.</button>
+                </div>
+            </div>
+
+            <div id="quizSummary">
+                <h4>Challenge Complete!</h4>
+                <p>You've gone through all the drugs!</p>
+                <p>Mastered on first try: <span id="masteredCount">0</span></p>
+                <p>Needed review: <span id="missedCount">0</span></p>
+                <button id="restartQuizBtn">Restart Full Quiz</button>
+                <button id="reviewMissedBtn">Review Missed Drugs</button>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Antidiabetics Learning Module. Designed for focused learning.</p>
+        </footer>
+    </div>
+
+    <div id="clockOutOverlay">
+        <div id="clockOutContent">
+            <h2>Clock Out!</h2>
+            <p>Take a moment to reset your focus. Your module will resume in:</p>
+            <div id="brainEmoji">🧠</div> <div id="countdownTimer">00:30</div>
+        </div>
+    </div>
+    <script>
+        // ==========================================
+        // Drug Data (This is the only part that can safely sit outside DOMContentLoaded)
+        // ==========================================
+        const drugs = [
+            {
+                name: "Insulin Lispro",
+                class: "Rapid-Acting Insulin",
+                keyActions: "Rapidly lowers blood glucose by promoting glucose uptake by cells. Used immediately before meals for quick glucose control. Onset: 15-30 min, Peak: 30-90 min, Duration: 3-5 h.",
+                sideEffects: "Hypoglycemia, injection site reactions, lipodystrophy, headache, weight gain, peripheral edema.",
+                nursingConsiderations: "Administer within 10-15 minutes BEFORE mealtime. Essential to confirm food is present and patient is ready to eat. Monitor for signs of hypoglycemia at its peak. Can be used in insulin pumps."
+            },
+            {
+                name: "Insulin Regular",
+                class: "Short-Acting Insulin",
+                keyActions: "Lowers blood glucose by promoting glucose uptake by cells. Can be given intravenously (IV) in emergencies. Onset: 30 min (subcut), 15 min (IV); Peak: 1.5-3.5 h (subcut), 15-30 min (IV); Duration: 4-12 h (subcut), 2-6 h (IV).",
+                sideEffects: "Hypoglycemia, injection site reactions, lipodystrophy, headache, weight gain, peripheral edema.",
+                nursingConsiderations: "Administer 30-60 minutes BEFORE meals subcutaneously. Only insulin type that can be given IV. Peak effect is critical, watch for hypoglycemia. Can be mixed with NPH insulin (draw regular first). Do not shake, roll gently."
+            },
+            {
+                name: "Insulin Isophane NPH",
+                class: "Intermediate-Acting Insulin",
+                keyActions: "Lowers blood glucose with a slower onset and longer duration (due to protamine). Provides basal insulin coverage. Onset: 1.5 h, Peak: 4-12 h, Duration: 14-24 h.",
+                sideEffects: "Hypoglycemia (especially at peak), injection site reactions, lipodystrophy, weight gain.",
+                nursingConsiderations: "Cloudy suspension, must be rolled gently (not shaken) before administration. Peak action is 4-12 hours, monitor for hypoglycemia during this time. Often combined with rapid or short-acting insulin. Can be mixed with regular insulin (NPH is drawn after regular)."
+            },
+            {
+                name: "Insulin Glargine",
+                class: "Long-Acting Insulin",
+                keyActions: "Provides a relatively constant, peakless basal insulin level over 24 hours. Used once daily for consistent glucose control. Onset: 1-1.5 h, Peak: None, Duration: 24 h.",
+                sideEffects: "Hypoglycemia (less nocturnal hypoglycemia than NPH), injection site pain/reactions, lipodystrophy, weight gain.",
+                nursingConsiderations: "Administered once daily, usually at bedtime. Do NOT mix with other insulins or dilute. Do not administer IV. Often referred to as a 'basal' insulin. Less risk of nocturnal hypoglycemia."
+            },
+            {
+                name: "Glipizide",
+                class: "Sulfonylurea (Second Generation)",
+                keyActions: "Directly stimulates pancreatic beta cells to secrete insulin; indirectly increases sensitivity of peripheral insulin receptors. Used to control hyperglycemia in type 2 diabetes mellitus.",
+                sideEffects: "Hypoglycemia (major side effect), drowsiness, dizziness, headache, confusion, blurred vision, anxiety, hyperhidrosis (excess sweating), GI upset (nausea, vomiting, diarrhea), weight gain, hyponatremia.",
+                nursingConsiderations: "Take 30 minutes before breakfast (regular release) or with breakfast (extended release). Do NOT use in Type 1 DM or DKA. Avoid alcohol (disulfiram-like reaction). Many drug interactions can potentiate hypoglycemia or cause hyperglycemia. Monitor for signs of hypoglycemia and serious hematologic disorders (e.g., agranulocytosis). Caution in liver/kidney dysfunction and older adults."
+            },
+            {
+                name: "Metformin",
+                class: "Biguanide",
+                keyActions: "Decreases hepatic glucose production, decreases glucose absorption from small intestine, increases insulin receptor sensitivity. First-line for Type 2 DM. Does not stimulate insulin secretion.",
+                sideEffects: "GI disturbances (metallic taste, anorexia, nausea, vomiting, flatulence, diarrhea, abdominal pain), weight loss, vitamin B12 deficiency, myalgia. Lactic acidosis (rare but life-threatening).",
+                nursingConsiderations: "Does NOT cause hypoglycemia as monotherapy. Withhold for **48 hours before and after IV contrast** due to risk of lactic acidosis or acute renal failure. Not recommended for severe renal impairment. Take with meals to minimize GI upset. Monitor renal function (creatinine, GFR)."
+            },
+            {
+                name: "Acarbose",
+                class: "Alpha-Glucosidase Inhibitor",
+                keyActions: "Delays absorption of complex carbohydrates from the small intestine, blunting the rise in blood glucose after meals. Used for Type 2 DM.",
+                sideEffects: "GI side effects: abdominal pain, flatulence, diarrhea. Hypoglycemia (if used with sulfonylurea or insulin).",
+                nursingConsiderations: "Must be taken with the **first bite of each main meal**. If hypoglycemia occurs, treat with glucose (dextrose) tablets, not sucrose (table sugar), as absorption of sucrose is inhibited. Monitor liver function tests."
+            },
+            {
+                name: "Pioglitazone",
+                class: "Thiazolidinedione (Glitazone)",
+                keyActions: "Decreases insulin resistance and improves blood glucose control by increasing insulin sensitivity in muscle and adipose tissue and reducing hepatic glucose production. Used for Type 2 DM.",
+                sideEffects: "Fluid retention, weight gain, peripheral edema, headache, upper respiratory tract infection. Increased risk of bladder cancer with long-term use.",
+                nursingConsiderations: "**Contraindicated in Class III and IV heart failure** due to fluid retention and risk of exacerbating heart failure. Monitor for signs of heart failure (dyspnea, unusual weight gain, edema). Monitor liver function tests."
+            },
+            {
+                name: "Repaglinide",
+                class: "Meglitinide",
+                keyActions: "Stimulates pancreatic beta cells to release insulin rapidly. Short-acting, primarily reduces postprandial glucose. Used for Type 2 DM.",
+                sideEffects: "Hypoglycemia (especially if meal is skipped), headache, dizziness, nausea, diarrhea, upper respiratory infection, back pain.",
+                nursingConsiderations: "Take **within 30 minutes before each meal**. If a meal is skipped, skip the dose. If a meal is added, add a dose. Caution in patients with liver dysfunction as it's metabolized by the liver."
+            },
+            {
+                name: "Sitagliptin",
+                class: "Dipeptidyl Peptidase 4 (DPP-4) Inhibitor / Gliptin",
+                keyActions: "Increases levels of incretin hormones (GLP-1 and GIP), which enhance insulin secretion (glucose-dependent) and suppress glucagon secretion, reducing glucose production. Used for Type 2 DM.",
+                sideEffects: "Nasopharyngitis, headache, upper respiratory tract infection, diarrhea. Rare but serious: pancreatitis, severe allergic reactions, joint pain.",
+                nursingConsiderations: "Taken once daily, with or without food. Generally well-tolerated and less risk of hypoglycemia as monotherapy. Monitor for signs of pancreatitis (severe abdominal pain, nausea/vomiting)."
+            },
+            {
+                name: "Canagliflozin",
+                class: "Selective Sodium-Glucose Co-Transporter 2 (SGLT2) Inhibitor / Gliflozin",
+                keyActions: "Blocks glucose reabsorption in the renal tubules, leading to increased glucose excretion in the urine, thereby lowering blood glucose. Also causes mild diuretic effect, promoting blood pressure reduction and weight loss. Used for Type 2 DM.",
+                sideEffects: "Genital yeast infections, urinary tract infections, increased urination, thirst, dehydration, hypotension (especially in elderly or with diuretics). Rare: DKA (euglycemic DKA), Fournier's gangrene.",
+                nursingConsiderations: "Monitor for signs of UTIs and genital infections. Ensure adequate hydration to prevent dehydration and hypotension. Caution in patients with renal impairment. Take before the first meal of the day."
+            },
+            {
+                name: "Pramlintide",
+                class: "Amylin Analogue",
+                keyActions: "Adjunct to insulin therapy for Type 1 and Type 2 DM. Suppresses postprandial glucagon secretion, slows gastric emptying, and modulates appetite (inducing satiety), leading to improved postprandial glucose control.",
+                sideEffects: "Nausea (common, especially initially), vomiting, anorexia, headache, dizziness, fatigue, severe hypoglycemia (especially in Type 1 DM).",
+                nursingConsiderations: "Administered by subcutaneous injection immediately BEFORE meals. **NEVER mix with insulin in the same syringe.** Reduce mealtime insulin dose when initiating pramlintide to prevent severe hypoglycemia. Administer in abdomen or thigh (avoid arm due to variable absorption)."
+            },
+            {
+                name: "Exenatide",
+                class: "Glucagon-Like Peptide 1 (GLP-1) Agonist / Incretin Mimetic",
+                keyActions: "Enhances glucose-dependent insulin secretion, increases beta-cell responsiveness, suppresses glucagon secretion, slows gastric emptying, reduces food intake. Used for Type 2 DM. Often leads to weight loss.",
+                sideEffects: "Nausea, vomiting, diarrhea (especially when first starting), abdominal pain, headache, dizziness, jitteriness. Rare: pancreatitis, thyroid C-cell tumors (in rodents, human relevance unknown), renal impairment.",
+                nursingConsiderations: "Administered subcutaneously via prefilled pens. NOT a substitute for insulin; NOT for Type 1 DM or DKA. Administer within 60 minutes before morning and evening meals (immediate release) or once weekly (extended release). Monitor for signs of pancreatitis."
+            },
+            {
+                name: "Glucagon",
+                class: "Hyperglycemic Hormone",
+                keyActions: "Increases blood glucose by stimulating glycogenolysis (breakdown of glycogen to glucose) in the liver. Counteracts insulin's effects.",
+                sideEffects: "Nausea, vomiting, abdominal pain, hypo/hypertension, tachycardia, headache, hypo/hyperglycemia (rebound).",
+                nursingConsiderations: "Used as emergency treatment for **severe insulin-induced hypoglycemia** when the patient is unconscious or unable to ingest sugar orally. Available for parenteral use (subcut, IM, IV). Teach family members how to administer. Once consciousness is regained, administer oral carbohydrates to prevent rebound hypoglycemia."
+            }
+        ];
+
+        // ==========================================
+        // ALL JavaScript code and functions MUST be inside this single DOMContentLoaded listener.
+        // This ensures all HTML elements are available when the script tries to access them.
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- QUIZ VARIABLES AND ELEMENT SELECTIONS ---
+            let currentQuizDrugsCopy = [];
+            let currentDrugIndex = 0;
+            let masteredDrugs = []; // Drugs gotten right on first attempt in a quiz session
+            let missedDrugs = [];   // Drugs marked as "needed review"
+            const questionTypes = ['class', 'keyActions', 'sideEffects', 'nursingConsiderations'];
+
+            const startQuizBtn = document.getElementById('startQuizBtn');
+            const drugQuizCard = document.getElementById('drugQuizCard');
+            const drugNameEl = document.getElementById('drugName');
+            const drugQuestionEl = document.getElementById('drugQuestion');
+            const showAnswerBtn = document.getElementById('showAnswerBtn');
+            const answerFeedbackEl = document.getElementById('answerFeedback');
+            const answerTypeEl = document.getElementById('answerType');
+            const answerContentEl = document.getElementById('answerContent');
+            const masteryButtons = document.getElementById('masteryButtons');
+            const correctBtn = document.getElementById('correctBtn');
+            const incorrectBtn = document.getElementById('incorrectBtn');
+            const quizSummary = document.getElementById('quizSummary');
+            const masteredCountEl = document.getElementById('masteredCount');
+            const missedCountEl = document.getElementById('missedCount');
+            const restartQuizBtn = document.getElementById('restartQuizBtn');
+            const reviewMissedBtn = document.getElementById('reviewMissedBtn');
+            const currentCardNumEl = document.getElementById('currentCardNum');
+            const totalCardsNumEl = document.getElementById('totalCardsNum');
+
+            // --- MODULE PROGRESS BAR VARIABLES ---
+            const moduleProgressBar = document.getElementById('moduleProgressBar');
+            // Select all sections that are considered "completable" for progress tracking
+            const completableSectionIds = new Set([
+                'introduction',
+                'diabetes-mellitus',
+                'insulin',
+                'nursing-process-insulin',
+                'oral-antidiabetic',
+                'nursing-process-oral-antidiabetics',
+                'other-antidiabetic-agents',
+                'hyperglycemic-drugs',
+                'critical-thinking',
+                'review-questions',
+                'drug-mastery-quiz'
+            ]);
+            let completedSectionsCount = 0; // Tracks number of completed logical sections
+            const totalSections = completableSectionIds.size; // Total number of sections to complete
+
+            // Initialize progress bar
+            updateProgressBar();
+
+            // --- HELPER FUNCTIONS ---
+
+            function updateProgressBar() {
+                const progress = (completedSectionsCount / totalSections) * 100;
+                moduleProgressBar.style.width = `${progress}%`;
+            }
+
+            function markSectionCompleted(sectionId) {
+                const navLink = document.getElementById('nav-' + sectionId);
+                if (navLink && !navLink.classList.contains('completed')) {
+                    navLink.classList.add('completed');
+                    // Only increment if it's a section defined as completable
+                    if (completableSectionIds.has(sectionId)) {
+                        completedSectionsCount++;
+                        updateProgressBar();
+                        // Trigger micro-break only if the "clock out" overlay is not active
+                        if (!document.getElementById('clockOutOverlay').classList.contains('active')) {
+                            // Trigger every 3 sections (e.g., after the 3rd, 6th, 9th, etc.)
+                            if (completedSectionsCount > 0 && completedSectionsCount % 3 === 0 && completedSectionsCount !== totalSections) {
+                                showMicroBreakPrompt();
+                            }
+                        }
+                    }
+                }
+            }
+
+            // --- Manual scrolling for navigation links ---
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link behavior (no page reload/new tab)
+                    const targetId = this.id.replace('nav-', ''); // Get the actual section ID
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // Optionally, update the URL hash without reloading
+                        // window.location.hash = targetId;
+                    }
+                });
+            });
+
+            // toggleReveal function (now called by event listener, no longer onclick)
+            function toggleReveal(button) {
+                const content = button.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                    button.textContent = button.dataset.originalText;
+                } else {
+                    content.style.display = "block";
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = "Click to Hide Details";
+                    const parentSection = button.closest('section');
+                    if (parentSection && parentSection.id) {
+                        markSectionCompleted(parentSection.id);
+                    }
+                }
+            }
+
+            // --- Question Checking Functions ---
+            function checkAnswer(questionId, correctAnswer) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOption = questionCard.querySelector('input[name="' + questionId + '_option"]:checked');
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                // Disable options after submission
+                questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+                if (!selectedOption) {
+                    feedbackDiv.textContent = "Oops! Please pick an answer before checking.";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                if (selectedOption.value === correctAnswer) {
+                    feedbackDiv.textContent = "Awesome! That's correct. Keep up the great work!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Not quite! The correct answer was: ${correctAnswer.toUpperCase()}. Review the material and try to understand why.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkMultipleAnswers(questionId, correctAnswers) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOptions = Array.from(questionCard.querySelectorAll('input[name="' + questionId + '_option"]:checked')).map(input => input.value);
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                // Disable options after submission
+                questionCard.querySelectorAll('input[type="checkbox"]').forEach(input => input.disabled = true);
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+
+                if (selectedOptions.length === 0) {
+                    feedbackDiv.textContent = "Don't forget to select your answers!";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                // Convert correctAnswers to a Set for efficient lookup
+                const correctSet = new Set(correctAnswers);
+                
+                // Check if all selected options are in the correct answers AND
+                // if all correct answers were selected (no missing ones)
+                const isCorrect = selectedOptions.every(answer => correctSet.has(answer)) &&
+                                    correctAnswers.every(answer => selectedOptions.includes(answer)) &&
+                                    selectedOptions.length === correctAnswers.length; // Ensure no extra incorrect options were selected
+
+                if (isCorrect) {
+                    feedbackDiv.textContent = "Fantastic! You got all the correct points!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Hold on! Double-check the options and review the related content. You might have missed something or picked too many/too few. Correct answers were: ${correctAnswers.map(ans => ans.toUpperCase()).join(', ')}.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkCaseStudy() {
+                const feedbackDiv = document.getElementById('case_study_feedback');
+                const rationaleDiv = document.getElementById('case_study_rationale');
+
+                // Disable inputs and button after submission
+                document.querySelectorAll('#critical-thinking .fill-in-the-blank input[type="text"], #critical-thinking .fill-in-the-blank textarea').forEach(input => input.disabled = true);
+                document.querySelectorAll('#critical-thinking .fill-in-the-blank input[type="checkbox"]').forEach(input => input.disabled = true);
+                document.getElementById('submit_case_study').disabled = true;
+
+                // Define correct answers for the case study matrix
+                const csCorrectAnswers = {
+                    'cs_q1': 'indicated',
+                    'cs_q2': 'contraindicated',
+                    'cs_q3': 'indicated',
+                    'cs_q4': 'contraindicated',
+                    'cs_q5': 'indicated',
+                    'cs_q6': 'contraindicated',
+                    'cs_q7': 'indicated'
+                };
+
+                let allCsCorrect = true;
+                for (const qBaseId in csCorrectAnswers) {
+                    const correctValue = csCorrectAnswers[qBaseId];
+                    const indicatedCheckbox = document.querySelector(`input[name="${qBaseId}_indicated"]`);
+                    const contraindicatedCheckbox = document.querySelector(`input[name="${qBaseId}_contraindicated"]`);
+
+                    let isRowCorrect = false;
+                    if (correctValue === 'indicated' && indicatedCheckbox.checked && !contraindicatedCheckbox.checked) {
+                        isRowCorrect = true;
+                    } else if (correctValue === 'contraindicated' && contraindicatedCheckbox.checked && !indicatedCheckbox.checked) {
+                        isRowCorrect = true;
+                    }
+
+                    if (isRowCorrect) {
+                        indicatedCheckbox.closest('tr').style.backgroundColor = '#d4edda'; // Light green
+                    } else {
+                        allCsCorrect = false;
+                        indicatedCheckbox.closest('tr').style.backgroundColor = '#f8d7da'; // Light red
+                    }
+                }
+
+                if (allCsCorrect) {
+                    feedbackDiv.textContent = "Fantastic! You nailed the case study!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = "Not quite perfect yet! Review the rationale below and compare it with your answers. Pay close attention to why each nursing instruction is indicated or contraindicated.";
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+
+                feedbackDiv.style.display = 'block';
+                rationaleDiv.style.display = 'block';
+                markSectionCompleted('critical-thinking');
+            }
+
+
+            // --- DRUG MASTERY QUIZ FUNCTIONS ---
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function startQuiz(reviewMode = false) {
+                if (!reviewMode) {
+                    currentQuizDrugsCopy = shuffleArray([...drugs]); // Start with all drugs shuffled
+                    masteredDrugs = [];
+                    missedDrugs = [];
+                } else {
+                    if (missedDrugs.length === 0) {
+                        alert("Fantastic! You've mastered all the drugs in the review pile. Starting a new full quiz!");
+                        currentQuizDrugsCopy = shuffleArray([...drugs]);
+                        masteredDrugs = [];
+                        missedDrugs = [];
+                    } else {
+                        currentQuizDrugsCopy = shuffleArray([...missedDrugs]); // Only review missed ones
+                        missedDrugs = []; // Clear missed for the new review round, as these are now being re-attempted
+                    }
+                }
+
+                currentDrugIndex = 0;
+                startQuizBtn.style.display = 'none';
+                drugQuizCard.style.display = 'block';
+                quizSummary.style.display = 'none';
+                displayCurrentCard();
+                markSectionCompleted('drug-mastery-quiz'); // Mark quiz section completed when started
+            }
+
+            function displayCurrentCard() {
+                if (currentDrugIndex >= currentQuizDrugsCopy.length) {
+                    showQuizSummary();
+                    return;
+                }
+
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const randomQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+
+                drugNameEl.textContent = currentDrug.name;
+                currentCardNumEl.textContent = currentDrugIndex + 1;
+                totalCardsNumEl.textContent = currentQuizDrugsCopy.length;
+
+                let questionText = '';
+                switch (randomQuestionType) {
+                    case 'class':
+                        questionText = `What is the **drug class** for ${currentDrug.name}?`;
+                        break;
+                    case 'keyActions':
+                        questionText = `What is a **key action or use** of ${currentDrug.name}?`;
+                        break;
+                    case 'sideEffects':
+                        questionText = `Name one or two **common side effects** of ${currentDrug.name}.`;
+                        break;
+                    case 'nursingConsiderations':
+                        questionText = `What is an **important nursing consideration** when administering ${currentDrug.name}?`;
+                        break;
+                }
+                drugQuestionEl.innerHTML = questionText;
+
+                answerFeedbackEl.style.display = 'none';
+                masteryButtons.style.display = 'none';
+                showAnswerBtn.style.display = 'block';
+
+                drugQuizCard.dataset.currentQuestionType = randomQuestionType;
+            }
+
+            function showAnswer() {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const questionType = drugQuizCard.dataset.currentQuestionType;
+
+                answerTypeEl.textContent = questionType.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, str => str.toUpperCase());
+
+                let content = '';
+                switch (questionType) {
+                    case 'class':
+                        content = currentDrug.class;
+                        break;
+                    case 'keyActions':
+                        content = currentDrug.keyActions;
+                        break;
+                    case 'sideEffects':
+                        content = currentDrug.sideEffects;
+                        break;
+                    case 'nursingConsiderations':
+                        content = currentDrug.nursingConsiderations;
+                        break;
+                }
+                answerContentEl.textContent = content;
+
+                answerFeedbackEl.style.display = 'block';
+                showAnswerBtn.style.display = 'none';
+                masteryButtons.style.display = 'flex';
+            }
+
+            function handleMastery(isCorrect) {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                if (isCorrect) {
+                    // Only add to mastered if it wasn't already in missedDrugs from a previous round this session
+                    if (!missedDrugs.includes(currentDrug)) {
+                        masteredDrugs.push(currentDrug);
+                    }
+                } else {
+                    // If they got it wrong, add it to missed drugs for potential review later
+                    if (!missedDrugs.includes(currentDrug)) { // Avoid duplicates if already missed earlier in the same quiz run
+                        missedDrugs.push(currentDrug);
+                    }
+                }
+                masteryButtons.style.display = 'none';
+
+                setTimeout(() => {
+                    currentDrugIndex++;
+                    displayCurrentCard();
+                }, 1500); // 1.5 second delay before next card
+            }
+
+            function showQuizSummary() {
+                drugQuizCard.style.display = 'none';
+                quizSummary.style.display = 'block';
+
+                // Use Sets to get unique counts, as a drug might be in missedDrugs multiple times if they failed it repeatedly
+                masteredCountEl.textContent = (new Set(masteredDrugs)).size;
+                missedCountEl.textContent = (new Set(missedDrugs)).size;
+            }
+
+            // --- EVENT LISTENERS ---
+
+            // Attach event listeners for all reveal buttons
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    toggleReveal(this); // 'this' refers to the button that was clicked
+                });
+            });
+
+            // Attach event listeners for quiz question submit buttons (by their IDs)
+            document.getElementById('submit_q1').addEventListener('click', () => checkAnswer('q1', 'c'));
+            document.getElementById('submit_q2').addEventListener('click', () => checkAnswer('q2', 'a')); // Corrected answer from 'c' to 'a'
+            document.getElementById('submit_q3').addEventListener('click', () => checkAnswer('q3', 'b')); // Corrected answer from 'a' to 'b' (Lispro is rapid-acting, should be given when food is present)
+            document.getElementById('submit_q4').addEventListener('click', () => checkAnswer('q4', 'b'));
+            document.getElementById('submit_q5').addEventListener('click', () => checkMultipleAnswers('q5', ['b', 'd', 'e', 'f']));
+            document.getElementById('submit_q6').addEventListener('click', () => checkMultipleAnswers('q6', ['a', 'b', 'd']));
+            document.getElementById('submit_q7').addEventListener('click', () => checkMultipleAnswers('q7', ['b', 'd'])); // Corrected answer from 'c' to exclude it
+
+
+            document.getElementById('submit_case_study').addEventListener('click', checkCaseStudy);
+
+
+            // Quiz Mastery Challenge Event Listeners
+            startQuizBtn.addEventListener('click', () => startQuiz(false));
+            showAnswerBtn.addEventListener('click', showAnswer);
+            correctBtn.addEventListener('click', () => handleMastery(true));
+            incorrectBtn.addEventListener('click', () => handleMastery(false));
+            restartQuizBtn.addEventListener('click', () => startQuiz(false));
+            reviewMissedBtn.addEventListener('click', () => startQuiz(true));
+
+            // Text Size Controls
+            const increaseTextBtn = document.getElementById('increaseText');
+            const decreaseTextBtn = document.getElementById('decreaseText');
+            let currentFontSize = 16; // Base font size in px (matches default Open Sans)
+
+            increaseTextBtn.addEventListener('click', () => {
+                currentFontSize += 2;
+                document.body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            decreaseTextBtn.addEventListener('click', () => {
+                currentFontSize -= 2;
+                if (currentFontSize < 12) currentFontSize = 12; // Minimum size
+                document.body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            // Quick Notes persistence (uses localStorage)
+            const quickNotesTextarea = document.getElementById('quickNotesTextarea');
+            if (localStorage.getItem('adhdModuleNotes')) {
+                quickNotesTextarea.value = localStorage.getItem('adhdModuleNotes');
+            }
+            quickNotesTextarea.addEventListener('input', () => {
+                localStorage.setItem('adhdModuleNotes', quickNotesTextarea.value);
+            });
+
+            // Micro-Break Prompts (Original functionality without Clock Out)
+            const microBreakPromptEl = document.getElementById('microBreakPrompt');
+            const breakPrompts = [
+                "Quick Break! Stand up and stretch, or take a few deep breaths!",
+                "Time for a 30-second mental reset. Look away from the screen for a moment!",
+                "Mini-Break! Wiggle your toes or do a quick shoulder roll.",
+                "Focus check! Take a sip of water and recenter. You're doing great!",
+                "Short pause! How about a quick doodle or scribble for 15 seconds!"
+            ];
+            let breakPromptTimeout;
+
+            function showMicroBreakPrompt() {
+                if (breakPromptTimeout) {
+                    clearTimeout(breakPromptTimeout);
+                }
+                const randomPrompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)];
+                microBreakPromptEl.textContent = randomPrompt;
+                microBreakPromptEl.style.display = 'block';
+                // Set a timer to hide it after the animation
+                breakPromptTimeout = setTimeout(() => {
+                    microBreakPromptEl.style.display = 'none';
+                }, 8000); // Matches animation duration
+            }
+
+            // --- Initial setup calls that run once DOM is fully loaded ---
+            // Initialize reveal button original text (needed for toggleReveal)
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.dataset.originalText = button.textContent;
+            });
+            // Initial update of progress bar is done at the top with completableSectionIds being defined.
+        }); // END OF document.addEventListener('DOMContentLoaded', ...)
+    </script>
+</body>
+</html>

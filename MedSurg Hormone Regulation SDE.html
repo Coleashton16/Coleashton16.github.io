@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hormone Regulation Diagnostics Exam</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .quiz-wrapper {
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .quiz-header {
+            background-color: #4a5568;
+            color: white;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid #2c3e50;
+            position: relative; 
+        }
+        .logo {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.8rem;
+            font-weight: 900;
+            font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+            color: #f6ad55;
+            letter-spacing: 1px;
+        }
+        .quiz-header h1 { margin: 0; font-size: 1.75rem; }
+        #timer-display { font-size: 1.25rem; margin-top: 0.5rem; font-weight: bold; color: #f6ad55; }
+        .quiz-content { padding: 1.5rem 2rem; flex-grow: 1; }
+        #initial-screen { text-align: center; }
+        #initial-screen h2 { color: #2c3e50; }
+        #initial-screen p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 1rem auto; }
+        #question-container { margin-bottom: 1.5rem; }
+        .question-header { font-size: 1.1rem; color: #718096; margin-bottom: 1rem; }
+        .question-text { font-size: 1.3rem; font-weight: bold; margin-bottom: 1.5rem; line-height: 1.5; }
+        .options-container label { display: block; background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 1rem; margin-bottom: 0.75rem; border-radius: 8px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+        .options-container label:hover { background-color: #e2e8f0; border-color: #cbd5e0; }
+        .options-container input[type="radio"], .options-container input[type="checkbox"] { margin-right: 10px; }
+        .text-answer-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.2rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            margin-top: 1rem;
+            box-sizing: border-box;
+        }
+        .flag-container { margin-top: 1.5rem; text-align: right; }
+        .flag-container label { cursor: pointer; color: #4a5568; font-weight: bold; }
+        .flag-container input[type="checkbox"] { margin-right: 5px; transform: scale(1.2); }
+        #navigation-btn, #start-btn, #print-btn { display: block; width: 100%; padding: 1rem; font-size: 1.2rem; font-weight: bold; color: white; background-color: #3182ce; border: none; border-radius: 8px; cursor: pointer; margin-top: 1rem; transition: background-color 0.2s; }
+        #navigation-btn:hover, #start-btn:hover, #print-btn:hover { background-color: #2b6cb0; }
+        #print-btn { background-color: #68d391; }
+        #print-btn:hover { background-color: #48bb78; }
+        #results-area { line-height: 1.7; }
+        #results-summary { text-align: center; background-color: #ebf8ff; border: 1px solid #90cdf4; padding: 1.5rem; margin-bottom: 2rem; border-radius: 8px; }
+        #results-summary h2 { margin-top: 0; }
+        .result-question { background: #fff; border: 1px solid #e2e8f0; padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; }
+        .result-question p strong { display: block; margin-bottom: 1rem; font-size: 1.2em; }
+        .result-question ul { list-style-type: none; padding: 0; margin: 0; }
+        .result-question li { padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; border: 1px solid #e2e8f0; }
+        .correct-answer-label { background-color: #c6f6d5 !important; border-color: #9ae6b4 !important; }
+        .incorrect-answer-label { background-color: #fed7d7 !important; border-color: #feb2b2 !important; }
+        .missed-correct-answer-label { border: 2px solid #68d391 !important; }
+        .typed-answer-result { margin-top: 1rem; }
+        .typed-answer-result .user-answer.correct { color: #38a169; }
+        .typed-answer-result .user-answer.incorrect { color: #e53e3e; text-decoration: line-through; }
+        .typed-answer-result .correct-answer-text { color: #38a169; font-weight: bold; }
+        .rationale { margin-top: 1rem; padding: 1rem; border-radius: 6px; border-left: 5px solid #a0aec0; background-color: #f7fafc; }
+        .rationale strong { display: block; margin-bottom: 0.5rem; }
+        .time-spent-info { font-style: italic; color: #718096; margin-top: 0.5rem; display: block; }
+        .time-flagged-rationale { background-color: #e9d8fd !important; border-left-color: #9f7aea !important; }
+        .flagged-rationale { background-color: #fefcbf !important; border-left-color: #f6e05e !important; }
+        #study-focus { margin-top: 2.5rem; padding: 1.5rem; background-color: #fefcbf; border: 1px solid #f6e05e; border-radius: 8px; }
+        #study-focus h3 { margin-top: 0; color: #2d3748; border-bottom: 2px solid #f6e05e; padding-bottom: 0.5rem; }
+        #study-focus ul { list-style-type: '👉'; padding-left: 2rem; }
+        #study-focus li { padding-left: 0.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .hidden { display: none; }
+        #pause-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1.5rem;
+            z-index: 1010; 
+            background-color: #f6ad55;
+            color: #2d3748;
+            border: 2px solid #2d3748;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        #pause-btn:hover {
+            background-color: #f687b3;
+            transform: scale(1.1);
+        }
+        #pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(226, 232, 240, 0.95);
+            z-index: 1000;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+        }
+        #pause-overlay .pause-content h1 {
+            font-size: 5rem;
+            color: #e53e3e; 
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        #pause-overlay .pause-content .stop-sign {
+             font-size: 8rem;
+        }
+        #pause-overlay .pause-content p {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-top: 1rem;
+        }
+        #study-guide-printable {
+             display: none;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #study-guide-printable, #study-guide-printable * {
+                visibility: visible;
+            }
+            #study-guide-printable {
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                font-family: 'Times New Roman', Times, serif;
+                color: #000;
+                background-color: #fff;
+            }
+            .study-guide-item {
+                page-break-inside: avoid;
+                margin-bottom: 2rem;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 1rem;
+            }
+            .study-guide-item h1 {
+                font-size: 24pt;
+                text-align: center;
+                margin-bottom: 2rem;
+                color: #000;
+            }
+            .study-guide-item h3 {
+                font-size: 14pt;
+                margin-bottom: 1rem;
+                color: #000;
+            }
+            .study-guide-item p {
+                font-size: 12pt;
+                line-height: 1.4;
+                margin: 0.5rem 0;
+            }
+            .study-guide-item .print-rationale {
+                margin-top: 1rem;
+                padding: 0.5rem;
+                border-left: 3px solid #ccc;
+                background-color: #f0f0f0 !important;
+                font-style: italic;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .study-guide-item .print-rationale strong {
+                font-style: normal;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="pause-btn" class="hidden">||</button>
+    <div id="pause-overlay">
+        <div class="pause-content">
+            <div class="stop-sign">🛑</div>
+            <h1>EXAM PAUSED</h1>
+            <p>Click the pause button in the corner to resume.</p>
+        </div>
+    </div>
+    <div class="quiz-wrapper">
+        <header class="quiz-header">
+            <div class="logo">VSREP</div>
+            <h1>Hormone Regulation Diagnostics Exam - Med Surg 1</h1>
+            <div id="timer-display">Time Left: 35:00</div>
+        </header>
+        <main class="quiz-content">
+            <div id="initial-screen">
+                <h2>Welcome to the Exam</h2>
+                <p>This is a timed, 30-question quiz on hormone regulation, endocrine disorders, and pharmacology. The time limit is <strong>35 minutes</strong>. You can flag questions for review. Click "Start Quiz" when you are ready to begin.</p>
+                <button id="start-btn">Start Quiz</button>
+            </div>
+            <form id="quiz-form" class="hidden">
+                <div id="question-container"></div>
+                <div class="flag-container">
+                    <label><input type="checkbox" id="flag-for-review"> Flag for Review</label>
+                </div>
+                 <button type="submit" id="navigation-btn" class="hidden">Next Question</button>
+            </form>
+            <div id="results-area" class="hidden">
+                <div id="results-summary"></div>
+                <div id="results-details"></div>
+                <div id="study-focus"></div>
+                <button id="print-btn" class="hidden">🖨️ Print Study Guide</button>
+            </div>
+        </main>
+    </div>
+    <div id="study-guide-printable"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const fullQuizData = [
+    {
+        "scenario": "A patient with a history of small cell lung cancer is admitted with a serum sodium of 119 mEq/L, muscle twitching, and lethargy. The patient's urine specific gravity is 1.032.",
+        "questionText": "The nurse analyzes these findings as a complication directly impacting fluid and electrolyte balance. Which nursing diagnosis is the priority?",
+        "options": {"A": "Deficient Fluid Volume related to decreased oral intake.", "B": "Excess Fluid Volume related to inappropriate hormone secretion.", "C": "Impaired Gas Exchange related to underlying malignancy.", "D": "Risk for Unstable Blood Glucose Level related to metabolic changes."},
+        "correctAnswer": "B",
+        "rationale": "The patient's cancer, combined with severe hyponatremia and concentrated urine, strongly indicates SIADH. In SIADH, excess ADH causes water retention, leading to a dilutional hyponatremia and an excess fluid volume state. The neurologic symptoms are a result of this imbalance.",
+        "section": "SIADH"
+    },
+    {
+        "questionText": "A patient with AVP-D (Diabetes Insipidus) has a serum sodium of 158 mEq/L. This electrolyte imbalance creates a fluid shift that puts the patient at highest risk for what complication?",
+        "options": {"A": "Cerebral edema and seizures.", "B": "Pulmonary edema and crackles.", "C": "Cellular shrinking and neurologic dysfunction.", "D": "Cardiac dysrhythmias from potassium shifts."},
+        "correctAnswer": "C",
+        "rationale": "Severe hypernatremia creates a hyperosmolar state in the blood, pulling water out of brain cells via osmosis. This cellular shrinking leads to neurologic manifestations like confusion, lethargy, and potentially coma. Cerebral edema (A) is a risk with severe HYPOnatremia.",
+        "section": "AVP-D / Diabetes Insipidus"
+    },
+    {
+        "questionText": "A patient with Cushing's syndrome develops a cough, crackles in the lung bases, and dyspnea. The nurse recognizes these symptoms as a potential complication related to which concept?",
+        "options": {"A": "Immunity, due to risk of opportunistic pneumonia.", "B": "Elimination, due to potassium loss through the kidneys.", "C": "Fluid Volume Excess, due to fluid overload causing pulmonary edema.", "D": "Cellular Regulation, due to malignant tumor growth."},
+        "correctAnswer": "C",
+        "rationale": "Excess cortisol in Cushing's syndrome causes significant sodium and water retention. This hypervolemia can overwhelm the heart's pumping ability, leading to fluid backup in the lungs (pulmonary edema), which directly impairs gas exchange and presents as fluid volume excess.",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "scenario": "A patient with Addison's disease is admitted with vomiting and diarrhea. The cardiac monitor shows tall, peaked T-waves.",
+        "questionText": "What is the nurse's priority action?",
+        "options": {"A": "Administer an antiemetic as ordered.", "B": "Obtain a STAT serum potassium level.", "C": "Increase the rate of the maintenance IV fluids.", "D": "Assess the patient's skin turgor and mucous membranes."},
+        "correctAnswer": "B",
+        "rationale": "The most immediate life-threatening sign is the tall, peaked T-waves, which are a classic ECG finding for severe HYPERkalemia (a hallmark of Addison's disease). The nurse must confirm this electrolyte imbalance immediately as it can lead to fatal dysrhythmias. While other actions are important, confirming the cause of the ECG change is paramount.",
+        "section": "Addison's Disease"
+    },
+    {
+        "questionText": "A patient with a new diagnosis of diabetes insipidus asks, 'Does this mean I have sugar diabetes?' What is the nurse's best response?",
+        "options": {"A": "Yes, both conditions are types of diabetes and affect your blood sugar.", "B": "No, this condition is about water and salt balance due to a hormone issue; it is unrelated to blood sugar regulation.", "C": "They are related, but this type is less severe and doesn't require insulin.", "D": "We need to wait for more tests to determine if it's related to your blood sugar."},
+        "correctAnswer": "B",
+        "rationale": "The names are confusing for patients. The best response clearly and simply differentiates the two conditions: Diabetes Insipidus is a disorder of water balance (ADH/Vasopressin), while Diabetes Mellitus is a disorder of glucose metabolism (insulin).",
+        "section": "AVP-D / Diabetes Insipidus"
+    },
+    {
+        "questionText": "A patient with Addison's disease develops an adrenal crisis. How does this condition impact tissue perfusion?",
+        "options": {"A": "It causes hypervolemia, leading to bounding pulses.", "B": "It causes profound hypotension, leading to poor tissue perfusion and shock.", "C": "It causes peripheral vasoconstriction, leading to hypertension.", "D": "It causes hyperglycemia, which impairs oxygen's ability to bind to hemoglobin."},
+        "correctAnswer": "B",
+        "rationale": "Adrenal crisis results in severe hypovolemia from the loss of aldosterone and cortisol. This leads to profound hypotension and circulatory collapse (shock). Without adequate blood pressure, tissue perfusion is severely impaired.",
+        "section": "Addison's Disease"
+    },
+    {
+        "questionText": "A patient is admitted with AVP-R (nephrogenic DI). The nurse plans care based on the understanding that this patient's urinary elimination pattern will exhibit which characteristics? (Select All That Apply)",
+        "options": {"A": "Polyuria", "B": "High urine osmolality", "C": "Low urine specific gravity", "D": "Oliguria", "E": "Dark, concentrated urine"},
+        "correctAnswer": ["A", "C"],
+        "rationale": "AVP-R is characterized by the kidneys' inability to concentrate urine. This results in the excretion of large volumes of urine (polyuria) that is very dilute, meaning it will have a low urine osmolality and a low specific gravity (e.g., < 1.005). B, D, and E describe the opposite condition, SIADH.",
+        "section": "AVP-R / Diabetes Insipidus"
+    },
+    {
+        "questionText": "A patient with Cushing's syndrome has a nursing diagnosis of 'Risk for Infection'. Which physiological change is the primary reason for this diagnosis?",
+        "options": {"A": "Reduced immunity from excess cortisol suppressing lymphocyte production.", "B": "Thin, fragile skin that is easily broken.", "C": "High blood glucose levels that provide a medium for bacterial growth.", "D": "Fatigue and muscle weakness limiting hygiene practices."},
+        "correctAnswer": "A",
+        "rationale": "While B and C contribute to the risk, the primary reason is the direct immunosuppressive effect of high cortisol levels. Excess cortisol reduces the number of circulating lymphocytes, inhibits macrophage activity, and suppresses the overall inflammatory response.",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "scenario": "A patient is 12 hours post-hypophysectomy. The urine output for the past 4 hours has been 200 mL, 250 mL, 300 mL, and 350 mL. The patient complains of extreme thirst.",
+        "questionText": "What is the nurse's priority action?",
+        "options": {"A": "Provide the patient with a large pitcher of ice water.", "B": "Check the urine specific gravity and notify the provider of the findings.", "C": "Reassure the patient that increased thirst is normal after surgery.", "D": "Administer a dose of a loop diuretic as per standing orders."},
+        "correctAnswer": "B",
+        "rationale": "This patient is exhibiting classic signs of developing AVP-D (Diabetes Insipidus), a known complication of hypophysectomy. The increasing polyuria and polydipsia are critical cues. The nurse's priority is to confirm the diagnosis by checking the urine specific gravity (which will be very low) and immediately notifying the provider to initiate treatment (likely desmopressin) and prevent severe dehydration.",
+        "section": "Hypophysectomy"
+    },
+    {
+        "questionText": "A patient with acromegaly complains of joint pain and morning headaches. The nurse recognizes the headaches may be due to an impairment in which interrelated concept?",
+        "options": {"A": "Elimination", "B": "Gas Exchange due to sleep apnea", "C": "Fluid Balance", "D": "Cellular Regulation"},
+        "correctAnswer": "B",
+        "rationale": "In acromegaly, hypertrophy of soft tissues can lead to obstructive sleep apnea. Sleep apnea causes intermittent airway obstruction, impairing gas exchange and leading to hypoxia and hypercapnia, which manifest as daytime sleepiness and morning headaches.",
+        "section": "Hyperpituitarism"
+    },
+    {
+        "questionText": "A patient with Addison's disease who is taking hydrocortisone develops a fever and cough. What is the most important instruction the nurse should provide?",
+        "options": {"A": "Stop taking the hydrocortisone until the infection resolves.", "B": "Increase fluid intake and take acetaminophen for the fever.", "C": "Contact the provider because the hydrocortisone dose may need to be increased.", "D": "Alternate taking hydrocortisone and ibuprofen to manage symptoms."},
+        "correctAnswer": "C",
+        "rationale": "Physical stress, such as an infection, increases the body's need for cortisol. Patients with adrenal insufficiency cannot produce this extra cortisol. They require a 'stress dose' (an increased dose) of their medication to prevent a life-threatening adrenal crisis. This is a critical teaching point.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A patient is admitted with a new diagnosis of SIADH. Which of the following provider orders would the nurse question?",
+        "options": {"A": "Fluid restriction of 800 mL/24 hours.", "B": "Seizure precautions.", "C": "Administer desmopressin (DDAVP) 1 mcg IV daily.", "D": "Administer 3% NaCl infusion for sodium level of 116 mEq/L."},
+        "correctAnswer": "C",
+        "rationale": "Desmopressin (DDAVP) is a synthetic form of ADH. Administering it to a patient with SIADH, who already has an excess of ADH, would worsen the water retention and hyponatremia, and could be fatal. All other orders are appropriate for the management of severe SIADH.",
+        "section": "SIADH"
+    },
+    {
+        "questionText": "A patient's lab results show a low TSH and a high T4 level. How does the nurse interpret this finding?",
+        "options": {"A": "Primary hypothyroidism", "B": "Secondary hypothyroidism", "C": "Primary hyperthyroidism", "D": "Secondary hyperthyroidism"},
+        "correctAnswer": "C",
+        "rationale": "This pattern indicates the thyroid gland itself is overproducing T4 (primary hyperthyroidism). The high level of T4 is correctly telling the pituitary to stop producing TSH (negative feedback), resulting in a low TSH level.",
+        "section": "Thyroid Hormones"
+    },
+    {
+        "questionText": "The nurse is planning care for a patient with Cushing's syndrome. Which intervention is essential to prevent injury related to the patient's musculoskeletal system?",
+        "options": {"A": "Encourage high-impact exercises to build muscle mass.", "B": "Apply a pressure-relieving mattress to the bed.", "C": "Use a lift sheet when repositioning the patient in bed.", "D": "Provide a high-carbohydrate, low-protein diet."},
+        "correctAnswer": "C",
+        "rationale": "Cushing's syndrome causes osteoporosis and muscle wasting, creating a high risk for fragility fractures. Using a lift sheet for repositioning prevents pulling on fragile limbs and skin, reducing the risk of both fractures and skin tears. High-impact exercise (A) is dangerous. A high-protein diet (D) is needed. A pressure-relieving mattress (B) helps prevent skin breakdown but is less specific to musculoskeletal injury.",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "questionText": "What is the primary electrolyte disturbance the nurse must monitor for when administering tolvaptan to a patient with SIADH?",
+        "options": {"A": "Hypokalemia", "B": "Hypernatremia", "C": "Hypocalcemia", "D": "Hypermagnesemia"},
+        "correctAnswer": "B",
+        "rationale": "Tolvaptan is a vasopressin antagonist that promotes free water excretion without sodium loss. This can lead to a rapid increase in the serum sodium concentration. The black box warning for the drug highlights the danger of correcting sodium too quickly, leading to central nervous system demyelination.",
+        "section": "Pharmacology"
+    },
+    {
+        "questionText": "Which statement by a patient who underwent a hypophysectomy indicates an accurate understanding of discharge instructions? (Select All That Apply)",
+        "options": {"A": "I will avoid bending at my waist for a while.", "B": "My sense of smell might be off for a few months.", "C": "I can start brushing my teeth again tomorrow.", "D": "I need to eat a high-fiber diet to prevent constipation.", "E": "It's normal to have a severe headache for a week or two."},
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "Correct instructions include avoiding bending at the waist (A), expecting a temporarily decreased sense of smell (B), and preventing constipation/straining with a high-fiber diet (D). Toothbrushing must be avoided for about 2 weeks (C). Persistent, severe headaches are not normal and may indicate a CSF leak (E).",
+        "section": "Hypophysectomy"
+    },
+    {
+        "questionText": "A patient with AVP-D (Diabetes Insipidus) is receiving desmopressin. The nurse assesses a 2-kg weight gain in 24 hours, confusion, and a persistent headache. The nurse recognizes these as signs of which complication?",
+        "options": {"A": "An allergic reaction to the drug.", "B": "Development of nephrogenic DI.", "C": "Water toxicity and hyponatremia.", "D": "A fluid volume deficit."},
+        "correctAnswer": "C",
+        "rationale": "Desmopressin causes the kidneys to retain water. Excessive water retention leads to fluid overload and dilutional hyponatremia (water toxicity). The signs include weight gain and neurologic changes like headache and confusion due to cerebral edema. This is a life-threatening complication.",
+        "section": "AVP-D / Diabetes Insipidus"
+    },
+    {
+        "questionText": "Which hormone deficiency in hypopituitarism leads to amenorrhea, decreased libido, and loss of bone density in female patients?",
+        "options": {"A": "Growth Hormone (GH)", "B": "Adrenocorticotropic hormone (ACTH)", "C": "Thyroid-stimulating hormone (TSH)", "D": "Gonadotropins (LH and FSH)"},
+        "correctAnswer": "D",
+        "rationale": "Luteinizing hormone (LH) and follicle-stimulating hormone (FSH) are the gonadotropins that regulate ovarian function and estrogen production. A deficiency leads to low estrogen levels, resulting in the symptoms listed.",
+        "section": "Hypopituitarism"
+    },
+    {
+        "questionText": "The nurse is evaluating the effectiveness of spironolactone therapy for a patient with hyperaldosteronism. Which lab result would indicate a therapeutic response?",
+        "options": {"A": "Serum potassium of 5.8 mEq/L", "B": "Serum sodium of 150 mEq/L", "C": "Serum potassium of 4.1 mEq/L", "D": "Serum sodium of 130 mEq/L"},
+        "correctAnswer": "C",
+        "rationale": "Hyperaldosteronism causes hypokalemia. Spironolactone is a potassium-sparing diuretic that blocks aldosterone's effects, thus causing potassium levels to rise back into the normal range (3.5-5.0 mEq/L). A potassium of 4.1 mEq/L indicates the medication is working effectively.",
+        "section": "Hyperaldosteronism"
+    },
+    {
+        "questionText": "A patient with a pituitary adenoma causing acromegaly is most likely to have an overproduction of which hormone?",
+        "options": {"A": "Prolactin (PRL)", "B": "Growth Hormone (GH)", "C": "Adrenocorticotropic hormone (ACTH)", "D": "Vasopressin (ADH)"},
+        "correctAnswer": "B",
+        "rationale": "Overproduction of GH in adults results in acromegaly, which is characterized by the enlargement of bones in the hands, feet, and face.",
+        "section": "Hyperpituitarism"
+    },
+    {
+        "questionText": "Which concept is the primary reason for monitoring a patient in Addisonian crisis for cardiac dysrhythmias?",
+        "options": {"A": "Fluid & Electrolyte Balance", "B": "Perfusion", "C": "Immunity", "D": "Cellular Regulation"},
+        "correctAnswer": "A",
+        "rationale": "The profound electrolyte disturbance in Addisonian crisis is hyperkalemia, caused by aldosterone deficiency. Hyperkalemia directly alters cardiac myocyte electrical conduction, leading to potentially fatal dysrhythmias. Therefore, the connection is between fluid and electrolyte balance and cardiac function.",
+        "section": "Addison's Disease"
+    },
+    {
+        "questionText": "A patient who has had a bilateral adrenalectomy will require which type of lifelong therapy?",
+        "options": {"A": "Only glucocorticoid replacement", "B": "Only mineralocorticoid replacement", "C": "Both glucocorticoid and mineralocorticoid replacement", "D": "Desmopressin and thyroid hormone replacement"},
+        "correctAnswer": "C",
+        "rationale": "Removal of both adrenal glands eliminates the body's source of both cortisol (a glucocorticoid) and aldosterone (a mineralocorticoid). Therefore, the patient will require lifelong replacement of both types of hormones to survive.",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "questionText": "How does Cushing syndrome affect a patient's immune system?",
+        "options": {"A": "It has no effect on the immune system.", "B": "It enhances the immune system, preventing all infections.", "C": "It reduces immunity, masking signs of infection and increasing risk.", "D": "It only affects the production of B-lymphocytes."},
+        "correctAnswer": "C",
+        "rationale": "High cortisol levels reduce lymphocyte production, inhibit macrophage activity, and decrease cytokine production. This leads to reduced immunity and an increased risk for infection, where classic signs like fever and pus may be absent.",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "questionText": "Which finding is essential for the nurse to monitor for in a patient receiving bromocriptine for hyperpituitarism?",
+        "options": {"A": "Hyperglycemia", "B": "Hypertension", "C": "Orthostatic hypotension", "D": "Bradycardia"},
+        "correctAnswer": "C",
+        "rationale": "A key side effect of bromocriptine, a dopamine agonist, is orthostatic hypotension. The nurse must teach the patient to change positions slowly and monitor for dizziness to prevent falls.",
+        "section": "Hyperpituitarism"
+    },
+    {
+        "questionText": "A patient with AVP-D (Diabetes Insipidus) is at risk for which nursing diagnosis as a priority?",
+        "options": {"A": "Fluid Volume Excess", "B": "Impaired Tissue Perfusion", "C": "Risk for Infection", "D": "Deficient Fluid Volume"},
+        "correctAnswer": "D",
+        "rationale": "The defining characteristic of DI is massive fluid loss through polyuria. This puts the patient at immediate risk for severe dehydration and hypovolemic shock. Therefore, Deficient Fluid Volume is the priority nursing diagnosis.",
+        "section": "AVP-D / Diabetes Insipidus"
+    },
+    {
+        "questionText": "A patient with Cushing's develops a low-grade fever of 99.8°F (37.7°C) and reports feeling 'unwell.' The WBC count is within normal limits. What is the nurse's most appropriate interpretation?",
+        "options": {"A": "This is a normal fluctuation and requires only continued monitoring.", "B": "The patient is likely seeking attention for minor complaints.", "C": "This may be a sign of a significant infection that is being masked by immunosuppression.", "D": "The findings are inconsistent with Cushing syndrome."},
+        "correctAnswer": "C",
+        "rationale": "Because hypercortisolism suppresses the immune and inflammatory response, a patient with a serious infection may not mount a significant fever or an elevated WBC count. Any low-grade fever or sign of illness in an immunosuppressed patient must be considered a potential sign of a severe infection until proven otherwise.",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "questionText": "A patient with a TSH level of 0.1 mU/L (low) and T4 level of 15 mcg/dL (high) complains of heat intolerance and palpitations. Which condition do these findings suggest?",
+        "options": {"A": "Primary hypothyroidism", "B": "Primary hyperthyroidism", "C": "Pituitary failure", "D": "Addison disease"},
+        "correctAnswer": "B",
+        "rationale": "The combination of low TSH and high T4 indicates that the thyroid gland is autonomously overproducing thyroid hormone, which is characteristic of primary hyperthyroidism. The symptoms of heat intolerance and palpitations are classic for a hypermetabolic state.",
+        "section": "Thyroid Hormones"
+    },
+    {
+        "questionText": "How does the fluid and electrolyte imbalance in SIADH affect cellular function in the brain?",
+        "options": {"A": "Hypernatremia pulls water out of brain cells, causing them to shrink.", "B": "Hyponatremia causes an osmotic shift of water into brain cells, leading to cerebral edema.", "C": "Hyperkalemia alters the electrical potential of neurons, causing them to fire erratically.", "D": "Hypovolemia reduces cerebral perfusion pressure, leading to ischemia."},
+        "correctAnswer": "B",
+        "rationale": "In SIADH, the body retains excess free water, creating a hypotonic (low sodium) environment in the bloodstream. Due to osmosis, water moves from this area of low solute concentration into the brain cells, which have a higher solute concentration. This causes the cells to swell, leading to cerebral edema and the associated neurologic symptoms.",
+        "section": "SIADH"
+    },
+    {
+        "questionText": "A patient who had a hypophysectomy is on lifelong cortisol replacement. Which situation would require the patient to contact their provider about increasing their dose?",
+        "options": {"A": "Going on a week-long vacation.", "B": "Starting a new, low-stress office job.", "C": "Undergoing a scheduled colonoscopy.", "D": "Having a week of normal, daily activities."},
+        "correctAnswer": "C",
+        "rationale": "Cortisol is the body's 'stress' hormone. A colonoscopy, with its preparation and invasive nature, is a significant physical stressor. Patients on replacement therapy must have their dose increased (a 'stress dose') to mimic the body's natural response and prevent an adrenal crisis.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "Which assessment finding BEST differentiates AVP-D (central DI) from psychogenic polydipsia?",
+        "options": {"A": "High urine output", "B": "High serum sodium level", "C": "Complaints of intense thirst", "D": "Low urine specific gravity"},
+        "correctAnswer": "B",
+        "rationale": "Patients with both conditions can have high urine output and thirst. However, a patient with psychogenic polydipsia is drinking excessively, which leads to dilution of the blood and a normal or low serum sodium. A patient with AVP-D is losing water uncontrollably, which leads to concentration of the blood and a high serum sodium level. The hypernatremia is the key differentiator.",
+        "section": "AVP-D / Diabetes Insipidus"
+    },
+    {
+        "questionText": "The nurse is evaluating a patient's understanding of their Addison's disease management. Which statement indicates that the teaching has been effective?",
+        "options": {"A": "I should eat a diet low in sodium and high in potassium.", "B": "I must take my hormone replacement medication every day for the rest of my life.", "C": "My skin will return to its normal color once my cortisol levels are stable.", "D": "I only need to take my medication when I feel tired or weak."},
+        "correctAnswer": "B",
+        "rationale": "The cornerstone of managing Addison's disease is lifelong adherence to hormone replacement therapy. Stopping the medication can trigger a fatal adrenal crisis. Patients should eat a diet with adequate sodium (A is incorrect). The hyperpigmentation may lighten but often does not fully resolve (C is incorrect). D is dangerously incorrect.",
+        "section": "Addison's Disease"
+    },
+    {
+        "questionText": "(SATA) Which assessment findings would alert the nurse to a potential adrenal crisis in a patient with Addison's disease? (Select All That Apply)",
+        "options": {"A": "Sudden drop in blood pressure", "B": "Serum potassium of 6.2 mEq/L", "C": "Blood glucose of 55 mg/dL", "D": "Bounding pulse", "E": "Severe abdominal pain"},
+        "correctAnswer": ["A", "B", "C", "E"],
+        "rationale": "Acute adrenal insufficiency is a life-threatening emergency. It is characterized by severe hypotension (A) from hypovolemia, hyperkalemia (B) from aldosterone deficiency, hypoglycemia (C) from cortisol deficiency, and often severe, unexplained abdominal pain (E). A bounding pulse (D) is a sign of fluid overload, the opposite condition.",
+        "section": "Addison's Disease"
+    },
+    {
+        "questionText": "The 'buffalo hump' and 'moon face' seen in Cushing syndrome are caused by what process?",
+        "options": {"A": "Fluid retention in subcutaneous tissues.", "B": "Hypertrophy of neck and facial muscles.", "C": "Redistribution of body fat.", "D": "Inflammation of the parotid glands."},
+        "correctAnswer": "C",
+        "rationale": "In Cushing's, an increase in total body fat results from slow turnover of plasma fatty acids. This fat is redistributed, producing truncal obesity, “buffalo hump,” and “moon face.”",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "questionText": "A patient is prescribed tolvaptan for severe hyponatremia due to SIADH. What is a critical black box warning the nurse must be aware of for this medication?",
+        "options": {"A": "Risk of severe hepatotoxicity and liver failure.", "B": "Risk of agranulocytosis and severe infection.", "C": "Risk of causing paradoxical fluid retention.", "D": "Risk of severe cardiac dysrhythmias."},
+        "correctAnswer": "A",
+        "rationale": "Tolvaptan contains a black box warning that indicates that liver failure and death are possible. While rapid sodium correction is also a warning, hepatotoxicity is a major, distinct black box warning for this drug.",
+        "section": "SIADH"
+    },
+    {
+        "questionText": "A patient with AVP-R (nephrogenic DI) will have what expected response to a dose of desmopressin (DDAVP)?",
+        "options": {"A": "A significant decrease in urine output.", "B": "A significant increase in urine osmolality.", "C": "Little to no change in urine output.", "D": "A rapid increase in blood pressure."},
+        "correctAnswer": "C",
+        "rationale": "In AVP-R, the kidneys are resistant to the effects of ADH. Since desmopressin is a synthetic ADH, the kidneys will also be resistant to its effects. Therefore, administering it will produce little to no change in urine output or concentration. This is a key diagnostic differentiator from AVP-D.",
+        "section": "AVP-R / Diabetes Insipidus"
+    },
+    {
+        "questionText": "(SATA) Which of the following are potential causes of SIADH? (Select All That Apply)",
+        "options": {"A": "Use of lithium", "B": "Small cell lung cancer", "C": "Use of tricyclic antidepressants", "D": "Head trauma", "E": "Use of thiazide diuretics"},
+        "correctAnswer": ["B", "C", "D"],
+        "rationale": "Malignancies like small cell lung cancer (B), CNS disorders like trauma (D), and drugs like tricyclic antidepressants (C) are common causes of SIADH. Lithium and thiazide diuretics (A, E) are associated with causing nephrogenic DI, not SIADH.",
+        "section": "SIADH"
+    },
+    {
+        "questionText": "How does hyperaldosteronism lead to an imbalance in the elimination concept?",
+        "options": {"A": "It causes the kidneys to retain potassium, leading to oliguria.", "B": "It causes the kidneys to excrete large amounts of sodium, leading to polyuria.", "C": "It causes the kidneys to retain sodium and excrete potassium, leading to hypertension and potential electrolyte imbalance.", "D": "It has no direct effect on urinary elimination."},
+        "correctAnswer": "C",
+        "rationale": "The primary action of aldosterone is on the kidneys to promote the reabsorption (retention) of sodium and the excretion (elimination) of potassium. This altered elimination of electrolytes leads to hypernatremia, hypokalemia, and volume expansion causing hypertension.",
+        "section": "Hyperaldosteronism"
+    },
+    {
+        "questionText": "The nurse is caring for a patient post-hypophysectomy who suddenly becomes confused and complains of a severe headache. Which action should the nurse perform first?",
+        "options": {"A": "Administer PRN analgesic for the headache.", "B": "Reorient the patient and dim the lights.", "C": "Perform a focused neurologic assessment.", "D": "Check the nasal drip pad for drainage."},
+        "correctAnswer": "C",
+        "rationale": "A change in level of consciousness and a severe headache are signs of increased intracranial pressure (ICP), a critical post-operative complication. The nurse's first action must be to perform a focused neurologic assessment (checking pupils, level of consciousness, motor function) to establish a new baseline and gather data to report immediately to the provider. The other actions are secondary.",
+        "section": "Hypophysectomy"
+    },
+    {
+        "questionText": "A patient with pheochromocytoma is scheduled for surgery. Which medication does the nurse anticipate administering pre-operatively to prevent a hypertensive crisis?",
+        "options": {
+            "A": "A beta-blocker such as propranolol.",
+            "B": "An ACE inhibitor such as lisinopril.",
+            "C": "An alpha-adrenergic blocker such as phenoxybenzamine.",
+            "D": "A calcium channel blocker such as amlodipine."
+        },
+        "correctAnswer": "C",
+        "rationale": "Pheochromocytoma is a tumor that secretes catecholamines, causing severe hypertension. An alpha-adrenergic blocker is given pre-operatively for 1-2 weeks to control blood pressure and prevent an intraoperative hypertensive crisis when the tumor is manipulated.",
+        "section": "Adrenal Gland Disorders"
+    },
+    
+    {
+        "questionText": "A patient has a TSH level of 8.5 mU/L (high) and a T4 level of 0.5 ng/dL (low). These findings are most indicative of which condition?",
+        "options": {
+            "A": "Primary hypothyroidism.",
+            "B": "Primary hyperthyroidism.",
+            "C": "Secondary hypothyroidism.",
+            "D": "Secondary hyperthyroidism."
+        },
+        "correctAnswer": "A",
+        "rationale": "A high TSH and low T4 indicate that the thyroid gland itself is failing (primary hypothyroidism). The pituitary is producing high levels of TSH in an attempt to stimulate the non-responsive thyroid.",
+        "section": "Thyroid Hormones"
+    },
+    {
+        "questionText": "What is the primary purpose of administering levothyroxine for hypothyroidism?",
+        "options": {
+            "A": "To suppress the production of TSH from the pituitary gland.",
+            "B": "To replace the deficient thyroid hormone and restore a euthyroid state.",
+            "C": "To block the peripheral conversion of T4 to T3.",
+            "D": "To stimulate the thyroid gland to produce more of its own hormones."
+        },
+        "correctAnswer": "B",
+        "rationale": "Levothyroxine is a synthetic form of T4. It is used as a replacement therapy to provide the body with the thyroid hormone it can no longer produce, thereby correcting the metabolic and systemic effects of hypothyroidism.",
+        "section": "Pharmacology"
+    },
+    {
+        "questionText": "A patient taking long-term steroid therapy for an autoimmune condition is at risk for which endocrine disorder?",
+        "options": {
+            "A": "Addison's Disease",
+            "B": "Iatrogenic Cushing's Syndrome",
+            "C": "Grave's Disease",
+            "D": "SIADH"
+        },
+        "correctAnswer": "B",
+        "rationale": "Long-term administration of exogenous corticosteroids (steroids) mimics the body's own cortisol. This leads to the same signs and symptoms as endogenous Cushing's syndrome, a condition referred to as iatrogenic (medication-induced) Cushing's.",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "questionText": "A patient is admitted with myxedema coma. The nurse's priority assessment would be focused on which system?",
+        "options": {
+            "A": "Respiratory status and airway patency.",
+            "B": "Urinary output and specific gravity.",
+            "C": "Musculoskeletal strength and mobility.",
+            "D": "Skin integrity and edema."
+        },
+        "correctAnswer": "A",
+        "rationale": "Myxedema coma is a life-threatening complication of severe hypothyroidism. The most immediate threat to life is respiratory failure due to hypoventilation, potential airway obstruction from an enlarged tongue, and decreased respiratory drive. Maintaining a patent airway and ensuring adequate ventilation is the absolute priority.",
+        "section": "Thyroid Disorders"
+    },
+    {
+        "questionText": "Which of the following is a key clinical manifestation of hyperparathyroidism?",
+        "options": {
+            "A": "Hypocalcemia and tetany.",
+            "B": "Hypercalcemia and bone pain.",
+            "C": "Hypoglycemia and confusion.",
+            "D": "Hyperkalemia and muscle weakness."
+        },
+        "correctAnswer": "B",
+        "rationale": "The parathyroid glands regulate calcium levels. Hyperparathyroidism leads to an excess of parathyroid hormone (PTH), which pulls calcium from the bones into the bloodstream. This results in hypercalcemia and can cause bone pain, fractures, and kidney stones. The phrase 'stones, bones, groans, and psychiatric overtones' summarizes the symptoms.",
+        "section": "Parathyroid Gland"
+    },
+    {
+        "questionText": "A patient who has undergone a thyroidectomy is complaining of numbness and tingling around their mouth. The nurse should assess for which of the following signs?",
+        "options": {
+            "A": "Homan's sign",
+            "B": "Kernig's sign",
+            "C": "Chvostek's sign",
+            "D": "Cullen's sign"
+        },
+        "correctAnswer": "C",
+        "rationale": "Numbness and tingling are symptoms of hypocalcemia, a potential complication of thyroidectomy due to accidental removal of or damage to the parathyroid glands. Chvostek's sign (facial muscle twitching when the facial nerve is tapped) is a classic test for the neuromuscular irritability associated with hypocalcemia.",
+        "section": "Thyroid Disorders"
+    },
+    {
+        "questionText": "A client is to receive an IV regular insulin infusion. The order is for 10 units/hr. The pharmacy supplies a bag of 100 units of insulin in 250 mL of 0.9% NaCl. What rate should the nurse set the infusion pump to in mL/hr?",
+        "correctAnswer": "25",
+        "rationale": "1. Calculate concentration: 100 units / 250 mL = 0.4 units/mL. \n2. Calculate the rate: (Dose ordered) / (Concentration) = (10 units/hr) / (0.4 units/mL) = 25 mL/hr.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "An order is written to administer 100 mg of hydrocortisone IV push. The vial on hand is 250 mg/2 mL. How many mL will the nurse administer? (Round to nearest tenth).",
+        "correctAnswer": "0.8",
+        "rationale": "1. Calculate concentration: 250 mg / 2 mL = 125 mg/mL. \n2. Calculate the volume to administer: (Dose ordered) / (Concentration) = (100 mg) / (125 mg/mL) = 0.8 mL.",
+        "section": "Dosage Calculation"
+    },
+    {
+        "questionText": "A patient weighing 60 kg is ordered desmopressin (DDAVP) at a dose of 0.3 mcg/kg. The medication is to be diluted in 50 mL of NS and infused over 20 minutes. How many total micrograms (mcg) of DDAVP will the patient receive?",
+        "correctAnswer": "18",
+        "rationale": "1. Calculate total dose: (Dose/kg) * (weight in kg) = 0.3 mcg/kg * 60 kg = 18 mcg. \n(The fluid volume and infusion time are distractors for this specific question).",
+        "section": "Dosage Calculation"
+    },
+{
+        "questionText": "A patient with a history of bipolar disorder treated with lithium is admitted with polyuria, polydipsia, and a serum sodium of 152 mEq/L. The nurse anticipates a diagnosis of which condition?",
+        "options": {
+            "A": "Syndrome of Inappropriate Antidiuretic Hormone (SIADH)",
+            "B": "Arginine Vasopressin Resistance (AVP-R) / Nephrogenic DI",
+            "C": "Arginine Vasopressin Deficiency (AVP-D) / Central DI",
+            "D": "Primary Hyperaldosteronism"
+        },
+        "correctAnswer": "B",
+        "rationale": "Lithium is a common cause of drug-induced nephrogenic DI (AVP-R). The kidneys lose their ability to respond to ADH, leading to massive water loss, hypernatremia, and polyuria, despite normal or high ADH levels.",
+        "section": "AVP-R / Diabetes Insipidus"
+    },
+    {
+        "questionText": "A patient is scheduled for a bilateral adrenalectomy. Which statement indicates the patient understands the preoperative teaching regarding postoperative medication needs?",
+        "options": {
+            "A": "I will only need to take cortisol replacement if I feel stressed.",
+            "B": "I will be on lifelong glucocorticoid and mineralocorticoid replacement therapy.",
+            "C": "My remaining adrenal gland will take over, so I won't need any medication.",
+            "D": "I will need to take medication to lower my potassium levels for the rest of my life."
+        },
+        "correctAnswer": "B",
+        "rationale": "A bilateral adrenalectomy removes the body's only source of cortisol and aldosterone. Therefore, lifelong replacement of both glucocorticoids (like hydrocortisone) and mineralocorticoids (like fludrocortisone) is essential for survival.",
+        "section": "Surgical Management"
+    },
+    {
+        "questionText": "A nurse is creating a plan of care for a patient with Cushing's syndrome. Which nursing intervention is the highest priority to prevent patient injury?",
+        "options": {
+            "A": "Placing a 'Fall Risk' bracelet on the patient.",
+            "B": "Ensuring the patient has a pressure-relieving mattress on the bed.",
+            "C": "Teaching the patient to consume a low-calcium diet.",
+            "D": "Applying adhesive tape directly to the skin to secure IVs."
+        },
+        "correctAnswer": "A",
+        "rationale": "Cushing's syndrome causes significant muscle wasting and bone density loss (osteoporosis), placing the patient at extremely high risk for fragility fractures. While skin integrity (B) is important, preventing falls (A) addresses the more immediate and severe risk of a bone fracture. A high-calcium diet is needed (C), and adhesive tape should be avoided (D).",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "questionText": "Which laboratory finding is most characteristic of acute adrenal insufficiency (Addisonian crisis)?",
+        "options": {
+            "A": "Hypernatremia, Hypokalemia, Hyperglycemia",
+            "B": "Hyponatremia, Hyperkalemia, Hypoglycemia",
+            "C": "Hypernatremia, Hyperkalemia, Hypoglycemia",
+            "D": "Hyponatremia, Hypokalemia, Hyperglycemia"
+        },
+        "correctAnswer": "B",
+        "rationale": "Adrenal crisis is defined by a lack of cortisol and aldosterone. Aldosterone loss causes sodium and water excretion (hyponatremia) and potassium retention (hyperkalemia). Cortisol loss contributes to hypoglycemia. This combination is classic for an Addisonian crisis.",
+        "section": "Addison's Disease"
+    },
+    {
+        "questionText": "A patient with SIADH has a serum sodium level of 118 mEq/L and is confused. The nurse is preparing to administer an infusion of 3% NaCl. Which action is essential for the nurse to perform during this infusion?",
+        "options": {
+            "A": "Administer the infusion rapidly over 30 minutes to correct the sodium level quickly.",
+            "B": "Monitor neurologic status and serum sodium levels frequently to prevent osmotic demyelination syndrome.",
+            "C": "Encourage the patient to drink plenty of water to help dilute the hypertonic saline.",
+            "D": "Administer a loop diuretic concurrently to prevent fluid overload from the saline."
+        },
+        "correctAnswer": "B",
+        "rationale": "This is a trick question focused on the priority safety action. While preventing fluid overload is important, the most critical risk of correcting hyponatremia too rapidly with hypertonic saline is central pontine myelinolysis (osmotic demyelination syndrome), a severe and often irreversible neurologic condition. Frequent neuro checks and lab monitoring are paramount.",
+        "section": "SIADH"
+    },
+    {
+        "questionText": "A patient with a long history of acromegaly is most likely to have which comorbidity that requires careful assessment?",
+        "options": {
+            "A": "Hypotension",
+            "B": "Type 1 Diabetes Mellitus",
+            "C": "Cardiomegaly and heart failure",
+            "D": "Chronic obstructive pulmonary disease"
+        },
+        "correctAnswer": "C",
+        "rationale": "Excess growth hormone in acromegaly causes enlargement of all organs, including the heart. This cardiomegaly can lead to diastolic dysfunction and eventually heart failure, which is a major cause of mortality in these patients.",
+        "section": "Hyperpituitarism"
+    },
+    {
+        "questionText": "A patient is being discharged after a hypophysectomy. The nurse evaluates that the patient needs further teaching when the patient makes which statement?",
+        "options": {
+            "A": "I will use a stool softener to avoid straining when I have a bowel movement.",
+            "B": "I will call my doctor if I develop a fever or a stiff neck.",
+            "C": "I should brush my teeth gently twice a day to prevent infection.",
+            "D": "I need to avoid bending over at the waist to tie my shoes."
+        },
+        "correctAnswer": "C",
+        "rationale": "The transsphenoidal incision is in the upper gum line. To prevent disrupting the suture line, the patient must avoid toothbrushing for about two weeks and use oral mouth rinses and flossing instead. All other statements indicate correct understanding of postoperative care.",
+        "section": "Hypophysectomy"
+    },
+    {
+        "questionText": "What is the primary action of spironolactone in the treatment of hyperaldosteronism?",
+        "options": {
+            "A": "It is a potassium-wasting diuretic that lowers blood pressure.",
+            "B": "It directly blocks the production of aldosterone in the adrenal gland.",
+            "C": "It blocks the action of aldosterone at the kidney, promoting sodium excretion and potassium retention.",
+            "D": "It increases the glomerular filtration rate to excrete excess fluid."
+        },
+        "correctAnswer": "C",
+        "rationale": "Spironolactone is a potassium-sparing diuretic. Its mechanism is to act as an aldosterone antagonist, blocking its receptor sites in the distal renal tubules. This reverses the effects of aldosterone, leading to the excretion of sodium and water and the retention of potassium.",
+        "section": "Pharmacology"
+    },
+    {
+        "questionText": "A patient is admitted with pheochromocytoma crisis. Which of the following assessment findings would the nurse expect? (Select All That Apply)",
+        "options": {
+            "A": "Severe, pounding headache",
+            "B": "Bradycardia",
+            "C": "Profuse diaphoresis",
+            "D": "Blood pressure of 240/120 mmHg",
+            "E": "Hypoglycemia",
+            "F": "Dry, cool skin"
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "Pheochromocytoma is a catecholamine-producing tumor. A crisis is characterized by a massive release of epinephrine and norepinephrine, leading to severe hypertension (D), a pounding headache from the high pressure (A), and profuse sweating (diaphoresis) (C). It would cause tachycardia and hyperglycemia, not bradycardia or hypoglycemia.",
+        "section": "Adrenal Gland Disorders"
+    },
+    {
+        "questionText": "The nurse is planning care for a patient with hypopituitarism resulting in ACTH deficiency. The nurse's priority assessment should focus on signs of which condition?",
+        "options": {
+            "A": "Hyperglycemia and fluid overload.",
+            "B": "Hypertension and hyperkalemia.",
+            "C": "Hypotension and hypoglycemia.",
+            "D": "Hypercalcemia and dehydration."
+        },
+        "correctAnswer": "C",
+        "rationale": "A deficiency of ACTH leads to a deficiency of cortisol. Cortisol is vital for maintaining blood pressure and blood glucose levels. Therefore, a lack of ACTH will cause hypotension (especially postural hypotension) and hypoglycemia.",
+        "section": "Hypopituitarism"
+    },
+    {
+        "questionText": "A patient is newly diagnosed with primary adrenal insufficiency (Addison's disease). Which statement indicates the patient understands the dietary modifications required?",
+        "options": {
+            "A": "I need to follow a low-sodium, high-potassium diet.",
+            "B": "I should add extra salt to my food and avoid potassium-rich foods.",
+            "C": "I must restrict my fluid intake to no more than 1 liter per day.",
+            "D": "I will need to eat a high-protein, low-carbohydrate diet."
+        },
+        "correctAnswer": "B",
+        "rationale": "In Addison's disease, the loss of aldosterone causes the body to lose sodium and retain potassium. Therefore, dietary management involves ensuring adequate sodium intake (often adding salt) and avoiding excessive potassium intake to counteract the effects of the hormone deficiency.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A patient with long-term Cushing's syndrome is at highest risk for which of the following complications?",
+        "options": {
+            "A": "Hypovolemic shock",
+            "B": "Pathologic bone fractures",
+            "C": "Autoimmune disorders",
+            "D": "Acute kidney injury"
+        },
+        "correctAnswer": "B",
+        "rationale": "Excess cortisol leads to significant protein breakdown and demineralization of bone, causing severe osteoporosis. This makes the bones very fragile and susceptible to fractures from minimal or no trauma.",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "questionText": "A patient is started on desmopressin (DDAVP) for AVP-D (central DI). Which assessment finding would indicate the medication has been effective?",
+        "options": {
+            "A": "Increase in urine output and decrease in urine specific gravity.",
+            "B": "Decrease in urine output and increase in urine specific gravity.",
+            "C": "Increase in serum sodium and increase in thirst.",
+            "D": "Decrease in blood pressure and increase in heart rate."
+        },
+        "correctAnswer": "B",
+        "rationale": "Desmopressin replaces ADH, allowing the kidneys to reabsorb water. This leads to a decrease in the volume of urine produced (decreased polyuria) and makes the urine more concentrated (increased specific gravity).",
+        "section": "Pharmacology"
+    },
+    {
+        "questionText": "Which signs and symptoms in a patient with a pituitary adenoma should alert the nurse to the possibility of tumor compression on surrounding brain structures? (Select All That Apply)",
+        "options": {
+            "A": "Headaches",
+            "B": "Polyuria",
+            "C": "Diplopia (double vision)",
+            "D": "Loss of peripheral vision",
+            "E": "Galactorrhea"
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "Headaches and vision changes are the classic neurologic signs of a pituitary tumor expanding and compressing nearby structures. Compression of the optic chiasm specifically causes bitemporal hemianopsia (loss of peripheral vision), and pressure on cranial nerves can cause diplopia. Polyuria and galactorrhea are hormonal effects, not signs of physical compression.",
+        "section": "Hyperpituitarism"
+    },
+    {
+        "questionText": "A patient with Addison's disease reports feeling unwell after a minor surgical procedure. The nurse knows that this patient is at risk for an adrenal crisis and should prioritize which assessment?",
+        "options": {
+            "A": "Assessing the surgical incision for signs of infection.",
+            "B": "Monitoring blood pressure for hypotension.",
+            "C": "Checking the patient's skin for hyperpigmentation.",
+            "D": "Asking the patient about their appetite and salt cravings."
+        },
+        "correctAnswer": "B",
+        "rationale": "Physical stress (like surgery) increases the body's demand for cortisol. In a patient with Addison's, this demand can precipitate an adrenal crisis. The most immediate life-threatening manifestation of adrenal crisis is severe hypotension leading to circulatory collapse. Therefore, monitoring blood pressure is the priority.",
+        "section": "Addison's Disease"
+    },
+    {
+        "questionText": "A patient is admitted with a diagnosis of SIADH. Which of the following is an appropriate nursing intervention?",
+        "options": {
+            "A": "Administering a hypotonic IV solution (0.45% NaCl).",
+            "B": "Encouraging a liberal intake of fluids, especially water.",
+            "C": "Implementing a fluid restriction of 1000 mL per 24 hours.",
+            "D": "Administering vasopressin to correct the hormone imbalance."
+        },
+        "correctAnswer": "C",
+        "rationale": "The cornerstone of SIADH management is treating the underlying cause and restricting fluid intake to correct the dilutional hyponatremia. Encouraging fluids or administering hypotonic solutions would worsen the condition. Vasopressin is contraindicated as it is the cause of the problem.",
+        "section": "SIADH"
+    },
+    {
+        "questionText": "A patient presents with a 'moon face,' 'buffalo hump,' and purple striae on the abdomen. The nurse recognizes these as classic signs of which endocrine disorder?",
+        "options": {
+            "A": "Acromegaly",
+            "B": "Addison's Disease",
+            "C": "Grave's Disease",
+            "D": "Cushing's Syndrome"
+        },
+        "correctAnswer": "D",
+        "rationale": "These are the hallmark physical manifestations of hypercortisolism (Cushing's Syndrome). They are caused by the redistribution of fat to the face, trunk, and cervical spine area, and by the thinning of the skin due to cortisol's catabolic effects on collagen.",
+        "section": "Cushing's Syndrome"
+    },
+    {
+        "questionText": "A patient is prescribed levothyroxine for primary hypothyroidism. Which statement by the patient indicates that the teaching has been effective?",
+        "options": {
+            "A": "I will take this medication at bedtime with a snack.",
+            "B": "I should take this medication on an empty stomach, first thing in the morning.",
+            "C": "If I feel better, I can stop taking the medication after a few months.",
+            "D": "I should take my iron supplement at the same time as my thyroid pill."
+        },
+        "correctAnswer": "B",
+        "rationale": "This is a key patient teaching point. Levothyroxine absorption is significantly decreased by food, calcium, and iron. It should be taken alone, on an empty stomach (30-60 minutes before breakfast) to ensure consistent absorption and therapeutic effect.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A patient with hypopituitarism and GH deficiency is prescribed somatropin. The nurse should instruct the patient to administer the subcutaneous injection at what time of day?",
+        "options": {
+            "A": "Upon waking in the morning.",
+            "B": "With the midday meal.",
+            "C": "In the late afternoon.",
+            "D": "At night, before bed."
+        },
+        "correctAnswer": "D",
+        "rationale": "Growth hormone is normally released by the pituitary gland during sleep. Administering exogenous GH at night mimics the body's natural circadian rhythm, leading to better therapeutic outcomes.",
+        "section": "Pharmacology"
+    },
+    {
+        "questionText": "Which of these patients is at the highest risk for developing SIADH?",
+        "options": {
+            "A": "A patient with a traumatic brain injury.",
+            "B": "A patient with hyperparathyroidism.",
+            "C": "A patient with a history of kidney stones.",
+            "D": "A patient with a fractured femur."
+        },
+        "correctAnswer": "A",
+        "rationale": "This is a trick question assessing knowledge of risk factors. Traumatic brain injury and other CNS disorders are well-known causes of SIADH, as they can disrupt the normal hypothalamic-pituitary regulation of ADH secretion. The other conditions are not primary risk factors.",
+        "section": "SIADH"
+    },
+    {
+        "questionText": "A nurse is reviewing the laboratory results of a patient with primary hyperaldosteronism. What findings would be expected? (Select All That Apply)",
+        "options": {
+            "A": "Elevated serum sodium",
+            "B": "Elevated serum potassium",
+            "C": "Decreased plasma renin levels",
+            "D": "Elevated serum aldosterone",
+            "E": "Metabolic acidosis"
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "In primary hyperaldosteronism, the adrenal gland autonomously secretes excess aldosterone (D). This leads to sodium retention (A) and potassium excretion. The high aldosterone and sodium levels suppress the renin-angiotensin system, causing low plasma renin levels (C). It causes metabolic alkalosis, not acidosis.",
+        "section": "Hyperaldosteronism"
+    },
+    {
+        "questionText": "What is the most significant life-threatening risk associated with hypoparathyroidism following neck surgery?",
+        "options": {
+            "A": "Severe hypertension",
+            "B": "Kidney stone formation",
+            "C": "Laryngospasm",
+            "D": "Pathologic fractures"
+        },
+        "correctAnswer": "C",
+        "rationale": "Hypoparathyroidism leads to severe hypocalcemia. Profound hypocalcemia causes neuromuscular irritability, which can manifest as tetany. In the larynx, this can cause laryngospasm, a complete closure of the airway, which is a medical emergency.",
+        "section": "Parathyroid Gland"
+    },
+    {
+        "questionText": "The nurse provides discharge instructions to a patient with a new diagnosis of Addison's disease. Which statement by the patient indicates a need for further education?",
+        "options": {
+            "A": "I need to wear a medical alert bracelet at all times.",
+            "B": "I should increase my hydrocortisone dose if I get the flu.",
+            "C": "I can stop taking my pills once the tan on my skin fades.",
+            "D": "I will need to have a kit with an injectable form of hydrocortisone for emergencies."
+        },
+        "correctAnswer": "C",
+        "rationale": "Addison's disease requires lifelong hormone replacement. Stopping the medication will precipitate a life-threatening adrenal crisis. The hyperpigmentation may lighten but is not an indicator that the underlying disease is cured.",
+        "section": "Patient Teaching"
+    },
+    {
+        "questionText": "A patient with AVP-D (central DI) is unable to take oral fluids. The nurse anticipates administering which type of intravenous fluid to provide free water and prevent worsening hypernatremia?",
+        "options": {
+            "A": "3% Sodium Chloride",
+            "B": "0.9% Sodium Chloride",
+            "C": "Dextrose 5% in Water (D5W)",
+            "D": "Lactated Ringer's"
+        },
+        "correctAnswer": "C",
+        "rationale": "D5W is an isotonic solution in the bag, but once infused, the dextrose is rapidly metabolized by the cells, leaving only free water. This free water is needed to rehydrate the patient and correct the hypernatremia caused by the massive water loss of DI. The other solutions contain sodium, which would worsen the hypernatremia.",
+        "section": "AVP-D / Diabetes Insipidus"
+    },
+    {
+        "questionText": "A nurse is performing an admission assessment on a patient with suspected Cushing's disease. Which assessment question is most important for the nurse to ask?",
+        "options": {
+            "A": "Have you noticed any changes in your hat or shoe size?",
+            "B": "Do you have frequent episodes of diarrhea?",
+            "C": "Have you experienced any recent weight loss?",
+            "D": "Have you noticed that you bruise very easily?"
+        },
+        "correctAnswer": "D",
+        "rationale": "While all are part of a full assessment, easy bruising is a hallmark sign of Cushing's syndrome. Excess cortisol makes capillaries fragile and thins the skin, leading to significant bruising and petechiae from minimal trauma. Change in shoe size (A) relates to acromegaly. Diarrhea (B) and weight loss (C) are more typical of Addison's disease.",
+        "section": "Cushing's Syndrome"
+    }
+    ];
+
+    let finalQuizData = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let timeSpentOnQuestions = {};
+    let timeFlaggedQuestions = new Set();
+    let flaggedForReview = new Set();
+    let overallTimerInterval;
+    let timeLeft = 35 * 60;
+    let questionStartTime;
+    const TIME_THRESHOLD = 90;
+    
+    let isPaused = false;
+
+    const initialScreen = document.getElementById('initial-screen');
+    const startBtn = document.getElementById('start-btn');
+    const quizForm = document.getElementById('quiz-form');
+    const questionContainer = document.getElementById('question-container');
+    const navigationBtn = document.getElementById('navigation-btn');
+    const timerDisplay = document.getElementById('timer-display');
+    const flagCheckbox = document.getElementById('flag-for-review');
+    const resultsArea = document.getElementById('results-area');
+    const resultsSummary = document.getElementById('results-summary');
+    const resultsDetails = document.getElementById('results-details');
+    const studyFocusContainer = document.getElementById('study-focus');
+    const pauseBtn = document.getElementById('pause-btn');
+    const pauseOverlay = document.getElementById('pause-overlay');
+    const printBtn = document.getElementById('print-btn');
+    const printableStudyGuide = document.getElementById('study-guide-printable');
+
+
+    function prepareQuizData() {
+        const dosageQuestions = fullQuizData.filter(q => q.section && q.section.includes("Dosage Calculation"));
+        const standardQuestions = fullQuizData.filter(q => !q.section || !q.section.includes("Dosage Calculation"));
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        shuffleArray(dosageQuestions);
+        shuffleArray(standardQuestions);
+
+        const selectedDosage = dosageQuestions.slice(0, 3);
+        const selectedStandard = standardQuestions.slice(0, 27);
+
+        finalQuizData = [...selectedStandard, ...selectedDosage];
+        shuffleArray(finalQuizData);
+    }
+
+    function startQuiz() {
+        prepareQuizData();
+
+        if (finalQuizData.length === 0) {
+            questionContainer.innerHTML = `<p class="question-text">There are no questions loaded in this quiz.</p>`;
+            initialScreen.classList.add('hidden');
+            quizForm.classList.remove('hidden');
+            timerDisplay.textContent = "Quiz Not Started";
+            return;
+        }
+        
+        initialScreen.classList.add('hidden');
+        quizForm.classList.remove('hidden');
+        navigationBtn.classList.remove('hidden');
+        pauseBtn.classList.remove('hidden'); 
+        startOverallTimer();
+        displayCurrentQuestion();
+    }
+    
+    function togglePause() {
+        isPaused = !isPaused;
+        if (isPaused) {
+            clearInterval(overallTimerInterval);
+            pauseOverlay.style.display = 'flex';
+            quizForm.style.visibility = 'hidden'; 
+            navigationBtn.style.visibility = 'hidden';
+        } else {
+            startOverallTimer();
+            pauseOverlay.style.display = 'none';
+            quizForm.style.visibility = 'visible';
+            navigationBtn.style.visibility = 'visible';
+        }
+    }
+
+    function startOverallTimer() {
+        clearInterval(overallTimerInterval);
+        overallTimerInterval = setInterval(() => {
+            if (isPaused) return; 
+            if (timeLeft <= 0) {
+                submitQuiz();
+                return;
+            }
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function displayCurrentQuestion() {
+        questionStartTime = new Date();
+        const qData = finalQuizData[currentQuestionIndex];
+        const isSATA = Array.isArray(qData.correctAnswer);
+        const isTyped = qData.section === 'Dosage Calculation';
+        
+        let contentHTML = '';
+        if(isTyped) {
+            const userAnswer = userAnswers[currentQuestionIndex] || '';
+            contentHTML = `<div class="options-container"><input type="text" id="text-answer" class="text-answer-input" placeholder="Enter numerical answer..." value="${userAnswer}"></div>`;
+        } else {
+             let optionsHTML = '';
+             for (const key in qData.options) {
+                 let checked = '';
+                 const currentAnswers = userAnswers[currentQuestionIndex];
+                 if (currentAnswers) {
+                     if (isSATA && currentAnswers.includes(key)) {
+                         checked = 'checked';
+                     } else if (!isSATA && currentAnswers === key) {
+                         checked = 'checked';
+                     }
+                 }
+                 optionsHTML += `<label><input type="${isSATA ? 'checkbox' : 'radio'}" name="answer" value="${key}" ${checked}> ${key}: ${qData.options[key]}</label>`;
+             }
+            contentHTML = `<div class="options-container">${optionsHTML}</div>`
+        }
+
+        questionContainer.innerHTML = `
+            <div class="question-header">Question ${currentQuestionIndex + 1} of ${finalQuizData.length}${isSATA ? ' (Select All That Apply)' : ''}</div>
+            <p class="question-text">${qData.scenario ? '<em>' + qData.scenario + '</em><br><br>' : ''}${qData.questionText}</p>
+            ${contentHTML}
+        `;
+        flagCheckbox.checked = flaggedForReview.has(currentQuestionIndex);
+        navigationBtn.textContent = (currentQuestionIndex === finalQuizData.length - 1) ? "Submit Quiz" : "Next Question";
+    }
+
+    function saveAnswerAndState() {
+        const qData = finalQuizData[currentQuestionIndex];
+        if (!qData) return;
+        
+        const isTyped = qData.section === 'Dosage Calculation';
+
+        if (isTyped) {
+            const inputElement = document.getElementById('text-answer');
+            if(inputElement) {
+                userAnswers[currentQuestionIndex] = inputElement.value.trim();
+            }
+        } else {
+             const isSATA = Array.isArray(qData.correctAnswer);
+             const selectedOptions = document.querySelectorAll('input[name="answer"]:checked');
+             userAnswers[currentQuestionIndex] = isSATA
+                 ? Array.from(selectedOptions).map(cb => cb.value)
+                 : (selectedOptions.length ? selectedOptions[0].value : null);
+        }
+
+        const timeSpent = Math.round((new Date() - questionStartTime) / 1000);
+        timeSpentOnQuestions[currentQuestionIndex] = (timeSpentOnQuestions[currentQuestionIndex] || 0) + timeSpent;
+        if (timeSpent > TIME_THRESHOLD) {
+            timeFlaggedQuestions.add(currentQuestionIndex);
+        }
+        if (flagCheckbox.checked) {
+            flaggedForReview.add(currentQuestionIndex);
+        } else {
+            flaggedForReview.delete(currentQuestionIndex);
+        }
+    }
+
+    function handleNavigation() {
+        saveAnswerAndState();
+        if (currentQuestionIndex < finalQuizData.length - 1) {
+            currentQuestionIndex++;
+            displayCurrentQuestion();
+        } else {
+            submitQuiz();
+        }
+    }
+
+    function submitQuiz() {
+        clearInterval(overallTimerInterval);
+        saveAnswerAndState();
+        quizForm.classList.add('hidden');
+        navigationBtn.classList.add('hidden');
+        pauseBtn.classList.add('hidden'); 
+        timerDisplay.textContent = "Quiz Finished";
+        displayResults();
+    }
+    
+    function checkAnswerCorrectness(qData, userAnswer) {
+        if (qData.section === 'Dosage Calculation') {
+            return userAnswer === qData.correctAnswer;
+        }
+        if (Array.isArray(qData.correctAnswer)) { // SATA
+            const sortedUserAnswer = userAnswer ? [...userAnswer].sort() : [];
+            const sortedCorrectAnswer = [...qData.correctAnswer].sort();
+            return JSON.stringify(sortedUserAnswer) === JSON.stringify(sortedCorrectAnswer);
+        }
+        return userAnswer === qData.correctAnswer;
+    }
+
+    function displayResults() {
+        resultsArea.classList.remove('hidden');
+        let correctCount = 0;
+        let incorrectCount = 0;
+
+        finalQuizData.forEach((qData, index) => {
+            if (checkAnswerCorrectness(qData, userAnswers[index])) {
+                correctCount++;
+            } else {
+                incorrectCount++;
+            }
+        });
+
+        const score = finalQuizData.length > 0 ? (correctCount / finalQuizData.length) * 100 : 0;
+        resultsSummary.innerHTML = `<h2>Quiz Complete!</h2><p>Your Score: <strong>${score.toFixed(1)}%</strong> (${correctCount} out of ${finalQuizData.length} correct)</p>`;
+
+        let detailsHTML = '';
+        finalQuizData.forEach((qData, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = checkAnswerCorrectness(qData, userAnswer);
+            const isTyped = qData.section === 'Dosage Calculation';
+
+            let resultBodyHTML = '';
+            if(isTyped){
+                const userAnswerDisplay = userAnswer || "No answer";
+                const userClass = isCorrect ? 'correct' : 'incorrect';
+                resultBodyHTML += `<div class="typed-answer-result"><p>Your Answer: <span class="user-answer ${userClass}">${userAnswerDisplay}</span></p>`;
+                if (!isCorrect) {
+                     resultBodyHTML += `<p>Correct Answer: <span class="correct-answer-text">${qData.correctAnswer}</span></p>`;
+                }
+                 resultBodyHTML += `</div>`;
+            } else {
+                 let optionsList = '<ul>';
+                 for (const key in qData.options) {
+                     let li_class = '';
+                     const isCorrectOption = Array.isArray(qData.correctAnswer) ? qData.correctAnswer.includes(key) : key === qData.correctAnswer;
+                     const isUserSelection = Array.isArray(userAnswer) ? (userAnswer && userAnswer.includes(key)) : key === userAnswer;
+
+                     if (isCorrectOption) li_class = 'correct-answer-label';
+                     if (isUserSelection && !isCorrectOption) li_class = 'incorrect-answer-label';
+                     if (!isUserSelection && isCorrectOption && !isCorrect) li_class += ' missed-correct-answer-label';
+                    
+                     optionsList += `<li class="${li_class}">${key}: ${qData.options[key]}</li>`;
+                 }
+                 optionsList += '</ul>';
+                 resultBodyHTML = optionsList;
+            }
+
+            let rationaleHTML = '';
+            if (!isCorrect) {
+                let rationaleClasses = 'rationale';
+                if (timeFlaggedQuestions.has(index)) rationaleClasses += ' time-flagged-rationale';
+                if (flaggedForReview.has(index)) rationaleClasses += ' flagged-rationale';
+                rationaleHTML = `<div class="${rationaleClasses}"><strong>Rationale:</strong> ${qData.rationale.replace(/\n/g, '<br>')}<span class="time-spent-info">You spent ${timeSpentOnQuestions[index] || 0} seconds on this question. ${flaggedForReview.has(index) ? '(You flagged this for review)' : ''}</span></div>`;
+            }
+
+            detailsHTML += `<div class="result-question"><p><strong>${qData.scenario ? '<em>' + qData.scenario + '</em><br><br>' : ''}Question ${index + 1}: ${qData.questionText}</strong></p>${resultBodyHTML}${rationaleHTML}</div>`;
+        });
+        resultsDetails.innerHTML = detailsHTML;
+        generateStudyFocus();
+        
+        if (incorrectCount > 0) {
+            generatePrintableStudyGuide();
+            printBtn.classList.remove('hidden');
+        }
+    }
+
+    function generateStudyFocus() {
+        const topicCounts = {};
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const isTimeFlagged = timeFlaggedQuestions.has(index);
+            const isUserFlagged = flaggedForReview.has(index);
+
+            if (!isCorrect || isTimeFlagged || isUserFlagged) {
+                const topic = qData.section;
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+            }
+        });
+
+        const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+        let focusHTML = '<h3>Personalized Study Focus Guide</h3>';
+        if (sortedTopics.length > 0) {
+            focusHTML += '<p>Based on your performance, focus your review on these topics:</p><ul>';
+            sortedTopics.forEach(topic => {
+                focusHTML += `<li><strong>${topic[0]}</strong> (${topic[1]} item${topic[1] > 1 ? 's' : ''} noted)</li>`;
+            });
+            focusHTML += '</ul>';
+        } else {
+            focusHTML += '<p>Excellent work! No specific weak areas were identified.</p>';
+        }
+        studyFocusContainer.innerHTML = focusHTML;
+    }
+
+    function generatePrintableStudyGuide() {
+        let printHTML = '<h1>Hormone Regulation Exam - Study Guide</h1>';
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            if (!isCorrect) {
+                const userAnswer = userAnswers[index];
+                const isTyped = qData.section === 'Dosage Calculation';
+                let userAnswerText = 'No answer selected.';
+                let correctAnswerText = '';
+
+                if (isTyped) {
+                    userAnswerText = userAnswer || 'No answer';
+                    correctAnswerText = qData.correctAnswer;
+                } else {
+                    if (Array.isArray(qData.correctAnswer)) { 
+                        userAnswerText = userAnswer && userAnswer.length > 0 ? userAnswer.map(key => `${key}: ${qData.options[key]}`).join('<br>') : 'No answer selected.';
+                        correctAnswerText = qData.correctAnswer.map(key => `${key}: ${qData.options[key]}`).join('<br>');
+                    } else { 
+                        userAnswerText = userAnswer ? `${userAnswer}: ${qData.options[userAnswer]}` : 'No answer selected.';
+                        correctAnswerText = `${qData.correctAnswer}: ${qData.options[qData.correctAnswer]}`;
+                    }
+                }
+                
+                printHTML += `
+                    <div class="study-guide-item">
+                         <h3>${qData.scenario ? '<em>' + qData.scenario + '</em><br><br>' : ''}Question: ${qData.questionText}</h3>
+                         <p><strong>Your Answer:</strong><br>${userAnswerText}</p>
+                         <p><strong>Correct Answer:</strong><br>${correctAnswerText}</p>
+                         <div class="print-rationale">
+                             <strong>Rationale:</strong> ${qData.rationale.replace(/\n/g, '<br>')}
+                         </div>
+                    </div>
+                `;
+            }
+        });
+        printableStudyGuide.innerHTML = printHTML;
+    }
+
+    startBtn.addEventListener('click', startQuiz);
+    pauseBtn.addEventListener('click', togglePause);
+    printBtn.addEventListener('click', () => {
+        window.print();
+    });
+
+    quizForm.addEventListener('submit', (event) => {
+        event.preventDefault(); 
+        handleNavigation();   
+    });
+    
+    });
+</script>
+</body>
+</html>

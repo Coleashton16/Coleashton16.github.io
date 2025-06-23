@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upper Respiratory Disorders Learning Module (ADHD Friendly)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@400;600&display=swap');
+
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --secondary-color: #28a745; /* Green */
+            --accent-color: #ffc107; /* Yellow */
+            --alert-color: #dc3545; /* Red */
+            --info-color: #17a2b8; /* Cyan */
+            --text-color: #333;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --border-color: #dee2e6;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --focus-border: #6c757d; /* Gray for focus boxes */
+            --quiz-bg: #d4edda; /* Light green for quizzes */
+            --reveal-bg: #e9ecef; /* Light gray for revealed content */
+            --drug-card-bg: #f0f0f0; /* Light gray for drug quiz card */
+            --button-mastered: #28a745; /* Green for Yes */
+            --button-missed: #dc3545; /* Red for No */
+            --progress-bar-bg: #e0e0e0;
+            --progress-bar-fill: #4CAF50; /* Green fill */
+            --break-prompt-bg: #ffebee; /* Light red for break prompts */
+            --break-prompt-border: #ef9a9a; /* Medium red for border */
+        }
+
+        /* Crucial adjustments for iframe scrolling */
+        html, body {
+            height: 100%; /* Make sure HTML and Body fill the iframe */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scrollbar */
+            overflow-y: auto; /* Allow vertical scrolling within the iframe */
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+            transition: font-size 0.2s ease, filter 0.5s ease-in-out; /* Smooth text size change and blur */
+        }
+
+        /* Styles for blurring the background content */
+        body.blurred > *:not(#clockOutOverlay) {
+            filter: blur(5px);
+            pointer-events: none; /* Disables interaction with blurred content */
+            user-select: none; /* Prevents text selection on blurred content */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            min-height: calc(100vh - 40px); /* Ensure container is tall enough to trigger scroll */
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative; /* For progress bar positioning */
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+
+        /* Module Progress Bar */
+        #moduleProgressBarContainer {
+            width: 90%;
+            height: 10px;
+            background-color: var(--progress-bar-bg);
+            border-radius: 5px;
+            margin: 15px auto 0;
+            overflow: hidden;
+        }
+
+        #moduleProgressBar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--progress-bar-fill);
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 10px 0;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            margin: 5px 15px;
+        }
+
+        nav ul li a { /* Updated: No href, so no default link styles needed for href, just cursor */
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: default; /* Indicate it's not clickable as a link */
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            cursor: default; /* Maintain default cursor on hover too */
+        }
+
+        nav ul li a.completed {
+            background-color: #1e7e34; /* Darker green for completed */
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+        }
+
+
+        h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h2 {
+            font-size: 2em;
+        }
+
+        h3 {
+            font-size: 1.5em;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        section:hover {
+            transform: translateY(-3px);
+        }
+
+        .objectives ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .objective-item {
+            margin-bottom: 8px;
+        }
+
+        .info-card {
+            background-color: var(--bg-light);
+            border-left: 5px solid var(--info-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .reveal-button {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            display: block; /* Make button full width */
+            width: fit-content; /* Adjust width to content */
+        }
+
+        .reveal-button:hover {
+            background-color: #ffda6a;
+        }
+
+        .reveal-content {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: var(--reveal-bg);
+            border-left: 3px solid var(--secondary-color);
+            border-radius: 5px;
+        }
+
+        .question-card {
+            background-color: var(--quiz-bg);
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-card p {
+            font-weight: 600;
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .question-card .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .question-card .options input[type="radio"],
+        .question-card .options input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .question-card .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .question-card .feedback.correct {
+            background-color: #d1ecf1; /* light blue */
+            color: #0c5460; /* dark blue */
+            border: 1px solid #bee5eb;
+        }
+
+        .question-card .feedback.incorrect {
+            background-color: #f8d7da; /* light red */
+            color: #721c24; /* dark red */
+            border: 1px solid #f5c6cb;
+        }
+
+        .question-card .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .question-card .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+
+        .prototype-drug-chart {
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        .prototype-drug-chart th, .prototype-drug-chart td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .prototype-drug-chart th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .prototype-drug-chart tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .note, .focus-prompt, .quick-fact {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .note {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+        }
+
+        .focus-prompt {
+            background-color: #d1ecf1; /* light blue */
+            border-left: 5px solid #0c5460; /* dark blue */
+            color: #0c5460;
+        }
+
+        .quick-fact {
+            background-color: #e2f0d9; /* very light green */
+            border-left: 5px solid #6ab04c; /* medium green */
+            color: #4a7d32;
+        }
+
+        .highlight {
+            background-color: #ffe082; /* Light yellow for highlighting key terms */
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .nclex-next-gen {
+            background-color: #e6f7ff;
+            border: 2px solid #a6d9f5;
+            padding: 25px;
+            margin: 40px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .nclex-next-gen h3 {
+            color: #2196f3;
+            border-bottom: 1px dashed #a6d9f5;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .nclex-next-gen .case-study {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .nclex-next-gen .fill-in-the-blank {
+            margin-top: 20px;
+        }
+
+        .nclex-next-gen .fill-in-the-blank textarea {
+            width: calc(100% - 20px);
+            min-height: 80px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            resize: vertical;
+        }
+
+        .nclex-next-gen .fill-in-the-blank button {
+            margin-top: 15px;
+        }
+
+        .nclex-next-gen .rationale {
+            background-color: #e0f2f7;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .nclex-next-gen .rationale p {
+            margin: 0;
+            font-size: 0.95em;
+        }
+
+        .figure-placeholder {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #eef;
+            border: 1px dashed #bbb;
+            border-radius: 5px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .recap {
+            background-color: #f0f8ff; /* Lighter blue */
+            border-left: 5px solid #add8e6; /* Light steel blue */
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .recap h4 {
+            color: #36a2eb;
+            border-bottom: 1px solid #add8e6;
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* Tooltip styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dotted var(--primary-color); /* Underline for tooltips */
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the text */
+            left: 50%;
+            margin-left: -125px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85em;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* At the bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Drug Mastery Quiz Specific Styles */
+        #drug-mastery-quiz .quiz-card {
+            background-color: var(--drug-card-bg);
+            border: 1px solid var(--primary-color);
+            padding: 25px;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            display: none; /* Hidden until quiz starts */
+            text-align: center;
+        }
+
+        #drug-mastery-quiz .quiz-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.8em;
+            border-bottom: none; /* Override default h4 border */
+        }
+
+        #drug-mastery-quiz .quiz-card p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        #drug-mastery-quiz .quiz-controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz .quiz-controls button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        #drug-mastery-quiz .quiz-controls button:active {
+            transform: translateY(1px);
+        }
+
+        #drug-mastery-quiz #startQuizBtn {
+            background-color: var(--secondary-color);
+            color: white;
+            display: block;
+            margin: 20px auto;
+            width: fit-content;
+            padding: 15px 30px;
+            font-size: 1.4em;
+        }
+        #drug-mastery-quiz #startQuizBtn:hover {
+            background-color: #218838;
+        }
+
+        #drug-mastery-quiz #showAnswerBtn {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+        #drug-mastery-quiz #showAnswerBtn:hover {
+            background-color: #e0a800;
+        }
+
+        #drug-mastery-quiz #answerFeedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--reveal-bg);
+            border: 1px dashed var(--info-color);
+            text-align: left;
+            display: none;
+        }
+
+        #drug-mastery-quiz #answerFeedback h5 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        #drug-mastery-quiz #masteryButtons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz #masteryButtons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn {
+            background-color: var(--button-mastered);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn:hover {
+            background-color: #218838;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn {
+            background-color: var(--button-missed);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn:hover {
+            background-color: #c82333;
+        }
+
+        /* Removed #nextCardBtn from quiz styles as it's now automatic */
+
+        #drug-mastery-quiz #quizSummary {
+            display: none;
+            padding: 25px;
+            background-color: #e6ffe6; /* Light green for success */
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            text-align: center;
+        }
+        #drug-mastery-quiz #quizSummary h4 {
+            color: var(--secondary-color);
+            font-size: 2em;
+            margin-bottom: 15px;
+            border-bottom: none;
+        }
+        #drug-mastery-quiz #quizSummary p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        #drug-mastery-quiz #quizSummary button {
+            margin: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn:hover {
+            background-color: #0056b3;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn {
+            background-color: var(--alert-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn:hover {
+            background-color: #c82333;
+        }
+
+        #drug-mastery-quiz .progress-tracker {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* ADHD-specific additions */
+        .quick-note-area {
+            background-color: #f7f7f7;
+            border: 1px dashed #ccc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .quick-note-area h3 {
+            color: #666;
+            border-bottom: 1px solid #ddd;
+            margin-top: 0;
+        }
+
+        .quick-note-area textarea {
+            width: calc(100% - 10px);
+            min-height: 100px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            resize: vertical; /* Allow vertical resizing */
+        }
+
+        .text-size-controls {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .text-size-controls button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 44px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .micro-break-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--break-prompt-bg);
+            border: 2px solid var(--break-prompt-border);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-weight: bold;
+            color: var(--alert-color);
+            display: none; /* Hidden by default */
+            animation: fadeInOut 8s forwards; /* Animation */
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        }
+
+        /* Clock Out Overlay Styles (Revised for improved centering and appearance) */
+        #clockOutOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000; /* Make sure it's on top of everything */
+            /* Start hidden and transition in */
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s ease-out; /* Delay visibility transition for smooth fade out */
+        }
+
+        #clockOutOverlay.active {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 0.5s ease-in; /* No delay for fade in */
+        }
+
+        #clockOutContent {
+            background-color: var(--bg-white);
+            color: var(--text-color);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 400px;
+            width: 90%; /* Responsive width */
+            /* Add some initial transform to make it "pop" when appearing */
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+
+        #clockOutOverlay.active #clockOutContent {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        #clockOutContent h2 {
+            color: var(--primary-color);
+            font-family: 'Roboto', sans-serif; /* Ensure Roboto font */
+            font-size: 2.8em; /* Slightly larger for impact */
+            margin-top: 0;
+            border-bottom: none; /* Override default h2 border */
+        }
+
+        #brainEmoji {
+            font-size: 6em; /* Make the emoji very large */
+            margin: 20px 0;
+            display: block; /* Ensure it takes full width for margin auto */
+            animation: floatUpDown 2s infinite alternate ease-in-out; /* Gentle animation */
+        }
+
+        @keyframes floatUpDown {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); } /* Increased float */
+        }
+
+        #countdownTimer {
+            font-family: 'Roboto', monospace; /* Monospace for consistent digit width */
+            font-size: 4.5em; /* Slightly larger timer */
+            font-weight: 700;
+            color: var(--alert-color); /* Red for urgency */
+            margin: 20px 0;
+        }
+
+        /* Mobile Responsiveness for Clock Out */
+        @media (max-width: 500px) {
+            #clockOutContent {
+                padding: 25px; /* Smaller padding on small screens */
+            }
+            #clockOutContent h2 {
+                font-size: 2em;
+            }
+            #brainEmoji {
+                font-size: 4em;
+            }
+            #countdownTimer {
+                font-size: 3.5em;
+            }
+        }
+
+
+        /* Mobile Responsiveness for overall layout */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li {
+                margin: 5px 0;
+            }
+
+            .prototype-drug-chart, .responsive-table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .prototype-drug-chart thead, .responsive-table thead {
+                display: none;
+            }
+
+            .prototype-drug-chart tbody tr, .responsive-table tbody tr {
+                display: block;
+                margin-bottom: 10px;
+                border: 1px solid var(--border-color);
+                border-radius: 5px;
+            }
+
+            .prototype-drug-chart tbody td, .responsive-table tbody td {
+                display: block;
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            .prototype-drug-chart tbody td::before, .responsive-table tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+
+            .micro-break-prompt {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Module 38: Upper Respiratory Disorders</h1>
+            <p>Mastering Pharmacology for Nursing Care - ADHD Friendly!</p>
+            <div id="moduleProgressBarContainer">
+                <div id="moduleProgressBar"></div>
+            </div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a id="nav-objectives">Objectives</a></li>
+                <li><a id="nav-introduction">Intro</a></li>
+                <li><a id="nav-common-cold">Common Cold</a></li>
+                <li><a id="nav-antihistamines">Antihistamines</a></li>
+                <li><a id="nav-diphenhydramine">Diphenhydramine</a></li>
+                <li><a id="nav-decongestants">Decongestants</a></li>
+                <li><a id="nav-nursing-process-antihistamine">NP: Antihistamine</a></li>
+                <li><a id="nav-intranasal-glucocorticoids">Intranasal Glucocorticoids</a></li>
+                <li><a id="nav-antitussives">Antitussives</a></li>
+                <li><a id="nav-dextromethorphan">Dextromethorphan</a></li>
+                <li><a id="nav-expectorants">Expectorants</a></li>
+                <li><a id="nav-sinusitis">Sinusitis</a></li>
+                <li><a id="nav-acute-pharyngitis">Pharyngitis</a></li>
+                <li><a id="nav-nursing-process-decongestant">NP: Decongestant</a></li>
+                <li><a id="nav-critical-thinking">Case Study</a></li>
+                <li><a id="nav-review-questions">Review Qs</a></li>
+                <li><a id="nav-drug-mastery-quiz">Drug Challenge!</a></li>
+            </ul>
+        </nav>
+
+        <div class="text-size-controls">
+            <button id="increaseText">A+</button>
+            <button id="decreaseText">A-</button>
+        </div>
+
+        <div class="micro-break-prompt" id="microBreakPrompt">
+            Quick Break! Stand up and stretch, or take a few deep breaths!
+        </div>
+
+        <section id="objectives" class="objectives">
+            <h2>Your Learning Adventure Starts Here!</h2>
+            <p>By the end of this module, you'll be able to:</p>
+            <ul>
+                <li class="objective-item"><strong>Compare antihistamine, decongestant, antitussive, and expectorant drug groups.</strong> What are their unique roles?</li>
+                <li class="objective-item"><strong>Differentiate between rhinitis, sinusitis, and pharyngitis.</strong> What makes each one distinct?</li>
+                <li class="objective-item"><strong>Describe the side effects of nasal decongestants</strong> and how to avoid them.</li>
+                <li class="objective-item"><strong>Apply your nursing judgment</strong> using the Nursing Process for drugs used to treat the common cold.</li>
+            </ul>
+            <p class="note"><strong>Bonus!</strong> For extra info and cool tools, check out <a href="http://evolve.elsevier.com/McCuistion/pharmacology" target="_blank">evolve.elsevier.com/McCuistion/pharmacology</a></p>
+        </section>
+
+        <div class="quick-note-area">
+            <h3>Quick Notes / Brain Dump Space</h3>
+            <textarea id="quickNotesTextarea" placeholder="Jot down thoughts, questions, or key takeaways here... (Note: These will try to save to your browser's local storage, but backup important info!)"></textarea>
+        </div>
+
+        <section id="introduction">
+            <h2>1. Introduction: Your Respiratory Superhighway!</h2>
+            <div class="info-card">
+                <p>Your respiratory tract is like a two-lane highway for air!</p>
+                <ul>
+                    <li>The <span class="tooltip-container">upper respiratory tract<span class="tooltip-text">Consists of the nares (nostrils), nasal cavity, pharynx (throat), and larynx (voice box). It's the entry point and filter for air.</span></span> includes your nose, nasal cavity, pharynx, and larynx.</li>
+                    <li>The <span class="tooltip-container">lower respiratory tract<span class="tooltip-text">Consists of the trachea (windpipe), bronchi, bronchioles, alveoli, and alveolar-capillary membrane. This is where the magic of gas exchange happens!</span></span> includes your trachea, bronchi, bronchioles, and those tiny air sacs, the alveoli.</li>
+                </ul>
+                <div class="figure-placeholder">
+                    <h4>Visualize It!</h4>
+                    <p><strong>FIG. 38.1:</strong> Basic structures of the respiratory tract. (Imagine a diagram here with the upper and lower tract highlighted!)</p>
+                </div>
+                <button class="reveal-button">Ventilation, Perfusion, Diffusion: The Breathing Dance!</button>
+                <div class="reveal-content">
+                    <p>Don't mix these up! They're distinct terms:</p>
+                    <ul>
+                        <li><span class="highlight">Ventilation:</span> This is simply the **movement of air** in and out of your lungs. Like air flowing through a pipe.</li>
+                        <li><span class="highlight">Respiration:</span> This is the actual **gas exchange**! It has three phases:
+                            <ol>
+                                <li><strong>Ventilation:</strong> (Yes, the term appears twice!) Oxygen passes through airways.</li>
+                                <li><strong>Perfusion:</strong> Blood flow at the tiny air sac (alveolar-capillary) level. It needs to match ventilation for good gas exchange.</li>
+                                <li><strong>Diffusion:</strong> Oxygen moving from high concentration (in alveoli) to low (into blood), and CO2 moving from high concentration (in blood) to low (into alveoli) to be exhaled.</li>
+                            </ol>
+                        </li>
+                    </ul>
+                    <div class="focus-prompt">
+                        <h4>Focus Prompt!</h4>
+                        <p>Things like **mucosal edema (swelling), secretions, and bronchospasm** can increase resistance to airflow and decrease how well gases exchange!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Respiratory Basics</h4>
+                <ul>
+                    <li>Respiratory tract: Upper (nose, throat) & Lower (windpipe, lungs).</li>
+                    <li>Ventilation = air movement. Respiration = gas exchange (ventilation, perfusion, diffusion).</li>
+                    <li>Swelling/mucus/spasm block air flow and gas exchange.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="common-cold">
+            <h2>2. Common Cold, Acute Rhinitis, and Allergic Rhinitis: What's Bugging You?</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Upper respiratory infections (URIs)<span class="tooltip-text">Infections affecting the nose, throat, and larynx, including the common cold, acute rhinitis, sinusitis, and pharyngitis.</span></span> are super common! The average adult gets 2-4 colds a year, and kids get even more (4-12!). While not life-threatening, they're annoying and costly.</p>
+                <button class="reveal-button">Breaking Down the Common Cold and Its Buddies</button>
+                <div class="reveal-content">
+                    <h4>The Common Cold:</h4>
+                    <ul>
+                        <li><strong>Cause:</strong> Primarily the <span class="highlight">rhinovirus</span>.</li>
+                        <li><strong>Affects:</strong> Mainly the nose and throat (nasopharyngeal tract).</li>
+                        <li><strong>Symptoms:</strong> Runny nose (rhinorrhea), stuffy nose (nasal congestion), cough, and increased snot.</li>
+                        <li><strong>Contagion:</strong> Most contagious **1-4 days before symptoms** and during the **first 3 days of the cold.**</li>
+                        <li><strong>Transmission:</strong> More often from touching contaminated surfaces and then your nose/mouth than from sneezes!</li>
+                    </ul>
+                    <h4>Acute Rhinitis:</h4>
+                    <ul>
+                        <li><strong>What it is:</strong> Acute inflammation of the nose's mucous membranes.</li>
+                        <li><strong>Usually comes with:</strong> The common cold.</li>
+                    </ul>
+                    <h4>Allergic Rhinitis (Hay Fever):</h4>
+                    <ul>
+                        <li><strong>What it is:</strong> Inflammation of the nose's mucous membranes caused by <span class="highlight">pollen or allergens</span> like animal dander.</li>
+                        <li><strong>Not the same as:</strong> The common cold!</li>
+                    </ul>
+                    <div class="quick-fact">
+                        <h4>Did you know?</h4>
+                        <p>If a bacterial infection tags along with a cold, your snot might turn thick, yellow, or yellow-green due to white blood cells fighting the infection. That's when antibiotics might come in handy!</p>
+                    </div>
+                    <h4>Drugs to Manage Cold Symptoms: Your Go-To Categories!</h4>
+                    <ul>
+                        <li><span class="highlight">Antihistamines (H1 blockers)</span></li>
+                        <li><span class="highlight">Decongestants (sympathomimetic amines)</span></li>
+                        <li><span class="highlight">Antitussives (cough suppressants)</span></li>
+                        <li><span class="highlight">Expectorants (mucus loosers)</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Cold & Rhinitis</h4>
+                <ul>
+                    <li>Common cold = rhinovirus, affects nose/throat.</li>
+                    <li>Acute rhinitis = nose inflammation, usually with cold.</li>
+                    <li>Allergic rhinitis (hay fever) = from allergens (pollen, dander).</li>
+                    <li>Drugs: Antihistamines, decongestants, antitussives, expectorants.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="antihistamines">
+            <h2>3. Antihistamines: Blocking the Sneeze & Itch!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Antihistamines<span class="tooltip-text">Also known as H1 blockers or H1 antagonists, these drugs compete with histamine at receptor sites to prevent allergic reactions and reduce symptoms like sneezing, runny nose, and itching.</span></span> are like bouncers at a club, preventing histamine from getting to its receptor sites and causing trouble! There are two types of histamine receptors:</p>
+                <ul>
+                    <li><span class="highlight">H1 receptor:</span> When stimulated, it causes **constriction of smooth muscles**, including those in your nasal cavity. This leads to sneezing, runny nose, and itching.</li>
+                    <li><span class="highlight">H2 receptor:</span> When stimulated, it increases stomach acid (related to ulcers). Don't mix these up!</li>
+                </ul>
+                <p>Antihistamines work by blocking the H1 receptor, which **decreases nasopharyngeal secretions** and helps with the itch and tickle that cause sneezing. They're great for seasonal allergies but **NOT for emergencies like anaphylaxis** (they're not potent enough for that).</p>
+                <button class="reveal-button">First-Gen vs. Second-Gen: Who's the Sleepier One?</button>
+                <div class="reveal-content">
+                    <h4>First-Generation Antihistamines: The Sleepy Ones!</h4>
+                    <ul>
+                        <li><strong>Characteristics:</strong> These often cause **drowsiness, dry mouth, and other anticholinergic symptoms** (like blurred vision or urinary retention).</li>
+                        <li><strong>Common in:</strong> Many OTC cold remedies.</li>
+                        <li><strong>Caution:</strong> Don't drive or operate heavy machinery if you're taking these!</li>
+                        <li><strong>Benefit:</strong> Their anticholinergic properties (drying effect) are actually helpful for runny noses and decreasing nasal itching/tickling.</li>
+                    </ul>
+                    <h4>Second-Generation Antihistamines: The Non-Drowsy Crew!</h4>
+                    <ul>
+                        <li><strong>Characteristics:</strong> Often called "nonsedating" because they cause **little to no drowsiness** and fewer anticholinergic symptoms.</li>
+                        <li><strong>Examples:</strong> Cetirizine, fexofenadine, azelastine, desloratadine, and loratadine.</li>
+                        <li><strong>Administration:</strong> Many are administered by nasal spray.</li>
+                        <li><strong>Caution:</strong> Even though they're less sedating, it's generally advised to avoid mixing them with large amounts of alcohol or other CNS depressants.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Table 38.1 Alert!</h4>
+                        <p>Check your textbook's Table 38.1 for a full list of first- and second-generation antihistamines and their uses.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Antihistamines</h4>
+                <ul>
+                    <li>Block H1 receptors, reducing nasal secretions, sneezing, itching.</li>
+                    <li>**NOT for anaphylaxis.**</li>
+                    <li>**First-Gen:** Drowsy, dry mouth (e.g., Diphenhydramine).</li>
+                    <li>**Second-Gen:** Less drowsy, fewer anticholinergic effects (e.g., Loratadine).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="diphenhydramine">
+            <h2>4. Diphenhydramine (Benadryl): The Classic Antihistamine</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Diphenhydramine<span class="tooltip-text">A first-generation antihistamine used to treat allergic rhinitis, common cold symptoms, and insomnia. It's known for causing drowsiness and has anticholinergic effects.</span></span> is a well-known first-generation antihistamine, often found in cold remedies. Its main job is to treat **rhinitis** and other allergic reactions.</p>
+                <button class="reveal-button">Diphenhydramine: Deep Dive!</button>
+                <div class="reveal-content">
+                    <div class="note">
+                        <h4>Patient Safety!</h4>
+                        <p>Do NOT confuse **Benadryl** (antihistamine) with **benazepril** (an ACE inhibitor for heart/BP)!</p>
+                    </div>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug Class</th>
+                                <th>Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug Class">Antihistamine (First-Generation)</td>
+                                <td data-label="Dosage">
+                                    <strong>Allergic reaction:</strong> A: PO: 25–50 mg q4–6h; max: 300 mg/d<br>
+                                    A: IM/IV: 10–50 mg as single dose IV or IM q4–6h; max: 400 mg/d
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Contraindications" colspan="2">
+                                    <strong>Do NOT use if:</strong> Breastfeeding.<br>
+                                    <strong>Use CAUTION with:</strong> Asthma, hepatic disease, COPD, neonates, prostatic hypertrophy, pregnancy, urinary retention, GI obstruction, increased intraocular pressure, older adults.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                    <strong>Drug:</strong> Increased CNS depression with alcohol, opioids, hypnotics, and barbiturates. Avoid use with MAOIs.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>How it Moves (Pharmacokinetics)</th>
+                                <th>How it Works (Pharmacodynamics)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Pharmacokinetics">
+                                    <strong>Absorption:</strong> Well absorbed from GI tract (oral), minimal from topical.<br>
+                                    <strong>Distribution:</strong> PB: 98% (highly protein bound).<br>
+                                    <strong>Metabolism:</strong> Half-life (t½): 2–8 h. Metabolized by liver.<br>
+                                    <strong>Excretion:</strong> In urine as metabolites.
+                                </td>
+                                <td data-label="Pharmacodynamics">
+                                    <strong>PO:</strong> Onset: 15–30 min, Peak: 2–4 h, Duration: 4–6 h.<br>
+                                    <strong>IM:</strong> Onset: 15–30 min, Peak: 1–4 h, Duration: 4–7 h.<br>
+                                    <strong>IV:</strong> Onset: Immediate, Peak: 0.5–1 h, Duration: 4–7 h.<br>
+                                    <strong>Therapeutic Use:</strong> Treats insomnia, allergic reactions (allergic rhinitis, common cold, cough, sneezing, pruritus, urticaria), and prevents motion sickness.<br>
+                                    <strong>Mechanism:</strong> Competes with histamine for binding at H1-receptor sites and antagonizes histamine effects. Has anticholinergic effects.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Side Effects (Common Annoyances)</th>
+                                <th>Adverse Reactions (More Serious Stuff!)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Side Effects">Drowsiness, dizziness, headache, weakness, insomnia, fatigue, urinary retention, blurred vision, dry mouth, dermatitis, rash, paresthesia, abdominal pain, restlessness, confusion, diarrhea, constipation.</td>
+                                <td data-label="Adverse Reactions">Seizures.<br>
+                                    <strong>Life-threatening:</strong> Thrombocytopenia.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Diphenhydramine</h4>
+                <ul>
+                    <li>First-gen antihistamine, causes drowsiness, dry mouth.</li>
+                    <li>Treats rhinitis, allergies, common cold, motion sickness, insomnia.</li>
+                    <li>Interactions: Increased CNS depression with alcohol, opioids, etc.</li>
+                    <li>High protein binding, liver metabolized, urine excreted.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="decongestants">
+            <h2>5. Nasal and Systemic Decongestants: Unstuff Your Nose!</h2>
+            <div class="info-card">
+                <p>Nasal congestion happens when nasal blood vessels swell up due to infection, inflammation, or allergies, leading to fluid leaking into tissues and a stuffy nose.</p>
+                <p><span class="tooltip-container">Nasal decongestants (sympathomimetic amines)<span class="tooltip-text">Drugs that stimulate alpha-adrenergic receptors in nasal capillaries, causing vasoconstriction, shrinking mucous membranes, and reducing fluid secretion to relieve nasal congestion.</span></span> are like tiny traffic cops for your nose blood vessels! They stimulate alpha-adrenergic receptors, causing those capillaries in your nose to constrict (vasoconstriction). This shrinks the mucous membranes and reduces snot (runny nose).</p>
+                <button class="reveal-button">The Ups and Downs of Decongestants</button>
+                <div class="reveal-content">
+                    <h4>Ways to Take Them:</h4>
+                    <ul>
+                        <li>Nasal spray or drops (topical)</li>
+                        <li>Tablet, capsule, or liquid (systemic)</li>
+                    </ul>
+                    <h4>Topical (Nasal Spray/Drops) Dangers:</h4>
+                    <div class="focus-prompt">
+                        <h4>Focus Prompt!</h4>
+                        <p>Frequent use (even as little as 3 days!) of nasal sprays/drops can lead to **tolerance and rebound nasal congestion!** This means instead of constricting, your nasal membranes rebound and dilate, making your stuffy nose even worse. Emphasize limiting their use!</p>
+                    </div>
+                    <div class="quick-fact">
+                        <h4>Side Effects Reminder:</h4>
+                        <p>Topical decongestants have low side effects, but some can cause nervousness or restlessness. These usually get better as your body adjusts.</p>
+                    </div>
+                    <h4>Systemic Decongestants (Oral):</h4>
+                    <ul>
+                        <li><strong>Examples:</strong> Tetrahydrozoline, phenylephrine, oxymetazoline, and pseudoephedrine.</li>
+                        <li><strong>Primary Use:</strong> Allergic rhinitis (hay fever) and acute coryza (profuse runny nose).</li>
+                        <li><strong>Advantage:</strong> Relieve congestion for longer periods than nasal sprays.</li>
+                        <li><strong>Caution:</strong> **Phenylpropanolamine** was removed from OTCs due to stroke, hypertension, and cardiac risks.</li>
+                        <li><strong>Pseudoephedrine:</strong> Often combined with antihistamines, analgesics, or antitussives. Its sales are strictly controlled due to its use in illicit drug manufacturing.</li>
+                    </ul>
+                    <h4>General Decongestant Warnings:</h4>
+                    <ul>
+                        <li>As with any alpha-adrenergic drug, they can **increase blood pressure and blood glucose levels!**</li>
+                        <li><strong>Contraindicated or used with extreme caution in patients with:</strong> Hypertension, cardiac disease, hyperthyroidism, and diabetes mellitus.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Table 38.2 Alert!</h4>
+                        <p>Check your textbook's Table 38.2 for a list of systemic and nasal decongestants and their dosages, uses, and considerations.</p>
+                    </div>
+                    <h4>Drug Interactions with Decongestants:</h4>
+                    <ul>
+                        <li><strong>Pseudoephedrine:</strong> May decrease the effect of beta blockers.</li>
+                        <li><strong>MAOIs:</strong> Taking decongestants with MAOIs can increase the risk of hypertension or cardiac dysrhythmias.</li>
+                        <li><strong>Caffeine:</strong> Large amounts of caffeine (coffee, tea) can increase restlessness and palpitations.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Decongestants</h4>
+                <ul>
+                    <li>Stimulate alpha-adrenergic receptors, causing vasoconstriction (shrinking nasal membranes).</li>
+                    <li>**Topical:** Faster, fewer systemic side effects, but **risk of rebound congestion if overused (>3 days).**</li>
+                    <li>**Systemic:** Longer relief.</li>
+                    <li>**Warnings:** Can increase BP and blood glucose. Contraindicated/caution in hypertension, heart disease, hyperthyroidism, diabetes. Many drug interactions.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nursing-process-antihistamine">
+            <h2>6. Clinical Judgment: Nursing Process - Antihistamine: Diphenhydramine</h2>
+            <div class="info-card">
+                <p>Let's use our nursing judgment with **Diphenhydramine**! Remember our core concept: **Gas Exchange** (getting enough oxygen in and carbon dioxide out).</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>Vital Signs:</strong> Determine baseline vital signs.</li>
+                        <li><strong>Drug History:</strong> Obtain a full drug history to spot potential drug-drug interactions.</li>
+                        <li><strong>Urinary Function:</strong> Assess for signs of urinary issues (retention, dysuria, altered frequency) – anticholinergic effects can worsen these.</li>
+                        <li><strong>CBC:</strong> Note complete blood count (CBC) during drug therapy.</li>
+                        <li><strong>Cardiac & Respiratory Status:</strong> Assess both.</li>
+                        <li><strong>Environmental Exposures:</strong> Get a history of exposures (drugs, recent foods, stress).</li>
+                    </ul>
+
+                    <h3>Analyze Cues & Prioritize Hypothesis [Patient Problems]: What's the biggest issue?</h3>
+                    <ul>
+                        <li>Airway obstruction (from congestion/secretions).</li>
+                        <li>Decreased gas exchange (less O2 in, less CO2 out).</li>
+                        <li>Hypoxemia (low oxygen in blood).</li>
+                        <li>Discomfort (from symptoms).</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li>Patient will have decreased nasal congestion, mucosal secretions, and cough.</li>
+                        <li>Patient will sleep 6 to 8 hours per night (relevant if using for insomnia/sedation).</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Oral Admin:</strong> Give oral Diphenhydramine **with food** to decrease stomach upset.</li>
+                        <li><strong>IM Admin:</strong> Administer IM injections in a large muscle. **Avoid subcutaneous injection.**</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General Advice:</h4>
+                    <ul>
+                        <li><strong>Driving/Dangerous Activities:</strong> Warn patients to **avoid driving a motor vehicle** and performing other dangerous activities if drowsiness occurs, or until they're stable on the drug.</li>
+                        <li><strong>CNS Depressants:</strong> Advise patients to **avoid alcohol and other central nervous system (CNS) depressants** (opioids, hypnotics, barbiturates).</li>
+                        <li><strong>Compliance & Reporting:</strong> Encourage patients to take drugs as prescribed. Tell them to **notify a healthcare provider if confusion or hypotension occurs.**</li>
+                        <li><strong>Motion Sickness Prophylaxis:</strong> If taking for motion sickness, teach them to take the drug **at least 30 minutes before** the event, and also before meals and at bedtime during the event.</li>
+                        <li><strong>Breastfeeding:</strong> Inform breastfeeding mothers that small amounts of the drug pass into breast milk, and children are more susceptible to side effects (excitement, irritability). **Breastfeeding is not recommended** while using these drugs.</li>
+                    </ul>
+                    <h4>Side Effects:</h4>
+                    <ul>
+                        <li><strong>Children:</strong> Advise family members/parents that children are more sensitive; **nightmares, nervousness, and irritability** are more likely.</li>
+                        <li><strong>Older Adults:</strong> Inform older adults that they are more sensitive and more likely to experience **confusion, difficult/painful urination, dizziness, drowsiness, feeling faint, and dryness of mouth/nose/throat.**</li>
+                        <li><strong>Dry Mouth Relief:</strong> Suggest using sugarless candy or gum, ice chips, or a saliva substitute for temporary relief of dry mouth.</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li>Evaluate effectiveness of the drug in relieving allergic symptoms or as a sleep aid.</li>
+                        <li>Confirm patient is free from excessive drowsiness or adverse effects.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: NP - Diphenhydramine</h4>
+                <ul>
+                    <li>**Assess:** VS, drug history, urinary function, CBC, cardiac/resp. status.</li>
+                    <li>**Problems:** Airway obstruction, decreased gas exchange, discomfort.</li>
+                    <li>**Goals:** Decreased congestion/cough, improved sleep.</li>
+                    <li>**Intervene:** Give oral with food, IM in large muscle.</li>
+                    <li>**Teach:** Avoid driving/CNS depressants, report confusion/hypotension, take for motion sickness 30 min before, breastfeeding not recommended. Watch for side effects in children/older adults. Manage dry mouth.</li>
+                    <li>**Evaluate:** Symptom relief, adequate sleep, no significant side effects.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="intranasal-glucocorticoids">
+            <h2>7. Intranasal Glucocorticoids: Anti-Inflammatory Nasal Sprays!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Intranasal glucocorticoids (steroids)<span class="tooltip-text">Nasal sprays containing corticosteroids that reduce inflammation in the nasal passages, effectively treating symptoms of allergic rhinitis like rhinorrhea, sneezing, and congestion.</span></span> are super effective for allergic rhinitis because they have a powerful **anti-inflammatory action**. They decrease symptoms like runny nose (rhinorrhea), sneezing, and congestion.</p>
+                <button class="reveal-button">Meet the Nasal Steroid Squad!</button>
+                <div class="reveal-content">
+                    <h4>Examples of Intranasal Steroids:</h4>
+                    <ul>
+                        <li>Beclomethasone</li>
+                        <li>Budesonide</li>
+                        <li>Flunisolide</li>
+                        <li>Fluticasone</li>
+                        <li>Mometasone furoate</li>
+                        <li>Triamcinolone</li>
+                    </ul>
+                    <div class="quick-fact">
+                        <h4>Team Up!</h4>
+                        <p>These can be used alone or combined with an H1 antihistamine for extra power!</p>
+                    </div>
+                    <h4>Important Usage Tips:</h4>
+                    <ul>
+                        <li>Direct the spray **away from the nasal septum** (the wall between your nostrils) and sniff gently.</li>
+                        <li>With continuous use, **dryness of the nasal mucosa/lining may occur.**</li>
+                        <li>Common side effects include **headache, nasal irritation, pharyngitis, fatigue, insomnia, and candidiasis** (yeast infection in the nose/throat).</li>
+                        <li>They undergo rapid deactivation after absorption, meaning most of the effect is localized to the nose.</li>
+                        <li>Most allergic rhinitis is seasonal, so these drugs are usually for **short-term use**, unless your doctor says otherwise.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Table 38.3 Alert!</h4>
+                        <p>Check your textbook's Table 38.3 for a list of intranasal glucocorticoids, their dosages, uses, and considerations.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Intranasal Glucocorticoids</h4>
+                <ul>
+                    <li>Anti-inflammatory action, great for allergic rhinitis symptoms (runny nose, sneezing, congestion).</li>
+                    <li>Examples: Beclomethasone, Fluticasone.</li>
+                    <li>Spray away from septum, sniff gently.</li>
+                    <li>Side effects: Dry nasal mucosa, irritation, headache, candidiasis.</li>
+                    <li>Usually for short-term/seasonal use.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="antitussives">
+            <h2>8. Antitussives: Quieting That Annoying Cough!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Antitussives<span class="tooltip-text">Medications that suppress the cough reflex by acting on the cough control center in the medulla of the brain. Used for nonproductive, irritating coughs.</span></span> are drugs that work on the **cough control center in your brain (medulla)** to suppress your cough reflex. Coughing is normally a good thing (it clears your airways!), but if it's nonproductive (not bringing anything up) and irritating, an antitussive can help. Hard candy can also help with a tickly throat!</p>
+                <button class="reveal-button">Types of Antitussives</button>
+                <div class="reveal-content">
+                    <h4>The Three Types:</h4>
+                    <ol>
+                        <li>Nonopioid (e.g., Dextromethorphan)</li>
+                        <li>Opioid (e.g., Codeine)</li>
+                        <li>Combination preparations (often with other cold meds)</li>
+                    </ol>
+                    <div class="note">
+                        <h4>Table 38.4 Alert!</h4>
+                        <p>Check your textbook's Table 38.4 for a list of antitussives and expectorants, their dosages, uses, and considerations.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Antitussives</h4>
+                <ul>
+                    <li>Suppress cough reflex in medulla.</li>
+                    <li>Used for nonproductive, irritating coughs.</li>
+                    <li>Types: Nonopioid, opioid, combination.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="dextromethorphan">
+            <h2>9. Dextromethorphan Hydrobromide: The Common Cough Suppressant</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Dextromethorphan<span class="tooltip-text">A nonopioid antitussive widely used in OTC cold and cough remedies to temporarily relieve nonproductive coughs.</span></span> is a popular **nonopioid antitussive** found in tons of over-the-counter (OTC) cold and cough remedies.</p>
+                <button class="reveal-button">Dextromethorphan: The Details!</button>
+                <div class="reveal-content">
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug Class</th>
+                                <th>Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug Class">Antitussive (Nonopioid)</td>
+                                <td data-label="Dosage">
+                                    <strong>Immediate release:</strong> A: PO: 10–20 mg q4h PRN or 30 mg q6–8h PRN; max: 120 mg/d<br>
+                                    <strong>Extended release:</strong> A: PO: 60 mg q12h; max: 120 mg/d
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Contraindications" colspan="2">
+                                    <strong>Do NOT use if:</strong> Hypersensitivity, MAOI therapy.<br>
+                                    <strong>Use CAUTION with:</strong> Asthma, emphysema, hepatic disease, older adults, pregnancy, breastfeeding, tobacco smoking.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                    <strong>No significant drug interactions occur with this drug.</strong> (Note: This refers to common, major interactions. Always be cautious with any drug combinations, especially with CNS depressants).
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>How it Moves (Pharmacokinetics)</th>
+                                <th>How it Works (Pharmacodynamics)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Pharmacokinetics">
+                                    <strong>Absorption:</strong> Rapidly absorbed orally.<br>
+                                    <strong>Distribution:</strong> PB: 60%–70% protein bound.<br>
+                                    <strong>Metabolism:</strong> Half-life (t½): 2–24 h. Metabolized by the liver.<br>
+                                    <strong>Excretion:</strong> In urine.
+                                </td>
+                                <td data-label="Pharmacodynamics">
+                                    <strong>PO:</strong> Onset: 15–30 min, Peak: 2–3 h, Duration: 3–6 h.<br>
+                                    <strong>Therapeutic Use:</strong> For temporary cough relief, especially a nonproductive cough due to sore throat, irritation, or the common cold.<br>
+                                    <strong>Mechanism:</strong> Decreases excitability of cough center in the medulla.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Side Effects (Common Annoyances)</th>
+                                <th>Adverse Reactions (More Serious Stuff!)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Side Effects">Dizziness, drowsiness, confusion, fatigue, ataxia, nausea, vomiting, restlessness.</td>
+                                <td data-label="Adverse Reactions">Psychosis, tachycardia, seizures.<br>
+                                    <strong>Life-threatening:</strong> Respiratory depression, serotonin syndrome (especially with MAOIs).
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Dextromethorphan</h4>
+                <ul>
+                    <li>Nonopioid antitussive, found in many OTCs.</li>
+                    <li>Suppresses nonproductive cough by acting on medulla.</li>
+                    <li>Rapidly absorbed, duration 3-6 hours.</li>
+                    <li>Side effects: Dizziness, drowsiness, nausea, confusion.</li>
+                    <li>**Caution with MAOIs due to serotonin syndrome risk.**</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="expectorants">
+            <h2>10. Expectorants: Getting That Mucus Moving!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Expectorants<span class="tooltip-text">Medications that thin and loosen bronchial secretions, making it easier to eliminate them by coughing. Guaifenesin is a common example.</span></span> are like little helpers that **loosen bronchial secretions** so you can cough them out more easily! They can be used alone or with other cold meds. The most common one you'll see in OTC preparations is **guaifenesin**.</p>
+                <div class="quick-fact">
+                    <h4>Best Natural Expectorant?</h4>
+                    <p><strong>Hydration!</strong> Drinking at least 8 glasses of fluid per day is the best natural way to help loosen mucus.</p>
+                </div>
+                <div class="note">
+                    <h4>Table 38.4 Alert!</h4>
+                    <p>Remember Table 38.4 from your textbook? It lists dosages, uses, and considerations for expectorants and antitussives.</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Expectorants</h4>
+                <ul>
+                    <li>Loosen bronchial secretions for easier coughing.</li>
+                    <li>Common example: Guaifenesin.</li>
+                    <li>**Hydration is key** to their effectiveness.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="sinusitis">
+            <h2>11. Sinusitis: When Your Sinuses Get Mad!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Sinusitis<span class="tooltip-text">Inflammation of the mucous membranes lining one or more of the sinuses (maxillary, frontal, ethmoid, or sphenoid). Can cause facial pain, pressure, and congestion.</span></span> is an inflammation of the mucous membranes in one or more of your sinuses (like maxillary, frontal, ethmoid, or sphenoid). Think of it as a stuffy, painful head!</p>
+                <button class="reveal-button">Treating Sinusitis</button>
+                <div class="reveal-content">
+                    <h4>What Helps?</h4>
+                    <ul>
+                        <li>A **systemic or nasal decongestant** can help reduce swelling and open things up.</li>
+                        <li>**Acetaminophen (Tylenol), fluids, and rest** are also helpful for symptom relief.</li>
+                        <li>If it's acute or severe, an **antibiotic** might be prescribed if a bacterial infection is suspected.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Sinusitis</h4>
+                <ul>
+                    <li>Inflammation of sinus membranes.</li>
+                    <li>Treatment: Decongestants, acetaminophen, fluids, rest.</li>
+                    <li>Antibiotics if bacterial.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="acute-pharyngitis">
+            <h2>12. Acute Pharyngitis: The Dreaded Sore Throat!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Acute pharyngitis<span class="tooltip-text">Inflammation of the throat (pharynx), commonly known as a "sore throat." It can be caused by viruses, bacteria (like strep), or other irritants.</span></span> is simply the medical term for **inflammation of the throat, or a "sore throat."** It can strike alone or tag along with a common cold or sinusitis.</p>
+                <button class="reveal-button">What Causes It & How to Treat It?</button>
+                <div class="reveal-content">
+                    <h4>Causes:</h4>
+                    <ul>
+                        <li>**Virus** (most common)</li>
+                        <li>**Beta-hemolytic streptococci** ("strep throat")</li>
+                        <li>Other bacteria</li>
+                    </ul>
+                    <h4>Symptoms:</h4>
+                    <ul>
+                        <li>Elevated temperature (fever)</li>
+                        <li>Cough</li>
+                    </ul>
+                    <h4>Diagnosis & Treatment:</h4>
+                    <ul>
+                        <li>Always get a **throat culture** to rule out "strep throat."</li>
+                        <li>If the culture is positive for **beta-hemolytic streptococci**, a **10-day course of antibiotics** is usually prescribed.</li>
+                        <li>For all types of sore throats, **saline gargles, lozenges, and increased fluid intake** are usually helpful.</li>
+                        <li>Acetaminophen can help lower fever.</li>
+                        <li>**Important:** Antibiotics **do NOT work for viral pharyngitis!**</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Acute Pharyngitis</h4>
+                <ul>
+                    <li>Inflammation of the throat (sore throat).</li>
+                    <li>Caused by viruses or bacteria (like strep).</li>
+                    <li>Throat culture for strep.</li>
+                    <li>Bacterial = 10-day antibiotics.</li>
+                    <li>General care: Saline gargles, lozenges, fluids, acetaminophen.</li>
+                    <li>Antibiotics **don't work for viral**.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nursing-process-decongestant">
+            <h2>13. Clinical Judgment: Nursing Process - Nasal Decongestant: Oxymetazoline</h2>
+            <div class="info-card">
+                <p>Let's use our nursing judgment with **Oxymetazoline** (a nasal decongestant)! Our core concept is still: **Gas Exchange**.</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>History of Hypertension:</strong> Crucial to determine if the patient has a history of high blood pressure, especially with decongestants.</li>
+                        <li><strong>Baseline Vital Signs:</strong> Note these for comparison. An elevated temperature (99°F-101°F / 37.2°C-38.3°C) might mean a viral infection.</li>
+                        <li><strong>Drug History:</strong> Get a full drug history to identify potential drug-drug interactions (e.g., Dextromethorphan with MAOIs, narcotics, etc., can increase toxicity).</li>
+                        <li><strong>Cardiac & Respiratory Status:</strong> Assess both.</li>
+                    </ul>
+
+                    <h3>Analyze Cues & Prioritize Hypothesis [Patient Problems]: What's the biggest issue?</h3>
+                    <ul>
+                        <li>Airway obstruction (due to nasal congestion).</li>
+                        <li>Decreased gas exchange.</li>
+                        <li>Hypoxemia.</li>
+                        <li>Discomfort.</li>
+                        <li>Fatigue.</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li>Patient’s cough will be eliminated or diminished.</li>
+                        <li>Patient will be free from a secondary bacterial infection.</li>
+                        <li>Patient will experience reduced nasal congestion.</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Monitor Vital Signs:</strong> Blood pressure can go up with decongestants; dysrhythmias can also occur. Watch closely!</li>
+                        <li><strong>Observe Bronchial Secretions:</strong> Yellow or green mucus suggests a bacterial infection, which might need antibiotics.</li>
+                        <li><strong>Codeine Warning:</strong> If codeine is part of the treatment, warn patients that it can lead to tolerance and physical dependence.</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General Advice:</h4>
+                    <ul>
+                        <li><strong>Dextromethorphan + MAOIs:</strong> Tell patients that hypotension (low BP) and hyperpyrexia (very high fever) can occur if dextromethorphan is taken with MAOIs.</li>
+                        <li><strong>Nasal Spray Use:</strong> Teach patients proper technique for nasal sprays and "puff" or squeeze products.</li>
+                        <li><strong>🚫 Rebound Congestion:</strong> **CAUTION PATIENTS NOT TO USE NASAL SPRAYS FOR MORE THAN 3 DAYS** to prevent rebound nasal congestion (where the stuffiness actually gets worse!).</li>
+                        <li><strong>OTC Labels:</strong> Advise patients to always **read labels on over-the-counter (OTC) drugs** and to check with a healthcare provider before taking any cold remedies. This is super important if they're taking other drugs or have health issues like hypertension or hyperthyroidism. Also, remind them that acetaminophen might be hidden in many products, risking an overdose.</li>
+                        <li><strong>Antibiotics:</strong> Inform patients that **antibiotics are NOT helpful for common cold viruses**. They're only for secondary bacterial infections.</li>
+                        <li><strong>Older Adults/Chronic Conditions:</strong> Encourage older patients or those with heart disease, asthma, emphysema, diabetes, or hypertension to **contact their healthcare provider** before choosing any cold/flu drugs, including OTCs.</li>
+                        <li><strong>Drowsiness:</strong> Tell patients **not to drive** during initial use of a cold remedy containing an antihistamine due to drowsiness.</li>
+                        <li><strong>Fluid Intake:</strong> Encourage patients to **maintain adequate fluid intake** (at least 8 glasses/day). Fluids help thin bronchial secretions for easier coughing.</li>
+                        <li><strong>Bedtime Dosing:</strong> Teach patients **not to take a cold remedy before or at bedtime** if it contains a decongestant, as it can cause insomnia.</li>
+                        <li><strong>Rest:</strong> Encourage adequate rest.</li>
+                        <li><strong>Infection Control:</strong> Inform patients that cold and flu viruses spread easily by hand-to-hand contact or touching contaminated surfaces. Emphasize hand washing!</li>
+                        <li><strong>Environmental Irritants:</strong> Advise patients to avoid pollutants, fumes, smoking, and dust to reduce irritating coughs.</li>
+                        <li><strong>Cough Technique:</strong> Teach patients to perform **three effective coughs before bedtime** to promote uninterrupted sleep.</li>
+                        <li><strong>Child Safety:</strong> Direct patients and parents to **store drugs out of reach of children** and request childproof caps.</li>
+                        <li><strong>When to Call Provider:</strong> Advise patients to **contact a healthcare provider if cough persists for more than 1 week** or is accompanied by chest pain, fever, or headache.</li>
+                    </ul>
+                    <h4>Self-Administration:</h4>
+                    <ul>
+                        <li>Teach patients to self-administer medications like nose drops and inhalants correctly.</li>
+                        <li>Encourage effective coughing: take deep breaths before coughing, and be in an upright position.</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li>Evaluate effectiveness of drug therapy.</li>
+                        <li>Determine that the patient is free from nonproductive cough, has adequate fluid intake and rest, and is afebrile (without fever).</li>
+                        <li>Confirm decreased nasal congestion.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: NP - Oxymetazoline (Nasal Decongestant)</h4>
+                <ul>
+                    <li>**Assess:** History (hypertension!), VS, drug interactions, cardiac/resp. status.</li>
+                    <li>**Problems:** Airway obstruction, decreased gas exchange, discomfort.</li>
+                    <li>**Goals:** Reduced cough/congestion, no secondary infection.</li>
+                    <li>**Intervene:** Monitor VS (BP, dysrhythmias), check mucus color (bacterial?), warn about codeine dependence.</li>
+                    <li>**Teach:** DON'T overuse nasal sprays (>3 days rebound!), read OTC labels, no antibiotics for viral, adequate fluids/rest, avoid bedtime decongestants, hand hygiene, avoid irritants, effective coughs, child safety, when to call provider.</li>
+                    <li>**Evaluate:** Symptom relief, adequate hydration/rest, no fever/secondary infection.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="critical-thinking" class="nclex-next-gen">
+            <h3>14. NCLEX Next Gen! Critical Thinking Case Study</h3>
+            <p class="case-study"><strong>Cognitive Skill: Prioritize hypothesis.</strong></p>
+            <p class="case-study">A 35-year-old patient has allergic rhinitis. Her prescriptions include loratadine 5 mg/day and fluticasone, two nasal inhalations per day. Previously, she had taken OTC drugs and asked if she should continue to take the OTC drug with her prescriptions. She has never used a nasal inhaler before.</p>
+
+            <div class="fill-in-the-blank">
+                <p>1. What additional information is needed from the patient concerning her health problem?</p>
+                <textarea id="blank1_cs" placeholder="Type your answer here."></textarea>
+                <p>2. What is your response to the patient concerning the use of OTC drugs with her prescription drugs?</p>
+                <textarea id="blank2_cs" placeholder="Type your answer here."></textarea>
+                <p>3. How would you instruct the patient to use a nasal inhaler? Explain your answer.</p>
+                <textarea id="blank3_cs" placeholder="Type your answer here."></textarea>
+                <p>4. What are the similarities and differences between loratadine and diphenhydramine? Could one of these antihistamines be more effective than the other? Explain your answer.</p>
+                <textarea id="blank4_cs" placeholder="Type your answer here."></textarea>
+                <p>5. What could you suggest to decrease allergens such as dust mites in the home?</p>
+                <textarea id="blank5_cs" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_case_study">Check My Answers!</button>
+                <div class="feedback" id="case_study_feedback"></div>
+                <div class="rationale" id="case_study_rationale">
+                    <h4>Rationale: Why these answers are correct!</h4>
+                    <ol>
+                        <li>**Additional Information Needed:** The nurse should ask about the specific OTC drugs she was taking (names, dosages, frequency), as well as any underlying health conditions (e.g., hypertension, cardiac disease, diabetes, hyperthyroidism) that might interact with decongestants or other ingredients in OTC cold remedies. Also, inquire about her specific allergic triggers, severity of symptoms, and how long she has had allergic rhinitis.</li>
+                        <li>**Response to OTC Use:** The nurse should advise the patient **NOT to continue taking OTC drugs without first checking with her healthcare provider or pharmacist.** Many OTC cold remedies contain decongestants and/or antihistamines that could interact with her prescribed loratadine and fluticasone. Combining them could lead to excessive sedation, increased anticholinergic side effects (if a first-gen antihistamine), or cardiovascular issues (if a decongestant is present). It's crucial to avoid potential overdoses or adverse drug interactions.</li>
+                        <li>**Nasal Inhaler Instruction:**
+                            <ul>
+                                <li>**Preparation:** Instruct her to gently blow her nose first to clear nasal passages.</li>
+                                <li>**Shake:** Shake the inhaler well before each use.</li>
+                                <li>**Positioning:** Tilt her head slightly forward.</li>
+                                <li>**Aim:** Place the tip of the nozzle into one nostril, aiming the spray **away from the nasal septum** (the center divider) towards the outer wall of the nostril.</li>
+                                <li>**Spray & Sniff:** As she sprays, she should gently sniff inward.</li>
+                                <li>**Repeat:** Repeat for the other nostril if prescribed.</li>
+                                <li>**Avoid Blowing:** Advise her not to blow her nose immediately after spraying.</li>
+                                <li>**Cleaning:** Explain how to clean the nozzle regularly according to the manufacturer's instructions.</li>
+                                <li>**Consistency:** Emphasize that fluticasone is a preventative medication and needs to be used consistently every day for full effectiveness, not just when symptoms are severe.</li>
+                            </ul>
+                        </li>
+                        <li>**Loratadine vs. Diphenhydramine:**
+                            <ul>
+                                <li>**Similarities:** Both are antihistamines (H1 blockers) used to treat allergic symptoms like rhinitis, sneezing, and itching. They both block histamine's effects at the H1 receptor.</li>
+                                <li>**Differences:** **Loratadine is a second-generation antihistamine**, meaning it is generally **non-sedating** and has fewer anticholinergic side effects (like dry mouth, blurred vision, urinary retention) because it does not cross the blood-brain barrier as readily. **Diphenhydramine is a first-generation antihistamine**, which is known for causing **significant drowsiness** and having more pronounced anticholinergic effects.</li>
+                                <li>**Effectiveness:** Loratadine might be considered "more effective" in terms of patient compliance and quality of life due to its non-sedating profile, making it suitable for daytime use without impairing daily activities. Diphenhydramine can be very effective for acute symptoms, especially when sedation is desired (e.g., for nighttime relief of itching/congestion). Neither is inherently "more effective" at blocking histamine, but their side effect profiles make them more or less appropriate for different patient needs and daily routines. Given her current prescription, her doctor likely chose loratadine for its non-drowsy properties.</li>
+                            </ul>
+                        </li>
+                        <li>**Decreasing Allergens:**
+                            <ul>
+                                <li>Use allergen-proof covers for mattresses and pillows.</li>
+                                <li>Wash bedding weekly in hot water (at least 130°F / 54°C).</li>
+                                <li>Vacuum regularly with a HEPA filter vacuum cleaner.</li>
+                                <li>Remove carpets if possible, especially in the bedroom.</li>
+                                <li>Keep humidity levels low (below 50%) using a dehumidifier.</li>
+                                <li>Avoid upholstered furniture or replace it with leather/vinyl.</li>
+                                <li>Clean regularly to remove dust, mold, and pet dander.</li>
+                                <li>Consider air purifiers with HEPA filters.</li>
+                                <li>Keep windows closed during high pollen seasons.</li>
+                                <li>Bathe pets regularly if pet dander is a trigger.</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    <p><strong>Reference:</strong> Pharmacology, McCuistion, et al. Pharmacology, Chapter 38 (relevant sections on Antihistamines, Intranasal Glucocorticoids, and patient teaching for cold remedies).</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Case Study Takeaways</h4>
+                <ul>
+                    <li>Always assess for other OTC meds and underlying health conditions.</li>
+                    <li>Advise against combining OTCs with prescriptions without provider approval.</li>
+                    <li>Proper nasal inhaler technique (aim away from septum, sniff gently, consistent use).</li>
+                    <li>Loratadine is non-drowsy (2nd gen), Diphenhydramine is drowsy (1st gen). Choose based on patient needs.</li>
+                    <li>Dust mite control: covers, hot washes, vacuuming, humidity control.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="review-questions">
+            <h2>15. Module Review Questions: Test Your Knowledge!</h2>
+
+            <div class="question-card" id="q1">
+                <p>1. A patient tells the nurse that he has started to take an over-the-counter antihistamine, diphenhydramine. In teaching about side effects, what is most important for the nurse to tell the patient?</p>
+                <div class="options">
+                    <label><input type="radio" name="q1_option" value="a"> a. To avoid insomnia, do not to take this drug at bedtime.</label>
+                    <label><input type="radio" name="q1_option" value="b"> b. Avoid driving a motor vehicle until stabilized on the drug.</label>
+                    <label><input type="radio" name="q1_option" value="c"> c. Nightmares and nervousness are more likely in an adult.</label>
+                    <label><input type="radio" name="q1_option" value="d"> d. Medication may cause excessive secretions.</label>
+                </div>
+                <button class="submit-btn" id="submit_q1">Submit Answer</button>
+                <div class="feedback" id="q1_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q2">
+                <p>2. A patient complains of a sore throat and has been told it is due to beta-hemolytic streptococcal infection. The nurse anticipates that the patient has which acute condition?</p>
+                <div class="options">
+                    <label><input type="radio" name="q2_option" value="a"> a. Rhinitis</label>
+                    <label><input type="radio" name="q2_option" value="b"> b. Sinusitis</label>
+                    <label><input type="radio" name="q2_option" value="c"> c. Pharyngitis</label>
+                    <label><input type="radio" name="q2_option" value="d"> d. Rhinorrhea</label>
+                </div>
+                <button class="submit-btn" id="submit_q2">Submit Answer</button>
+                <div class="feedback" id="q2_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q3">
+                <p>3. A patient is prescribed a decongestant nasal spray that contains oxymetazoline. What will the nurse teach the patient?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3_option" value="a"> a. Take this drug at bedtime because it may cause drowsiness.</label>
+                    <label><input type="radio" name="q3_option" value="b"> b. Directly spray the medication away from the nasal septum and gently sniff.</label>
+                    <label><input type="radio" name="q3_option" value="c"> c. This drug may be used in maintenance treatment for asthma.</label>
+                    <label><input type="radio" name="q3_option" value="d"> d. Limit use of the drug to 3 days to prevent rebound nasal congestion.</label>
+                </div>
+                <button class="submit-btn" id="submit_q3">Submit Answer</button>
+                <div class="feedback" id="q3_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q4">
+                <p>4. A patient has been prescribed guaifenesin. The nurse understands that the purpose of the drug is to accomplish what?</p>
+                <div class="options">
+                    <label><input type="radio" name="q4_option" value="a"> a. Treat allergic rhinitis and prevent motion sickness</label>
+                    <label><input type="radio" name="q4_option" value="b"> b. Loosen bronchial secretions so coughing can eliminate them</label>
+                    <label><input type="radio" name="q4_option" value="c"> c. Compete with histamine for receptor sites, thus preventing a histamine response</label>
+                    <label><input type="radio" name="q4_option" value="d"> d. Stimulate alpha-adrenergic receptors, thus producing vascular constriction of capillaries in nasal mucosa</label>
+                </div>
+                <button class="submit-btn" id="submit_q4">Submit Answer</button>
+                <div class="feedback" id="q4_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q5">
+                <p>5. Beclomethasone has been prescribed for a patient with allergic rhinitis. What should the nurse teach the patient regarding this medication?</p>
+                <div class="options">
+                    <label><input type="radio" name="q5_option" value="a"> a. This may be used for an acute attack.</label>
+                    <label><input type="radio" name="q5_option" value="b"> b. An oral form is available if the patient prefers to use it.</label>
+                    <label><input type="radio" name="q5_option" value="c"> c. Avoid large amounts of caffeine intake because an increased heart rate may occur.</label>
+                    <label><input type="radio" name="q5_option" value="d"> d. With continuous use, dryness of the nasal mucosa/lining may occur.</label>
+                </div>
+                <button class="submit-btn" id="submit_q5">Submit Answer</button>
+                <div class="feedback" id="q5_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q6">
+                <p>6. The nurse is teaching a patient about diphenhydramine. Which instructions should the nurse include in the patient’s teaching plan? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="q6_option" value="a"> a. Take medication on an empty stomach to facilitate absorption.</label>
+                    <label><input type="checkbox" name="q6_option" value="b"> b. Avoid alcohol and other central nervous system depressants.</label>
+                    <label><input type="checkbox" name="q6_option" value="c"> c. Notify a health care provider if confusion or hypotension occurs.</label>
+                    <label><input type="checkbox" name="q6_option" value="d"> d. Use sugarless candy, gum, or ice chips for temporary relief of dry mouth.</label>
+                    <label><input type="checkbox" name="q6_option" value="e"> e. Avoid handling dangerous equipment or performing dangerous activities until stabilized on the medication.</label>
+                </div>
+                <button class="submit-btn" id="submit_q6">Submit Answer</button>
+                <div class="feedback" id="q6_feedback"></div>
+            </div>
+
+        </section>
+        <section id="drug-mastery-quiz">
+            <h2>16. Drug Mastery Challenge: Let's Master These Meds!</h2>
+            <p>Ready to test your knowledge on the drugs for upper respiratory disorders? Go through each card and see if you can recall the key information!</p>
+            <button id="startQuizBtn">Start Drug Mastery Challenge!</button>
+
+            <div class="quiz-card" id="drugQuizCard">
+                <div class="progress-tracker">Card <span id="currentCardNum">1</span> of <span id="totalCardsNum">0</span></div>
+                <h4 id="drugName">Drug Name Goes Here</h4>
+                <p id="drugQuestion">Question about the drug will appear here.</p>
+
+                <div class="quiz-controls">
+                    <button id="showAnswerBtn">Show Answer</button>
+                </div>
+
+                <div id="answerFeedback">
+                    <h5>Answer: <span id="answerType"></span></h5>
+                    <p id="answerContent"></p>
+                </div>
+
+                <div id="masteryButtons" style="display: none;">
+                    <p>Did you get it right?</p>
+                    <button id="correctBtn">Yes, I knew it!</button>
+                    <button id="incorrectBtn">No, I need to review.</button>
+                </div>
+            </div>
+
+            <div id="quizSummary">
+                <h4>Challenge Complete!</h4>
+                <p>You've gone through all the drugs!</p>
+                <p>Mastered on first try: <span id="masteredCount">0</span></p>
+                <p>Needed review: <span id="missedCount">0</span></p>
+                <button id="restartQuizBtn">Restart Full Quiz</button>
+                <button id="reviewMissedBtn">Review Missed Drugs</button>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Upper Respiratory Disorders Learning Module. Designed for focused learning.</p>
+        </footer>
+    </div>
+
+    <div id="clockOutOverlay">
+        <div id="clockOutContent">
+            <h2>Clock Out!</h2>
+            <p>Take a moment to reset your focus. Your module will resume in:</p>
+            <div id="brainEmoji">🧠</div> <div id="countdownTimer">00:30</div>
+        </div>
+    </div>
+    <script>
+        // ==========================================
+        // Drug Data (This is the only part that can safely sit outside DOMContentLoaded)
+        // ==========================================
+        const drugs = [
+            {
+                name: "Diphenhydramine",
+                class: "First-Generation Antihistamine",
+                keyActions: "Competes with histamine for H1-receptor sites, blocking histamine effects. Used for allergic rhinitis, common cold symptoms (sneezing, runny nose), pruritus, urticaria, insomnia, and motion sickness.",
+                sideEffects: "Drowsiness, dizziness, fatigue, disturbed coordination, dry mouth, urinary retention, blurred vision, wheezing, skin rashes, paresthesia, abdominal pain, restlessness, confusion, diarrhea, constipation.",
+                nursingConsiderations: "Causes significant sedation; warn patients about driving/operating machinery. Avoid alcohol and other CNS depressants. Give with food to decrease GI distress. IM in large muscle. Children/older adults more sensitive to side effects (nightmares, irritability in children; confusion, urinary issues, dizziness in older adults). Advise sugarless candy/gum for dry mouth. NOT for anaphylaxis. Do not confuse with benazepril."
+            },
+            {
+                name: "Oxymetazoline hydrochloride",
+                class: "Nasal Decongestant (Sympathomimetic Amine)",
+                keyActions: "Stimulates alpha-adrenergic receptors in nasal capillaries, causing vasoconstriction, shrinking mucous membranes, and reducing fluid secretion. Used for nasal congestion, pruritus.",
+                sideEffects: "Nasal irritation, blurred vision, dry eyes, ocular pain/irritation, headache. Can cause nervousness, restlessness. Rebound nasal congestion with overuse.",
+                nursingConsiderations: "Limit use to **no more than 3 days** to prevent rebound congestion. Direct spray away from nasal septum. Can increase blood pressure and blood glucose. Use with extreme caution or contraindicate in patients with hypertension, cardiac disease, hyperthyroidism, and diabetes mellitus."
+            },
+            {
+                name: "Pseudoephedrine",
+                class: "Systemic Decongestant (Alpha-adrenergic agonist)",
+                keyActions: "Relieves nasal congestion for longer periods than nasal sprays. Often combined with antihistamines or analgesics in oral cold remedies.",
+                sideEffects: "Dizziness, headache, photophobia, restlessness, insomnia, palpitations, dysrhythmia, hypertension, tachycardia, nausea.",
+                nursingConsiderations: "Sales are regulated due to potential for illicit drug manufacturing. Can increase blood pressure and blood glucose. Use with caution or contraindicated in patients with hypertension, cardiac disease, hyperthyroidism, and diabetes mellitus. Avoid large amounts of caffeine. May decrease effect of beta blockers. MAOIs increase risk of hypertension/dysrhythmias."
+            },
+            {
+                name: "Beclomethasone",
+                class: "Intranasal Glucocorticoid (Steroid)",
+                keyActions: "Anti-inflammatory action, decreasing symptoms of allergic rhinitis (rhinorrhea, sneezing, congestion). Also used for nasal polyps and asthma.",
+                sideEffects: "Headache, nasopharyngitis, candidiasis (yeast infection), dysphonia (hoarseness), epistaxis (nosebleed), ocular hypertension.",
+                nursingConsiderations: "Spray should be directed away from the nasal septum. Patient should sniff gently. Dryness of nasal mucosa may occur with continuous use. Usually for short-term use for seasonal allergies. NOT for acute attacks. Rinse mouth/gargle after use to prevent candidiasis if also used for asthma."
+            },
+            {
+                name: "Dextromethorphan Hydrobromide",
+                class: "Nonopioid Antitussive",
+                keyActions: "Suppresses cough reflex by acting on the cough control center in the medulla. Provides temporary relief for nonproductive coughs due to sore throat, irritation, or common cold.",
+                sideEffects: "Dizziness, drowsiness, confusion, fatigue, ataxia, nausea, vomiting, restlessness. Adverse: Psychosis, tachycardia, seizures.",
+                nursingConsiderations: "Widely available in OTC cold remedies. Life-threatening risk of respiratory depression and serotonin syndrome, especially with MAOIs (contraindicated with MAOI therapy). Patients should avoid driving or operating machinery if drowsiness occurs. Read labels carefully to avoid combining with other cough/cold meds containing similar ingredients."
+            },
+            {
+                name: "Guaifenesin",
+                class: "Expectorant",
+                keyActions: "Loosens bronchial secretions, making them easier to eliminate by coughing. Used for cough associated with URIs and the common cold.",
+                sideEffects: "Drowsiness, dizziness, headache, nausea, vomiting, diarrhea.",
+                nursingConsiderations: "Most common expectorant in OTC preparations. Encourage patients to increase fluid intake to at least 8 glasses per day to help loosen mucus, as hydration is the best natural expectorant. Can be used alone or in combination with other agents."
+            },
+            {
+                name: "Loratadine",
+                class: "Second-Generation Antihistamine",
+                keyActions: "Competes with histamine for H1-receptor sites, blocking histamine effects. Has little to no sedative effect and fewer anticholinergic symptoms. Used for allergic rhinitis, pruritus, and urticaria.",
+                sideEffects: "Drowsiness (less common than first-gen), confusion, headache, blurred vision, dry mouth, vomiting, constipation, urinary retention, palpitations, wheezing, tachycardia (rare).",
+                nursingConsiderations: "Often called 'nonsedating'. Can be taken once daily. Advise caution with alcohol and other CNS depressants, though effects are minimal. Helps with daytime allergy relief without significant drowsiness."
+            },
+            {
+                name: "Codeine",
+                class: "Opioid Antitussive (Controlled Substance Schedule II)",
+                keyActions: "Acts on cough control center in the medulla to suppress cough. Also has analgesic (pain-relieving) properties.",
+                sideEffects: "Drowsiness, dizziness, euphoria, orthostatic hypotension, weakness, nausea, diarrhea, constipation, dependence, tolerance, withdrawal, respiratory depression.",
+                nursingConsiderations: "Can lead to tolerance and physical dependence. Monitor for respiratory depression. Use with caution in patients with asthma or emphysema. Often found in combination cold/cough preparations (e.g., with Guaifenesin)."
+            },
+            {
+                name: "Fluticasone",
+                class: "Intranasal Glucocorticoid (Steroid)",
+                keyActions: "Anti-inflammatory action, decreasing allergic rhinitis symptoms (rhinorrhea, sneezing, congestion). Also used for asthma.",
+                sideEffects: "Headache, blurred vision, fatigue, insomnia, arthralgia, epistaxis, pharyngitis, nasal candidiasis/irritation, dysphonia, malaise, nasal congestion, nausea, and vomiting.",
+                nursingConsiderations: "Similar to Beclomethasone. Direct spray away from nasal septum. Dryness of nasal mucosa may occur. Not for acute attacks. Long-term use. Rinse mouth if also used for asthma."
+            },
+            {
+                name: "Cetirizine",
+                class: "Second-Generation Antihistamine",
+                keyActions: "Blocks H1-receptors to reduce allergic rhinitis and urticaria symptoms. Low to no sedative effect.",
+                sideEffects: "Drowsiness, dizziness, headache, insomnia, fatigue, euphoria, ataxia, dry mouth, pharyngitis, cough, epistaxis, hearing loss, blurred vision, urinary retention, diarrhea, abdominal pain.",
+                nursingConsiderations: "Generally well-tolerated. Patients over 77 years may require a lower dose. Advise patient to monitor for drowsiness, especially when starting the medication. Fewer anticholinergic effects compared to first-generation antihistamines."
+            }
+        ];
+
+        // ==========================================
+        // ALL other JavaScript code and functions MUST be inside this single DOMContentLoaded listener.
+        // This ensures all HTML elements are available when the script tries to access them.
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- QUIZ VARIABLES AND ELEMENT SELECTIONS ---
+            let currentQuizDrugsCopy = [];
+            let currentDrugIndex = 0;
+            let masteredDrugs = [];
+            let missedDrugs = [];
+            const questionTypes = ['class', 'keyActions', 'sideEffects', 'nursingConsiderations'];
+
+            const startQuizBtn = document.getElementById('startQuizBtn');
+            const drugQuizCard = document.getElementById('drugQuizCard');
+            const drugNameEl = document.getElementById('drugName');
+            const drugQuestionEl = document.getElementById('drugQuestion');
+            const showAnswerBtn = document.getElementById('showAnswerBtn');
+            const answerFeedbackEl = document.getElementById('answerFeedback');
+            const answerTypeEl = document.getElementById('answerType');
+            const answerContentEl = document.getElementById('answerContent');
+            const masteryButtons = document.getElementById('masteryButtons');
+            const correctBtn = document.getElementById('correctBtn');
+            const incorrectBtn = document.getElementById('incorrectBtn');
+            const quizSummary = document.getElementById('quizSummary');
+            const masteredCountEl = document.getElementById('masteredCount');
+            const missedCountEl = document.getElementById('missedCount');
+            const restartQuizBtn = document.getElementById('restartQuizBtn');
+            const reviewMissedBtn = document.getElementById('reviewMissedBtn');
+            const currentCardNumEl = document.getElementById('currentCardNum');
+            const totalCardsNumEl = document.getElementById('totalCardsNum');
+
+            // --- MODULE PROGRESS BAR VARIABLES ---
+            const moduleProgressBar = document.getElementById('moduleProgressBar');
+            const sections = document.querySelectorAll('section[id]'); // Select all sections with an ID
+            let completedSectionsCount = 0; // Tracks number of completed logical sections
+
+            const completableSectionIds = new Set();
+            // Populate completableSectionIds with all relevant section IDs
+            document.querySelectorAll('section').forEach(section => {
+                // Consider a section completable if it has a reveal button or a question card
+                // For simplicity, checking for existence of either is a good start.
+                if (section.id && (section.querySelector('.reveal-button') || section.querySelector('.question-card') || section.querySelector('textarea'))) {
+                    completableSectionIds.add(section.id);
+                }
+            });
+            completableSectionIds.add('drug-mastery-quiz'); // Explicitly add the quiz section itself
+
+            // This line MUST be after completableSectionIds is fully populated
+            const totalSections = completableSectionIds.size; // Corrected calculation
+
+
+            // --- HELPER FUNCTIONS ---
+
+            function updateProgressBar() {
+                const progress = (completedSectionsCount / totalSections) * 100;
+                moduleProgressBar.style.width = `${progress}%`;
+            }
+
+            function markSectionCompleted(sectionId) {
+                const navLink = document.getElementById('nav-' + sectionId); // Use ID now
+                if (navLink && !navLink.classList.contains('completed')) {
+                    navLink.classList.add('completed');
+                    if (completableSectionIds.has(sectionId)) {
+                        completedSectionsCount++;
+                        updateProgressBar();
+                        // Trigger micro-break or clock-out after certain milestones
+                        if (completedSectionsCount > 0 && completedSectionsCount % 3 === 0 && completedSectionsCount !== totalSections) {
+                            showMicroBreakPrompt();
+                        }
+                    }
+                }
+            }
+
+            // --- Manual scrolling for navigation links ---
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link behavior (no page reload/new tab)
+                    const targetId = this.id.replace('nav-', ''); // Get the actual section ID
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // Optionally, update the URL hash without reloading
+                        // window.location.hash = targetId;
+                    }
+                });
+            });
+
+
+            // toggleReveal function (now called by event listener, no longer onclick)
+            function toggleReveal(button) {
+                const content = button.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                    button.textContent = button.dataset.originalText;
+                } else {
+                    content.style.display = "block";
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = "Click to Hide Details";
+                    // Ensure the parent section is marked complete
+                    const parentSection = button.closest('section');
+                    if (parentSection && parentSection.id) {
+                        markSectionCompleted(parentSection.id);
+                    }
+                }
+            }
+
+            // --- Question Checking Functions ---
+            function checkAnswer(questionId, correctAnswer) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOption = questionCard.querySelector('input[name="' + questionId + '_option"]:checked');
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                // Disable options after submission
+                questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                // Ensure the submit button exists before trying to disable it
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+                if (!selectedOption) {
+                    feedbackDiv.textContent = "Oops! Please pick an answer before checking.";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                if (selectedOption.value === correctAnswer) {
+                    feedbackDiv.textContent = "Awesome! That's correct. Keep up the great work!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Not quite! The correct answer was: ${correctAnswer.toUpperCase()}. Review the material and try to understand why.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkMultipleAnswers(questionId, correctAnswers) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOptions = Array.from(questionCard.querySelectorAll('input[name="' + questionId + '_option"]:checked')).map(input => input.value);
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                // Disable options after submission
+                questionCard.querySelectorAll('input[type="checkbox"]').forEach(input => input.disabled = true);
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+
+                if (selectedOptions.length === 0) {
+                    feedbackDiv.textContent = "Don't forget to select your answers!";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                const isCorrect = correctAnswers.every(answer => selectedOptions.includes(answer)) &&
+                                   selectedOptions.every(answer => correctAnswers.includes(answer));
+
+                if (isCorrect) {
+                    feedbackDiv.textContent = "Fantastic! You got all the correct points!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Hold on! Double-check the options and review the related content. You might have missed something or picked too many/too few. Correct answers were: ${correctAnswers.join(', ').toUpperCase()}.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkCaseStudy() {
+                const blank1_cs = document.getElementById('blank1_cs').value.trim();
+                const blank2_cs = document.getElementById('blank2_cs').value.trim();
+                const blank3_cs = document.getElementById('blank3_cs').value.trim();
+                const blank4_cs = document.getElementById('blank4_cs').value.trim();
+                const blank5_cs = document.getElementById('blank5_cs').value.trim();
+
+                const feedbackDiv = document.getElementById('case_study_feedback');
+                const rationaleDiv = document.getElementById('case_study_rationale');
+
+                // Disable inputs and button after submission
+                document.getElementById('blank1_cs').disabled = true;
+                document.getElementById('blank2_cs').disabled = true;
+                document.getElementById('blank3_cs').disabled = true;
+                document.getElementById('blank4_cs').disabled = true;
+                document.getElementById('blank5_cs').disabled = true;
+                document.getElementById('submit_case_study').disabled = true;
+
+                let isAllCorrect = true;
+                let feedbackMessage = "Well done! Here's the rationale:\n\n";
+
+                // For the case study, we'll give generic positive feedback and always show rationale.
+                // The intent is for the user to compare their free-text answers with the detailed rationale.
+                feedbackMessage = "Good attempt! Compare your answers with the detailed rationale below to refine your understanding. Keep up the great work!";
+                feedbackDiv.className = 'feedback correct'; // Always show as correct feedback type for case study
+                feedbackDiv.style.display = 'block';
+                rationaleDiv.style.display = 'block';
+                markSectionCompleted('critical-thinking');
+            }
+
+
+            // --- DRUG MASTERY QUIZ FUNCTIONS ---
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function startQuiz(reviewMode = false) {
+                if (!reviewMode) {
+                    currentQuizDrugsCopy = shuffleArray([...drugs]); // Start with all drugs shuffled
+                    masteredDrugs = [];
+                    missedDrugs = [];
+                } else {
+                    if (missedDrugs.length === 0) {
+                        alert("Fantastic! You've mastered all the drugs in the review pile. Starting a new full quiz!");
+                        currentQuizDrugsCopy = shuffleArray([...drugs]);
+                        masteredDrugs = [];
+                        missedDrugs = [];
+                    } else {
+                        currentQuizDrugsCopy = shuffleArray([...missedDrugs]); // Only review missed ones
+                        missedDrugs = []; // Clear missed for the new review round
+                    }
+                }
+
+                currentDrugIndex = 0;
+                startQuizBtn.style.display = 'none';
+                drugQuizCard.style.display = 'block';
+                quizSummary.style.display = 'none';
+                displayCurrentCard();
+                markSectionCompleted('drug-mastery-quiz'); // Mark quiz section completed when started
+            }
+
+            function displayCurrentCard() {
+                if (currentDrugIndex >= currentQuizDrugsCopy.length) {
+                    showQuizSummary();
+                    return;
+                }
+
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const randomQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+
+                drugNameEl.textContent = currentDrug.name;
+                currentCardNumEl.textContent = currentDrugIndex + 1;
+                totalCardsNumEl.textContent = currentQuizDrugsCopy.length;
+
+                let questionText = '';
+                switch (randomQuestionType) {
+                    case 'class':
+                        questionText = `What is the **drug class** for ${currentDrug.name}?`;
+                        break;
+                    case 'keyActions':
+                        questionText = `What is a **key action or use** of ${currentDrug.name}?`;
+                        break;
+                    case 'sideEffects':
+                        questionText = `Name one or two **common side effects** of ${currentDrug.name}.`;
+                        break;
+                    case 'nursingConsiderations':
+                        questionText = `What is an **important nursing consideration** when administering ${currentDrug.name}?`;
+                        break;
+                }
+                drugQuestionEl.innerHTML = questionText;
+
+                answerFeedbackEl.style.display = 'none';
+                masteryButtons.style.display = 'none';
+                showAnswerBtn.style.display = 'block';
+
+                drugQuizCard.dataset.currentQuestionType = randomQuestionType;
+            }
+
+            function showAnswer() {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const questionType = drugQuizCard.dataset.currentQuestionType;
+
+                answerTypeEl.textContent = questionType.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, str => str.toUpperCase());
+
+                let content = '';
+                switch (questionType) {
+                    case 'class':
+                        content = currentDrug.class;
+                        break;
+                    case 'keyActions':
+                        content = currentDrug.keyActions;
+                        break;
+                    case 'sideEffects':
+                        content = currentDrug.sideEffects;
+                        break;
+                    case 'nursingConsiderations':
+                        content = currentDrug.nursingConsiderations;
+                        break;
+                }
+                answerContentEl.textContent = content;
+
+                answerFeedbackEl.style.display = 'block';
+                showAnswerBtn.style.display = 'none';
+                masteryButtons.style.display = 'flex';
+            }
+
+            function handleMastery(isCorrect) {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                if (isCorrect) {
+                    if (!missedDrugs.includes(currentDrug)) {
+                        masteredDrugs.push(currentDrug);
+                    }
+                } else {
+                    missedDrugs.push(currentDrug);
+                }
+                masteryButtons.style.display = 'none';
+
+                setTimeout(() => {
+                    currentDrugIndex++;
+                    displayCurrentCard();
+                }, 1500); // 1.5 second delay before next card
+            }
+
+            function showQuizSummary() {
+                drugQuizCard.style.display = 'none';
+                quizSummary.style.display = 'block';
+
+                const uniqueMastered = [...new Set(masteredDrugs)];
+                const uniqueMissed = [...new Set(missedDrugs)];
+
+                masteredCountEl.textContent = uniqueMastered.length;
+                missedCountEl.textContent = uniqueMissed.length;
+            }
+
+            // --- EVENT LISTENERS ---
+
+            // Attach event listeners for all reveal buttons
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    toggleReveal(this); // 'this' refers to the button that was clicked
+                });
+            });
+
+            // Attach event listeners for quiz question submit buttons (by their IDs)
+            document.getElementById('submit_q1').addEventListener('click', () => checkAnswer('q1', 'b'));
+            document.getElementById('submit_q2').addEventListener('click', () => checkAnswer('q2', 'c'));
+            document.getElementById('submit_q3').addEventListener('click', () => checkAnswer('q3', 'd'));
+            document.getElementById('submit_q4').addEventListener('click', () => checkAnswer('q4', 'b'));
+            document.getElementById('submit_q5').addEventListener('click', () => checkAnswer('q5', 'd'));
+            document.getElementById('submit_q6').addEventListener('click', () => checkMultipleAnswers('q6', ['b', 'c', 'd', 'e']));
+            document.getElementById('submit_case_study').addEventListener('click', checkCaseStudy);
+
+
+            // Quiz Mastery Challenge Event Listeners
+            startQuizBtn.addEventListener('click', () => startQuiz(false));
+            showAnswerBtn.addEventListener('click', showAnswer);
+            correctBtn.addEventListener('click', () => handleMastery(true));
+            incorrectBtn.addEventListener('click', () => handleMastery(false));
+            restartQuizBtn.addEventListener('click', () => startQuiz(false));
+            reviewMissedBtn.addEventListener('click', () => startQuiz(true));
+
+            // Text Size Controls
+            const body = document.body;
+            const increaseTextBtn = document.getElementById('increaseText');
+            const decreaseTextBtn = document.getElementById('decreaseText');
+            let currentFontSize = 16; // Base font size in px (matches default Open Sans)
+
+            increaseTextBtn.addEventListener('click', () => {
+                currentFontSize += 2;
+                body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            decreaseTextBtn.addEventListener('click', () => {
+                currentFontSize -= 2;
+                if (currentFontSize < 12) currentFontSize = 12; // Minimum size
+                body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            // Quick Notes persistence (uses localStorage)
+            const quickNotesTextarea = document.getElementById('quickNotesTextarea');
+            if (localStorage.getItem('adhdModuleNotes')) {
+                quickNotesTextarea.value = localStorage.getItem('adhdModuleNotes');
+            }
+            quickNotesTextarea.addEventListener('input', () => {
+                localStorage.setItem('adhdModuleNotes', quickNotesTextarea.value);
+            });
+
+            // Micro-Break Prompts & Clock Out Logic
+            const microBreakPromptEl = document.getElementById('microBreakPrompt');
+            const breakPrompts = [
+                "Quick Break! Stand up and stretch, or take a few deep breaths!",
+                "Time for a 30-second mental reset. Look away from the screen for a moment!",
+                "Mini-Break! Wiggle your toes or do a quick shoulder roll.",
+                "Focus check! Take a sip of water and recenter. You're doing great!",
+                "Short pause! How about a quick doodle or scribble for 15 seconds?"
+            ];
+            let breakPromptTimeout;
+
+            const clockOutOverlay = document.getElementById('clockOutOverlay');
+            const countdownTimerEl = document.getElementById('countdownTimer');
+            let countdownInterval;
+
+            function showMicroBreakPrompt() {
+                // Clear any existing prompt or countdown before showing a new one
+                if (breakPromptTimeout) {
+                    clearTimeout(breakPromptTimeout);
+                }
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+
+                // Decide whether to show a quick prompt or trigger a full "Clock Out"
+                // Trigger a full "Clock Out" every 3 sections, starting after the first section (completedSectionsCount > 0)
+                // We also add a small random chance to vary it up, so it's not super predictable
+                const randomChanceForClockOut = Math.random(); // 0.0 to 1.0
+                const shouldTriggerClockOut = (completedSectionsCount > 0 && completedSectionsCount % 3 === 0 && randomChanceForClockOut < 0.7); // 70% chance every 3 sections
+
+                if (shouldTriggerClockOut) {
+                    startClockOut();
+                } else {
+                    // Show the regular micro-break prompt temporarily
+                    const randomPrompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)];
+                    microBreakPromptEl.textContent = randomPrompt;
+                    microBreakPromptEl.style.display = 'block';
+                    // Set a timer to hide it after the animation and allow new ones
+                    breakPromptTimeout = setTimeout(() => {
+                        microBreakPromptEl.style.display = 'none';
+                    }, 8000); // Matches animation duration
+                }
+            }
+
+            function startClockOut() {
+                // Hide the quick micro-break prompt if it was visible
+                microBreakPromptEl.style.display = 'none';
+
+                // Show the Clock Out overlay and blur the background
+                clockOutOverlay.classList.add('active');
+                document.body.classList.add('blurred');
+
+                let timeLeft = 30; // 30 seconds for the timer
+                countdownTimerEl.textContent = '00:30'; // Initial display for 30 seconds
+
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+
+                    const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    countdownTimerEl.textContent = formattedTime;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(countdownInterval);
+                        endClockOut();
+                    }
+                }, 1000); // Update every second
+            }
+
+            function endClockOut() {
+                clockOutOverlay.classList.remove('active');
+                document.body.classList.remove('blurred');
+                // Optionally, show a quick "Welcome back!" message or a regular prompt
+                microBreakPromptEl.textContent = "Welcome back! Let's get back to it!";
+                microBreakPromptEl.style.display = 'block';
+                setTimeout(() => {
+                    microBreakPromptEl.style.display = 'none';
+                }, 5000); // Show "Welcome back" for 5 seconds
+            }
+
+            // --- Initial setup calls that run once DOM is fully loaded ---
+            // Initialize reveal button original text (needed for toggleReveal)
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.dataset.originalText = button.textContent;
+            });
+            updateProgressBar(); // Initial update after potential localStorage load for notes
+        }); // END OF document.addEventListener('DOMContentLoaded', ...)
+    </script>
+</body>
+</html>

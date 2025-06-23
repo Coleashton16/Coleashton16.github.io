@@ -1,0 +1,2875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lower Respiratory Disorders Learning Module (ADHD Friendly)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@400;600&display=swap');
+
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --secondary-color: #28a745; /* Green */
+            --accent-color: #ffc107; /* Yellow */
+            --alert-color: #dc3545; /* Red */
+            --info-color: #17a2b8; /* Cyan */
+            --text-color: #333;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --border-color: #dee2e6;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --focus-border: #6c757d; /* Gray for focus boxes */
+            --quiz-bg: #d4edda; /* Light green for quizzes */
+            --reveal-bg: #e9ecef; /* Light gray for revealed content */
+            --drug-card-bg: #f0f0f0; /* Light gray for drug quiz card */
+            --button-mastered: #28a745; /* Green for Yes */
+            --button-missed: #dc3545; /* Red for No */
+            --progress-bar-bg: #e0e0e0;
+            --progress-bar-fill: #4CAF50; /* Green fill */
+            --break-prompt-bg: #ffebee; /* Light red for break prompts */
+            --break-prompt-border: #ef9a9a; /* Medium red for border */
+        }
+
+        /* Crucial adjustments for iframe scrolling */
+        html, body {
+            height: 100%; /* Make sure HTML and Body fill the iframe */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scrollbar */
+            overflow-y: auto; /* Allow vertical scrolling within the iframe */
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+            transition: font-size 0.2s ease, filter 0.5s ease-in-out; /* Smooth text size change and blur */
+        }
+
+        /* Styles for blurring the background content */
+        body.blurred > *:not(#clockOutOverlay) {
+            filter: blur(5px);
+            pointer-events: none; /* Disables interaction with blurred content */
+            user-select: none; /* Prevents text selection on blurred content */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            min-height: calc(100vh - 40px); /* Ensure container is tall enough to trigger scroll */
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative; /* For progress bar positioning */
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+
+        /* Module Progress Bar */
+        #moduleProgressBarContainer {
+            width: 90%;
+            height: 10px;
+            background-color: var(--progress-bar-bg);
+            border-radius: 5px;
+            margin: 15px auto 0;
+            overflow: hidden;
+        }
+
+        #moduleProgressBar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--progress-bar-fill);
+            border-radius: 55px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 10px 0;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            margin: 5px 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer; /* Keep pointer cursor as they are clickable via JS */
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        nav ul li a.completed {
+            background-color: #1e7e34; /* Darker green for completed */
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+        }
+
+
+        h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h2 {
+            font-size: 2em;
+        }
+
+        h3 {
+            font-size: 1.5em;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        section:hover {
+            transform: translateY(-3px);
+        }
+
+        .objectives ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .objective-item {
+            margin-bottom: 8px;
+        }
+
+        .info-card {
+            background-color: var(--bg-light);
+            border-left: 5px solid var(--info-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .reveal-button {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            display: block; /* Make button full width */
+            width: fit-content; /* Adjust width to content */
+        }
+
+        .reveal-button:hover {
+            background-color: #ffda6a;
+        }
+
+        .reveal-content {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: var(--reveal-bg);
+            border-left: 3px solid var(--secondary-color);
+            border-radius: 5px;
+        }
+
+        .question-card {
+            background-color: var(--quiz-bg);
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-card p {
+            font-weight: 600;
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .question-card .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .question-card .options input[type="radio"],
+        .question-card .options input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .question-card .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .question-card .feedback.correct {
+            background-color: #d1ecf1; /* light blue */
+            color: #0c5460; /* dark blue */
+            border: 1px solid #bee5eb;
+        }
+
+        .question-card .feedback.incorrect {
+            background-color: #f8d7da; /* light red */
+            color: #721c24; /* dark red */
+            border: 1px solid #f5c6cb;
+        }
+
+        .question-card .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .question-card .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+
+        .prototype-drug-chart {
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        .prototype-drug-chart th, .prototype-drug-chart td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .prototype-drug-chart th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .prototype-drug-chart tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .note, .focus-prompt, .quick-fact {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .note {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+        }
+
+        .focus-prompt {
+            background-color: #d1ecf1; /* light blue */
+            border-left: 5px solid #0c5460; /* dark blue */
+            color: #0c5460;
+        }
+
+        .quick-fact {
+            background-color: #e2f0d9; /* very light green */
+            border-left: 5px solid #6ab04c; /* medium green */
+            color: #4a7d32;
+        }
+
+        .highlight {
+            background-color: #ffe082; /* Light yellow for highlighting key terms */
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .nclex-next-gen {
+            background-color: #e6f7ff;
+            border: 2px solid #a6d9f5;
+            padding: 25px;
+            margin: 40px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .nclex-next-gen h3 {
+            color: #2196f3;
+            border-bottom: 1px dashed #a6d9f5;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .nclex-next-gen .case-study {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .nclex-next-gen .fill-in-the-blank {
+            margin-top: 20px;
+        }
+
+        .nclex-next-gen .fill-in-the-blank input[type="text"] {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            width: calc(100% - 20px);
+            margin-top: 10px;
+        }
+
+        .nclex-next-gen .fill-in-the-blank button {
+            margin-top: 15px;
+        }
+
+        .nclex-next-gen .rationale {
+            background-color: #e0f2f7;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .nclex-next-gen .rationale p {
+            margin: 0;
+            font-size: 0.95em;
+        }
+
+        .figure-placeholder {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #eef;
+            border: 1px dashed #bbb;
+            border-radius: 5px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .recap {
+            background-color: #f0f8ff; /* Lighter blue */
+            border-left: 5px solid #add8e6; /* Light steel blue */
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .recap h4 {
+            color: #36a2eb;
+            border-bottom: 1px solid #add8e6;
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* Tooltip styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dotted var(--primary-color); /* Underline for tooltips */
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the text */
+            left: 50%;
+            margin-left: -125px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85em;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* At the bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Drug Mastery Quiz Specific Styles */
+        #drug-mastery-quiz .quiz-card {
+            background-color: var(--drug-card-bg);
+            border: 1px solid var(--primary-color);
+            padding: 25px;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            display: none; /* Hidden until quiz starts */
+            text-align: center;
+        }
+
+        #drug-mastery-quiz .quiz-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.8em;
+            border-bottom: none; /* Override default h4 border */
+        }
+
+        #drug-mastery-quiz .quiz-card p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        #drug-mastery-quiz .quiz-controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz .quiz-controls button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        #drug-mastery-quiz .quiz-controls button:active {
+            transform: translateY(1px);
+        }
+
+        #drug-mastery-quiz #startQuizBtn {
+            background-color: var(--secondary-color);
+            color: white;
+            display: block;
+            margin: 20px auto;
+            width: fit-content;
+            padding: 15px 30px;
+            font-size: 1.4em;
+        }
+        #drug-mastery-quiz #startQuizBtn:hover {
+            background-color: #218838;
+        }
+
+        #drug-mastery-quiz #showAnswerBtn {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+        #drug-mastery-quiz #showAnswerBtn:hover {
+            background-color: #e0a800;
+        }
+
+        #drug-mastery-quiz #answerFeedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--reveal-bg);
+            border: 1px dashed var(--info-color);
+            text-align: left;
+            display: none;
+        }
+
+        #drug-mastery-quiz #answerFeedback h5 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        #drug-mastery-quiz #masteryButtons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz #masteryButtons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn {
+            background-color: var(--button-mastered);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn:hover {
+            background-color: #218838;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn {
+            background-color: var(--button-missed);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn:hover {
+            background-color: #c82333;
+        }
+
+        /* Removed #nextCardBtn from quiz styles as it's now automatic */
+
+        #drug-mastery-quiz #quizSummary {
+            display: none;
+            padding: 25px;
+            background-color: #e6ffe6; /* Light green for success */
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            text-align: center;
+        }
+        #drug-mastery-quiz #quizSummary h4 {
+            color: var(--secondary-color);
+            font-size: 2em;
+            margin-bottom: 15px;
+            border-bottom: none;
+        }
+        #drug-mastery-quiz #quizSummary p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        #drug-mastery-quiz #quizSummary button {
+            margin: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn:hover {
+            background-color: #0056b3;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn {
+            background-color: var(--alert-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn:hover {
+            background-color: #c82333;
+        }
+
+        #drug-mastery-quiz .progress-tracker {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* ADHD-specific additions */
+        .quick-note-area {
+            background-color: #f7f7f7;
+            border: 1px dashed #ccc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .quick-note-area h3 {
+            color: #666;
+            border-bottom: 1px solid #ddd;
+            margin-top: 0;
+        }
+
+        .quick-note-area textarea {
+            width: calc(100% - 10px);
+            min-height: 100px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            resize: vertical; /* Allow vertical resizing */
+        }
+
+        .text-size-controls {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .text-size-controls button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .micro-break-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--break-prompt-bg);
+            border: 2px solid var(--break-prompt-border);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-weight: bold;
+            color: var(--alert-color);
+            display: none; /* Hidden by default */
+            animation: fadeInOut 8s forwards; /* Animation */
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        }
+
+        /* Clock Out Overlay Styles (Revised for improved centering and appearance) */
+        #clockOutOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000; /* Make sure it's on top of everything */
+            /* Start hidden and transition in */
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s ease-out; /* Delay visibility transition for smooth fade out */
+        }
+
+        #clockOutOverlay.active {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 0.5s ease-in; /* No delay for fade in */
+        }
+
+        #clockOutContent {
+            background-color: var(--bg-white);
+            color: var(--text-color);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 400px;
+            width: 90%; /* Responsive width */
+            /* Add some initial transform to make it "pop" when appearing */
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+
+        #clockOutOverlay.active #clockOutContent {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        #clockOutContent h2 {
+            color: var(--primary-color);
+            font-family: 'Roboto', sans-serif; /* Ensure Roboto font */
+            font-size: 2.8em; /* Slightly larger for impact */
+            margin-top: 0;
+            border-bottom: none; /* Override default h2 border */
+        }
+
+        #brainEmoji {
+            font-size: 6em; /* Make the emoji very large */
+            margin: 20px 0;
+            display: block; /* Ensure it takes full width for margin auto */
+            animation: floatUpDown 2s infinite alternate ease-in-out; /* Gentle animation */
+        }
+
+        @keyframes floatUpDown {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); } /* Increased float */
+        }
+
+        #countdownTimer {
+            font-family: 'Roboto', monospace; /* Monospace for consistent digit width */
+            font-size: 4.5em; /* Slightly larger timer */
+            font-weight: 700;
+            color: var(--alert-color); /* Red for urgency */
+            margin: 20px 0;
+        }
+
+        /* Mobile Responsiveness for Clock Out */
+        @media (max-width: 500px) {
+            #clockOutContent {
+                padding: 25px; /* Smaller padding on small screens */
+            }
+            #clockOutContent h2 {
+                font-size: 2em;
+            }
+            #brainEmoji {
+                font-size: 4em;
+            }
+            #countdownTimer {
+                font-size: 3.5em;
+            }
+        }
+
+
+        /* Mobile Responsiveness for overall layout */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li {
+                margin: 5px 0;
+            }
+
+            .prototype-drug-chart, .responsive-table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .prototype-drug-chart thead, .responsive-table thead {
+                display: none;
+            }
+
+            .prototype-drug-chart tbody tr, .responsive-table tbody tr {
+                display: block;
+                margin-bottom: 10px;
+                border: 1px solid var(--border-color);
+                border-radius: 5px;
+            }
+
+            .prototype-drug-chart tbody td, .responsive-table tbody td {
+                display: block;
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            .prototype-drug-chart tbody td::before, .responsive-table tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+
+            .micro-break-prompt {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Module 39: Lower Respiratory Disorders</h1>
+            <p>Mastering Pharmacology for Nursing Care - ADHD Friendly!</p>
+            <div id="moduleProgressBarContainer">
+                <div id="moduleProgressBar"></div>
+            </div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a id="nav-objectives">Objectives</a></li>
+                <li><a id="nav-introduction">Intro</a></li>
+                <li><a id="nav-lung-compliance">Lung Comp.</a></li>
+                <li><a id="nav-control-respiration">Respiration Ctrl</a></li>
+                <li><a id="nav-bronchial-smooth-muscle">Bronchial Muscle</a></li>
+                <li><a id="nav-copd">COPD</a></li>
+                <li><a id="nav-bronchial-asthma">Asthma</a></li>
+                <li><a id="nav-sympathomimetics">Sympathomimetics</a></li>
+                <li><a id="nav-albuterol">Albuterol</a></li>
+                <li><a id="nav-metaproterenol">Metaproterenol</a></li>
+                <li><a id="nav-aerosol-inhaler">Inhaler Use</a></li>
+                <li><a id="nav-anticholinergics">Anticholinergics</a></li>
+                <li><a id="nav-methylxanthine">Methylxanthines</a></li>
+                <li><a id="nav-aminophylline-theophylline">Theophylline</a></li>
+                <li><a id="nav-leukotriene">Leukotrienes</a></li>
+                <li><a id="nav-glucocorticoids">Glucocorticoids</a></li>
+                <li><a id="nav-nursing-process-bronchodilators">NP: Bronchodilators</a></li>
+                <li><a id="nav-nursing-process-leukotriene">NP: Leukotrienes</a></li>
+                <li><a id="nav-cromolyn">Cromolyn</a></li>
+                <li><a id="nav-drug-therapy-severity">Drug Tx (Severity)</a></li>
+                <li><a id="nav-drug-therapy-age">Drug Tx (Age)</a></li>
+                <li><a id="nav-antimicrobials">Antimicrobials</a></li>
+                <li><a id="nav-critical-thinking">Case Study</a></li>
+                <li><a id="nav-review-questions">Review Qs</a></li>
+                <li><a id="nav-drug-mastery-quiz">Drug Challenge!</a></li>
+            </ul>
+        </nav>
+
+        <div class="text-size-controls">
+            <button id="increaseText">A+</button>
+            <button id="decreaseText">A-</button>
+        </div>
+
+        <div class="micro-break-prompt" id="microBreakPrompt">
+            Quick Break! Stand up and stretch, or take a few deep breaths!
+        </div>
+
+        <section id="objectives" class="objectives">
+            <h2>Your Learning Adventure Starts Here!</h2>
+            <p>By the end of this module, you'll be able to:</p>
+            <ul>
+                <li class="objective-item"><strong>Compare COPD and restrictive lung disease.</strong> What makes them different?</li>
+                <li class="objective-item"><strong>Differentiate drug groups for COPD & asthma.</strong> How do they work, and what do they do?</li>
+                <li class="objective-item"><strong>Spot the side effects</strong> of beta2-adrenergic agonists vs. methylxanthines.</li>
+                <li class="objective-item">Know the <strong>"safe zone" (therapeutic level) and "danger zone" (toxic level)</strong> for theophylline.</li>
+                <li class="objective-item"><strong>Understand how leukotriene antagonists, glucocorticoids, and cromolyn work</strong> for COPD and asthma.</li>
+                <li class="objective-item"><strong>Apply your nursing judgment</strong> when caring for patients on these meds.</li>
+            </ul>
+            <p class="note"><strong>Bonus!</strong> For extra info and cool tools, check out <a href="http://evolve.elsevier.com/McCuistion/pharmacology" target="_blank">evolve.elsevier.com/McCuistion/pharmacology</a></p>
+        </section>
+
+        <div class="quick-note-area">
+            <h3>Quick Notes / Brain Dump Space</h3>
+            <textarea id="quickNotesTextarea" placeholder="Jot down thoughts, questions, or key takeaways here... (Note: These will try to save to your browser's local storage, but backup important info!)"></textarea>
+        </div>
+
+        <section id="introduction">
+            <h2>1. Introduction: Your Lungs' Home Base</h2>
+            <div class="info-card">
+                <p>Imagine your chest as a cozy, closed room. Inside this room are your lungs!</p>
+                <ul>
+                    <li>The <span class="tooltip-container">chest cavity<span class="tooltip-text">The space inside your ribs, diaphragm, and backbones. It's like a protective box for your lungs and heart.</span></span> is like a protective box.</li>
+                    <li>Your lungs are wrapped in thin membranes called <span class="tooltip-container">pleurae<span class="tooltip-text">Shiny, slippery membranes that surround your lungs, helping them move smoothly when you breathe.</span></span>.</li>
+                    <li><strong>Fun Fact:</strong> Your right lung has 3 parts (lobes), but your left lung only has 2 (to make space for your heart!).</li>
+                    <li>Your heart hangs out on the mid-left side, not attached to the lungs. It just chills in the same room!</li>
+                </ul>
+                <button class="reveal-button">Quick Glance: Why does this matter?</button>
+                <div class="reveal-content">
+                    <div class="focus-prompt">
+                        <h4>Focus Prompt!</h4>
+                        <p>Understanding this basic setup helps you see how breathing works and what happens when things go wrong!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Intro Key Points</h4>
+                <ul>
+                    <li>Chest cavity = lung's "room."</li>
+                    <li>Pleurae = lung wrappers.</li>
+                    <li>Right lung = 3 lobes; Left lung = 2 lobes.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="lung-compliance">
+            <h2>2. Lung Compliance: How Stretchy Are Your Lungs?</h2>
+            <div class="info-card">
+                <p>Think of <span class="tooltip-container">Lung compliance<span class="tooltip-text">How easily your lungs can stretch and expand when you breathe in. Think of a balloon: easy to inflate = high compliance. Stiff balloon = low compliance.</span></span> as how "stretchy" your lungs are. It's about how much air they can hold based on the pressure in the tiny air sacs (alveoli).</p>
+                <button class="reveal-button">What makes lungs stretchy (or not)?</button>
+                <div class="reveal-content">
+                    <h4>Two Main Factors:</h4>
+                    <ol>
+                        <li><strong>Connective Tissue:</strong> Things like collagen and elastin (they're like tiny rubber bands in your lungs!).</li>
+                        <li><strong>Surface Tension in Alveoli:</strong> This is controlled by <span class="tooltip-container">surfactant<span class="tooltip-text">A special soap-like substance in your lungs that reduces surface tension, making it easier for the tiny air sacs (alveoli) to stay open.</span></span>.
+                            <ul>
+                                <li>Surfactant is like a non-stick coating for your alveoli. It lowers surface tension and stops fluid from getting in.</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                    <h4>Compliance in Diseases:</h4>
+                    <ul>
+                        <li><strong>Increased Lung Compliance:</strong> Happens with <span class="highlight">COPD</span> (think of an old, over-stretched rubber band).</li>
+                        <li><strong>Decreased Lung Compliance:</strong> Occurs with <span class="highlight">Restrictive Pulmonary Disease</span> (lungs become "stiff" – like trying to inflate a very stiff new balloon).
+                            <ul>
+                                <li>This means less lung volume and it takes a *lot* more effort to breathe.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Lung Compliance</h4>
+                <ul>
+                    <li>Compliance = lung stretchiness.</li>
+                    <li>Affected by connective tissue & surfactant.</li>
+                    <li>COPD = floppy lungs (high compliance).</li>
+                    <li>Restrictive disease = stiff lungs (low compliance).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="control-respiration">
+            <h2>3. Control of Respiration: Who's the Boss of Your Breathing?</h2>
+            <div class="info-card">
+                <p>Your body constantly checks how much oxygen (O2), carbon dioxide (CO2), and hydrogen (H+) are in your blood. Special sensors called <span class="tooltip-container">chemoreceptors<span class="tooltip-text">Special sensors in your body that detect changes in blood gases (oxygen, carbon dioxide) and pH, sending signals to your brain to adjust your breathing.</span></span> tell your brain when to adjust your breathing.</p>
+                <button class="reveal-button">Meet the Chemoreceptors!</button>
+                <div class="reveal-content">
+                    <h4>Central Chemoreceptors (Brain Buddies):</h4>
+                    <ul>
+                        <li><strong>Where:</strong> Deep in your brain (medulla) and spinal fluid.</li>
+                        <li><strong>What they react to:</b> <span class="highlight">TOO MUCH CO2</span> and <span class="highlight">LOW pH</span> (blood becoming acidic).</li>
+                        <li><strong>Their job:</strong> They tell you to breathe more to get rid of CO2!</li>
+                        <li><strong>⚠️ Important ADHD Warning!</strong> If CO2 stays high for a long time (like in severe COPD), these sensors get "tired" and stop responding. This means the main trigger to breathe shifts...</li>
+                    </ul>
+                    <h4>Peripheral Chemoreceptors (Bodyguards):</h4>
+                    <ul>
+                        <li><strong>Where:</strong> In your carotid arteries (neck) and aorta (big artery from heart).</li>
+                        <li><strong>What they react to:</b> <span class="highlight">LOW OXYGEN (PO2 < 60 mm Hg)</span>.</li>
+                        <li><strong>Their job:</strong> If central chemoreceptors are "tired" (from chronic high CO2), these guys take over and become the main signal for breathing.</li>
+                        <li><strong>🚨 NCLEX Alert!</strong> If you give too much oxygen to a COPD patient who relies on this "hypoxic drive," you might turn off their breathing signal! Keep oxygen low and steady.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Breathing Control</h4>
+                <ul>
+                    <li>Breathing is controlled by O2, CO2, H+ levels.</li>
+                    <li>Central chemoreceptors (brain) react to high CO2/low pH.</li>
+                    <li>Peripheral chemoreceptors (body) react to low O2.</li>
+                    <li><strong>Crucial:</strong> Chronic high CO2 can shift COPD patients' breathing drive to low O2!</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="question-card" id="q1">
+            <p><strong>NCLEX Next Gen Question: Safety First!</strong></p>
+            <p>A nurse is caring for a patient with severe chronic obstructive pulmonary disease (COPD) who primarily relies on the hypoxic drive for respiration. The patient's current oxygen saturation is 88%. The nurse receives an order to initiate oxygen therapy. What is the **most appropriate initial action** by the nurse?</p>
+            <div class="options">
+                <label><input type="radio" name="q1_option" value="a"> Administer oxygen via nasal cannula at 6 L/min to quickly increase saturation to 100%.</label>
+                <label><input type="radio" name="q1_option" value="b"> Administer oxygen via non-rebreather mask at 10 L/min to ensure maximum oxygen delivery.</label>
+                <label><input type="radio" name="q1_option" value="c"> Initiate oxygen via nasal cannula at a low flow rate (e.g., 1-2 L/min) and carefully monitor respiratory status.</label>
+                <label><input type="radio" name="q1_option" value="d"> Withhold oxygen therapy as it may depress the patient's respiratory drive.</label>
+            </div>
+            <button class="submit-btn" id="submit_q1">Check My Answer!</button>
+            <div class="feedback" id="q1_feedback"></div>
+        </div>
+
+        <section id="bronchial-smooth-muscle">
+            <h2>4. Bronchial Smooth Muscle: Airway Squeeze or Relax?</h2>
+            <div class="info-card">
+                <p>Your airways (trachea and bronchi) are wrapped in <span class="tooltip-container">smooth muscle<span class="tooltip-text">Muscles that control the size of your airways, blood vessels, and other internal organs. They're not controlled voluntarily like your arm muscles.</span></span>. When these muscles tighten, they squeeze your airways, making it harder to breathe. When they relax, your airways open up!</p>
+                <div class="figure-placeholder">
+                    <h4>Visualize It!</h4>
+                    <p><strong>FIG. 39.1:</strong> Bronchial smooth muscle fibers become more closely spaced as they near the alveoli. (Imagine a diagram here!)</p>
+                </div>
+                <button class="reveal-button">Nervous System: The Airway Controller</button>
+                <div class="reveal-content">
+                    <h4>Who Controls the Squeeze?</h4>
+                    <ul>
+                        <li><strong>Parasympathetic Nervous System (Relax/Rest & Digest):</strong>
+                            <ul>
+                                <li>Releases <span class="highlight">acetylcholine</span>.</li>
+                                <li>Causes <span class="highlight">BRONCHOCONSTRICTION</span> (airways squeeze!).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Sympathetic Nervous System (Fight or Flight!):</b>
+                            <ul>
+                                <li>Releases <span class="highlight">epinephrine</span>.</li>
+                                <li>Stimulates <span class="highlight">beta2 receptors</span> in airway muscles.</li>
+                                <li>Causes <span class="highlight">BRONCHODILATION</span> (airways open wide!).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p>These two systems are like a tug-of-war, trying to keep your airways just right (homeostasis).</p>
+
+                    <h4>Meet cAMP: The Airway Opener!</h4>
+                    <ul>
+                        <li><span class="tooltip-container">Cyclic adenosine monophosphate (cAMP)<span class="tooltip-text">A crucial messenger molecule inside your cells that helps relax bronchial smooth muscles, leading to bronchodilation (opening of airways).</span></span> (cAMP) is a special molecule inside your bronchial cells.</li>
+                        <li><span class="highlight">More cAMP = More Bronchodilation!</span> (Airways open!)</li>
+                        <li>There's a sneaky enzyme called <span class="tooltip-container">phosphodiesterase<span class="tooltip-text">An enzyme in your lungs that breaks down cAMP (the molecule that helps open airways). Drugs like theophylline stop phosphodiesterase, letting cAMP do its job.</span></span> that can *inactivate* cAMP. Not good for open airways!</li>
+                        <li><strong>Drug Superpowers:</strong> Drugs like <span class="highlight">theophylline</span> (a methylxanthine) block phosphodiesterase, so cAMP can do its job and keep those airways open!</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Airway Control</h4>
+                <ul>
+                    <li>Tight muscles = constricted airways.</li>
+                    <li>Parasympathetic (acetylcholine) = constrict.</li>
+                    <li>Sympathetic (epinephrine, beta2) = dilate.</li>
+                    <li>cAMP = opens airways.</li>
+                    <li>Phosphodiesterase = tries to close airways (theophylline fights it!).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="copd">
+            <h2>5. Chronic Obstructive Pulmonary Disease (COPD): The Big Picture</h2>
+            <div class="info-card">
+                <p>COPD is a big umbrella term for lung diseases that block airflow and make breathing hard. Think of it as a constant fight for air.</p>
+                <button class="reveal-button">COPD vs. Restrictive Lung Disease: A Quick Battle</button>
+                <div class="reveal-content">
+                    <h4>COPD (Airflow Obstruction):</h4>
+                    <ul>
+                        <li><strong>Problem:</strong> Air gets trapped or has trouble flowing OUT of the lungs.</li>
+                        <li><strong>Caused by:</strong>
+                            <ol>
+                                <li>Chronic Bronchitis</li>
+                                <li>Bronchiectasis</li>
+                                <li>Emphysema</li>
+                                <li>Asthma</li>
+                            </ol>
+                        </li>
+                        <li><strong>Key Feature:</strong> Chronic bronchitis, bronchiectasis, and emphysema often cause <span class="highlight">PERMANENT lung damage</span>. Asthma can be reversible, but long-term asthma can also cause irreversible changes.</li>
+                        <li><strong>Measurement:</strong> Doctors often see a reduced <span class="tooltip-container">FEV1<span class="tooltip-text">Forced Expiratory Volume in 1 second: How much air you can blow out in one second. It's a key measurement for lung function.</span></span> (Forced Expiratory Volume in 1 second) in lung tests.</li>
+                    </ul>
+                    <h4>Restrictive Lung Disease (Lung Stiffness/Fluid):</h4>
+                    <ul>
+                        <li><strong>Problem:</strong> Lungs can't expand fully; total lung capacity is decreased.</li>
+                        <li><strong>Caused by:</strong> Fluid build-up (pulmonary edema), stiff scarring (pulmonary fibrosis), lung tumors, or chest wall problems (like severe scoliosis).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Digging Deeper: The COPD Crew</h3>
+            <div class="figure-placeholder">
+                <h4>Overlapping Symptoms!</h4>
+                <p><strong>FIG. 39.2:</strong> Overlapping signs and symptoms of chronic obstructive pulmonary disease (COPD) conditions. (Imagine a Venn diagram here!)</p>
+            </div>
+            <ul>
+                <li><strong>Chronic Bronchitis:</strong>
+                    <ul>
+                        <li><strong>Cause:</strong> Often smoking or long-term lung infections.</li>
+                        <li><strong>What happens:</strong> Airways get inflamed, lots of mucus is produced.</li>
+                        <li><strong>Sounds like:</strong> Productive cough, rattling sounds (rhonchi) when breathing.</li>
+                        <li><strong>Danger:</strong> Can lead to too much CO2 (hypercapnia) and not enough O2 (hypoxemia), causing respiratory acidosis.</li>
+                    </ul>
+                </li>
+                <li><strong>Bronchiectasis:</strong>
+                    <ul>
+                        <li><strong>What happens:</b> Airways become abnormally dilated (stretched out) due to repeated infections/inflammation. Leads to damage and scarring.</li>
+                    </ul>
+                </li>
+                <li><strong>Emphysema:</strong>
+                    <ul>
+                        <li><strong>Cause:</strong> Mostly smoking, pollution, or a lack of a protective protein (alpha1-antitrypsin).</li>
+                        <li><strong>What happens:</strong> Tiny air sacs (alveoli) get destroyed and merge into bigger, less efficient sacs. Air gets trapped inside these over-expanded sacs, making gas exchange (O2 in, CO2 out) very poor.</li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="quick-fact">
+                <h4>Quick Fact!</h4>
+                <p><strong>Cigarette smoking is the #1 risk factor for COPD.</strong> Quitting smoking is the best way to prevent and slow down this disease!</p>
+            </div>
+
+            <h3>Medications for COPD: Your Arsenal!</h3>
+            <button class="reveal-button">What drugs are used?</button>
+            <div class="reveal-content">
+                <p>We use different types of drugs to help manage COPD symptoms:</p>
+                <ul>
+                    <li><strong>Bronchodilators:</strong> Your "airway openers"!
+                        <ul>
+                            <li>Sympathomimetics (adrenergics)</li>
+                            <li>Anticholinergic drugs (like ipratropium bromide)</li>
+                            <li>Methylxanthines (like theophylline)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Glucocorticoids (Steroids):</strong> Your "inflammation fighters"! They calm down irritation in the lungs.</li>
+                    <li><strong>Leukotriene Modifiers & Cromolyn:</strong> More inflammation fighters! They prevent swelling and mucus.</li>
+                    <li><strong>Expectorants:</b> Help loosen up that sticky mucus so you can cough it out.</li>
+                    <li><strong>Antibiotics:</strong> Only if a bacterial infection pops up (like with excess mucus).</li>
+                </ul>
+            </div>
+            <div class="recap">
+                <h4>Recap: COPD Essentials</h4>
+                <ul>
+                    <li>COPD = blocked airflow. Restrictive = stiff lungs.</li>
+                    <li>Types of COPD: Chronic Bronchitis, Bronchiectasis, Emphysema, Asthma.</li>
+                    <li>Smoking is a major cause.</li>
+                    <li>Drugs: Bronchodilators (open), Steroids (reduce inflammation), others.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="bronchial-asthma">
+            <h2>6. Bronchial Asthma: The Inflammatory Attack!</h2>
+            <div class="info-card">
+                <p>Asthma is a type of COPD where your airways get inflamed and tighten up (bronchospasm) in response to triggers. This leads to wheezing, coughing, and feeling breathless.</p>
+                <button class="reveal-button">What sets off an asthma attack?</button>
+                <div class="reveal-content">
+                    <h4>Common Triggers (Watch out for these!):</h4>
+                    <ul>
+                        <li>Stress, emotions</li>
+                        <li>Allergens (pet dander, dust mites, food)</li>
+                        <li>Pollutants (smoke, fumes, perfume)</li>
+                        <li>Changes in humidity, air pressure, temperature</li>
+                        <li>Exercise</li>
+                        <li>Certain drugs (e.g., aspirin, ibuprofen, beta-blockers)</li>
+                    </ul>
+                    <p>Sometimes, asthma is called <span class="highlight">Reactive Airway Disease (RAD)</span> when it's super sensitive to things like allergens and temperature changes.</p>
+
+                    <h3>Pathophysiology: The Mast Cell Mayhem!</h3>
+                    <button class="reveal-button">How does an asthma attack happen inside your body?</button>
+                    <div class="reveal-content">
+                        <p>Imagine tiny "alarm cells" in your body called <span class="tooltip-container">mast cells<span class="tooltip-text">Immune cells found in connective tissues that play a key role in allergic reactions by releasing chemicals like histamine.</span></span>. When an allergen (like pollen) shows up, it attaches to these mast cells in your lungs. This sets off a chain reaction!</p>
+                        <p>Mast cells release powerful chemical "messengers" called <span class="highlight">mediators</span>:</p>
+                        <ul>
+                            <li><strong>Histamines:</strong> Strong airway constrictors!</li>
+                            <li><strong>Cytokines, Serotonin, ECF-A:</strong> More constrictors!</li>
+                            <li><strong>Leukotrienes:</strong> Cause inflammation, mucus, and constriction. (More on these drugs later!)</li>
+                        </ul>
+                        <div class="quick-fact">
+                            <h4>Did you know?</h4>
+                            <p>If you have high <span class="highlight">eosinophil counts</span> in your blood, it often means an allergic reaction is happening!</p>
+                        </div>
+                        <p>These mediators make your airways:</p>
+                        <ul>
+                            <li><strong>Constrict!</strong> (Bronchoconstriction)</li>
+                            <li>Produce lots of <strong>mucus!</strong></li>
+                            <li>Get <strong>inflamed and swollen!</strong></li>
+                        </ul>
+                        <div class="figure-placeholder">
+                            <h4>Pathophysiology Flowchart!</h4>
+                            <p><strong>FIG. 39.3:</strong> Factors that contribute to bronchoconstriction. (Imagine a flowchart showing how triggers lead to mast cell release, then mediators, then constriction!)</p>
+                        </div>
+                        <p>Remember <span class="highlight">cAMP</span>? (Cyclic AMP, the airway opener). Histamine and leukotrienes try to *inhibit* cAMP, which leads to bronchoconstriction. Good news: Bronchodilators and methylxanthines work by <span class="highlight">increasing cAMP</span> to keep airways open!</p>
+                        <div class="focus-prompt">
+                            <h4>Focus Prompt!</h4>
+                            <p>For an acute asthma attack, the **first line of defense are short-acting sympathomimetics** (beta2-adrenergic agonists). They quickly boost cAMP and open airways. Long-acting ones are for daily maintenance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Asthma</h4>
+                <ul>
+                    <li>Asthma = inflammation + bronchospasm from triggers.</li>
+                    <li>Mast cells release histamine, leukotrienes, etc.</li>
+                    <li>These chemicals cause constriction, mucus, swelling.</li>
+                    <li>Short-acting beta2 agonists are key for acute attacks.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="sympathomimetics">
+            <h2>7. Sympathomimetics: Your "Fight-or-Flight" Airway Openers!</h2>
+            <div class="info-card">
+                <p>These drugs mimic your body's "fight-or-flight" system. They increase cAMP, which makes your airways relax and dilate (open up!).</p>
+                <button class="reveal-button">Epinephrine vs. Selective Beta2 Agonists</button>
+                <div class="reveal-content">
+                    <h4>Epinephrine (The Emergency Big Gun!):</h4>
+                    <ul>
+                        <li><strong>What it is:</strong> A nonselective sympathomimetic (hits alpha1, beta1, and beta2 receptors).</li>
+                        <li><strong>When used:</strong> Emergency situations! Like severe bronchospasm from anaphylaxis (a serious allergic reaction).</li>
+                        <li><strong>How it helps:</strong> Quickly opens airways (bronchodilation) and boosts blood pressure.</li>
+                        <li><strong>Route:</strong> Given subcutaneously (under the skin).</li>
+                    </ul>
+                    <h4>Selective Beta2-Adrenergic Agonists (Your Asthma Go-To!):</h4>
+                    <ul>
+                        <li><strong>What they are:</strong> Drugs that primarily target the beta2 receptors in your lungs.</li>
+                        <li><strong>When used:</b> For chronic asthma or COPD bronchospasm.</li>
+                        <li><strong>How they help:</b> Cause bronchodilation.</li>
+                        <li><strong>Why they're better than Epinephrine for daily use:</strong> Fewer side effects because they are more specific to the lungs (don't hit beta1 receptors as much, which affect the heart).</li>
+                        <li><strong>Route:</strong> Often given by aerosol inhaler or tablet.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Sympathomimetics</h4>
+                <ul>
+                    <li>Increase cAMP, causing bronchodilation.</li>
+                    <li>Epinephrine: Emergency, non-selective.</li>
+                    <li>Beta2-agonists: Daily use, lung-specific (fewer heart side effects).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="albuterol">
+            <h2>8. Albuterol: The Quick Rescue</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Albuterol<span class="tooltip-text">A commonly used, selective beta2-adrenergic agonist that quickly relaxes bronchial smooth muscle, causing bronchodilation. It's often called a "rescue inhaler."</span></span> is a super effective, selective beta2 drug. It's often called your "rescue inhaler" because it works fast to open airways for asthma and bronchospasm.</p>
+                <button class="reveal-button">Albuterol: The Nitty-Gritty!</button>
+                <div class="reveal-content">
+                    <div class="focus-prompt">
+                        <h4>Focus Prompt!</h4>
+                        <p>Newer beta-adrenergic drugs are more selective for beta2 receptors, meaning fewer heart-related side effects. But high doses can still cause some beta1 effects (like shaky hands or fast pulse!).</p>
+                    </div>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug Class</th>
+                                <th>Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug Class">Beta2-adrenergic agonist</td>
+                                <td data-label="Dosage">
+                                    <strong>Acute bronchospasm:</strong> <strong>A:</strong> MDI: 2 puffs (90–180 mcg/inhal) q4–6h; max: 12 puffs/day.<br>
+                                    <strong>Bronchospasm prophylaxis (prevention):</strong><br>
+                                    Immediate release: <strong>A:</strong> PO: 2–4 mg q6–8h; max: 32 mg/day.<br>
+                                    Extended release: <strong>A:</strong> PO: 4–8 mg q12h; max: 32 mg/day.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Contraindications" colspan="2"><strong>Do NOT use if:</strong> Hypersensitivity to albuterol or milk protein.
+                                    <br><strong>Use CAUTION with:</strong> Heart problems (dysrhythmias, heart failure), thyroid issues, diabetes, low potassium, seizures, MAOI therapy, pregnancy, older adults.</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                    <strong>Drug:</strong> Increased effect with other sympathomimetics; watch out for MAOIs and TCAs (may increase effect). Beta blockers *antagonize* (block) albuterol's effect!<br>
+                                    <strong>Lab:</strong> May slightly increase blood glucose. May decrease serum potassium.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>How it Moves (Pharmacokinetics)</th>
+                                <th>How it Works (Pharmacodynamics)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Pharmacokinetics">
+                                    <strong>Absorption:</strong> Well absorbed from stomach (oral) and lungs (inhalation).<br>
+                                    <strong>Distribution:</strong> Only 10% sticks to proteins in blood.<br>
+                                    <strong>Metabolism:</strong> Half-life (t½): Oral inhal: 3.8–5 h, PO: 2.7–6 h. Excreted 100% in urine.
+                                </td>
+                                <td data-label="Pharmacodynamics">
+                                    <strong>Oral Immediate Release:</strong> Onset: 30 min, Peak: 2–3 h, Duration: 4–6 h.<br>
+                                    <strong>Oral Extended Release:</strong> Onset: Unknown, Peak: Unknown, Duration: 8–12 h.<br>
+                                    <strong>Inhalation:</strong> Onset: 5–15 min (FAST!), Peak: 0.5–2 h, Duration: 2–6 h.<br>
+                                    <strong>Therapeutic Use:</b> Treats and prevents asthma and bronchospasm.<br>
+                                    <strong>Mechanism:</strong> Stimulates beta2-adrenergic receptors in lungs -> relaxes bronchial smooth muscle -> bronchodilation!
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Side Effects (Common Annoyances)</th>
+                                <th>Adverse Reactions (More Serious Stuff!)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Side Effects">Tremor, dizziness, restlessness, agitation, anxiety, insomnia, headache, dry mouth, nausea, muscle cramps, throat irritation.</td>
+                                <td data-label="Adverse Reactions">Palpitations, tachycardia (fast heart rate), high/low blood pressure, hyperglycemia (high blood sugar), hypokalemia (low potassium), chest pain, dyspnea.<br>
+                                    <strong>Life-threatening:</strong> Dysrhythmia (irregular heartbeat), angioedema (severe swelling), bronchospasm (paradoxical!), Stevens-Johnson syndrome (severe skin reaction).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="note">
+                        <h4>Patient Safety Alert!</h4>
+                        <p>Don't mix up <strong>Albuterol</strong> (for breathing) with <strong>Accupril</strong> (for heart/BP)! They sound similar but are very different.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Albuterol</h4>
+                <ul>
+                    <li>Selective beta2 agonist.</li>
+                    <li>Fast-acting rescue for asthma/COPD.</li>
+                    <li>Side effects: tremor, fast heart rate (especially high doses).</li>
+                    <li>Watch blood glucose and potassium!</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="metaproterenol">
+            <h2>9. Metaproterenol: Another Beta-Agonist</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Metaproterenol<span class="tooltip-text">A beta-adrenergic agent used for asthma and COPD, with primary beta2 effects (bronchodilation) but also some beta1 (cardiac) effects. Can be taken orally or by inhalation.</span></span> is another beta-adrenergic agent. It mostly works on beta2 receptors, but can have some beta1 effects (so be a bit more cautious with heart patients than with pure beta2 drugs).</p>
+                <button class="reveal-button">Metaproterenol: Quick Facts</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li><strong>Routes:</strong> Oral, MDI (inhaler), or nebulizer.</li>
+                        <li><strong>Why Inhalation is Great for Asthma:</strong> It delivers the drug right to your lungs, meaning you need a smaller dose, and you get fewer side effects compared to taking it by mouth.</li>
+                        <li><strong>Speed:</strong>
+                            <ul>
+                                <li>Oral inhalation: Onset in 1 minute (super fast!).</li>
+                                <li>Nebulization: Onset in 5-30 minutes.</li>
+                                <li>Oral: Onset in 15-30 minutes.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Peak Effect:</strong> About 1 hour for all routes.</li>
+                        <li><strong>Duration:</strong> About 4 hours.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Metaproterenol</h4>
+                <ul>
+                    <li>Beta2 agonist, some beta1 effect.</li>
+                    <li>Inhalation is preferred route (faster, fewer side effects).</li>
+                    <li>Fast onset for inhalation.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="aerosol-inhaler">
+            <h2>10. Using Your Inhaler: The Right Way to Breathe Easy!</h2>
+            <div class="info-card">
+                <p>Getting your medication *into* your lungs is key! Proper inhaler technique makes a HUGE difference. If your inhaler isn't working, it's either your technique or it's empty!</p>
+                <button class="reveal-button">Master Your MDI (Metered-Dose Inhaler) Technique!</button>
+                <div class="reveal-content">
+                    <h4>The Step-by-Step for Beta2 Agonist MDI:</h4>
+                    <ol>
+                        <li><strong>Insert:</strong> Put the medication canister into the plastic mouthpiece.</li>
+                        <li><strong>Shake it!</strong> Shake the inhaler well before *every* use.</li>
+                        <li><strong>Cap Off:</strong> Remove the cap from the mouthpiece.</li>
+                        <li><strong>Position:</strong> Hold the mouthpiece 1 to 2 inches from your mouth, or place it *in* your mouth. Ask your healthcare provider about using a <span class="tooltip-container">spacer device<span class="tooltip-text">A holding chamber attached to an inhaler that helps deliver more medication to the lungs and reduces deposition in the mouth and throat. Great for those with coordination challenges!</span></span> – it can really help!</li>
+                        <li><strong>Exhale & Inhale:</strong> Breathe out fully through your mouth. Then, take a slow, deep breath in through your mouth while simultaneously pressing the top of the canister once.</li>
+                        <li><strong>Hold it!</strong> Hold your breath for a few seconds. Then, exhale slowly through pursed lips.</li>
+                        <li><strong>Repeat (if needed):</strong> Wait 2 minutes if a second dose is required. Shake the inhaler again (with cap in place!) before the next puff.</li>
+                        <li><strong>Test Spray:</strong> If it's a new inhaler or hasn't been used in a while, do a test spray into the air first.</li>
+                    </ol>
+
+                    <h4>Why Technique Matters:</h4>
+                    <ul>
+                        <li>Poor technique = medication trapped in your mouth/throat, not reaching your lungs.</li>
+                        <li>Can cause dry mouth and throat irritation.</li>
+                    </ul>
+
+                    <h4>Don't Overdo It!</h4>
+                    <ul>
+                        <li>Using your aerosol drug too much can lead to <span class="highlight">tolerance</span> (it stops working as well) and loss of effectiveness.</li>
+                        <li>Sometimes, excessive use can even cause <span class="highlight">paradoxical bronchoconstriction</span> (your airways actually constrict MORE!).</li>
+                        <li>Too frequent dosing can also cause side effects like tremors, nervousness, and a fast heart rate.</li>
+                        <li>If your usual dose isn't working, it means your asthma might be getting worse, and you need to see your healthcare provider! Don't just increase the dose yourself.</li>
+                    </ul>
+
+                    <h3>Common Side Effects (Reminders!):</h3>
+                    <ul>
+                        <li><strong>Epinephrine:</strong> Tremors, dizziness, high BP, fast heart rate, palpitations, irregular heartbeats, chest pain. Monitor closely!</li>
+                        <li><strong>Beta2-adrenergic drugs (like Albuterol):</strong> Tremors, headaches, restlessness, increased pulse, palpitations (with high doses).</li>
+                        <li><strong>Diabetes Alert!</strong> Beta2 agonists can increase blood glucose. Patients with diabetes need to check their blood sugar more often.</li>
+                        <li>Good news: Many side effects lessen after a week or two.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Inhaler Use</h4>
+                <ul>
+                    <li>Shake, breathe out, inhale slowly while pressing, hold breath, wait 2 min for next puff.</li>
+                    <li>Spacers help!</li>
+                    <li>Overuse = tolerance, paradoxical constriction.</li>
+                    <li>Side effects: tremors, fast heart rate, increased blood sugar.</li>
+                </ul>
+            </div>
+        </section>
+        <div class="question-card" id="q2">
+            <p><strong>NCLEX Next Gen Question: Teaching Time!</strong></p>
+            <p>A nurse is educating a patient about the proper use of their newly prescribed albuterol metered-dose inhaler (MDI). Which statement by the patient indicates a **need for further instruction**?</p>
+            <div class="options">
+                <label><input type="radio" name="q2_option" value="a"> "I should shake the inhaler well before each use."</label>
+                <label><input type="radio" name="q2_option" value="b"> "I will hold my breath for a few seconds after inhaling the medication."</label>
+                <label><input type="radio" name="q2_option" value="c"> "If I need a second puff, I should wait about 30 seconds before taking it."</label>
+                <label><input type="radio" name="q2_option" value="d"> "I will rinse my mouth with water after using the inhaler to prevent oral thrush."</label>
+            </div>
+            <button class="submit-btn" id="submit_q2">Check My Answer!</button>
+            <div class="feedback" id="q2_feedback"></div>
+        </div>
+
+        <section id="anticholinergics">
+            <h2>11. Anticholinergics: Blocking the Squeeze!</h2>
+            <div class="info-card">
+                <p>These drugs block the action of acetylcholine, which usually causes airways to constrict. By blocking it, they help relax and dilate the bronchi!</p>
+                <button class="reveal-button">Tiotropium: Your Long-Term COPD Buddy</button>
+                <div class="reveal-content">
+                    <h3>Tiotropium (Spiriva®):</h3>
+                    <ul>
+                        <li><strong>Main Use:</strong> Maintenance treatment for COPD bronchospasms linked to COPD. It's a daily medication, NOT for acute attacks.</li>
+                        <li><strong>How it works:</strong> Blocks muscarinic cholinergic receptors (specifically M3 receptors), stopping acetylcholine from causing bronchoconstriction.</li>
+                        <li><strong>Route:</strong> Inhalation only, using a special device called a <span class="tooltip-container">HandiHaler<span class="tooltip-text">A dry-powder inhaler (DPI) device used to administer certain medications like tiotropium by inhalation.</span></span> (DPI).</li>
+                        <li><strong>Important!:</strong> Once you open a capsule, use it immediately! Don't save opened capsules. Wash the HandiHaler with warm water and dry it.</li>
+                        <li><strong>Common Side Effects:</strong> Dry mouth (very common!), constipation, insomnia, dizziness, headache, sinusitis, blurred vision, urinary retention, candidiasis.</li>
+                        <li><strong>Serious Reactions:</strong> Tachycardia, ileus (bowel paralysis), dehydration, hyperglycemia, dysrhythmias, anaphylaxis.</li>
+                    </ul>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug Class</th>
+                                <th>Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug Class">Anticholinergic</td>
+                                <td data-label="Dosage"><strong>COPD:</strong> <strong>A:</strong> Oral inhalation: 2 inhalations/day (2.5 mcg/actuation) at the same time daily; max: 2 inhalations/day.</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Contraindications" colspan="2"><strong>Do NOT use if:</strong> Hypersensitivity to lactose, narrow-angle glaucoma, bladder obstruction, kidney problems, heart dysrhythmias, breastfeeding, older adults.</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                    <strong>Drug:</strong> Increased anticholinergic effects if taken with phenothiazines. Decreased action of "prokinetics" (like cisapride, metoclopramide) which help move food through the gut.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>How it Moves (Pharmacokinetics)</th>
+                                <th>How it Works (Pharmacodynamics)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Pharmacokinetics">
+                                    <strong>Absorption:</strong> Minimally absorbed orally.<br>
+                                    <strong>Distribution:</strong> 72% sticks to proteins in blood.<br>
+                                    <strong>Metabolism:</strong> Half-life (t½): 5–6 days.<br>
+                                    <strong>Excretion:</strong> Excreted in urine as metabolites.
+                                </td>
+                                <td data-label="Pharmacodynamics">
+                                    <strong>Inhalation:</strong> Onset: 30 min, Peak: 1–4 hours, Duration: Unknown.<br>
+                                    <strong>Therapeutic Use:</strong> Maintenance treatment of asthma and COPD.<br>
+                                    <strong>Mechanism:</strong> Blocks muscarinic cholinergic receptors and stops acetylcholine, relaxing bronchial smooth muscle and dilating bronchi.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Side Effects (Common Annoyances)</th>
+                                <th>Adverse Reactions (More Serious Stuff!)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Side Effects">Insomnia, dizziness, depression, headache, sinusitis, nasopharyngitis, cough, dry mouth, vomiting, abdominal pain, constipation, urinary retention, joint pain, muscle pain, peripheral swelling, blurred vision, oral ulcers, candidiasis, infection.</td>
+                                <td data-label="Adverse Reactions">Tachycardia, ileus, dehydration, hyperglycemia, chest pain, GI obstruction, cataracts.<br>
+                                    <strong>Life-threatening:</strong> Dysrhythmias, anaphylaxis, angioedema.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Ipratropium Bromide: Another Anticholinergic</h3>
+                    <ul>
+                        <li>Used to treat asthma by dilating bronchioles.</li>
+                        <li><strong>Good news:</strong> Few systemic side effects compared to other anticholinergics.</li>
+                        <li><strong>Route:</strong> MDI (inhaler).</li>
+                    </ul>
+
+                    <h3>The Dynamic Duo: Ipratropium & Albuterol!</h3>
+                    <ul>
+                        <li>This combination is super effective for COPD.</li>
+                        <li>They work better together than alone (longer duration, more effective).</li>
+                        <li>This combo significantly increases <span class="highlight">FEV1</span> (remember that from COPD?).</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Table 39.1 & 39.2: (Refer to original textbook/resource)</h4>
+                        <p>These tables list specific adrenergic bronchodilators, anticholinergics, and various inhalant agents for asthma control. Great for review!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Anticholinergics</h4>
+                <ul>
+                    <li>Block acetylcholine to cause bronchodilation.</li>
+                    <li>Tiotropium: Daily COPD maintenance, DPI. Common side effect: dry mouth.</li>
+                    <li>Ipratropium: Few systemic side effects, MDI.</li>
+                    <li>Ipratropium + Albuterol = powerful combo for COPD.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="methylxanthine">
+            <h2>12. Methylxanthine (Xanthine) Derivatives: Theophyllines & More!</h2>
+            <div class="info-card">
+                <p>This group of bronchodilators includes <span class="highlight">aminophylline, theophylline, and caffeine</span>! Yes, caffeine is a xanthine!</p>
+                <button class="reveal-button">Beyond Bronchodilation: What else do they do?</button>
+                <div class="reveal-content">
+                    <p>Besides opening airways, xanthines also:</p>
+                    <ul>
+                        <li>Stimulate your <span class="highlight">Central Nervous System (CNS)</span> and respiration.</li>
+                        <li>Dilate your heart's blood vessels (coronary) and lung blood vessels (pulmonary).</li>
+                        <li>Act as <span class="highlight">diuretics</span> (make you pee more!).</li>
+                    </ul>
+                    <div class="quick-fact">
+                        <h4>Fun Fact!</h4>
+                        <p>Because they affect respiration and lung blood vessels, xanthines are used in asthma treatment.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Methylxanthines</h4>
+                <ul>
+                    <li>Bronchodilators.</li>
+                    <li>Includes aminophylline, theophylline, caffeine.</li>
+                    <li>Also stimulate CNS, dilate vessels, cause diuresis.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="aminophylline-theophylline">
+            <h2>13. Aminophylline-Theophylline: A Tricky Drug!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Aminophylline-theophylline<span class="tooltip-text">A methylxanthine bronchodilator that relaxes bronchial smooth muscles by inhibiting phosphodiesterase, leading to increased cAMP and bronchodilation. Known for its narrow therapeutic range and potential for toxicity.</span></span> helps relax the smooth muscles of your bronchi, bronchioles, and lung blood vessels. How? By blocking that sneaky enzyme, phosphodiesterase, which boosts cAMP and leads to bronchodilation!</p>
+                <button class="reveal-button">Crucial Details: Therapeutic Range & Toxicity!</button>
+                <div class="reveal-content">
+                    <div class="focus-prompt">
+                        <h4>Focus Prompt!</h4>
+                        <p>Theophylline has a <span class="highlight">VERY LOW therapeutic index</span> and a <span class="highlight">NARROW desired therapeutic range (5 to 15 mcg/mL)</span>. This means it's easy to give too much or too little.</p>
+                        <p><strong>Toxicity is HIGHLY likely when serum levels are <span class="highlight">greater than 20 mcg/mL.</span></strong> You MUST monitor these levels frequently!</p>
+                    </div>
+                    <ul>
+                        <li>Once a first-line drug for asthma, its use has dropped because of serious risks: dysrhythmias, seizures, cardiac arrest. Plus, it's not much better than beta agonists or glucocorticoids.</li>
+                        <li>Now, it's mainly for <span class="highlight">maintenance therapy</span> in chronic stable asthma/COPD when other drugs aren't enough.</li>
+                        <li><strong>Avoid in:</strong> Seizure disorders, heart, kidney, or liver disease.</li>
+                    </ul>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug</th>
+                                <th>Route and Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug">Aminophylline-theophylline</td>
+                                <td data-label="Route and Dosage">
+                                    <strong>A: 18–59 y:</strong> IV: 0.4 mg/kg/h infusion; max: 900 mg/day.<br>
+                                    <strong>Older adults >60 y:</strong> IV: 0.2–0.3 mg/kg/h infusion.<br>
+                                    <strong>Important:</strong> Individual dose adjusted based on actual serum theophylline levels.<br>
+                                    <strong>Therapeutic range:</strong> 5–15 mcg/L (or mL).
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Uses and Considerations</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Uses and Considerations" colspan="2">For bronchospasm due to asthma or COPD. Can cause restlessness, headache, insomnia, GERD, dizziness, nausea, vomiting, diarrhea, low potassium, high calcium, palpitations, and fast heart rate. PB: 40%; t½: 6.5–10.5 hours.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Pharmacokinetics: How Your Body Handles It</h3>
+                    <ul>
+                        <li><strong>Absorption:</strong> Good orally (especially liquids/uncoated tablets). Sustained-release forms absorb slower. Food/antacids can slow absorption but don't stop it. High fluid/protein meals can speed it up. Also given IV.</li>
+                        <li><strong>Metabolism:</strong> Processed by your liver enzymes. 90% excreted by kidneys.</li>
+                        <li><strong>🚬 Smoking Alert!</strong> Tobacco smoking speeds up theophylline metabolism, meaning it leaves your body faster (shorter half-life). Smokers might need higher doses!</li>
+                        <li><strong>Kids:</strong> Shorter half-life, may need higher doses.</li>
+                        <li><strong>Nonsmokers/Older Adults:</strong> Longer half-life (6.5-10.5 hours), may need *lower* doses.</li>
+                        <li><strong>Certain Conditions:</strong> Heart failure, cor pulmonale, COPD, liver disease = very long half-life (24 hours!). Be super careful with dosing to avoid toxicity.</li>
+                    </ul>
+
+                    <h3>Pharmacodynamics: How it Acts</h3>
+                    <ul>
+                        <li>Increases cAMP, leading to bronchodilation.</li>
+                        <li><strong>Onset:</strong> 30 mins (oral), 1-2 hours (sustained-release).</li>
+                        <li><strong>Peak:</strong> 30 mins (IV), 1-2 hours (oral).</li>
+                    </ul>
+
+                    <h3>Side Effects & Adverse Reactions: Be Vigilant!</h3>
+                    <ul>
+                        <li><strong>Common:</strong> Anorexia, nausea, vomiting, diarrhea, gastric pain (more acid!), vomiting blood.</li>
+                        <li><strong>Cardiac:</strong> Dysrhythmias (irregular heartbeats), tachycardia (fast heart rate), palpitations, marked low blood pressure.</li>
+                        <li><strong>CNS (Brain):</strong> Headaches, irritability, restlessness, insomnia, dizziness, seizures (often worse in children!).</li>
+                        <li><strong>Avoid:</strong> Taking other xanthines (like caffeine) with theophylline – it adds to the side effects!</li>
+                        <li><strong>Toxicity:</strong> Remember, >20 mcg/mL is toxic!</li>
+                        <li>Can cause high blood sugar, decreased clotting time, and rarely, high white blood cell count.</li>
+                        <li><strong>Diuretic Effect:</b> Because it makes you pee, avoid too much caffeine (coffee, tea, cola, chocolate) and drink plenty of fluids!</li>
+                        <li><strong>IV Admin:</strong> Giving IV aminophylline too fast can cause severe dizziness, flushing, low BP, very slow heart rate, palpitations. ALWAYS administer IV slowly with an infusion pump!</li>
+                    </ul>
+
+                    <h3>Drug Interactions: The Combo Chaos!</h3>
+                    <ul>
+                        <li><strong>Increase Theophylline Effect:</strong> Beta blockers, cimetidine, propranolol, erythromycin (they slow down its breakdown). Dose adjustment needed!</li>
+                        <li><strong>Decrease Theophylline Effect:</strong> Barbiturates, carbamazepine. Dose adjustment needed!</li>
+                        <li><strong>Digitalis:</strong> Theophylline increases risk of digitalis toxicity.</li>
+                        <li><strong>Lithium:</strong> Theophylline decreases lithium effects.</li>
+                        <li><strong>Phenytoin:</strong> Phenytoin decreases theophylline levels.</li>
+                        <li><strong>Beta-adrenergic agonists:</strong> If given together, can cause a <span class="highlight">synergistic effect</span>, leading to cardiac dysrhythmias!</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Theophylline (High-Alert Drug!)</h4>
+                <ul>
+                    <li>Opens airways by increasing cAMP.</li>
+                    <li><strong>Narrow therapeutic range: 5-15 mcg/mL. Toxic >20!</strong></li>
+                    <li>Monitor levels closely.</li>
+                    <li>Many side effects: GI, cardiac (dysrhythmias, tachycardia), CNS (seizures).</li>
+                    <li>Affected by smoking, age, liver/heart disease.</li>
+                    <li>Many drug interactions.</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="question-card" id="q3">
+            <p><strong>NCLEX Next Gen Question: Recognizing Toxicity!</strong></p>
+            <p>A nurse is reviewing a patient's medication list and notes that the patient is prescribed theophylline for chronic asthma. The nurse assesses the patient for signs of toxicity. Which of the following findings would be **most indicative of theophylline toxicity**?</p>
+            <div class="options">
+                <label><input type="radio" name="q3_option" value="b"> Nausea, vomiting, and tremors</label>
+                <label><input type="radio" name="q3_option" value="a"> Drowsiness and bradycardia (slow heart rate)</label>
+                <label><input type="radio" name="q3_option" value="c"> Hypoglycemia (low blood sugar) and increased clotting time</label>
+                <label><input type="radio" name="q3_option" value="d"> Decreased respiratory rate and increased urine output</label>
+            </div>
+            <button class="submit-btn" id="submit_q3">Check My Answer!</button>
+            <div class="feedback" id="q3_feedback"></div>
+        </div>
+
+        <section id="leukotriene">
+            <h2>14. Leukotriene Receptor Antagonists: Inflammatory Blockers!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Leukotrienes (LTs)<span class="tooltip-text">Powerful chemical mediators released in allergic reactions that cause inflammation, mucus production, and bronchoconstriction in the lungs.</span></span> are chemical "bad guys" that cause inflammation in your lungs: more eosinophils, more mucus, swollen airways, and bronchoconstriction!</p>
+                <p><span class="highlight">Leukotriene modifiers</span> (LT receptor antagonists and LT synthesis inhibitors) are like "anti-inflammation superheroes" for asthma!</p>
+                <button class="reveal-button">Key Facts About Leukotriene Modifiers</button>
+                <div class="reveal-content">
+                    <div class="focus-prompt">
+                        <h4>Focus Prompt!</h4>
+                        <p>Leukotriene modifiers are <strong>NOT for acute asthma attacks!</strong> They are for <span class="highlight">prevention (prophylaxis)</span> and <span class="highlight">maintenance therapy</span> of chronic asthma, especially for exercise-induced asthma.</p>
+                    </div>
+                    <h4>The Three Amigos:</h4>
+                    <p>In the US, we have zafirlukast, zileuton, and montelukast.</p>
+                    <ul>
+                        <li><strong>Zafirlukast:</strong>
+                            <ul>
+                                <li>The first in its class! It blocks leukotriene receptors.</li>
+                                <li>Reduces inflammation and constriction.</li>
+                                <li>Oral, absorbed fast, taken twice a day.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Zileuton:</strong>
+                            <ul>
+                                <li>Blocks leukotriene *synthesis* (stops them from being made).</li>
+                                <li>Also reduces inflammation and constriction.</li>
+                                <li>Short half-life.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Montelukast (Singulair®):</strong>
+                            <ul>
+                                <li>Blocks leukotriene receptors.</li>
+                                <li>Short half-life (2.7-5.5 hours).</li>
+                                <li>Considered safe for children age 2 and up!</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug Class</th>
+                                <th>Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug Class">Bronchodilator: Leukotriene receptor antagonist</td>
+                                <td data-label="Dosage"><strong>A:</strong> PO: 10 mg/day in the evening or at least 2 hours before exercise; max: 10 mg/day.</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Contraindications" colspan="2"><strong>Do NOT use if:</strong> Hypersensitive.
+                                    <br><strong>Use CAUTION with:</strong> Liver disease, depression, suicidal thoughts, breastfeeding, pregnancy, stopping corticosteroids (steroids), status asthmaticus, acute bronchospasm, alcohol abuse, older adults.</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                    <strong>Drug:</strong> Aspirin and NSAIDs can block its action. Telithromycin, gemfibrozil, clopidogrel can increase montelukast levels.<br>
+                                    <strong>Lab:</strong> May see abnormal liver function tests (ALT, AST).
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>How it Moves (Pharmacokinetics)</th>
+                                <th>How it Works (Pharmacodynamics)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Pharmacokinetics">
+                                    <strong>Absorption:</strong> Well absorbed.<br>
+                                    <strong>Distribution:</strong> 99% sticks to proteins in blood.<br>
+                                    <strong>Metabolism:</strong> Half-life (t½): 2.7–5.5 hours.<br>
+                                    <strong>Elimination:</strong> In feces and urine.
+                                </td>
+                                <td data-label="Pharmacodynamics">
+                                    <strong>PO:</strong> Onset: Unknown, Peak: 3–4 hours, Duration: 24 hours.<br>
+                                    <strong>Therapeutic Use:</b> Treats allergic rhinitis and asthma, prevents exercise-induced bronchospasm.<br>
+                                    <strong>Mechanism:</strong> Binds to leukotriene receptors -> stops smooth muscle contraction and bronchoconstriction.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Side Effects (Common Annoyances)</th>
+                                <th>Adverse Reactions (More Serious Stuff!)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Side Effects">Headache, dizziness, drowsiness, cough, nasal congestion, fatigue, agitation, restlessness, insomnia, confusion, depression, flu-like symptoms, swelling, palpitations, muscle cramps.</td>
+                                <td data-label="Adverse Reactions">Bleeding, seizures.<br>
+                                    <strong>Life-threatening:</strong> Anaphylaxis (severe allergic reaction), suicidal thoughts, low platelets (thrombocytopenia), Stevens-Johnson syndrome, angioedema.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="note">
+                        <h4>Herbal & Alternative Therapies Alert!</h4>
+                        <ul>
+                            <li><strong>Ephedra:</strong> Can increase theophylline effects (leading to toxicity!).</li>
+                            <li><strong>St. John’s Wort:</strong> May decrease montelukast concentration.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Leukotriene Antagonists</h4>
+                <ul>
+                    <li>Block inflammatory leukotrienes.</li>
+                    <li><strong>NOT for acute attacks!</strong> For prevention and maintenance.</li>
+                    <li>Examples: Zafirlukast, Zileuton, Montelukast.</li>
+                    <li>Montelukast safe for children >2.</li>
+                    <li>Watch liver function (ALT, AST).</li>
+                    <li>Interactions with St. John's Wort.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="glucocorticoids">
+            <h2>15. Glucocorticoids (Steroids): The Mighty Anti-Inflammatories!</h2>
+            <div class="info-card">
+                <p>These are powerful anti-inflammatory drugs, super helpful for asthma, especially if it's not responding to bronchodilators.</p>
+                <button class="reveal-button">How & When are Steroids Used for Lungs?</button>
+                <div class="reveal-content">
+                    <div class="quick-fact">
+                        <h4>Synergy!</h4>
+                        <p>Glucocorticoids work even better (synergistically) when given with a beta2 agonist!</p>
+                    </div>
+                    <h4>Ways to Take Steroids:</h4>
+                    <ul>
+                        <li><strong>MDI Inhaler:</strong> Like Beclomethasone (breathed in).</li>
+                        <li><strong>Tablet:</strong> Like Dexamethasone, Prednisone (swallowed).</li>
+                        <li><strong>Intravenous (IV):</b> Like Dexamethasone (given in a vein).</li>
+                    </ul>
+
+                    <h4>Inhaled Steroids vs. Acute Attacks:</h4>
+                    <ul>
+                        <li><strong>🚫 NOT for severe acute asthma attacks!</strong> They take 1 to 4 weeks to fully kick in.</li>
+                        <li><strong>Best for:</strong> Long-term control and prevention of attacks. Patients on inhaled steroids usually have fewer symptoms and attacks.</li>
+                        <li><strong>Benefits:</strong> More effective than beta2 agonists for controlling asthma symptoms, especially by reducing how "twitchy" your airways are.</li>
+                        <li><strong>Safer:</strong> Inhaled steroids are preferred over oral steroids because they cause less <span class="highlight">adrenal suppression</span> (a serious side effect of long-term oral steroids). Use oral steroids only if inhaled ones aren't enough.</li>
+                    </ul>
+
+                    <h4>Systemic Steroids (Oral/IV) for Severe Asthma:</h4>
+                    <ul>
+                        <li>For moderate to severe asthma flare-ups (exacerbations).</li>
+                        <li>Examples: Prednisone, prednisolone, dexamethasone, methylprednisolone.</li>
+                        <li>Typical dose: Methylprednisolone 40-80 mg/day for 3-10 days.</li>
+                        <li><strong>Short-term use:</strong> Can often be stopped suddenly once symptoms are controlled (adrenal suppression usually doesn't occur within 1-2 weeks).</li>
+                        <li><strong>Long-term use:</strong> Must be slowly <span class="highlight">weaned or tapered</span> off to prevent asthma flare-ups and adrenal problems. Inhaled steroids are generally better for long-term use than alternate-day oral therapy.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Stomach Alert!</h4>
+                        <p>Steroids can irritate your stomach. <strong>ALWAYS take them with food</strong> to prevent ulcers!</p>
+                    </div>
+
+                    <h4>Combination Drugs: Two-in-One Power!</h4>
+                    <ul>
+                        <li>A combo of <span class="highlight">fluticasone propionate (steroid) and salmeterol (beta2 agonist)</span> is great for controlling asthma symptoms daily.</li>
+                        <li>It helps both with constriction and inflammation.</li>
+                        <li>Taken once in the morning and once at night.</li>
+                        <li><strong>Reminder:</strong> This combo drug does NOT replace your fast-acting "rescue" inhaler!</li>
+                    </ul>
+
+                    <h3>Side Effects & Adverse Reactions: What to Watch For!</h3>
+                    <h4>Inhaled Glucocorticoids (Usually Local):</h4>
+                    <ul>
+                        <li>Throat irritation, hoarseness, dry mouth, coughing.</li>
+                        <li>Fungal infections in mouth/throat (e.g., Candida albicans - "thrush") can occur.
+                            <ul>
+                                <li><strong>Prevention!</strong> Use a spacer, rinse your mouth and throat with water after each dose, and wash your inhaler parts daily.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4>Oral & IV Glucocorticoids (Many More Systemic Side Effects with Long-Term Use!):</h4>
+                    <ul>
+                        <li>Short-term use (less than 2 weeks) usually has few major side effects.</li>
+                        <li>Most adverse reactions appear within 2 weeks and are reversible.</li>
+                        <li><strong>Common Side Effects:</strong> Headache, feeling good (euphoria), confusion, sweating, insomnia, nausea, vomiting, weakness, irregular periods.</li>
+                        <li><strong>Serious Adverse Effects:</strong> Depression, stomach ulcers, <span class="highlight">loss of bone density/osteoporosis</span>, psychosis.</li>
+                        <li><strong>Prolonged Use Dangers:</b>
+                            <ul>
+                                <li>Electrolyte imbalance</li>
+                                <li>Fluid retention (puffy eyelids, swollen legs, "moon face," weight gain)</li>
+                                <li>High blood pressure</li>
+                                <li>Thinning skin, bruising (purpura)</li>
+                                <li><span class="highlight">Hyperglycemia (high blood sugar)</span></li>
+                                <li><span class="highlight">Impaired immune response</span> (more prone to infections)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Glucocorticoids</h4>
+                <ul>
+                    <li>Powerful anti-inflammatories for asthma.</li>
+                    <li>Inhaled for long-term control (preferred), NOT for acute attacks.</li>
+                    <li>Oral/IV for severe exacerbations (taper off!).</li>
+                    <li>Side effects: Thrush (inhaled), bone loss, high blood sugar, fluid retention, immune suppression (systemic).</li>
+                    <li>Take with food!</li>
+                </ul>
+            </div>
+        </section>
+        <section id="nursing-process-bronchodilators">
+            <h2>16. Nursing Process: Bronchodilators - Bringing It All Together!</h2>
+            <div class="info-card">
+                <p>Let's use our nursing judgment with bronchodilators! Remember our core concept: <span class="highlight">Oxygenation</span> (getting enough oxygen into the body).</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>History:</strong> Get a full medical and drug history. Spot potential drug interactions!</li>
+                        <li><strong>Vital Signs:</b> Check baseline vital signs and pulse oximetry. These are your benchmarks!</li>
+                        <li><strong>Respiratory Assessment:</strong> Listen for wheezing, note decreased breath sounds, cough type, and sputum production.</li>
+                        <li><strong>Brain Check:</strong> Look for confusion or restlessness – these could mean low oxygen (hypoxia) or too much CO2 (hypercapnia).</li>
+                        <li><strong>Hydration:</strong> Assess fluid status. Bronchodilators can cause diuresis, leading to dehydration, especially in kids and older adults.</li>
+                        <li><strong>Theophylline Specific:</strong> ALWAYS check serum theophylline levels. Remember: <span class="highlight">Toxicity > 20 mcg/mL!</span></li>
+                    </ul>
+
+                    <h3>Analyze Cues & Prioritize Hypothesis [Patient Problems]: What's the biggest issue?</h3>
+                    <ul>
+                        <li><strong>#1: Airway Obstruction!</strong> (The core problem).</li>
+                        <li>Decreased gas exchange (less O2 in, less CO2 out).</li>
+                        <li>Dyspnea (shortness of breath).</li>
+                        <li>Fatigue (from working so hard to breathe).</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li><strong>Goal 1:</strong> Patient will breathe freely (no wheezing!) and have clear lung sounds within 2-5 days.</li>
+                        <li><strong>Goal 2:</strong> Patient will correctly use their oral meds and inhaler as prescribed.</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Monitor VS:</strong> Watch blood pressure and heart rate closely – they can really jump! Look for cardiac dysrhythmias.</li>
+                        <li><strong>Hydration:</strong> Encourage fluids! It helps loosen thick secretions.</li>
+                        <li><strong>Drug Monitoring:</strong> Watch how the medication is working.</li>
+                        <li><strong>Side Effects:</strong> Be alert for any side effects.</li>
+                        <li><strong>Timing Meds:</strong> Give oral meds *after meals* to reduce stomach upset.</li>
+                        <li><strong>Consistent Dosing:</strong> Administer at regular intervals around the clock to keep a steady therapeutic level.</li>
+                        <li><strong>NO CRUSHING!</strong> Never crush enteric-coated (EC) or sustained-release (SR) tablets/capsules.</li>
+                        <li><strong>Theophylline Specific:</strong> ALWAYS check serum theophylline levels (normal: 5-15 mcg/mL).</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General Advice:</h4>
+                    <ul>
+                        <li><strong>Pulse Check:</strong> Teach patients to monitor their own pulse rate.</li>
+                        <li><strong>Inhaler Levels:</strong> Remind them to check how much medication is left in their inhaler canister.</li>
+                        <li><strong>OTC Meds:</strong> Warn about taking over-the-counter (OTC) meds without checking with their healthcare provider first. Some OTCs can have dangerous additive effects!</li>
+                        <li><strong>Pregnancy:</strong> If planning pregnancy, discuss meds with provider first.</li>
+                        <li><strong>🚫 Smoking:</b> Advise patients to stop smoking! Sudden changes in smoking habits can mess with theophylline levels. Smoking makes the drug leave the body faster, so doses might need to increase.</li>
+                        <li><strong>Anxiety Relief:</strong> Suggest relaxation techniques, music, etc.</li>
+                        <li><strong>ID Alert:</strong> Encourage wearing a MedicAlert tag/bracelet if they have frequent or severe asthma attacks.</li>
+                        <li><strong>Herbal Interactions:</strong> Inform about potential interactions with complementary/alternative therapies.</li>
+                        <li><strong>Mental Health:</strong> Advise to report aggressive behavior, altered mood, or suicidal thoughts to their provider.</li>
+                    </ul>
+                    <h4>Self-Administration (Inhaler Technique Reminder):</h4>
+                    <ul>
+                        <li>Re-teach and demonstrate correct inhaler/nebulizer use. Warn against overuse (tolerance!).</li>
+                        <li>Teach to monitor pulse and report irregularities compared to baseline.</li>
+                    </ul>
+                    <h4>Diet:</h4>
+                    <ul>
+                        <li><strong>High Protein, Low Carb:</strong> Increases theophylline elimination.</li>
+                        <li><strong>Low Protein, High Carb:</strong> Prolongs theophylline half-life. (Dosage adjustments might be needed for diet changes!)</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li><strong>Effectiveness:</strong> Is the bronchodilator working? Is the patient breathing without wheezing? Are they free from side effects?</li>
+                        <li><strong>Theophylline Check:</strong> Confirm serum theophylline levels are within the therapeutic range (5-15 mcg/mL).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Nursing Process for Bronchodilators</h4>
+                <ul>
+                    <li><strong>Assess:</strong> Vitals, lung sounds, mental status, hydration, theophylline levels (5-15 mcg/mL).</li>
+                    <li><strong>Problems:</strong> Airway obstruction, poor gas exchange.</li>
+                    <li><strong>Goals:</b> Clear lungs, correct self-admin.</li>
+                    <li><strong>Intervene:</strong> Monitor VS, hydrate, consistent timing, no crushing, check levels.</li>
+                    <li><strong>Teach:</b> Inhaler use, avoid OTC/smoking, hydration, diet.</li>
+                    <li><strong>Evaluate:</strong> Clear lungs, no side effects, safe levels.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nursing-process-leukotriene">
+            <h2>17. Nursing Process: Leukotriene Receptor Antagonists - Keeping Airways Calm!</h2>
+            <div class="info-card">
+                <p>Let's apply our nursing judgment to leukotriene receptor antagonists. Again, our core concept is <span class="highlight">Oxygenation</span>.</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>History:</strong> Get a full medical, drug, and *herbal* history. Watch for interactions!</li>
+                        <li><strong>Vital Signs:</strong> Baseline VS for comparison.</li>
+                        <li><strong>Respiratory Assessment:</strong> Look for wheezing, decreased breath sounds, cough, sputum.</li>
+                        <li><strong>Brain Check:</strong> Assess for confusion/restlessness (signs of low O2/high CO2).</li>
+                        <li><strong>Montelukast Specific:</strong> If children are prescribed chewable montelukast, ask about a history of <span class="highlight">phenylketonuria (PKU)</span> – these tablets contain phenylalanine.</li>
+                        <li><strong>Hydration:</strong> Check fluid status; diuresis can lead to dehydration.</li>
+                    </ul>
+
+                    <h3>Analyze Cues & Prioritize Hypothesis [Patient Problems]: What's the biggest issue?</h3>
+                    <ul>
+                        <li>Airway obstruction.</li>
+                        <li>Decreased gas exchange.</li>
+                        <li>Dyspnea.</li>
+                        <li>Fatigue.</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li><strong>Goal 1:</strong> Patient will be free from wheezing, or it will be much better.</li>
+                        <li><strong>Goal 2:</strong> Patient's lung fields will be clear within 2-5 days.</li>
+                        <li><strong>Goal 3:</strong> Patient will take meds as prescribed.</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Monitor Respirations:</strong> Rate, depth, rhythm, type.</li>
+                        <li><strong>Monitor Lung Sounds:</strong> Listen for rhonchi, wheezing, or rales.</li>
+                        <li><strong>Cyanosis Check:</strong> Observe lips and fingernails for blueness (cyanosis).</li>
+                        <li><strong>Drug Effectiveness:</strong> Monitor if the drug is actually working.</li>
+                        <li><strong>Side Effects:</b> Watch for any side effects.</li>
+                        <li><strong>Hydration:</strong> Ensure adequate fluids to help loosen secretions.</li>
+                        <li><strong>Liver Function:</strong> Monitor liver function tests (AST and ALT) periodically – they can be elevated with zafirlukast and montelukast!</li>
+                        <li><strong>Pulmonary Therapy:</strong> Provide chest clapping and postural drainage as appropriate.</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General Advice:</h4>
+                    <ul>
+                        <li><strong>Allergic Reaction:</strong> If rash or hives occur, stop the drug and call the provider immediately!</li>
+                        <li><strong>Liver Monitoring:</strong> Remind them about periodic liver function tests.</li>
+                        <li><strong>Herbal Alert:</strong> DO NOT take St. John’s wort without checking with provider (it decreases montelukast).</li>
+                        <li><strong>Caffeine Alert:</strong> Black or green tea, and guarana, with montelukast/zafirlukast can cause increased stimulation!</li>
+                        <li><strong>🚫 Smoking:</b> Encourage quitting.</li>
+                        <li><strong>Anxiety Relief:</strong> Discuss relaxation techniques.</li>
+                        <li><strong>ID Alert:</strong> MedicAlert tag for frequent/severe asthma attacks.</li>
+                        <li><strong>Pregnancy:</strong> Discuss with provider if planning pregnancy while on montelukast.</li>
+                        <li><strong>Granule Packets (Montelukast):</strong>
+                            <ul>
+                                <li>Don't open until ready to use.</li>
+                                <li>Administer within 15 minutes of opening.</li>
+                                <li>If mixed with baby formula/approved food (applesauce, carrots, rice, ice cream), DO NOT store for later!</li>
+                            </ul>
+                        </li>
+                        <li><strong>Aspirin/NSAID Sensitivity:</strong> If they have aspirin sensitivity, avoid aspirin and NSAIDs while on montelukast to prevent bronchoconstriction.</li>
+                    </ul>
+                    <h4>Self-Administration:</h4>
+                    <ul>
+                        <li><strong>🚫 NOT for Acute Attacks!</strong> Emphasize that montelukast is for *prevention* and *chronic treatment*, NOT for rescuing acute attacks.</li>
+                        <li><strong>Rescue Inhaler Still Needed:</strong> Advise them to continue their usual inhaled prevention and short-acting rescue medication for exercise-induced bronchospasm.</li>
+                        <li><strong>Report Increased Rescue Use:</strong> Tell them to call their provider if they need their short-acting bronchodilator more often with montelukast.</li>
+                        <li><strong>Stay Compliant:</strong> They must stick to the medication regimen even when feeling symptom-free!</li>
+                        <li><strong>Chewable Tablets:</strong> Children MUST chew chewable tablets thoroughly – swallowing whole can change absorption.</li>
+                    </ul>
+                    <h4>Diet:</h4>
+                    <ul>
+                        <li>Take leukotriene receptor antagonists in the evening for best effect.</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li><strong>Effectiveness:</strong> Is the patient breathing without wheezing and free from drug side effects?</li>
+                        <li><strong>Activity Tolerance:</strong> Has their ability to tolerate activity improved?</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Nursing Process for Leukotrienes</h4>
+                <ul>
+                    <li><strong>Assess:</strong> History (herbal!), VS, lungs, mental status, PKU history (montelukast), hydration.</li>
+                    <li><strong>Problems:</strong> Airway obstruction, poor gas exchange.</li>
+                    <li><strong>Goals:</strong> Improved breathing, clear lungs, med compliance.</li>
+                    <li><strong>Intervene:</strong> Monitor respirations/lungs, hydration, liver tests.</li>
+                    <li><strong>Teach:</strong> Not for acute attacks, report allergic reactions, herbal/caffeine warnings, proper granule use, continue rescue meds, compliance.</li>
+                    <li><strong>Evaluate:</strong> Improved breathing, increased activity tolerance.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="cromolyn">
+            <h2>18. Cromolyn: The Mast Cell Stabilizer</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Cromolyn sodium<span class="tooltip-text">A mast cell stabilizer used for prophylactic treatment of asthma. It prevents the release of inflammatory mediators like histamine, thus preventing asthma attacks. It is NOT a bronchodilator and NOT for acute attacks.</span></span> is a drug used for <span class="highlight">prophylactic treatment of asthma</span> (meaning it prevents attacks!). You need to take it daily.</p>
+                <button class="reveal-button">Cromolyn: How It Works (and Doesn't!)</button>
+                <div class="reveal-content">
+                    <div class="focus-prompt">
+                        <h4>Focus Prompt!</h4>
+                        <p><strong>Cromolyn DOES NOT have bronchodilator properties!</strong> It also is <strong>NOT used for acute asthmatic attacks!</strong></p>
+                    </div>
+                    <ul>
+                        <li><strong>How it works:</strong> It's a <span class="highlight">mast cell stabilizer</span>. It stops mast cells from releasing histamine and other inflammatory mediators that cause asthma attacks.</li>
+                        <li><strong>Common Side Effects:</strong> Postnasal drip, nose/throat irritation, cough.</li>
+                        <li><strong>Tip to Reduce Side Effects:</b> Drink water before and after using the drug.</li>
+                        <li><strong>Routes:</strong> Oral inhalation (MDI or nebulizer) and nasal inhalation (metered spray).</li>
+                        <li>Can be used alongside beta adrenergics and xanthine derivatives.</li>
+                    </ul>
+                    <div class="alert-box">
+                        <h4>⚠️ Serious Side Effect Alert!</h4>
+                        <p><strong>Rebound bronchospasm</strong> is a serious side effect! You should <strong>NEVER discontinue cromolyn abruptly</strong> because it can lead to a severe asthmatic attack!</p>
+                    </div>
+                    <p>While cromolyn has few side effects, it's only moderately effective, and many newer drugs have mostly replaced its use.</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Cromolyn</h4>
+                <ul>
+                    <li>Prophylactic asthma treatment (daily).</li>
+                    <li><strong>NOT a bronchodilator, NOT for acute attacks.</strong></li>
+                    <li>Stabilizes mast cells (prevents histamine release).</li>
+                    <li>Side effects: throat irritation (drink water!).</li>
+                    <li><strong>DO NOT STOP ABRUPTLY (rebound bronchospasm).</strong></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="drug-therapy-severity">
+            <h2>19. Asthma Drug Therapy: Tailoring Treatment to Severity</h2>
+            <div class="info-card">
+                <p>Asthma treatment isn't one-size-fits-all. It's often broken into two parts: long-term daily control and quick relief for sudden symptoms.</p>
+                <button class="reveal-button">Long-Term vs. Quick-Relief</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>The long-term program may vary according to the symptoms of the asthma and its severity.</li>
+                        <li>The quick-relief therapy is the same no matter how severe your asthma is. It's for emergencies! (Think your rescue inhaler!)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Asthma Severity</h4>
+                <ul>
+                    <li>Treatment varies by severity.</li>
+                    <li>Two main types: Long-term control (daily) and Quick-relief (acute).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="drug-therapy-age">
+            <h2>20. Asthma Drug Therapy: Age Matters!</h2>
+            <div class="info-card">
+                <p>How we treat asthma changes a bit depending on whether the patient is a child or an older adult.</p>
+                <button class="reveal-button">Kids vs. Older Adults: What to Consider</button>
+                <div class="reveal-content">
+                    <h3>Young Children:</h3>
+                    <ul>
+                        <li><strong>Cromolyn:</strong> Often used for its anti-inflammatory effects in kids.</li>
+                        <li><strong>Oral Glucocorticoids:</strong> Might be prescribed for moderate to severe asthma.</li>
+                        <li><strong>Inhaled Glucocorticoids:</strong> Typical dose is 1-2 inhalations, 4 times a day.</li>
+                        <li><strong>Oral Beta2-adrenergic agonists:</strong> May be ordered for severe conditions.</li>
+                    </ul>
+                    <h3>Older Adults:</h3>
+                    <ul>
+                        <li><strong>Caution with Beta2-Adrenergic Agonists & Methylxanthines (like Theophylline):</strong>
+                            <ul>
+                                <li>Can cause <span class="highlight">tachycardia</span> (fast heart rate), <span class="highlight">nervousness</span>, and <span class="highlight">tremors</span> in older adults, especially those with heart conditions.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Frequent Glucocorticoid Use Risks:</strong>
+                            <ul>
+                                <li>Increased risk of developing <span class="highlight">cataracts</span>.</li>
+                                <li>Increased risk of <span class="highlight">osteoporosis</span> (brittle bones).</li>
+                                <li>Increased risk of <span class="highlight">diabetes mellitus</span>.</li>
+                            </ul>
+                        </li>
+                        <li>If a theophylline drug is prescribed, glucocorticoid dosages are usually *decreased*.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Asthma & Age</h4>
+                <ul>
+                    <li>Kids: Cromolyn, oral/inhaled steroids, sometimes oral beta2.</li>
+                    <li>Older Adults: Watch for heart side effects with beta2/theophylline. Steroids increase risk of cataracts, osteoporosis, diabetes.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="antimicrobials">
+            <h2>21. Antimicrobials: When Infections Join the Party</h2>
+            <div class="info-card">
+                <p>Antibiotics are only used if a bacterial infection pops up, usually because of mucus getting trapped in the airways.</p>
+                <button class="reveal-button">Which Antimicrobials?</button>
+                <div class="reveal-content">
+                    <p><span class="highlight">Trimethoprim-sulfamethoxazole</span> is a common and effective antibiotic for mild to moderate acute exacerbations of chronic bronchitis (AECBs) from infectious causes.</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Antimicrobials</h4>
+                <ul>
+                    <li>Antibiotics only for bacterial infections.</li>
+                    <li>Example: Trimethoprim-sulfamethoxazole for bronchitis flare-ups.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="critical-thinking" class="nclex-next-gen">
+            <h3>22. NCLEX Next Gen! Critical Thinking Case Study</h3>
+            <p class="case-study"><strong>Cognitive Skill: Prioritize hypothesis.</strong></p>
+            <p class="case-study">A 45-year-old female patient with a diagnosis of asthma was feeling short of breath. Earlier in the morning she performed outside gardening work. She used the rescue inhaler prescribed by her doctor. After not receiving any relief the symptoms worsened, so she went to the emergency department. Her oxygen saturation was 91% on room air. They immediately placed her on oxygen and called for the respiratory therapist who started her on albuterol breathing treatment. After about 1 hour she started to improve. Upon discharge she received an order for the anticholinergic drug tiotropium bromide, two inhalations once a day, with instructions to continue her prescribed medications and to follow-up with her respiratory doctor.</p>
+            <p class="case-study">During the discharge teaching, the nurse reviewed the new drug tiotropium inhaler its therapeutic effectiveness and side effects.</p>
+
+            <div class="fill-in-the-blank">
+                <p>Tiotropium is used to treat <input type="text" id="blank1" placeholder="(1)"></input>. The therapeutic response of tiotropium is to <input type="text" id="blank2" placeholder="(1)"></input> and <input type="text" id="blank3" placeholder="(1)"></input>. The side-effects include <input type="text" id="blank4" placeholder="(2)"></input>, <input type="text" id="blank5" placeholder="(2)"></input>, <input type="text" id="blank6" placeholder="(2)"></input>, and <input type="text" id="blank7" placeholder="(2)"></input>.</p>
+                <p><strong>Options for 1:</strong> Increases wheezing, Relaxes smooth muscle, Asthma, Increases shortness of breath, Dilate the bronchi, Promotes drowsiness</p>
+                <p><strong>Options for 2:</strong> Insomnia, Muscle cramping, Tremor, Sinusitis, Coughing, Headache, Sore throat, Increased appetite, Hypokalemia, Blurred vision</p>
+                <button class="submit-btn" id="submit_case_study">Check My Answers!</button>
+                <div class="feedback" id="case_study_feedback"></div>
+                <div class="rationale" id="case_study_rationale">
+                    <h4>Rationale: Why these answers are correct!</h4>
+                    <p>Asthma is an inflammatory disorder of the airway walls associated with varying amount of airway obstruction. The patient’s asthma was triggered by stimuli such as stress, allergens, and pollutants. When activated by stimuli, the bronchial airways become inflamed and edematous, leading to constriction of air passages. Inflammation aggravates airway hyperresponsiveness to stimuli, causing bronchial cells to produce more mucus, which obstructs air passages. Tiotropium blocks muscarinic cholinergic receptors and antagonizes acetylcholine action by inhibiting M3 receptor response to acetylcholine, thereby relaxing smooth muscle of bronchi and dilating the bronchi.</p>
+                    <p><strong>Reference:</strong> Pharmacology, McCuistion, et al. Pharmacology, Chapter 39 (Tiotropium Prototype Drug Chart); J. R. Burchum, et al, Lehne’s Pharmachology for Nursing Care, (9th ed) Chapter 76, p. 930.</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Case Study Takeaways</h4>
+                <ul>
+                    <li>Tiotropium is an anticholinergic: blocks acetylcholine.</li>
+                    <li>Results in: relaxing smooth muscle, dilating bronchi.</li>
+                    <li>Common side effects: dry mouth, insomnia, sinusitis, headache, blurred vision.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="review-questions">
+            <h2>23. Module Review Questions: Test Your Knowledge!</h2>
+
+            <div class="question-card" id="q4">
+                <p>1. Fluticasone propionate and salmeterol combination inhalation is ordered for a patient with chronic obstructive pulmonary disease. What does the nurse know about this medication? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="q4_option" value="a"> a. It can be used to treat an acute attack.</label>
+                    <label><input type="checkbox" name="q4_option" value="b"> b. It is delivered as a dry-powder inhaler.</label>
+                    <label><input type="checkbox" name="q4_option" value="c"> c. It contains a beta1 agonist and cromolyn.</label>
+                    <label><input type="checkbox" name="q4_option" value="d"> d. It is taken as one puff two times a day.</label>
+                    <label><input type="checkbox" name="q4_option" value="e"> e. It promotes bronchodilation.</label>
+                </div>
+                <button class="submit-btn" id="submit_q4">Submit Answer</button>
+                <div class="feedback" id="q4_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q5">
+                <p>2. A patient with chronic obstructive pulmonary disease has an acute bronchospasm. The nurse anticipates that the health care provider will prescribe which medication?</p>
+                <div class="options">
+                    <label><input type="radio" name="q5_option" value="a"> a. Zafirlukast</label>
+                    <label><input type="radio" name="q5_option" value="b"> b. Epinephrine</label>
+                    <label><input type="radio" name="q5_option" value="c"> c. Dexamethasone</label>
+                    <label><input type="radio" name="q5_option" value="d"> d. Beclomethasone</label>
+                </div>
+                <button class="submit-btn" id="submit_q5">Submit Answer</button>
+                <div class="feedback" id="q5_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q6">
+                <p>3. A patient is prescribed aminophylline-theophylline. For what adverse effect should the nurse monitor the patient?</p>
+                <div class="options">
+                    <label><input type="radio" name="q6_option" value="a"> a. Drowsiness</label>
+                    <label><input type="radio" name="q6_option" value="b"> b. Hypoglycemia</label>
+                    <label><input type="radio" name="q6_option" value="c"> c. Increased heart rate</label>
+                    <label><input type="radio" name="q6_option" value="d"> d. Decreased white blood cell count</label>
+                </div>
+                <button class="submit-btn" id="submit_q6">Submit Answer</button>
+                <div class="feedback" id="q6_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q7">
+                <p>4. A patient is receiving intravenous aminophylline. The nurse checks the patient’s laboratory values and sees the serum theophylline level is 32 mcg/mL. What action should the nurse take?</p>
+                <div class="options">
+                    <label><input type="radio" name="q7_option" value="a"> a. Assess the patient’s breath sounds for improvement.</label>
+                    <label><input type="radio" name="q7_option" value="b"> b. Increase the dosage per sliding scale directions.</label>
+                    <label><input type="radio" name="q7_option" value="c"> c. Notify the health care provider of the level.</label>
+                    <label><input type="radio" name="q7_option" value="d"> d. Have the laboratory collect another sample to verify the results.</label>
+                </div>
+                <button class="submit-btn" id="submit_q7">Submit Answer</button>
+                <div class="feedback" id="q7_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q8">
+                <p>5. A patient with chronic obstructive pulmonary disease is taking the leukotriene antagonist montelukast. The nurse is aware that this medication is given for which purpose?</p>
+                <div class="options">
+                    <label><input type="radio" name="q8_option" value="a"> a. Maintenance treatment of asthma</label>
+                    <label><input type="radio" name="q8_option" value="b"> b. Treatment of acute asthmatic attack</label>
+                    <label><input type="radio" name="q8_option" value="c"> c. Reversing bronchospasm associated with chronic obstructive pulmonary disease</label>
+                    <label><input type="radio" name="q8_option" value="d"> d. Treatment of inflammation in chronic bronchitis</label>
+                </div>
+                <button class="submit-btn" id="submit_q8">Submit Answer</button>
+                <div class="feedback" id="q8_feedback"></div>
+            </div>
+
+        </section>
+        <section id="drug-mastery-quiz">
+            <h2>24. Drug Mastery Challenge: Let's Master These Meds!</h2>
+            <p>Ready to test your knowledge on the drugs for lower respiratory disorders? Go through each card and see if you can recall the key information!</p>
+            <button id="startQuizBtn">Start Drug Mastery Challenge!</button>
+
+            <div class="quiz-card" id="drugQuizCard">
+                <div class="progress-tracker">Card <span id="currentCardNum">1</span> of <span id="totalCardsNum">0</span></div>
+                <h4 id="drugName">Drug Name Goes Here</h4>
+                <p id="drugQuestion">Question about the drug will appear here.</p>
+
+                <div class="quiz-controls">
+                    <button id="showAnswerBtn">Show Answer</button>
+                </div>
+
+                <div id="answerFeedback">
+                    <h5>Answer: <span id="answerType"></span></h5>
+                    <p id="answerContent"></p>
+                </div>
+
+                <div id="masteryButtons" style="display: none;">
+                    <p>Did you get it right?</p>
+                    <button id="correctBtn">Yes, I knew it!</button>
+                    <button id="incorrectBtn">No, I need to review.</button>
+                </div>
+            </div>
+
+            <div id="quizSummary">
+                <h4>Challenge Complete!</h4>
+                <p>You've gone through all the drugs!</p>
+                <p>Mastered on first try: <span id="masteredCount">0</span></p>
+                <p>Needed review: <span id="missedCount">0</span></p>
+                <button id="restartQuizBtn">Restart Full Quiz</button>
+                <button id="reviewMissedBtn">Review Missed Drugs</button>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Lower Respiratory Disorders Learning Module. Designed for focused learning.</p>
+        </footer>
+    </div>
+
+    <div id="clockOutOverlay">
+        <div id="clockOutContent">
+            <h2>Clock Out!</h2>
+            <p>Take a moment to reset your focus. Your module will resume in:</p>
+            <div id="brainEmoji">🧠</div> <div id="countdownTimer">00:30</div>
+        </div>
+    </div>
+    <script>
+        // ==========================================
+        // Drug Data (This is the only part that can safely sit outside DOMContentLoaded)
+        // ==========================================
+        const drugs = [
+            {
+                name: "Albuterol",
+                class: "Beta2-adrenergic agonist (Short-acting)",
+                keyActions: "Rapid bronchodilation for acute bronchospasm. Stimulates beta2 receptors in lungs, relaxing bronchial smooth muscle.",
+                sideEffects: "Tremor, tachycardia, palpitations, nervousness, headache, hyperglycemia, hypokalemia (high doses).",
+                nursingConsiderations: "First-line 'rescue' inhaler. Monitor pulse, blood glucose (diabetics). Overuse leads to tolerance and paradoxical bronchoconstriction. Teach proper inhaler technique. DO NOT confuse with Accupril. Rinse mouth after inhaled use to prevent dry mouth/throat irritation."
+            },
+            {
+                name: "Metaproterenol",
+                class: "Beta-adrenergic agonist (some Beta1, primarily Beta2)",
+                keyActions: "Bronchodilation for asthma/COPD. Has some cardiac effects due to partial beta1 activity.",
+                sideEffects: "Headache, dizziness, insomnia, nausea, tremor, tachycardia, palpitations, hypokalemia.",
+                nursingConsiderations: "Can be oral or inhaled. Inhalation preferred for faster onset and fewer systemic side effects. Onset 1 min (inhaled), peak 1h, duration 4h."
+            },
+            {
+                name: "Epinephrine",
+                class: "Nonselective Sympathomimetic (Alpha1, Beta1, Beta2 agonist)",
+                keyActions: "Promotes bronchodilation, elevates BP. Used in emergencies for severe bronchospasm (anaphylaxis) to restore circulation and increase airway patency.",
+                sideEffects: "Tremors, dizziness, hypertension, tachycardia, palpitations, dysrhythmias, angina.",
+                nursingConsiderations: "Administered subcutaneously in emergencies. Close monitoring required due to broad systemic effects."
+            },
+            {
+                name: "Tiotropium",
+                class: "Anticholinergic",
+                keyActions: "Maintenance treatment for COPD bronchospasms. Blocks muscarinic cholinergic receptors (M3), relaxing smooth muscle of bronchi.",
+                sideEffects: "Dry mouth (very common), constipation, insomnia, dizziness, headache, sinusitis, blurred vision, urinary retention, candidiasis.",
+                nursingConsiderations: "Inhalation only (HandiHaler DPI). NOT for acute attacks. Discard unused opened capsules. Wash HandiHaler with warm water and dry. Monitor for signs of narrow-angle glaucoma or bladder obstruction."
+            },
+            {
+                name: "Ipratropium Bromide",
+                class: "Anticholinergic",
+                keyActions: "Bronchodilation for asthmatic conditions and COPD. Has few systemic effects.",
+                sideEffects: "Dry mouth, throat irritation, cough, headache, blurred vision, tachycardia, urinary retention, epistaxis, nasopharyngitis.",
+                nursingConsiderations: "Administered by MDI. Often combined with albuterol (more effective and longer duration together) for COPD."
+            },
+            {
+                name: "Aminophylline-Theophylline",
+                class: "Methylxanthine (Xanthine) Derivative",
+                keyActions: "Relaxes bronchial smooth muscle by inhibiting phosphodiesterase, increasing cAMP and bronchodilation. Also stimulates CNS, dilates coronary/pulmonary vessels, acts as diuretic.",
+                sideEffects: "Anorexia, nausea, vomiting, diarrhea, gastric pain, dysrhythmias, tachycardia, palpitations, marked hypotension, headaches, restlessness, insomnia, dizziness, seizures (especially in children).",
+                nursingConsiderations: "NARROW THERAPEUTIC RANGE (5-15 mcg/mL). Toxicity >20 mcg/mL. Monitor serum levels frequently! Contraindicated in seizure disorders, severe cardiac/renal/liver disease. Smoking decreases half-life (may need higher dose). Avoid caffeine. IV admin must be SLOW (infusion pump). Many drug interactions (e.g., beta blockers, cimetidine increase levels; barbiturates decrease)."
+            },
+            {
+                name: "Zafirlukast",
+                class: "Leukotriene Receptor Antagonist",
+                keyActions: "Reduces inflammatory symptoms of asthma by blocking leukotriene receptors. Prophylactic and maintenance therapy only.",
+                sideEffects: "Headache, dizziness, myalgia, nausea, vomiting, diarrhea, elevated liver enzymes (ALT, AST), restlessness, hyperbilirubinemia.",
+                nursingConsiderations: "NOT for acute attacks. Administered orally BID (1h before or 2h after meals). Monitor liver function tests (ALT, AST) periodically. Avoid St. John's Wort (may decrease concentration)."
+            },
+            {
+                name: "Zileuton",
+                class: "Leukotriene Synthesis Inhibitor",
+                keyActions: "Decreases inflammatory process and bronchoconstriction by inhibiting leukotriene synthesis. Prophylactic and maintenance therapy only.",
+                sideEffects: "Headache, chills, asthenia, fatigue, myalgia, abdominal pain, dyspepsia, nausea, constipation, sinusitis, insomnia, elevated hepatic enzymes.",
+                nursingConsiderations: "NOT for acute attacks. Monitor liver function tests (ALT, AST)."
+            },
+            {
+                name: "Montelukast",
+                class: "Leukotriene Receptor Antagonist",
+                keyActions: "Binds with leukotriene receptors to inhibit smooth muscle contraction and bronchoconstriction. Used for allergic rhinitis, asthma prophylaxis, and exercise-induced bronchospasm.",
+                sideEffects: "Headache, dizziness, drowsiness, cough, nasal congestion, fatigue, agitation, restlessness, insomnia, confusion, depression, flu-like symptoms, edema, palpitations, muscle cramps. Life-threatening: suicidal ideation, thrombocytopenia, Stevens-Johnson syndrome, angioedema.",
+                nursingConsiderations: "NOT for acute attacks. Safe for children ≥2 years. Take in evening or 2h before exercise for max effectiveness. Chewable tablets for children (check for PKU due to phenylalanine). Avoid aspirin/NSAIDs if sensitive. Avoid St. John's Wort (may decrease conc.) or black/green tea/guarana (increased stimulation)."
+            },
+            {
+                name: "Glucocorticoids (Inhaled)",
+                class: "Glucocorticoid (Corticosteroid)",
+                keyActions: "Anti-inflammatory action in the lungs, reduces bronchial hyperresponsiveness. Used for long-term asthma control.",
+                sideEffects: "Local: Throat irritation, hoarseness, dry mouth, coughing, oral/pharyngeal fungal infections (candidiasis/thrush).",
+                nursingConsiderations: "NOT for acute severe attacks (takes 1-4 weeks for full effect). Preferred over oral for maintenance due to less systemic side effects/adrenal suppression. Rinse mouth/gargle with water after each dose, use spacer, clean inhaler to prevent thrush."
+            },
+            {
+                name: "Glucocorticoids (Systemic)",
+                class: "Glucocorticoid (Corticosteroid)",
+                keyActions: "Potent anti-inflammatory action. Used for moderate-to-severe asthma exacerbations or when inhaled options fail.",
+                sideEffects: "Short-term: Headache, euphoria, confusion, diaphoresis, insomnia, nausea, vomiting, weakness, menstrual irregularities. Long-term/Adverse: Fluid retention (moon face, edema, weight gain), hypertension, hyperglycemia, loss of bone density (osteoporosis), impaired immune response, peptic ulcer, depression, psychosis, thinning skin, purpura.",
+                nursingConsiderations: "Take with food to prevent GI irritation. Short-term use (e.g., <1-2 weeks) can be stopped abruptly. Prolonged use requires slow tapering to prevent adrenal crisis and asthma exacerbation. Monitor blood glucose, electrolytes, bone density."
+            },
+            {
+                name: "Fluticasone and Salmeterol",
+                class: "Combination: Glucocorticoid + Long-acting Beta2 Agonist",
+                keyActions: "Combines potent anti-inflammatory action (fluticasone) with long-acting bronchodilation (salmeterol) for improved asthma and COPD control.",
+                sideEffects: "Headache, throat irritation, cough, pharyngitis, oral candidiasis, musculoskeletal pain.",
+                nursingConsiderations: "Taken daily (usually one puff BID) for maintenance. Delivered via DPI. DOES NOT replace fast-acting rescue inhalers for sudden symptoms. Instruct patient to rinse mouth after use."
+            },
+            {
+                name: "Cromolyn",
+                class: "Mast Cell Stabilizer",
+                keyActions: "Prophylactic treatment for bronchial asthma by inhibiting release of histamine and other inflammatory mediators from mast cells. Prevents asthma attacks.",
+                sideEffects: "Postnasal drip, nose/throat irritation, cough. Rare but serious: Rebound bronchospasm.",
+                nursingConsiderations: "NOT a bronchodilator. NOT for acute asthmatic attacks. Must be taken daily. DO NOT discontinue abruptly (risk of rebound asthma). Drink water before/after use to reduce irritation. Less commonly used now due to newer, more effective drugs."
+            },
+            {
+                name: "Trimethoprim-Sulfamethoxazole",
+                class: "Antibiotic (Sulfonamide)",
+                keyActions: "Treats bacterial infections.",
+                sideEffects: "Nausea, vomiting, diarrhea, rash (including severe skin reactions like Stevens-Johnson syndrome), photosensitivity, bone marrow suppression (e.g., leukopenia, thrombocytopenia).",
+                nursingConsiderations: "Used only if a bacterial infection results from retained mucous secretions, effective for mild to moderate acute exacerbations of chronic bronchitis (AECBs). Instruct patient to report rash immediately. Maintain adequate hydration to prevent crystalluria."
+            }
+        ];
+
+        // ==========================================
+        // ALL JavaScript code and functions MUST be inside this single DOMContentLoaded listener.
+        // This ensures all HTML elements are available when the script tries to access them.
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- QUIZ VARIABLES AND ELEMENT SELECTIONS ---
+            let currentQuizDrugsCopy = [];
+            let currentDrugIndex = 0;
+            let masteredDrugs = [];
+            let missedDrugs = [];
+            const questionTypes = ['class', 'keyActions', 'sideEffects', 'nursingConsiderations'];
+
+            const startQuizBtn = document.getElementById('startQuizBtn');
+            const drugQuizCard = document.getElementById('drugQuizCard');
+            const drugNameEl = document.getElementById('drugName');
+            const drugQuestionEl = document.getElementById('drugQuestion');
+            const showAnswerBtn = document.getElementById('showAnswerBtn');
+            const answerFeedbackEl = document.getElementById('answerFeedback');
+            const answerTypeEl = document.getElementById('answerType');
+            const answerContentEl = document.getElementById('answerContent');
+            const masteryButtons = document.getElementById('masteryButtons');
+            const correctBtn = document.getElementById('correctBtn');
+            const incorrectBtn = document.getElementById('incorrectBtn');
+            const quizSummary = document.getElementById('quizSummary');
+            const masteredCountEl = document.getElementById('masteredCount');
+            const missedCountEl = document.getElementById('missedCount');
+            const restartQuizBtn = document.getElementById('restartQuizBtn');
+            const reviewMissedBtn = document.getElementById('reviewMissedBtn');
+            const currentCardNumEl = document.getElementById('currentCardNum');
+            const totalCardsNumEl = document.getElementById('totalCardsNum');
+
+            // --- MODULE PROGRESS BAR VARIABLES ---
+            const moduleProgressBar = document.getElementById('moduleProgressBar');
+            const sections = document.querySelectorAll('section[id]'); // Select all sections with an ID
+            let completedSectionsCount = 0; // Tracks number of completed logical sections
+
+            const completableSectionIds = new Set();
+            // Populate completableSectionIds with all relevant section IDs
+            document.querySelectorAll('section').forEach(section => {
+                if (section.id && (section.querySelector('.reveal-button') || section.querySelector('.question-card') || section.id === 'drug-mastery-quiz')) {
+                    completableSectionIds.add(section.id);
+                }
+            });
+
+            // This line MUST be after completableSectionIds is fully populated
+            const totalSections = completableSectionIds.size;
+
+
+            // --- HELPER FUNCTIONS ---
+
+            function updateProgressBar() {
+                const progress = (completedSectionsCount / totalSections) * 100;
+                moduleProgressBar.style.width = `${progress}%`;
+            }
+
+            function markSectionCompleted(sectionId) {
+                const navLink = document.getElementById('nav-' + sectionId); // Use ID now
+                if (navLink && !navLink.classList.contains('completed')) {
+                    navLink.classList.add('completed');
+                    if (completableSectionIds.has(sectionId)) {
+                        completedSectionsCount++;
+                        updateProgressBar();
+                        // The 'Clock Out' feature has been removed as per your request.
+                        // The micro-break prompt will no longer appear automatically.
+                    }
+                }
+            }
+
+            // --- Manual scrolling for navigation links ---
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link behavior (no page reload/new tab)
+                    const targetId = this.id.replace('nav-', ''); // Get the actual section ID
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // Optionally, update the URL hash without reloading
+                        // window.location.hash = targetId;
+                    }
+                });
+            });
+
+            // toggleReveal function (now called by event listener, no longer onclick)
+            function toggleReveal(button) {
+                const content = button.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                    button.textContent = button.dataset.originalText;
+                } else {
+                    content.style.display = "block";
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = "Click to Hide Details";
+                    const parentSection = button.closest('section');
+                    if (parentSection && parentSection.id) {
+                        markSectionCompleted(parentSection.id);
+                    }
+                }
+            }
+
+            // --- Question Checking Functions ---
+            function checkAnswer(questionId, correctAnswer) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOption = questionCard.querySelector('input[name="' + questionId + '_option"]:checked');
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                // Disable options after submission
+                questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+                if (!selectedOption) {
+                    feedbackDiv.textContent = "Oops! Please pick an answer before checking.";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                if (selectedOption.value === correctAnswer) {
+                    feedbackDiv.textContent = "Awesome! That's correct. Keep up the great work!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Not quite! The correct answer was: ${correctAnswer.toUpperCase()}. Review the material and try to understand why.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkMultipleAnswers(questionId, correctAnswers) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOptions = Array.from(questionCard.querySelectorAll('input[name="' + questionId + '_option"]:checked')).map(input => input.value);
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                // Disable options after submission
+                questionCard.querySelectorAll('input[type="checkbox"]').forEach(input => input.disabled = true);
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+
+                if (selectedOptions.length === 0) {
+                    feedbackDiv.textContent = "Don't forget to select your answers!";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                const isCorrect = correctAnswers.every(answer => selectedOptions.includes(answer)) &&
+                                   selectedOptions.every(answer => correctAnswers.includes(answer));
+
+                if (isCorrect) {
+                    feedbackDiv.textContent = "Fantastic! You got all the correct points!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Hold on! Double-check the options and review the related content. You might have missed something or picked too many/too few. Correct answers were: ${correctAnswers.join(', ').toUpperCase()}.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkCaseStudy() {
+                const blank1 = document.getElementById('blank1');
+                const blank2 = document.getElementById('blank2');
+                const blank3 = document.getElementById('blank3');
+                const blank4 = document.getElementById('blank4');
+                const blank5 = document.getElementById('blank5');
+                const blank6 = document.getElementById('blank6');
+                const blank7 = document.getElementById('blank7');
+
+                const feedbackDiv = document.getElementById('case_study_feedback');
+                const rationaleDiv = document.getElementById('case_study_rationale');
+
+                // Disable inputs and button after submission
+                blank1.disabled = true;
+                blank2.disabled = true;
+                blank3.disabled = true;
+                blank4.disabled = true;
+                blank5.disabled = true;
+                blank6.disabled = true;
+                blank7.disabled = true;
+                document.getElementById('submit_case_study').disabled = true;
+
+
+                const val1 = blank1.value.trim().toLowerCase();
+                const val2 = blank2.value.trim().toLowerCase();
+                const val3 = blank3.value.trim().toLowerCase();
+                const val4 = blank4.value.trim().toLowerCase();
+                const val5 = blank5.value.trim().toLowerCase();
+                const val6 = blank6.value.trim().toLowerCase();
+                const val7 = blank7.value.trim().toLowerCase();
+
+                const correct1_options = ['asthma', 'copd', 'bronchospasm', 'bronchospasms'];
+                const correct2_options = ['relax smooth muscle', 'relaxes smooth muscle'];
+                const correct3_options = ['dilate the bronchi', 'dilates the bronchi', 'bronchodilation', 'open airways'];
+                const valid_side_effects_keywords = new Set([
+                    'insomnia', 'dizziness', 'depression', 'headache', 'sinusitis', 'nasopharyngitis',
+                    'cough', 'dry mouth', 'vomiting', 'abdominal pain', 'constipation', 'urinary retention',
+                    'joint pain', 'muscle pain', 'peripheral swelling', 'blurred vision', 'oral ulcers',
+                    'candidiasis', 'infection', 'tachycardia', 'ileus', 'dehydration', 'hyperglycemia',
+                    'chest pain', 'gi obstruction', 'cataracts', 'dysrhythmias', 'anaphylaxis', 'angioedema'
+                ]);
+
+                let isCorrect = true;
+                let incorrectBlanks = [];
+
+                if (!correct1_options.some(opt => val1.includes(opt))) {
+                    isCorrect = false;
+                    incorrectBlanks.push('1');
+                }
+
+                const combinedBlanks2_3 = [val2, val3];
+                const hasCorrectAction1 = correct2_options.some(opt => combinedBlanks2_3.includes(opt));
+                const hasCorrectAction2 = correct3_options.some(opt => combinedBlanks2_3.includes(opt));
+
+                if (!hasCorrectAction1 || !hasCorrectAction2 || combinedBlanks2_3[0] === combinedBlanks2_3[1]) {
+                    isCorrect = false;
+                    incorrectBlanks.push('2 & 3');
+                }
+
+                const enteredSideEffects = [val4, val5, val6, val7].filter(Boolean);
+
+                const uniqueEnteredEffects = new Set(enteredSideEffects.map(s => s.replace(/\s+/g, ' ').trim()));
+                if (uniqueEnteredEffects.size !== 4 || !Array.from(uniqueEnteredEffects).every(effect => valid_side_effects_keywords.has(effect))) {
+                   isCorrect = false;
+                   incorrectBlanks.push('side effects');
+                }
+
+                if (isCorrect) {
+                    feedbackDiv.textContent = "Fantastic! You nailed the case study!";
+                    feedbackDiv.className = 'feedback correct';
+                    rationaleDiv.style.display = 'block';
+                } else {
+                    let message = "Not quite perfect yet! Review the content, especially the Prototype Drug Chart for Tiotropium. ";
+                    if (incorrectBlanks.includes('1')) message += "Blank 1 (primary use) needs to be more accurate. ";
+                    if (incorrectBlanks.includes('2 & 3')) message += "For blanks 2 & 3, ensure you describe two distinct therapeutic responses related to how anticholinergics affect airways. ";
+                    if (incorrectBlanks.includes('side effects')) message += "Ensure you have four *distinct and accurate* side effects from the provided options or related text. ";
+                    feedbackDiv.textContent = message;
+                    feedbackDiv.className = 'feedback incorrect';
+                    rationaleDiv.style.display = 'none';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted('critical-thinking');
+            }
+
+            // --- DRUG MASTERY QUIZ FUNCTIONS ---
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function startQuiz(reviewMode = false) {
+                if (!reviewMode) {
+                    currentQuizDrugsCopy = shuffleArray([...drugs]); // Start with all drugs shuffled
+                    masteredDrugs = [];
+                    missedDrugs = [];
+                } else {
+                    if (missedDrugs.length === 0) {
+                        alert("Fantastic! You've mastered all the drugs in the review pile. Starting a new full quiz!");
+                        currentQuizDrugsCopy = shuffleArray([...drugs]);
+                        masteredDrugs = [];
+                        missedDrugs = [];
+                    } else {
+                        currentQuizDrugsCopy = shuffleArray([...missedDrugs]); // Only review missed ones
+                        missedDrugs = []; // Clear missed for the new review round
+                    }
+                }
+
+                currentDrugIndex = 0;
+                startQuizBtn.style.display = 'none';
+                drugQuizCard.style.display = 'block';
+                quizSummary.style.display = 'none';
+                displayCurrentCard();
+                markSectionCompleted('drug-mastery-quiz'); // Mark quiz section completed when started
+            }
+
+            function displayCurrentCard() {
+                if (currentDrugIndex >= currentQuizDrugsCopy.length) {
+                    showQuizSummary();
+                    return;
+                }
+
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const randomQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+
+                drugNameEl.textContent = currentDrug.name;
+                currentCardNumEl.textContent = currentDrugIndex + 1;
+                totalCardsNumEl.textContent = currentQuizDrugsCopy.length;
+
+                let questionText = '';
+                switch (randomQuestionType) {
+                    case 'class':
+                        questionText = `What is the **drug class** for ${currentDrug.name}?`;
+                        break;
+                    case 'keyActions':
+                        questionText = `What is a **key action or use** of ${currentDrug.name}?`;
+                        break;
+                    case 'sideEffects':
+                        questionText = `Name one or two **common side effects** of ${currentDrug.name}.`;
+                        break;
+                    case 'nursingConsiderations':
+                        questionText = `What is an **important nursing consideration** when administering ${currentDrug.name}?`;
+                        break;
+                }
+                drugQuestionEl.innerHTML = questionText;
+
+                answerFeedbackEl.style.display = 'none';
+                masteryButtons.style.display = 'none';
+                showAnswerBtn.style.display = 'block';
+
+                drugQuizCard.dataset.currentQuestionType = randomQuestionType;
+            }
+
+            function showAnswer() {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const questionType = drugQuizCard.dataset.currentQuestionType;
+
+                answerTypeEl.textContent = questionType.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, str => str.toUpperCase());
+
+                let content = '';
+                switch (questionType) {
+                    case 'class':
+                        content = currentDrug.class;
+                        break;
+                    case 'keyActions':
+                        content = currentDrug.keyActions;
+                        break;
+                    case 'sideEffects':
+                        content = currentDrug.sideEffects;
+                        break;
+                    case 'nursingConsiderations':
+                        content = currentDrug.nursingConsiderations;
+                        break;
+                }
+                answerContentEl.textContent = content;
+
+                answerFeedbackEl.style.display = 'block';
+                showAnswerBtn.style.display = 'none';
+                masteryButtons.style.display = 'flex';
+            }
+
+            function handleMastery(isCorrect) {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                if (isCorrect) {
+                    if (!missedDrugs.includes(currentDrug)) {
+                        masteredDrugs.push(currentDrug);
+                    }
+                } else {
+                    missedDrugs.push(currentDrug);
+                }
+                masteryButtons.style.display = 'none';
+
+                setTimeout(() => {
+                    currentDrugIndex++;
+                    displayCurrentCard();
+                }, 1500); // 1.5 second delay before next card
+            }
+
+            function showQuizSummary() {
+                drugQuizCard.style.display = 'none';
+                quizSummary.style.display = 'block';
+
+                const uniqueMastered = [...new Set(masteredDrugs)];
+                const uniqueMissed = [...new Set(missedDrugs)];
+
+                masteredCountEl.textContent = uniqueMastered.length;
+                missedCountEl.textContent = uniqueMissed.length;
+            }
+
+            // --- EVENT LISTENERS ---
+
+            // Attach event listeners for all reveal buttons
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    toggleReveal(this); // 'this' refers to the button that was clicked
+                });
+            });
+
+            // Attach event listeners for quiz question submit buttons (by their IDs)
+            document.getElementById('submit_q1').addEventListener('click', () => checkAnswer('q1', 'c'));
+            document.getElementById('submit_q2').addEventListener('click', () => checkAnswer('q2', 'c'));
+            document.getElementById('submit_q3').addEventListener('click', () => checkAnswer('q3', 'b'));
+            document.getElementById('submit_q4').addEventListener('click', () => checkMultipleAnswers('q4', ['b', 'd', 'e']));
+            document.getElementById('submit_q5').addEventListener('click', () => checkAnswer('q5', 'b'));
+            document.getElementById('submit_q6').addEventListener('click', () => checkAnswer('q6', 'c'));
+            document.getElementById('submit_q7').addEventListener('click', () => checkAnswer('q7', 'c')); 
+            document.getElementById('submit_q8').addEventListener('click', () => checkAnswer('q8', 'a'));
+            document.getElementById('submit_case_study').addEventListener('click', checkCaseStudy);
+
+
+            // Quiz Mastery Challenge Event Listeners
+            startQuizBtn.addEventListener('click', () => startQuiz(false));
+            showAnswerBtn.addEventListener('click', showAnswer);
+            correctBtn.addEventListener('click', () => handleMastery(true));
+            incorrectBtn.addEventListener('click', () => handleMastery(false));
+            restartQuizBtn.addEventListener('click', () => startQuiz(false));
+            reviewMissedBtn.addEventListener('click', () => startQuiz(true));
+
+            // Text Size Controls
+            const increaseTextBtn = document.getElementById('increaseText');
+            const decreaseTextBtn = document.getElementById('decreaseText');
+            let currentFontSize = 16; // Base font size in px (matches default Open Sans)
+
+            increaseTextBtn.addEventListener('click', () => {
+                currentFontSize += 2;
+                document.body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            decreaseTextBtn.addEventListener('click', () => {
+                currentFontSize -= 2;
+                if (currentFontSize < 12) currentFontSize = 12; // Minimum size
+                document.body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            // Quick Notes persistence (uses localStorage)
+            const quickNotesTextarea = document.getElementById('quickNotesTextarea');
+            if (localStorage.getItem('adhdModuleNotes')) {
+                quickNotesTextarea.value = localStorage.getItem('adhdModuleNotes');
+            }
+            quickNotesTextarea.addEventListener('input', () => {
+                localStorage.setItem('adhdModuleNotes', quickNotesTextarea.value);
+            });
+
+            // Micro-Break Prompts (Original functionality without Clock Out)
+            const microBreakPromptEl = document.getElementById('microBreakPrompt');
+            const breakPrompts = [
+                "Quick Break! Stand up and stretch, or take a few deep breaths!",
+                "Time for a 30-second mental reset. Look away from the screen for a moment!",
+                "Mini-Break! Wiggle your toes or do a quick shoulder roll.",
+                "Focus check! Take a sip of water and recenter. You're doing great!",
+                "Short pause! How about a quick doodle or scribble for 15 seconds!"
+            ];
+            let breakPromptTimeout;
+
+            function showMicroBreakPrompt() {
+                if (breakPromptTimeout) {
+                    clearTimeout(breakPromptTimeout);
+                }
+                const randomPrompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)];
+                microBreakPromptEl.textContent = randomPrompt;
+                microBreakPromptEl.style.display = 'block';
+                // Set a timer to hide it after the animation
+                breakPromptTimeout = setTimeout(() => {
+                    microBreakPromptEl.style.display = 'none';
+                }, 8000); // Matches animation duration
+            }
+
+            // --- Initial setup calls that run once DOM is fully loaded ---
+            // Initialize reveal button original text (needed for toggleReveal)
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.dataset.originalText = button.textContent;
+            });
+            updateProgressBar(); // Initial update
+        }); // END OF document.addEventListener('DOMContentLoaded', ...)
+    </script>
+</body>
+</html>

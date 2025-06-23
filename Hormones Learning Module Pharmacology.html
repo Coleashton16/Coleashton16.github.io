@@ -1,0 +1,2728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pituitary, Thyroid, Parathyroid, and Adrenal Disorders Learning Module</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@400;600&display=swap');
+
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --secondary-color: #28a745; /* Green */
+            --accent-color: #ffc107; /* Yellow */
+            --alert-color: #dc3545; /* Red */
+            --info-color: #17a2b8; /* Cyan */
+            --text-color: #333;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --border-color: #dee2e6;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --focus-border: #6c757d; /* Gray for focus boxes */
+            --quiz-bg: #d4edda; /* Light green for quizzes */
+            --reveal-bg: #e9ecef; /* Light gray for revealed content */
+            --drug-card-bg: #f0f0f0; /* Light gray for drug quiz card */
+            --button-mastered: #28a745; /* Green for Yes */
+            --button-missed: #dc3545; /* Red for No */
+            --progress-bar-bg: #e0e0e0;
+            --progress-bar-fill: #4CAF50; /* Green fill */
+            --break-prompt-bg: #ffebee; /* Light red for break prompts */
+            --break-prompt-border: #ef9a9a; /* Medium red for border */
+        }
+
+        /* Crucial adjustments for iframe scrolling */
+        html, body {
+            height: 100%; /* Make sure HTML and Body fill the iframe */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scrollbar */
+            overflow-y: auto; /* Allow vertical scrolling within the iframe */
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+            transition: font-size 0.2s ease, filter 0.5s ease-in-out; /* Smooth text size change and blur */
+        }
+
+        /* Styles for blurring the background content */
+        body.blurred > *:not(#clockOutOverlay) {
+            filter: blur(5px);
+            pointer-events: none; /* Disables interaction with blurred content */
+            user-select: none; /* Prevents text selection on blurred content */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            min-height: calc(100vh - 40px); /* Ensure container is tall enough to trigger scroll */
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative; /* For progress bar positioning */
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+
+        /* Module Progress Bar */
+        #moduleProgressBarContainer {
+            width: 90%;
+            height: 10px;
+            background-color: var(--progress-bar-bg);
+            border-radius: 5px;
+            margin: 15px auto 0;
+            overflow: hidden;
+        }
+
+        #moduleProgressBar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--progress-bar-fill);
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 10px 0;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            margin: 5px 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer; /* Keep pointer cursor as they are clickable via JS */
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        nav ul li a.completed {
+            background-color: #1e7e34; /* Darker green for completed */
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+        }
+
+
+        h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h2 {
+            font-size: 2em;
+        }
+
+        h3 {
+            font-size: 1.5em;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        section:hover {
+            transform: translateY(-3px);
+        }
+
+        .objectives ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .objective-item {
+            margin-bottom: 8px;
+        }
+
+        .info-card {
+            background-color: var(--bg-light);
+            border-left: 5px solid var(--info-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .reveal-button {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            display: block; /* Make button full width */
+            width: fit-content; /* Adjust width to content */
+        }
+
+        .reveal-button:hover {
+            background-color: #ffda6a;
+        }
+
+        .reveal-content {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: var(--reveal-bg);
+            border-left: 3px solid var(--secondary-color);
+            border-radius: 5px;
+        }
+
+        .question-card {
+            background-color: var(--quiz-bg);
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-card p {
+            font-weight: 600;
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .question-card .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .question-card .options input[type="radio"],
+        .question-card .options input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .question-card .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .question-card .feedback.correct {
+            background-color: #d1ecf1; /* light blue */
+            color: #0c5460; /* dark blue */
+            border: 1px solid #bee5eb;
+        }
+
+        .question-card .feedback.incorrect {
+            background-color: #f8d7da; /* light red */
+            color: #721c24; /* dark red */
+            border: 1px solid #f5c6cb;
+        }
+
+        .question-card .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .question-card .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+
+        .prototype-drug-chart {
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        .prototype-drug-chart th, .prototype-drug-chart td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .prototype-drug-chart th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .prototype-drug-chart tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .note, .focus-prompt, .quick-fact {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .note {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+        }
+
+        .focus-prompt {
+            background-color: #d1ecf1; /* light blue */
+            border-left: 5px solid #0c5460; /* dark blue */
+            color: #0c5460;
+        }
+
+        .quick-fact {
+            background-color: #e2f0d9; /* very light green */
+            border-left: 5px solid #6ab04c; /* medium green */
+            color: #4a7d32;
+        }
+
+        .highlight {
+            background-color: #ffe082; /* Light yellow for highlighting key terms */
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .nclex-next-gen {
+            background-color: #e6f7ff;
+            border: 2px solid #a6d9f5;
+            padding: 25px;
+            margin: 40px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .nclex-next-gen h3 {
+            color: #2196f3;
+            border-bottom: 1px dashed #a6d9f5;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .nclex-next-gen .case-study {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .nclex-next-gen .fill-in-the-blank {
+            margin-top: 20px;
+        }
+
+        .nclex-next-gen .fill-in-the-blank input[type="text"] {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            width: calc(100% - 20px);
+            margin-top: 10px;
+        }
+
+        .nclex-next-gen .fill-in-the-blank button {
+            margin-top: 15px;
+        }
+
+        .nclex-next-gen .rationale {
+            background-color: #e0f2f7;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .nclex-next-gen .rationale p {
+            margin: 0;
+            font-size: 0.95em;
+        }
+
+        .figure-placeholder {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #eef;
+            border: 1px dashed #bbb;
+            border-radius: 5px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .recap {
+            background-color: #f0f8ff; /* Lighter blue */
+            border-left: 5px solid #add8e6; /* Light steel blue */
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .recap h4 {
+            color: #36a2eb;
+            border-bottom: 1px solid #add8e6;
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* Tooltip styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dotted var(--primary-color); /* Underline for tooltips */
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the text */
+            left: 50%;
+            margin-left: -125px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85em;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* At the bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Drug Mastery Quiz Specific Styles */
+        #drug-mastery-quiz .quiz-card {
+            background-color: var(--drug-card-bg);
+            border: 1px solid var(--primary-color);
+            padding: 25px;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            display: none; /* Hidden until quiz starts */
+            text-align: center;
+        }
+
+        #drug-mastery-quiz .quiz-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.8em;
+            border-bottom: none; /* Override default h4 border */
+        }
+
+        #drug-mastery-quiz .quiz-card p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        #drug-mastery-quiz .quiz-controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz .quiz-controls button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        #drug-mastery-quiz .quiz-controls button:active {
+            transform: translateY(1px);
+        }
+
+        #drug-mastery-quiz #startQuizBtn {
+            background-color: var(--secondary-color);
+            color: white;
+            display: block;
+            margin: 20px auto;
+            width: fit-content;
+            padding: 15px 30px;
+            font-size: 1.4em;
+        }
+        #drug-mastery-quiz #startQuizBtn:hover {
+            background-color: #218838;
+        }
+
+        #drug-mastery-quiz #showAnswerBtn {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+        #drug-mastery-quiz #showAnswerBtn:hover {
+            background-color: #e0a800;
+        }
+
+        #drug-mastery-quiz #answerFeedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--reveal-bg);
+            border: 1px dashed var(--info-color);
+            text-align: left;
+            display: none;
+        }
+
+        #drug-mastery-quiz #answerFeedback h5 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        #drug-mastery-quiz #masteryButtons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz #masteryButtons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn {
+            background-color: var(--button-mastered);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn:hover {
+            background-color: #218838;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn {
+            background-color: var(--button-missed);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn:hover {
+            background-color: #c82333;
+        }
+
+        /* Removed #nextCardBtn from quiz styles as it's now automatic */
+
+        #drug-mastery-quiz #quizSummary {
+            display: none;
+            padding: 25px;
+            background-color: #e6ffe6; /* Light green for success */
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            text-align: center;
+        }
+        #drug-mastery-quiz #quizSummary h4 {
+            color: var(--secondary-color);
+            font-size: 2em;
+            margin-bottom: 15px;
+            border-bottom: none;
+        }
+        #drug-mastery-quiz #quizSummary p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        #drug-mastery-quiz #quizSummary button {
+            margin: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn:hover {
+            background-color: #0056b3;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn {
+            background-color: var(--alert-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn:hover {
+            background-color: #c82333;
+        }
+
+        #drug-mastery-quiz .progress-tracker {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* ADHD-specific additions (now generalized) */
+        .quick-note-area {
+            background-color: #f7f7f7;
+            border: 1px dashed #ccc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .quick-note-area h3 {
+            color: #666;
+            border-bottom: 1px solid #ddd;
+            margin-top: 0;
+        }
+
+        .quick-note-area textarea {
+            width: calc(100% - 10px);
+            min-height: 100px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            resize: vertical; /* Allow vertical resizing */
+        }
+
+        .text-size-controls {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .text-size-controls button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .micro-break-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--break-prompt-bg);
+            border: 2px solid var(--break-prompt-border);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-weight: bold;
+            color: var(--alert-color);
+            display: none; /* Hidden by default */
+            animation: fadeInOut 8s forwards; /* Animation */
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        }
+
+        /* Clock Out Overlay Styles (Revised for improved centering and appearance) */
+        #clockOutOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000; /* Make sure it's on top of everything */
+            /* Start hidden and transition in */
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s ease-out; /* Delay visibility transition for smooth fade out */
+        }
+
+        #clockOutOverlay.active {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 0.5s ease-in; /* No delay for fade in */
+        }
+
+        #clockOutContent {
+            background-color: var(--bg-white);
+            color: var(--text-color);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 400px;
+            width: 90%; /* Responsive width */
+            /* Add some initial transform to make it "pop" when appearing */
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+
+        #clockOutOverlay.active #clockOutContent {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        #clockOutContent h2 {
+            color: var(--primary-color);
+            font-family: 'Roboto', sans-serif; /* Ensure Roboto font */
+            font-size: 2.8em; /* Slightly larger for impact */
+            margin-top: 0;
+            border-bottom: none; /* Override default h2 border */
+        }
+
+        #brainEmoji {
+            font-size: 6em; /* Make the emoji very large */
+            margin: 20px 0;
+            display: block; /* Ensure it takes full width for margin auto */
+            animation: floatUpDown 2s infinite alternate ease-in-out; /* Gentle animation */
+        }
+
+        @keyframes floatUpDown {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); } /* Increased float */
+        }
+
+        #countdownTimer {
+            font-family: 'Roboto', monospace; /* Monospace for consistent digit width */
+            font-size: 4.5em; /* Slightly larger timer */
+            font-weight: 700;
+            color: var(--alert-color); /* Red for urgency */
+            margin: 20px 0;
+        }
+
+        /* Mobile Responsiveness for Clock Out */
+        @media (max-width: 500px) {
+            #clockOutContent {
+                padding: 25px; /* Smaller padding on small screens */
+            }
+            #clockOutContent h2 {
+                font-size: 2em;
+            }
+            #brainEmoji {
+                font-size: 4em;
+            }
+            #countdownTimer {
+                font-size: 3.5em;
+            }
+        }
+
+
+        /* Mobile Responsiveness for overall layout */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li {
+                margin: 5px 0;
+            }
+
+            .prototype-drug-chart, .responsive-table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .prototype-drug-chart thead, .responsive-table thead {
+                display: none;
+            }
+
+            .prototype-drug-chart tbody tr, .responsive-table tbody tr {
+                display: block;
+                margin-bottom: 10px;
+                border: 1px solid var(--border-color);
+                border-radius: 5px;
+            }
+
+            .prototype-drug-chart tbody td, .responsive-table tbody td {
+                display: block;
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            .prototype-drug-chart tbody td::before, .responsive-table tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+
+            .micro-break-prompt {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Module 49: Pituitary, Thyroid, Parathyroid, and Adrenal Disorders</h1>
+            <p>Mastering Pharmacology for Nursing Care!</p>
+            <div id="moduleProgressBarContainer">
+                <div id="moduleProgressBar"></div>
+            </div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a id="nav-objectives">Objectives</a></li>
+                <li><a id="nav-pituitary-gland">Pituitary Gland</a></li>
+                <li><a id="nav-anterior-lobe">Anterior Lobe</a></li>
+                <li><a id="nav-posterior-lobe">Posterior Lobe</a></li>
+                <li><a id="nav-nursing-process-pituitary">NP: Pituitary Hormones</a></li>
+                <li><a id="nav-thyroid-gland">Thyroid Gland</a></li>
+                <li><a id="nav-hypothyroidism">Hypothyroidism</a></li>
+                <li><a id="nav-hyperthyroidism">Hyperthyroidism</a></li>
+                <li><a id="nav-nursing-process-thyroid">NP: Thyroid Hormones</a></li>
+                <li><a id="nav-parathyroid-glands">Parathyroid Glands</a></li>
+                <li><a id="nav-hypoparathyroidism">Hypoparathyroidism</a></li>
+                <li><a id="nav-hyperparathyroidism">Hyperparathyroidism</a></li>
+                <li><a id="nav-nursing-process-parathyroid">NP: Parathyroid Insuff.</a></li>
+                <li><a id="nav-adrenal-glands">Adrenal Glands</a></li>
+                <li><a id="nav-glucocorticoids">Glucocorticoids</a></li>
+                <li><a id="nav-mineralocorticoids">Mineralocorticoids</a></li>
+                <li><a id="nav-nursing-process-adrenal">NP: Adrenal Hormones</a></li>
+                <li><a id="nav-critical-thinking">Case Study</a></li>
+                <li><a id="nav-review-questions">Review Qs</a></li>
+                <li><a id="nav-drug-mastery-quiz">Drug Challenge!</a></li>
+            </ul>
+        </nav>
+
+        <div class="text-size-controls">
+            <button id="increaseText">A+</button>
+            <button id="decreaseText">A-</button>
+        </div>
+
+        <div class="micro-break-prompt" id="microBreakPrompt">
+            Quick Break! Stand up and stretch, or take a few deep breaths!
+        </div>
+
+        <section id="objectives" class="objectives">
+            <h2>Your Learning Adventure Starts Here!</h2>
+            <p>By the end of this module, you'll be able to:</p>
+            <ul>
+                <li class="objective-item"><strong>Differentiate the actions and uses of the hormones from the pituitary, thyroid, parathyroid, and adrenal glands:</strong> thyroxine (T4), triiodothyronine (T3), calcitonin, parathyroid hormone (PTH), mineralocorticoids, and glucocorticoids.</li>
+                <li class="objective-item"><strong>Differentiate the side effects of thyroxine (T4) and triiodothyronine (T3).</strong></li>
+                <li class="objective-item"><strong>Apply the Clinical Judgment [Nursing Process]</strong>, including patient teaching, for drug therapy related to hormonal replacement or hormonal inhibition for the pituitary, thyroid, parathyroid, and adrenal glands.</li>
+            </ul>
+            <p class="note"><strong>Bonus!</strong> For extra info and cool tools, check out <a href="http://evolve.elsevier.com/McCuistion/pharmacology" target="_blank">evolve.elsevier.com/McCuistion/pharmacology</a></p>
+        </section>
+
+        <div class="quick-note-area">
+            <h3>Quick Notes / Brain Dump Space</h3>
+            <textarea id="quickNotesTextarea" placeholder="Jot down thoughts, questions, or key takeaways here... (Note: These will try to save to your browser's local storage, but backup important info!)"></textarea>
+        </div>
+
+        <section id="introduction">
+            <h2>1. Introduction: Your Body's Master Control System!</h2>
+            <div class="info-card">
+                <p>Welcome to the fascinating world of endocrine disorders! This module will cover drugs that affect the <span class="highlight">pituitary, thyroid, parathyroid, and adrenal glands</span>.</p>
+                <button class="reveal-button">Why is this important?</button>
+                <div class="reveal-content">
+                    <p>Understanding these glands, their hormones, and how they function is key to grasping how drugs either replace missing hormones or inhibit overactive ones. It's all about maintaining <span class="highlight">homeostasis</span>!</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Intro Key Points</h4>
+                <ul>
+                    <li>Focus: Drugs for pituitary, thyroid, parathyroid, and adrenal glands.</li>
+                    <li>Goal: Understand hormone replacement/inhibition.</li>
+                    <li>Importance: Maintaining body balance (homeostasis).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="pituitary-gland">
+            <h2>2. Pituitary Gland: The Master Gland!</h2>
+            <div class="info-card">
+                <p>The <span class="tooltip-container">pituitary gland (hypophysis)<span class="tooltip-text">A small gland at the base of the brain, often called the "master gland," that secretes hormones regulating growth, metabolism, reproduction, and other vital functions. It has anterior and posterior lobes.</span></span> is tiny but mighty, located at the base of your brain. It has two main parts, each with its own set of important hormones:</p>
+                <ul>
+                    <li><span class="highlight">Anterior Lobe (Adenohypophysis):</span> The "front" part, which secretes hormones that control other glands.</li>
+                    <li><span class="highlight">Posterior Lobe (Neurohypophysis):</span> The "back" part, which stores and releases hormones made by the hypothalamus.</li>
+                </ul>
+                <div class="figure-placeholder">
+                    <h4>Visualize It!</h4>
+                    <p><strong>FIG. 49.1:</strong> The anterior and posterior pituitary glands. (Imagine a diagram showing the two lobes and their connections!)</p>
+                </div>
+                <button class="reveal-button">The Negative Feedback Loop: How Your Body Stays Balanced</button>
+                <div class="reveal-content">
+                    <p>The amount of hormones secreted from the pituitary (especially the anterior lobe) is controlled by a <span class="highlight">negative feedback system</span>. Think of it like a thermostat:</p>
+                    <ul>
+                        <li><strong>Too Much Hormone?</strong> If your target gland (like the thyroid) secretes too much hormone, the pituitary gland gets a signal to **reduce its own hormone release.**</li>
+                        <li><strong>Too Little Hormone?</strong> If there's a lack of hormone from the target gland, the pituitary gets a signal to **increase its hormone release.**</li>
+                    </ul>
+                    <div class="figure-placeholder">
+                        <h4>Feedback Loop Diagram!</h4>
+                        <p><strong>FIG. 49.2:</strong> Negative feedback loop of hypothalamus and pituitary. (Imagine a diagram showing hypothalamus -> pituitary -> target gland, with arrows indicating inhibition and stimulation!)</p>
+                    </div>
+                    <p>This system keeps your body's hormone levels just right!</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Pituitary Overview</h4>
+                <ul>
+                    <li>Master gland with Anterior (adenohypophysis) and Posterior (neurohypophysis) lobes.</li>
+                    <li>Regulates other glands.</li>
+                    <li>Uses negative feedback to maintain hormone balance.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="anterior-lobe">
+            <h2>3. Anterior Lobe: The Hormone Commanders!</h2>
+            <div class="info-card">
+                <p>The anterior pituitary gland secretes several key hormones that act as "commanders," telling other glands and tissues what to do:</p>
+                <ul>
+                    <li><span class="highlight">Growth Hormone (GH):</span> Stimulates growth in tissue and bone.</li>
+                    <li><span class="highlight">Thyroid-Stimulating Hormone (TSH):</span> Acts on the thyroid gland.</li>
+                    <li><span class="highlight">Adrenocorticotropic Hormone (ACTH):</span> Stimulates the adrenal gland.</li>
+                    <li><span class="highlight">Gonadotropins (FSH & LH):</span> Affect the ovaries and testes (reproduction).</li>
+                    <li><span class="highlight">Prolactin (PRL):</span> Primarily affects breast tissues (milk production).</li>
+                </ul>
+                <h3>Growth Hormone (GH)</h3>
+                <button class="reveal-button">GH: Deficiency & Excess</button>
+                <div class="reveal-content">
+                    <h4>What GH Does:</h4>
+                    <ul>
+                        <li>GH does **not** have a specific target gland; it affects **all body tissues and bone**.</li>
+                        <li>GH replacement stimulates linear growth (height) when there are GH deficiencies.</li>
+                        <li>GH drugs **cannot be given orally** because they are destroyed by GI enzymes. They must be given subcutaneously (subcut) or intramuscularly (IM).</li>
+                    </ul>
+                    <h4>GH Deficiency: Dwarfism</h4>
+                    <ul>
+                        <li>If a child's height is well below average, GH deficiency might be the cause, leading to **dwarfism**.</li>
+                        <li>Testing for GH deficiency (like GH stimulation test with insulin tolerance test, or Macimorelin) is done to ensure replacement therapy is truly needed, as it's costly.</li>
+                        <li>GH must be given **before the epiphyses (growth plates in bones) are fused** in children. Prolonged therapy can significantly increase height.</li>
+                        <li>**Caution!** Prolonged GH therapy can interfere with insulin secretion, potentially causing **diabetes mellitus**.</li>
+                        <li>Athletes should **NOT** take GH for muscle building due to blood glucose effects and other serious side effects.</li>
+                    </ul>
+                    <h4>GH Excess: Gigantism & Acromegaly</h4>
+                    <ul>
+                        <li>**Gigantism:** Excessive growth during childhood.</li>
+                        <li>**Acromegaly:** Excessive growth *after* puberty (e.g., enlarged hands, feet, facial features).</li>
+                        <li>Both are often caused by a pituitary tumor.</li>
+                        <li>**Treatment for GH Excess:**
+                            <ul>
+                                <li>**GH receptor antagonists** (e.g., pegvisomant): Block GH receptor sites.</li>
+                                <li>**Somatostatin analogues** (e.g., lanreotide, octreotide): Inhibit GH secretion.</li>
+                                <li>**Dopamine agonists** (e.g., bromocriptine): Inhibit GH secretion (especially from pituitary adenomas).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="note">
+                        <h4>Table 49.1 Alert!</h4>
+                        <p>Check your textbook's Table 49.1 for a list of drugs used to replace or inhibit GH, their dosages, uses, and considerations.</p>
+                    </div>
+                </div>
+                <h3>Thyroid-Stimulating Hormone (TSH)</h3>
+                <button class="reveal-button">TSH: The Thyroid's Boss</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>The anterior pituitary secretes TSH in response to TRH (from the hypothalamus).</li>
+                        <li>TSH tells the thyroid gland to release **thyroxine (T4)** and **triiodothyronine (T3)**.</li>
+                        <li>Excess TSH can lead to hyperthyroidism; TSH deficit can lead to hypothyroidism.</li>
+                        <li>**Thyrotropin** (a purified TSH extract) is used diagnostically for thyroid cancer and to differentiate between primary and secondary hypothyroidism. Side effects include hyperthyroidism symptoms, hives, rash, itching, and flushing.</li>
+                    </ul>
+                </div>
+                <h3>Adrenocorticotropic Hormone (ACTH)</h3>
+                <button class="reveal-button">ACTH: Adrenal Stimulator</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Hypothalamus releases CRF, stimulating pituitary to secrete ACTH.</li>
+                        <li>ACTH stimulates the adrenal cortex to release <span class="highlight">glucocorticoids (cortisol)</span>, <span class="highlight">mineralocorticoids (aldosterone)</span>, and androgens. It also affects catecholamines (epinephrine, norepinephrine) from the adrenal medulla.</li>
+                        <li>ACTH and cortisol follow a <span class="highlight">diurnal rhythm</span> (higher in early morning, decreases throughout the day), but stress overrides this.</li>
+                        <li>**Adrenal insufficiency (hypocortisolism):** Can be due to low ACTH or adrenal gland dysfunction.</li>
+                        <li>**Cosyntropin (synthetic ACTH)** or **corticotropin (exogenous ACTH)** is used to diagnose adrenal disorders.
+                            <ul>
+                                <li>**Cosyntropin:** Diagnostic only. Less potent, less allergenic. Measures cortisol response. Can increase electrolyte loss with diuretics. Side effects: bradycardia, hypertension, sinus tachycardia, peripheral edema.</li>
+                                <li>**Corticotropin:** Used to diagnose adrenal disorders, treat MS exacerbations, and infantile spasms. Controls ACTH synthesis from cholesterol. Should be **tapered over 2 weeks** to avoid adrenal insufficiency. Many drug interactions (e.g., diuretics/penicillins can cause hypokalemia; digitalis toxicity with hypokalemia; phenytoin/rifampin/barbiturates decrease effect; diabetics may need more insulin).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <h3>Prolactin (PRL)</h3>
+                <button class="reveal-button">PRL: Milk & More</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Primary function: **Stimulation of breast tissue for milk production.**</li>
+                        <li>**PRL deficiency (hypoprolactinemia):** No symptoms except lactation disruption during breastfeeding.</li>
+                        <li>**Excess PRL (hyperprolactinemia):**
+                            <ul>
+                                <li>Males: Gynecomastia (excess breast tissue), galactorrhea (lactation), decreased sperm production.</li>
+                                <li>Females: Non-pregnancy-related lactation, amenorrhea.</li>
+                            </ul>
+                        </li>
+                        <li>Treatment for excess PRL: **Dopamine agonists** (e.g., bromocriptine, cabergoline). Cabergoline is generally better tolerated.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Anterior Lobe Hormones</h4>
+                <ul>
+                    <li>GH: Growth. Deficiency=dwarfism, Excess=gigantism/acromegaly. Administer subcut/IM. Monitor blood glucose.</li>
+                    <li>TSH: Stimulates thyroid. Used diagnostically.</li>
+                    <li>ACTH: Stimulates adrenal cortex (cortisol, aldosterone). Used diagnostically (cosyntropin) or for MS/spasms (corticotropin). Taper corticotropin.</li>
+                    <li>PRL: Milk production. Excess treated with dopamine agonists.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="posterior-lobe">
+            <h2>4. Posterior Lobe: The Storage Unit!</h2>
+            <div class="info-card">
+                <p>The posterior pituitary gland (neurohypophysis) doesn't *make* hormones; it stores and releases hormones produced by the hypothalamus: **Antidiuretic Hormone (ADH)** and **Oxytocin** (Oxytocin is covered in Chapter 54).</p>
+                <h3>Antidiuretic Hormone (ADH) / Vasopressin</h3>
+                <button class="reveal-button">ADH: Water Balance and Imbalances</button>
+                <div class="reveal-content">
+                    <h4>What ADH Does:</h4>
+                    <ul>
+                        <li>Promotes **water reabsorption from the renal tubules** (kidneys) to maintain fluid balance.</li>
+                    </ul>
+                    <h4>ADH Deficiency: Diabetes Insipidus (DI)</h4>
+                    <ul>
+                        <li>When ADH is deficient, large amounts of water are excreted by the kidneys, leading to **Diabetes Insipidus (DI)**.</li>
+                        <li>Symptoms: Severe fluid volume deficit and electrolyte imbalances.</li>
+                        <li>Causes: Head injury, brain tumors (trauma to hypothalamus/pituitary).</li>
+                        <li>Treatment: **ADH replacement** with preparations like **vasopressin** and **desmopressin acetate** (intranasal or injection). Desmopressin also used for bleeding disorders (hemophilia A, von Willebrand).</li>
+                        <li>**Desmopressin vs. Vasopressin:** Desmopressin doesn't induce ACTH release or increase serum cortisol like vasopressin.</li>
+                        <li>**Contraindications for ADH:** Moderate to severe renal disease, hyponatremia (low sodium), or history of hyponatremia.</li>
+                        <li>**Side Effects:** Hyponatremia (can lead to seizures!), headache, dyspepsia, diarrhea, nausea, vomiting. Hypotension and tachycardia due to hypovolemia.</li>
+                    </ul>
+                    <h4>ADH Excess: Syndrome of Inappropriate Antidiuretic Hormone (SIADH)</h4>
+                    <ul>
+                        <li>When ADH is excessive, too much water is retained, expanding intracellular and intravascular volume.</li>
+                        <li>Most common cause: **Small cell carcinoma of the lung.** Other causes: Medications, other malignancies, stress (pain, infection, anxiety, trauma).</li>
+                        <li>This leads to **Syndrome of Inappropriate Antidiuretic Hormone (SIADH)**, causing hyponatremia (low sodium) due to dilution and increased urinary sodium excretion (natriuresis).</li>
+                        <li>Treatment: Fluid restrictions, hypertonic saline, or drugs like **demeclocycline, conivaptan, and tolvaptan.**</li>
+                        <li>**Demeclocycline:** A tetracycline antibiotic that can induce nephrogenic DI (reverses water retention). Common side effect: photosensitivity. Dental discoloration possible.</li>
+                        <li>**Vaptans (conivaptan, tolvaptan):** Vasopressin receptor antagonists. Increase serum sodium and free water clearance.
+                            <ul>
+                                <li>**Conivaptan:** IV. Contraindicated with corn allergy. Common complications: injection site reactions (phlebitis, pain, edema, pruritus) – administer in large veins, rotate sites. Other side effects: orthostatic hypotension, syncope, hypertension, atrial fibrillation, electrolyte imbalances.</li>
+                                <li>**Tolvaptan:** Oral. **Black-box warnings** for alcoholism, hepatic disease, malnutrition (avoid in these patients). Common side effects: thirst, dry mouth, constipation, hyperglycemia, dizziness, weakness. Monitor fluids and electrolytes.</li>
+                            </ul>
+                        </li>
+                        <li>**Vaptans Contraindications:** Hypovolemia. Avoid fluid restriction during initial therapy to prevent sudden serum sodium increases.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Table 49.1 Alert!</h4>
+                        <p>Check your textbook's Table 49.1 for a full list of drugs used for pituitary disorders, including ADH replacements and inhibitors.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Posterior Lobe Hormones (ADH)</h4>
+                <ul>
+                    <li>Posterior lobe stores ADH (made by hypothalamus).</li>
+                    <li>ADH: Water reabsorption by kidneys.</li>
+                    <li>Deficiency (DI): Large water excretion, dehydration. Treat with vasopressin, desmopressin.</li>
+                    <li>Excess (SIADH): Water retention, hyponatremia. Treat with demeclocycline, vaptans.</li>
+                    <li>Monitor electrolytes closely for both.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nursing-process-pituitary">
+            <h2>5. Clinical Judgment: Nursing Process - Pituitary Hormones</h2>
+            <div class="info-card">
+                <p>Let's apply our nursing judgment to pituitary hormones! Our core concept here is: <span class="highlight">Hormonal Regulation</span> (maintaining homeostasis via endocrine system hormones).</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>Baseline Vital Signs:</strong> Obtain for future comparison. Report any abnormalities.</li>
+                        <li><strong>Fluid, Hydration, Electrolytes:</strong> Assess status and report abnormal findings (e.g., hyponatremia with ADH excess, fluid volume deficit with DI).</li>
+                        <li><strong>Infectious Process:</strong> Assess for infection, as corticotropin can suppress signs/symptoms.</li>
+                        <li><strong>Physical Growth:</strong> Note the patient's physical growth; compare child's growth with standards. Report findings (especially for GH therapy).</li>
+                    </ul>
+
+                    <h3>Analyze Cues & Prioritize Hypothesis [Patient Problems]: What's the biggest issue?</h3>
+                    <ul>
+                        <li>Hormonal imbalance related to the body’s inability to regulate and secrete appropriate hormones.</li>
+                        <li>Need for health teaching related to complex drug regimen.</li>
+                        <li>Potential for infection (especially with ACTH-related drugs).</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li>The patient will be free from any pituitary disorder with the appropriate drug regimen.</li>
+                        <li>The patient will understand the drug regimen.</li>
+                        <li>The patient will remain free of infection.</li>
+                        <li>The patient will maintain fluid and electrolyte balance.</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <h4>Antidiuretic Hormone (ADH) Specifics:</h4>
+                    <ul>
+                        <li><strong>Monitor Vital Signs:</strong> Increased heart rate and decreased systolic pressure can indicate fluid volume loss due to decreased ADH.</li>
+                        <li><strong>Record Urinary Output:</strong> Increased output signals fluid loss from low ADH.</li>
+                        <li><strong>Obtain Daily Weight:</strong> A liter of fluid is approx. 2.2 lbs; monitor for fluid shifts.</li>
+                    </ul>
+                    <h4>Growth Hormone (GH) Specifics:</h4>
+                    <ul>
+                        <li><strong>Monitor Blood Glucose & Electrolytes:</strong> Hyperglycemia can occur with high GH doses.</li>
+                    </ul>
+                    <h4>Repository Corticotropin (ACTH) Specifics:</h4>
+                    <ul>
+                        <li><strong>Monitor Growth/Development:</strong> For children receiving corticotropin.</li>
+                        <li><strong>Observe Weight & Edema:</strong> Corticotropin can cause sodium and water retention.</li>
+                        <li><strong>Watch for Adverse Effects on Discontinuation:</strong> Taper dose, do not stop abruptly, to avoid adrenal hypofunction.</li>
+                        <li><strong>Check Lab Findings:</strong> Especially electrolytes and glucose. Corticotropin can increase blood glucose; electrolyte replacement may be needed.</li>
+                        <li><strong>Observe for Infection:</strong> Corticotropin suppresses immune function, increasing infection risk.</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General Advice:</h4>
+                    <ul>
+                        <li><strong>Growth Hormone:</strong> Suggest patient/family monitor growth rate. Emphasize that GH is not for muscle building in healthy adults due to serious side effects (e.g., diabetes mellitus from abuse).</li>
+                        <li><strong>Corticotropin:</strong> Advise strict adherence to drug regimen. Abrupt discontinuation can cause hypofunction of the gland. Teach to decrease salt intake to avoid edema; potassium supplementation may be needed.</li>
+                        <li>**Patient Safety: DO NOT CONFUSE...**
+                            <ul>
+                                <li>Calcitonin with calcitriol or calcium</li>
+                                <li>Levothyroxine with liothyronine</li>
+                                <li>Somatropin with somatostatin or sandostatin</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4>Side Effects:</h4>
+                    <ul>
+                        <li><strong>Growth Hormone:</strong> Advise athletes not to take GH. Inform diabetics to monitor blood glucose closely (insulin adjustment may be needed). Instruct patients to monitor weight for fluid retention.</li>
+                        <li><strong>Corticotropin:</strong> Teach patients to report side effects like muscle weakness, edema, petechiae, ecchymosis, decreased growth/wound healing, and menstrual irregularities.</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li>Evaluate effectiveness of drug therapy (e.g., normal growth for GH, fluid/electrolyte balance for ADH, cortisol levels for ACTH).</li>
+                        <li>Continue monitoring for side effects and infection.</li>
+                        <li>Evaluate the patient’s knowledge of the medication regimen and compliance.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: NP - Pituitary Hormones</h4>
+                <ul>
+                    <li>**Assess:** VS, fluids/electrolytes, infection signs, physical growth.</li>
+                    <li>**Problems:** Hormonal imbalance, teaching needs, infection risk.</li>
+                    <li>**Goals:** Hormone balance, patient understanding, no infection.</li>
+                    <li>**Intervene:** Monitor VS, I&O, weight. GH: monitor glucose. ACTH: taper, monitor labs (electrolytes, glucose), infection.</li>
+                    <li>**Teach:** GH is not for body building, ACTH must be tapered, salt intake, fluid retention, report side effects.</li>
+                    <li>**Evaluate:** Drug effectiveness, side effect monitoring, patient compliance/knowledge.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="thyroid-gland">
+            <h2>6. Thyroid Gland: Your Metabolism Maestro!</h2>
+            <div class="info-card">
+                <p>The <span class="tooltip-container">thyroid gland<span class="tooltip-text">An endocrine gland located in the neck that produces hormones (T3, T4, calcitonin) regulating metabolism, growth, and development.</span></span> is a super important regulator of many bodily functions. It produces three key hormones:</p>
+                <ul>
+                    <li><span class="highlight">Triiodothyronine (T3)</span></li>
+                    <li><span class="highlight">Thyroxine (T4)</span>: Primarily for metabolism.</li>
+                    <li><span class="highlight">Calcitonin:</span> Regulates serum calcium (to a lesser extent).</li>
+                </ul>
+                <button class="reveal-button">Thyroid Hormone Production & Regulation</button>
+                <div class="reveal-content">
+                    <ul>
+                        <li>Most thyroid hormone is produced as T4, which then converts to T3 to act on target cells. **T3 is more potent than T4!**</li>
+                        <li>**Iodide** (an inorganic form of iodine) is essential for T3 and T4 synthesis.</li>
+                        <li>T3 and T4 are carried in the blood by proteins (thyroxine-binding globulin [TBG], albumin) which protect them. Only **unbound (free) T3 and T4** have biological action.</li>
+                    </ul>
+                    <h4>Negative Feedback & the HPT Axis:</h4>
+                    <p>The hypothalamus-pituitary-thyroid (HPT) axis controls thyroid hormone levels:</p>
+                    <ul>
+                        <li>Hypothalamus releases <span class="highlight">Thyrotropin-Releasing Hormone (TRH)</span>.</li>
+                        <li>TRH stimulates the pituitary to release <span class="highlight">Thyroid-Stimulating Hormone (TSH)</span>.</li>
+                        <li>TSH stimulates the thyroid gland to make and release T3 and T4.</li>
+                        <li>**Excess Free T3 & T4:** Inhibits the HPT axis, reducing TRH and TSH.</li>
+                        <li>**Low T3 & T4:** Increases HPT axis function, boosting TRH and TSH.</li>
+                    </ul>
+                    <p>This system ensures your thyroid is always producing the right amount of hormones.</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Thyroid Gland Basics</h4>
+                <ul>
+                    <li>Produces T3, T4 (metabolism), Calcitonin (calcium).</li>
+                    <li>T3 is more potent than T4.</li>
+                    <li>Iodide needed for synthesis.</li>
+                    <li>Regulated by HPT axis via negative feedback.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="hypothyroidism">
+            <h2>7. Hypothyroidism: The Slowdown!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Hypothyroidism<span class="tooltip-text">A condition caused by decreased thyroid hormone secretion, leading to a slowed metabolic rate. Symptoms include lethargy, weight gain, cold intolerance, and slow pulse.</span></span> is a condition where your thyroid gland doesn't secrete enough thyroid hormone, causing your body to slow down.</p>
+                <button class="reveal-button">Causes & Symptoms of Hypothyroidism</button>
+                <div class="reveal-content">
+                    <h4>Causes:</h4>
+                    <ul>
+                        <li>**Primary (Most Frequent!):** Thyroid gland disorder (e.g., inflammation, radioiodine therapy, antithyroid drug excess, surgical removal).
+                            <ul>
+                                <li>Indicated by: **Decreased T4 and Elevated TSH levels.**</li>
+                            </ul>
+                        </li>
+                        <li>**Secondary:** Lack of TSH secretion (pituitary disorder).</li>
+                        <li>**Tertiary:** Lack of TRH (hypothalamus disorder).</li>
+                    </ul>
+                    <h4>Myxedema (Severe Hypothyroidism in Adults):</h4>
+                    <ul>
+                        <li>Symptoms: Lethargy, apathy, memory impairment, emotional changes, slow speech, deep/coarse voice, edema (eyelids/face), dry skin, cold intolerance, slow pulse, constipation, weight gain, abnormal menses.</li>
+                    </ul>
+                    <h4>Hypothyroidism in Children:</h4>
+                    <ul>
+                        <li>**Congenital (Cretinism):** Can cause delayed physical and mental growth.</li>
+                        <li>**Juvenile:** Onset before puberty.</li>
+                    </ul>
+                    <h4>Thyroid Drugs (Replacement Therapy):</h4>
+                    <ul>
+                        <li>Drugs containing T3 and T4 (alone or in combination) are used to treat hypothyroidism.</li>
+                        <li>**Contraindicated in:** Patients with thyrotoxicosis, acute myocardial infarction (AMI), and adrenal insufficiency.</li>
+                        <li>**Caution:** Drugs with hepatic enzyme-inducing properties (e.g., carbamazepine, hydantoins, rifabutin) should be used with caution as they speed up thyroid hormone breakdown.</li>
+                        <li>Elevated serum calcium could also be related; **exogenous calcitonin** may be prescribed.</li>
+                    </ul>
+                    <h3>Levothyroxine Sodium: The Drug of Choice!</h3>
+                    <p><span class="tooltip-container">Levothyroxine sodium<span class="tooltip-text">A synthetic T4 hormone, it is the drug of choice for replacement therapy in hypothyroidism. It increases metabolic rate and promotes growth.</span></span> is the most common drug for primary hypothyroidism.</p>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug Class</th>
+                                <th>Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug Class">Thyroid Hormone (Synthetic T4)</td>
+                                <td data-label="Dosage">
+                                    <strong>Primary hypothyroidism:</strong> A: PO: Initially 1.6 mcg/kg/d; maint: 50–200 mcg/d; increase in increments of 12.5–25 mcg at 6- to 8-wk intervals.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Contraindications" colspan="2">
+                                    <strong>Absolute:</strong> Thyrotoxicosis, myocardial infarction.<br>
+                                    <strong>Caution:</strong> Adrenal insufficiency, cardiovascular disease (arrhythmias, hypertension, angina), diabetes mellitus, osteoporosis, hypopituitarism, dysphagia.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                    <strong>Drug:</strong>
+                                    <ul>
+                                        <li>Increased cardiac insufficiency with **sympathomimetics (epinephrine)**.</li>
+                                        <li>Increases effects of **anticoagulants, TCAs, vasopressors, decongestants, corticosteroids**.</li>
+                                        <li>Decreases effects of **antidiabetics (oral and insulin), digitalis products, beta blockers**.</li>
+                                        <li>Decreased absorption with **estrogens, antacids, cholestyramine, colestipol, sucralfate, simethicone**.</li>
+                                        <li>**Ketamines** can worsen hypertension/tachycardia.</li>
+                                        <li>**Hepatic inducers (carbamazepine, barbiturates, hydantoins)** increase metabolism, decreasing effect.</li>
+                                    </ul>
+                                    <strong>Food:</strong> Take on an **empty stomach at least 30–60 min before breakfast** and other medications. Do not mix with enteral or soy-based feedings. Certain foods/beverages (soy products, cruciferous vegetables, coffee) inhibit absorption.
+                                    <strong>Herb:</strong> Celery seed may reduce thyroid hormones.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>How it Moves (Pharmacokinetics)</th>
+                                <th>How it Works (Pharmacodynamics)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Pharmacokinetics">
+                                    <strong>Absorption:</strong> PO: 40%–80%.<br>
+                                    <strong>Distribution:</strong> PB: 99% (highly protein bound).<br>
+                                    <strong>Metabolism:</strong> t½: 3–10 d (depends on thyroid state).<br>
+                                    <strong>Excretion:</strong> Urine (80%), feces (20%).
+                                </td>
+                                <td data-label="Pharmacodynamics">
+                                    <strong>PO:</strong> Onset: 3–5 d; Peak: several weeks; Duration: Several weeks.<br>
+                                    <strong>IV:</strong> Onset: 6–8 h; Peak: 24 h.<br>
+                                    <strong>Therapeutic Effects/Uses:</strong> To treat hypothyroidism, myxedema, goiter, and thyroid cancer.<br>
+                                    <strong>Mechanism of Action:</strong> Increases metabolic rate, oxygen consumption, utilization/mobilization of glycogen stores; promotes gluconeogenesis and body growth; stimulates protein synthesis.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Side Effects (Common Annoyances)</th>
+                                <th>Adverse Reactions (More Serious Stuff!)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Side Effects">Nausea, vomiting, anorexia, diarrhea, cramps, tremors, nervousness, irritability, insomnia, headache, weight loss, diaphoresis, and amenorrhea; usually due to **undermedication or overmedication** (meaning the dose isn't right).</td>
+                                <td data-label="Adverse Reactions">Tachycardia, hypertension, palpitations, osteoporosis, and seizures; usually due to **overmedication**. Other adverse reactions include urticaria, rash, and alopecia.<br>
+                                    <strong>Life-threatening:</strong> Thyroid crisis (storm), angina pectoris, cardiac dysrhythmias (atrial fibrillation), cardiovascular collapse.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3>Other Thyroid Drugs:</h3>
+                    <ul>
+                        <li><span class="highlight">Liothyronine:</span> Synthetic T3. Rapid onset (hours), short half-life (2.5 days). Used for myxedema (severe hypothyroidism). Better absorbed than levothyroxine. Available oral/IV.</li>
+                        <li><span class="highlight">Desiccated thyroid:</span> Natural T3/T4 from porcine (pig) thyroid glands. Used for hypothyroidism and goiter.</li>
+                        <li><span class="highlight">Liotrix:</span> Mixture of levothyroxine (T4) and liothyronine (T3) in a 4:1 ratio. No significant advantage over levothyroxine alone.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Table 49.3 Alert!</h4>
+                        <p>Check your textbook's Table 49.3 for a list of natural and synthetic thyroid preparations and their details.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Hypothyroidism</h4>
+                <ul>
+                    <li>Decreased T3/T4. Primary = thyroid issue (low T4, high TSH).</li>
+                    <li>Symptoms: Slowdown (lethargy, weight gain, cold intolerance). Myxedema is severe adult form. Cretinism in kids.</li>
+                    <li>Treatment: Thyroid hormones (Levothyroxine is first choice).</li>
+                    <li>Levothyroxine: Take on empty stomach. Many drug/food interactions. Side effects often due to incorrect dose (tachycardia, weight loss = too much).</li>
+                    <li>Liothyronine (T3) is faster acting, for myxedema.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="hyperthyroidism">
+            <h2>8. Hyperthyroidism: The Speed Up!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Hyperthyroidism<span class="tooltip-text">A condition caused by an excessive secretion of thyroid hormones (T3 and T4), leading to a sped-up metabolic rate. Symptoms include rapid pulse, weight loss, heat intolerance, and nervousness.</span></span> is when you have too much circulating T3 and T4, usually from an overactive thyroid. It can range from mild symptoms to a severe <span class="highlight">thyroid storm</span> (which can be fatal).</p>
+                <button class="reveal-button">Graves Disease & Treatment Options</button>
+                <div class="reveal-content">
+                    <h4>Graves Disease (Thyrotoxicosis):</h4>
+                    <ul>
+                        <li>Most common type of hyperthyroidism.</li>
+                        <li>Symptoms: Rapid pulse (tachycardia), palpitations, excessive sweating (hyperhidrosis), heat intolerance, nervousness, irritability, bulging eyes (exophthalmos), and weight loss.</li>
+                    </ul>
+                    <h4>Treatment Options:</h4>
+                    <ol>
+                        <li>**Surgical removal** of part of the thyroid (subtotal thyroidectomy).</li>
+                        <li>**Radioactive iodine therapy.**</li>
+                        <li>**Antithyroid drugs:** Inhibit thyroid hormone synthesis or release.</li>
+                    </ol>
+                    <div class="focus-prompt">
+                        <h4>Important Note!</h4>
+                        <p>Both surgery and radioiodine therapy can lead to **permanent hypothyroidism**, meaning the patient will then need thyroid replacement therapy!</p>
+                    </div>
+                    <ul>
+                        <li>**Propranolol** (a beta blocker) can help control cardiac symptoms like palpitations and tachycardia that occur with hyperthyroidism.</li>
+                    </ul>
+                    <h3>Antithyroid Drugs: Slowing it Down!</h3>
+                    <p>These drugs reduce excessive thyroid hormone secretion.</p>
+                    <h4>Thiourea Derivatives (Thioamides): Drugs of Choice!</h4>
+                    <ul>
+                        <li>**How they work:** Interfere with thyroid hormone synthesis. They **do not destroy thyroid tissue**, but block its action.</li>
+                        <li>**Examples:** <span class="highlight">Propylthiouracil (PTU)</span> and <span class="highlight">Methimazole</span>.</li>
+                        <li>**Uses:** Control overactive thyroid (Graves disease, toxic nodular goiter), or before radioiodine treatment/thyroid surgery.</li>
+                        <li>**Methimazole:** 10 times more potent than PTU, longer half-life. Preferred due to less severe side effects. Rapidly absorbed. Prolonged use can cause goiter (due to increased TSH trying to stimulate the blocked thyroid), so minimal doses are given.</li>
+                        <li>**PTU:** Also inhibits peripheral conversion of T4 to T3.</li>
+                    </ul>
+                    <h4>Strong Iodide Preparations:</h4>
+                    <ul>
+                        <li>**Example:** <span class="highlight">Potassium iodide</span>.</li>
+                        <li>**Use:** To suppress thyroid function before subtotal thyroidectomy for Graves disease. Maximum effect in 10-15 days. Dilute and administer after meals, sip through a straw to avoid teeth discoloration.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Table 49.3 Alert!</h4>
+                        <p>Check your textbook's Table 49.3 for a list of antithyroid drugs and their details.</p>
+                    </div>
+                    <h4>Drug Interactions with Antithyroid Drugs:</h4>
+                    <ul>
+                        <li>**Oral anticoagulants (warfarin):** Increased anticoagulation effect.</li>
+                        <li>**Insulin and oral antidiabetics:** Thyroid drugs decrease their effect.</li>
+                        <li>**Digoxin and Lithium:** Increase the action of thyroid drugs.</li>
+                        <li>**Phenytoin:** Increases serum T3 level.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Hyperthyroidism</h4>
+                <ul>
+                    <li>Increased T3/T4. Graves disease (thyrotoxicosis) common.</li>
+                    <li>Symptoms: Speed-up (tachycardia, weight loss, heat intolerance, exophthalmos).</li>
+                    <li>Treatment: Surgery, radioiodine, or antithyroid drugs (thioamides like PTU, Methimazole).</li>
+                    <li>Antithyroid drugs: Inhibit synthesis, don't destroy. Methimazole preferred.</li>
+                    <li>Potassium iodide for pre-surgery suppression.</li>
+                    <li>Many drug interactions (anticoagulants, antidiabetics).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nursing-process-thyroid">
+            <h2>9. Clinical Judgment: Nursing Process - Thyroid Hormones: Replacement and Antithyroid Drugs</h2>
+            <div class="info-card">
+                <p>Let's apply our nursing judgment to thyroid hormones! Our core concept is: <span class="highlight">Hormonal Regulation</span>.</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>Baseline Vital Signs & Weight:</strong> Obtain for future comparisons. Report abnormal results.</li>
+                        <li><strong>Serum T3, T4, TSH:</strong> Report any abnormal levels.</li>
+                        <li><strong>Drug & Herbal History:</strong> Crucial for potential interactions.</li>
+                        <li><strong>Signs & Symptoms of Thyroid Crisis (Storm):</strong> Look for tachycardia, cardiac dysrhythmias, fever, heart failure, flushed skin, apathy, confusion, behavioral changes, hypotension, and vascular collapse. (Can result from thyroidectomy, abrupt antithyroid withdrawal, excess thyroid hormone ingestion, or not giving antithyroid med before surgery).</li>
+                    </ul>
+
+                    <h3>Analyze Cues & Prioritize Hypothesis [Patient Problems]: What's the biggest issue?</h3>
+                    <ul>
+                        <li>Altered functional ability related to imbalanced thyroid hormone.</li>
+                        <li>Need for health teaching related to complex drug regimen.</li>
+                        <li>General decreased tissue perfusion related to imbalanced thyroid hormone.</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li>The patient will report an improved activity level within 1 to 4 weeks of thyroid treatments.</li>
+                        <li>The patient will report decreased signs and symptoms of hypothyroidism (within 2 to 4 weeks with prescribed thyroid drug replacement) and not experience side effects.</li>
+                        <li>The patient will report decreased signs and symptoms of hyperthyroidism (in 1 to 3 weeks with prescribed antithyroid drug).</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Record Vital Signs:</strong> In hypothyroidism, temperature, HR, BP usually decrease. In hyperthyroidism, tachycardia and palpitations occur.</li>
+                        <li><strong>Monitor Weight:</strong> Weight gain in hypothyroidism is common.</li>
+                        <li><strong>Obtain Labs:</strong> Pregnancy test, CBC, CMP, LFT, ECG.</li>
+                        <li><strong>Report TSH, T3, T4:</strong> Periodically report these levels to the provider.</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General Advice:</h4>
+                    <ul>
+                        <li><strong>Consistent Dosing:</strong> Encourage patients to take the drug at the same time each day in relation to meals. **Levothyroxine is taken 30–60 minutes before any food or medications.**</li>
+                        <li><strong>OTC Warnings:</strong> Teach patients to check warnings on OTC drug labels. Advise avoiding OTC drugs that caution against use by persons with heart or thyroid disease.</li>
+                        <li><strong>MedicAlert:</strong> Suggest carrying a MedicAlert ID for their condition and drug.</li>
+                        <li><strong>Food Interactions:</strong> Instruct that certain foods can interfere with absorption of thyroid hormones (e.g., soy products, cruciferous vegetables, iodized salt, shellfish, coffee).</li>
+                        <li><strong>Drug Adherence:</strong> Instruct patients to take drugs as prescribed; **abrupt changes may lead to increased thyroid dysfunction (e.g., thyroid crisis if stopping antithyroids, or hypothyroid relapse if stopping replacement).**</li>
+                        <li><strong>Family Guidance:</strong> Support family members in understanding the disease and drug therapy, providing extra time and written plans for non-English speakers.</li>
+                    </ul>
+                    <h4>Side Effects:</h4>
+                    <ul>
+                        <li><strong>Report Hyperthyroidism Symptoms:</strong> Direct patients to report symptoms of hyperthyroidism (tachycardia, chest pain, palpitations, excess sweating) caused by drug accumulation or overdosing (for hypothyroidism treatment).</li>
+                        <li><strong>Pulse Monitoring:</strong> Demonstrate how to take their pulse. Instruct patients to monitor pulse rate and report increases or marked decreases.</li>
+                        <li><strong>Antithyroid Side Effects:</strong> Teach patients side effects like skin rash, hives, nausea, alopecia, hair pigment loss, petechiae or ecchymoses, and weakness.</li>
+                        <li><strong>Agranulocytosis Alert:</strong> Advise patients to contact their healthcare provider if **sore throat and fever** occur while taking antithyroid drugs. This could signal <span class="highlight">agranulocytosis</span> (loss of white blood cells). CBC should be monitored.</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li>Evaluate both effectiveness of the treatment and drug compliance.</li>
+                        <li>Continue monitoring for side effects from drug accumulation or overdosing.</li>
+                        <li>Evaluate the patient’s knowledge of the medication regimen.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: NP - Thyroid Hormones</h4>
+                <ul>
+                    <li>**Assess:** VS/weight, TSH/T3/T4 levels, drug/herbal history, thyroid storm signs.</li>
+                    <li>**Problems:** Altered function, teaching needs, poor perfusion.</li>
+                    <li>**Goals:** Improved activity, decreased symptoms, no side effects.</li>
+                    <li>**Intervene:** Monitor VS/weight, labs (CBC, CMP, LFT, ECG, TSH/T3/T4).</li>
+                    <li>**Teach:** Consistent dosing (Levothyroxine before food), OTC warnings, MedicAlert, food interactions, adherence (no abrupt stops!), report hyperthyroid symptoms, monitor pulse, antithyroid side effects (esp. sore throat/fever for agranulocytosis).</li>
+                    <li>**Evaluate:** Treatment effectiveness, compliance, side effects, patient knowledge.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="parathyroid-glands">
+            <h2>10. Parathyroid Glands: Calcium Regulators!</h2>
+            <div class="info-card">
+                <p>The tiny <span class="tooltip-container">parathyroid glands<span class="tooltip-text">Four small glands located behind the thyroid gland that secrete parathyroid hormone (PTH) to regulate calcium and phosphate levels in the blood.</span></span> are usually four small glands located behind your thyroid gland. They secrete **parathyroid hormone (PTH)**, also called **parathormone**, which plays a crucial role in regulating serum calcium levels:</p>
+                <ul>
+                    <li>Enhances calcium release from bones.</li>
+                    <li>Enhances calcium reabsorption in renal tubules (kidneys).</li>
+                    <li>Enhances calcium absorption in intestines by increasing active vitamin D production.</li>
+                </ul>
+                <button class="reveal-button">PTH, Calcitonin, and Imbalances</button>
+                <div class="reveal-content">
+                    <h4>PTH vs. Calcitonin: The Calcium Tug-of-War!</h4>
+                    <ul>
+                        <li>A **decrease in serum calcium** (negative feedback) stimulates PTH release.</li>
+                        <li>**Calcitonin** (from the thyroid gland) does the opposite: it **decreases serum calcium** by promoting bone osteoclast activity (breaking down bone to release calcium) and calcium excretion by kidneys/intestines.</li>
+                    </ul>
+                    <h4>PTH Deficiency (Hypoparathyroidism):</h4>
+                    <ul>
+                        <li>Causes: Damage to parathyroid glands (common), low serum magnesium (hypomagnesemia), vitamin D deficiency, renal impairment, diuretic therapy.</li>
+                        <li>Results in: **Hypocalcemia** (low serum calcium).</li>
+                        <li>Treatment: PTH analogues (e.g., to replace the missing hormone).</li>
+                    </ul>
+                    <h4>PTH Excess (Hyperparathyroidism):</h4>
+                    <ul>
+                        <li>Causes: Malignancies of parathyroid glands, ectopic PTH secretion (e.g., from lung cancer), hyperthyroidism, prolonged immobility (calcium lost from bone).</li>
+                        <li>Treatment: Surgical removal (parathyroidectomy) is common for primary hyperparathyroidism. Also treated with calcitonin-salmon, calcimimetics, and bisphosphonates.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Table 49.4 Alert!</h4>
+                        <p>Check your textbook's Table 49.4 for drugs used to treat parathyroid disorders.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Parathyroid Glands</h4>
+                <ul>
+                    <li>Secretes PTH, which increases serum calcium.</li>
+                    <li>Opposite of calcitonin.</li>
+                    <li>Hypoparathyroidism = hypocalcemia (treat with PTH analogues).</li>
+                    <li>Hyperparathyroidism = hypercalcemia (treat with surgery, calcitonin-salmon, calcimimetics, bisphosphonates).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="hypoparathyroidism">
+            <h2>11. Hypoparathyroidism & Hypocalcemia: Low Calcium Alarms!</h2>
+            <div class="info-card">
+                <p>When you have <span class="tooltip-container">hypoparathyroidism<span class="tooltip-text">A condition caused by insufficient parathyroid hormone (PTH) secretion, leading to hypocalcemia (low blood calcium).</span></span>, your parathyroid glands aren't making enough PTH, leading to **hypocalcemia** (low serum calcium). This can cause various symptoms, most notably tetany.</p>
+                <button class="reveal-button">Calcitriol: The Vitamin D Helper!</button>
+                <div class="reveal-content">
+                    <h4>Calcitriol:</h4>
+                    <ul>
+                        <li>Drug Class: <span class="highlight">Vitamin D analogue</span>.</li>
+                        <li>How it works: Promotes **calcium absorption from the GI tract** and bone, helping to raise serum calcium levels.</li>
+                        <li>Therapeutic Use: Treats parathyroid disorders and manages hypocalcemia in chronic renal failure.</li>
+                        <li>Side Effects: Often early signs of hypercalcemia (fatigue, weakness, nausea, metallic taste, dry mouth).</li>
+                        <li>Adverse Effects: Late signs of hypercalcemia (anorexia, photophobia, dehydration, cardiac arrhythmias).</li>
+                    </ul>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug Class</th>
+                                <th>Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug Class">Vitamin D Analogue</td>
+                                <td data-label="Dosage">A: PO: 0.25–2 mcg/d</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Contraindications" colspan="2">
+                                    <strong>Absolute:</strong> Hypersensitivity, hypercalcemia, hypervitaminosis D.<br>
+                                    <strong>Caution:</strong> Cardiovascular disease, renal calculi, renal failure, hyperphosphatemia, dehydration, excess sunlight exposure, malabsorption syndrome, hypocalcemia (paradoxical, can worsen initially or with improper dosing).
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                    <strong>Drug:</strong>
+                                    <ul>
+                                        <li>Increased cardiac dysrhythmias with **digoxin, verapamil**.</li>
+                                        <li>Decreased calcitriol absorption with **cholestyramine**.</li>
+                                        <li>Decreased calcitriol effects with **ketoconazole, barbiturates**.</li>
+                                        <li>Enhanced calcitriol effects with **thiazide diuretics**.</li>
+                                        <li>Calcitriol decreases the effects of **estrogen**.</li>
+                                    </ul>
+                                    <strong>Lab:</strong> Increased serum calcium with thiazide diuretics, calcium supplements, calcium-rich foods; decreased serum calcium with low magnesium.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>How it Moves (Pharmacokinetics)</th>
+                                <th>How it Works (Pharmacodynamics)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Pharmacokinetics">
+                                    <strong>Absorption:</strong> PO: Well absorbed.<br>
+                                    <strong>Distribution:</strong> PB: 99%.<br>
+                                    <strong>Metabolism:</strong> t½: 3–8 h (adult); 27 h (children).<br>
+                                    <strong>Excretion:</strong> Feces (50%), urine (16%).
+                                </td>
+                                <td data-label="Pharmacodynamics">
+                                    <strong>PO:</strong> Onset: 2–6 h; Peak: 3–6 h; Duration: 3–5 d.<br>
+                                    <strong>Therapeutic Effects/Uses:</strong> To treat parathyroid disorders (hyperparathyroidism and hypoparathyroidism) and to manage hypocalcemia in chronic renal failure.<br>
+                                    <strong>Mechanism of Action:</strong> Calcitriol enhances calcium deposits into bones by the active form of vitamin D’s metabolite, calcitriol. Calcitriol reabsorbs calcium by the kidneys, enhances intestinal absorption of dietary calcium, and decreases serum phosphate, bone resorption, and parathyroid hormone levels.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Side Effects (Common Annoyances)</th>
+                                <th>Adverse Reactions (More Serious Stuff!)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Side Effects">Generally early signs of hypercalcemia: fatigue, weakness, somnolence, cephalgia, nausea, vomiting, diarrhea, cramps, drowsiness, dizziness, vertigo, metallic taste, lethargy, constipation, and xerostomia (dry mouth).</td>
+                                <td data-label="Adverse Reactions">Late signs of hypercalcemia: anorexia, photophobia, dehydration, cardiac arrhythmias, decreased libido, hypertension, sensory disturbances, hypercalciuria (excess calcium in urine), hypercalcemia, and hyperphosphatemia.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Hypoparathyroidism</h4>
+                <ul>
+                    <li>PTH deficiency, leading to hypocalcemia.</li>
+                    <li>Calcitriol (Vitamin D analogue) increases calcium absorption.</li>
+                    <li>Side effects are often signs of hypercalcemia (too much calcium).</li>
+                    <li>Many contraindications and drug interactions related to calcium/heart.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="hyperparathyroidism">
+            <h2>12. Hyperparathyroidism & Hypercalcemia: Too Much Calcium!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Hyperparathyroidism<span class="tooltip-text">A condition caused by excessive parathyroid hormone (PTH) secretion, leading to hypercalcemia (high blood calcium).</span></span> results in **hypercalcemia** (high serum calcium). This can lead to bone loss, kidney stones, and other issues.</p>
+                <button class="reveal-button">Treatment Strategies for Hyperparathyroidism</button>
+                <div class="reveal-content">
+                    <h4>Common Causes:</h4>
+                    <ul>
+                        <li>Malignancies of the parathyroid glands.</li>
+                        <li>Ectopic PTH hormone secretion (e.g., from lung cancer).</li>
+                        <li>Hyperthyroidism.</li>
+                        <li>Prolonged immobility (calcium lost from bone into blood).</li>
+                    </ul>
+                    <h4>Treatment Options:</h4>
+                    <ul>
+                        <li>**Partial or full parathyroidectomy:** Most common treatment for primary hyperparathyroidism.</li>
+                        <li>**Calcitonin-salmon:** Decreases serum calcium by binding to osteoclast receptors (cells that break down bone). Prevents bone loss, increases bone density, alleviates pain. **Contraindicated in fish allergies.** Side effects: allergic reactions, GI symptoms, headache, hypocalcemia (can be severe, leading to tetany and seizures).</li>
+                        <li>**Calcimimetics (e.g., Cinacalcet):** Mimic calcium in circulation, increasing the sensitivity of calcium-sensing receptors on parathyroid cells. This **reduces PTH secretion**, decreasing serum calcium and slowing bone disease. Used for hyperparathyroidism due to chronic renal disease and parathyroid cancer. **Contraindicated in hypocalcemia.**</li>
+                        <li>**Bisphosphonates (e.g., alendronate):** Block osteoclast activity, inhibiting bone mineralization/resorption. Helps with osteoporosis caused by hyperparathyroidism. **Requires normal calcium before treatment.** Oral bisphosphonates are contraindicated if unable to sit/stand upright for 30 min after administration or with esophageal strictures. Side effects: GI upset, abdominal/musculoskeletal pain, hypotension, fever.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Chapter 12 & 52 Alert!</h4>
+                        <p>Calcium imbalances are discussed further in Chapter 12. Individual bisphosphonates are detailed in Chapter 52.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Hyperparathyroidism</h4>
+                <ul>
+                    <li>Excess PTH, leading to hypercalcemia.</li>
+                    <li>Causes: Gland tumors, cancers, immobility.</li>
+                    <li>Treatment: Surgery, Calcitonin-salmon (fish allergy!), Calcimimetics (Cinacalcet), Bisphosphonates.</li>
+                    <li>Monitor calcium levels closely.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nursing-process-parathyroid">
+            <h2>13. Clinical Judgment: Nursing Process - Parathyroid Hormone Insufficiencies</h2>
+            <div class="info-card">
+                <p>Let's apply our nursing judgment to parathyroid hormone issues! Our core concept is: <span class="highlight">Hormonal Regulation</span>, specifically focusing on calcium balance.</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>Serum Calcium Level:</strong> Note and report abnormal results. Normal range: 8 to 10 mg/dL.</li>
+                        <li><strong>Symptoms of Tetany:</strong> In hypocalcemia, assess for twitching of the mouth, tingling/numbness of fingers, carpopedal spasm (hand/foot cramps), spasmodic contractions, and laryngeal spasm.</li>
+                    </ul>
+
+                    <h3>Analyze Cues & Prioritize Hypothesis [Patient Problems]: What's the biggest issue?</h3>
+                    <ul>
+                        <li>Hyper- or hypocalcemia related to hormonal imbalance and therapeutic regimen.</li>
+                        <li>Need for health teaching related to complex drug regimen.</li>
+                        <li>Disrupted fluid and electrolytes related to side effects of drug regimen.</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li>The patient will maintain a serum calcium level within the normal range (8-10 mg/dL).</li>
+                        <li>The patient will report no or minimal side effects.</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Monitor Serum Calcium Level:</strong>
+                            <ul>
+                                <li>Normal: 8 to 10 mg/dL.</li>
+                                <li>Hypocalcemia: Below 8 mg/dL.</li>
+                                <li>Hypercalcemia: Greater than 10.5 mg/dL.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General Advice:</h4>
+                    <ul>
+                        <li><strong>Pregnancy Status:</strong> Advise women to inform their healthcare provider about pregnancy status before taking calcitonin preparations.</li>
+                        <li><strong>OTC Drugs/Supplements:</strong> Encourage patients to check OTC drugs for possible calcium content (especially if hypercalcemic). Many vitamins and antacids contain calcium. Tell patients to contact their healthcare provider before taking drugs with calcium.</li>
+                    </ul>
+                    <h4>Side Effects:</h4>
+                    <ul>
+                        <li><strong>Report Hypocalcemia Symptoms:</strong> Direct patients to report symptoms of hypocalcemia (e.g., tetany).</li>
+                        <li><strong>Report Hypercalcemia Symptoms:</strong> Teach patients to report signs and symptoms of hypercalcemia: bone pain, anorexia, nausea, vomiting, thirst, constipation, lethargy, bradycardia (slow heart rate), and polyuria (excessive urination).</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li>Monitor effectiveness of drug therapy (e.g., serum calcium level, presence/absence of signs and symptoms of hypercalcemia or hypocalcemia).</li>
+                        <li>Continue monitoring for signs and symptoms of calcium imbalances.</li>
+                        <li>Evaluate the patient’s knowledge of medication regimen.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: NP - Parathyroid Hormone Insufficiencies</h4>
+                <ul>
+                    <li>**Assess:** Serum calcium levels, symptoms of tetany (for hypocalcemia).</li>
+                    <li>**Problems:** Calcium imbalance, teaching needs, fluid/electrolyte disruption.</li>
+                    <li>**Goals:** Normal calcium, minimal side effects.</li>
+                    <li>**Intervene:** Monitor serum calcium (normal 8-10 mg/dL), know hypocalcemia (<8) and hypercalcemia (>10.5) signs.</li>
+                    <li>**Teach:** Pregnancy and calcitonin, check OTCs for calcium, report hypocalcemia (tetany) and hypercalcemia symptoms.</li>
+                    <li>**Evaluate:** Drug effectiveness, calcium levels, symptom monitoring, patient knowledge.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="adrenal-glands">
+            <h2>14. Adrenal Glands: Your Stress & Salt Regulators!</h2>
+            <div class="info-card">
+                <p>Your paired <span class="tooltip-container">adrenal glands<span class="tooltip-text">Endocrine glands located on top of each kidney, consisting of an outer cortex (producing steroid hormones) and an inner medulla (producing epinephrine and norepinephrine).</span></span> sit on top of your kidneys. They have two main parts:</p>
+                <ul>
+                    <li>**Adrenal Medulla:** Secretes epinephrine and norepinephrine (catecholamines, involved in 'fight or flight').</li>
+                    <li>**Adrenal Cortex:** Produces two main types of steroid hormones: <span class="highlight">glucocorticoids (cortisol)</span> and <span class="highlight">mineralocorticoids (aldosterone)</span>, plus some androgens and estrogens.</li>
+                </ul>
+                <button class="reveal-button">Adrenal Regulation & Imbalances</button>
+                <div class="reveal-content">
+                    <h4>Regulation (HPA Axis):</h4>
+                    <ul>
+                        <li>Steroids from the adrenal cortex are regulated by the <span class="highlight">hypothalamus-pituitary-adrenal (HPA) axis</span> via negative feedback.</li>
+                        <li>**Low Steroids (Hypocortisolism):** Increases CRF (hypothalamus) and ACTH (pituitary), stimulating adrenal glands to release more steroids.</li>
+                        <li>**High Steroids (Hypercortisolism):** Inhibits the HPA axis, resulting in fewer steroids released.</li>
+                    </ul>
+                    <h4>Adrenal Imbalances:</h4>
+                    <ul>
+                        <li>**Adrenal Hyposecretion (Adrenal Insufficiency / Addison Disease):** A decrease in steroid secretion.</li>
+                        <li>**Adrenal Hypersecretion (Cushing Syndrome):** An increase in steroid secretion.</li>
+                    </ul>
+                    <div class="quick-fact">
+                        <h4>Impact of Steroids!</h4>
+                        <p>Hypocortisolism can be very serious, even fatal, due to steroid influences on electrolytes, carbohydrate, protein, and fat metabolism.</p>
+                    </div>
+                    <div class="note">
+                        <h4>Patient Safety! Do NOT Confuse...</h4>
+                        <ul>
+                            <li>Calcitonin with calcitriol or calcium</li>
+                            <li>Levothyroxine with liothyronine</li>
+                            <li>Somatropin with somatostatin or sandostatin</li>
+                        </ul>
+                        <p>These sound similar but are very different drugs!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Adrenal Glands</h4>
+                <ul>
+                    <li>Located on kidneys, outer cortex (steroids), inner medulla (epinephrine/norepinephrine).</li>
+                    <li>Cortex produces glucocorticoids (cortisol) & mineralocorticoids (aldosterone).</li>
+                    <li>Regulated by HPA axis (negative feedback).</li>
+                    <li>Hyposecretion = Addison Disease. Hypersecretion = Cushing Syndrome.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="glucocorticoids">
+            <h2>15. Glucocorticoids: The Stress & Anti-Inflammation Hormones!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Glucocorticoids<span class="tooltip-text">A type of corticosteroid hormone produced by the adrenal cortex (e.g., cortisol) or made synthetically (e.g., prednisone). They have powerful anti-inflammatory, immunosuppressive, and metabolic effects.</span></span> are the most potent natural cortisol produced by your body. They're heavily influenced by ACTH and affect various bodily functions, including inflammation, metabolism, growth, and blood cell activities.</p>
+                <button class="reveal-button">Uses, Administration, and Side Effects</button>
+                <div class="reveal-content">
+                    <h4>Indications for Glucocorticoid Therapy:</h4>
+                    <ul>
+                        <li>Trauma, surgery, inflammation, emotional upsets, anxiety.</li>
+                        <li>Inflammatory conditions: Autoimmune disorders (MS, rheumatoid arthritis, myasthenia gravis), ulcerative colitis, glomerulonephritis, shock, ocular/vascular inflammation, polyarteritis nodosa, hepatitis.</li>
+                        <li>Allergic conditions: Asthma, drug reactions, contact dermatitis, anaphylaxis.</li>
+                        <li>Debilitating conditions from malignancies.</li>
+                        <li>Preventing organ rejection in transplant recipients.</li>
+                    </ul>
+                    <h4>Administration:</h4>
+                    <ul>
+                        <li>Many are synthetic (often called cortisone drugs).</li>
+                        <li>Routes: Oral, parenteral (IM or IV), topical (creams, ointments), aerosol (inhaler).</li>
+                        <li>IM route (seldom used) should be deep into the muscle; **subcutaneous administration is not recommended.**</li>
+                    </ul>
+                    <h4>Common Examples:</h4>
+                    <ul>
+                        <li>**Dexamethasone:** Potent, used for severe inflammatory responses (head trauma, allergic reactions).</li>
+                        <li>**Prednisone:** Inexpensive, frequently prescribed.</li>
+                    </ul>
+                    <table class="prototype-drug-chart responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Drug Class</th>
+                                <th>Dosage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Drug Class">Glucocorticoid/Corticosteroid</td>
+                                <td data-label="Dosage">Dosage is individualized and highly variable depending on the severity of the disease and on patient response.
+                                    A: PO: 5–60 mg/d in single or divided doses. Delayed-release tablets release drug approximately 4 h after the first dose.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Watch Out For! (Contraindications & Interactions)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Contraindications" colspan="2">
+                                    <strong>Contraindication:</strong> Untreated serious infections, hypersensitivity, varicella.<br>
+                                    <strong>Caution:</strong> Psychosis, diabetes mellitus, renal disease, heart failure, myocardial infarction, hypertension, osteoporosis, cirrhosis, diverticulitis, hypothyroidism, myasthenia gravis, ulcerative colitis, seizures, visual disturbances, GI disorders, ocular herpes simplex.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Drug-Lab-Food Interactions" colspan="2">
+                                    <strong>Drug:</strong>
+                                    <ul>
+                                        <li>**Additive effects** with other immunosuppressive drugs.</li>
+                                        <li>Increased corticosteroid levels with **estrogens, diltiazem, ketoconazole**.</li>
+                                        <li>Decreased levels with **barbiturates, phenytoin, rifampin**.</li>
+                                        <li>Increased **GI toxicity/bleeding/ulceration** with **aspirin, NSAIDs**.</li>
+                                        <li>Increased **potassium depletion (hypokalemia)** with **diuretics, amphotericin B**.</li>
+                                        <li>Increased risk of **dysrhythmias/digitalis toxicity** with **cardiac glycosides**.</li>
+                                        <li>**Bupropion** lowers seizure threshold.</li>
+                                        <li>Decreases effect of **oral antidiabetics** (may need increased insulin/oral antidiabetic dose).</li>
+                                    </ul>
+                                    <strong>Herb:</strong> Level decreased with **ephedra (Ma-huang)**.
+                                    <strong>Lab:</strong> Hyperglycemia, false-positive TB test.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>How it Moves (Pharmacokinetics)</th>
+                                <th>How it Works (Pharmacodynamics)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Pharmacokinetics">
+                                    <strong>Absorption:</strong> PO: Well absorbed.<br>
+                                    <strong>Distribution:</strong> PB: 65%–91%.<br>
+                                    <strong>Metabolism:</strong> t½: 2–3 h.<br>
+                                    <strong>Excretion:</strong> In urine.
+                                </td>
+                                <td data-label="Pharmacodynamics">
+                                    <strong>PO:</strong> Onset: UK; Peak: 1–2 h; Duration: 1 h (plasma); 18–36 h (biologic).<br>
+                                    <strong>Therapeutic Effects/Uses:</strong> Adrenocortical insufficiency, Addison disease, suppresses inflammation, immune responses.<br>
+                                    <strong>Mechanism of Action:</strong> Suppresses inflammation, immune responses (humoral), and adrenal function; has mild mineralocorticoid activity.
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Side Effects (Common Annoyances)</th>
+                                <th>Adverse Reactions (More Serious Stuff!)</th>
+                            </tr>
+                            <tr>
+                                <td data-label="Side Effects">Fluid and sodium retention, nausea, diarrhea, abdominal distension, increased appetite, sweating, headache, depression, flushing, mood changes, cataracts, amenorrhea, anorexia, Cushing syndrome, psychosis, immunosuppression, HPA suppression, hypercholesterolemia, elevated hepatic transaminases.</td>
+                                <td data-label="Adverse Reactions">Angioedema, cardiac arrhythmia, avascular necrosis, osteoporosis, fractures, cardiac arrest, cardiomyopathy, GI ulceration, exfoliative dermatitis, GI bleeding and perforation, CHF, increased ICP, lupus-like symptoms, pancreatitis, pulmonary edema, ocular disease, CVA, tendon rupture, thromboembolism.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="note">
+                        <h4>Table 49.5 Alert!</h4>
+                        <p>Check your textbook's Table 49.5 for commonly used glucocorticoid drugs and their details.</p>
+                    </div>
+                    <h4>Side Effects & Adverse Reactions (from high doses/prolonged use):</h4>
+                    <ul>
+                        <li>Increased blood glucose (hyperglycemia).</li>
+                        <li>Abnormal fat deposits: **"Moon face"** (face), **"buffalo hump"** (back of neck), decreased extremity size.</li>
+                        <li>Muscle wasting, edema, sodium and water retention, hypertension.</li>
+                        <li>Euphoria or psychosis, thinned skin with purpura (bruising).</li>
+                        <li>Increased intraocular pressure (glaucoma), peptic ulcers.</li>
+                        <li>Growth retardation.</li>
+                        <li>**Adrenal atrophy:** Long-term use can cause adrenal glands to shrink and lose function. When discontinuing, **must be tapered slowly** to allow adrenals to recover and prevent severe adrenocortical insufficiency.</li>
+                    </ul>
+                    <div class="quick-fact">
+                        <h4>Table 49.2: Hypoadrenalism vs. Hyperadrenalism Symptoms!</h4>
+                        <p>Check your textbook's Table 49.2 for a comparison of symptoms in Addison Disease (hyposecretion) and Cushing Syndrome (hypersecretion).</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Glucocorticoids</h4>
+                <ul>
+                    <li>Cortisol mimics. Powerful anti-inflammatory, immunosuppressive.</li>
+                    <li>Treats inflammatory/allergic/autoimmune conditions.</li>
+                    <li>Many routes, avoid subcut.</li>
+                    <li>Side effects (high dose/long-term): High blood glucose, fluid retention, "moon face," "buffalo hump," muscle wasting, osteoporosis, ulcers, **adrenal atrophy (taper off!)**.</li>
+                    <li>Many drug interactions (increased GI bleed with NSAIDs, potassium loss with diuretics, increased glucose).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="mineralocorticoids">
+            <h2>16. Mineralocorticoids: Your Salt & Water Balancers!</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Mineralocorticoids<span class="tooltip-text">A type of corticosteroid hormone (e.g., aldosterone) produced by the adrenal cortex that primarily regulates sodium and potassium balance in the body, influencing fluid volume and blood pressure.</span></span> primarily promote **sodium retention** and **potassium and hydrogen excretion** in the renal tubules (kidneys).</p>
+                <button class="reveal-button">Aldosterone & Fludrocortisone</button>
+                <div class="reveal-content">
+                    <h4>Aldosterone: The Primary Mineralocorticoid</h4>
+                    <ul>
+                        <li>Controlled by the <span class="highlight">Renin-Angiotensin-Aldosterone System (RAAS)</span>.</li>
+                        <li>Maintains fluid balance by promoting sodium reabsorption (sodium attracts water, leading to water retention).</li>
+                        <li>If hypovolemia (low circulating fluid) occurs, more aldosterone is secreted to restore fluid balance.</li>
+                        <li>With sodium reabsorption, potassium is lost, which can lead to **hypokalemia** (low potassium).</li>
+                    </ul>
+                    <div class="focus-prompt">
+                        <h4>Addison Disease Alert!</h4>
+                        <p>A severe decrease in mineralocorticoids can lead to **hypotension and vascular collapse**, as seen in Addison disease (adrenal hyposecretion).</p>
+                    </div>
+                    <h4>Fludrocortisone: The Common Mineralocorticoid Drug</h4>
+                    <ul>
+                        <li>An oral mineralocorticoid, often given with a glucocorticoid.</li>
+                        <li>Mimics aldosterone: facilitates sodium reabsorption, promotes hydrogen ion and potassium excretion.</li>
+                        <li>Higher doses can inhibit endogenous hormone secretions from adrenal cortex and pituitary, causing a negative nitrogen balance; a **high-protein diet** may be indicated.</li>
+                        <li>**Monitor serum potassium level** closely due to potassium excretion.</li>
+                        <li>Adverse effects: Fluid imbalance, fluid overload, and hypertension (often signs of overdose). If these occur, **discontinue fludrocortisone and resume at lower doses.**</li>
+                        <li>Hypokalemia may cause metabolic alkalosis, leading to GI symptoms (nausea, vomiting), orthostatic hypotension, cardiac rhythm changes, weakness, anorexia, and myalgia.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Table 49.5 Alert!</h4>
+                        <p>Check your textbook's Table 49.5 for commonly used mineralocorticoid drugs and their details.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Mineralocorticoids</h4>
+                <ul>
+                    <li>Promote sodium retention, potassium/hydrogen excretion.</li>
+                    <li>Aldosterone: Primary mineralocorticoid, maintains fluid balance.</li>
+                    <li>Fludrocortisone: Common drug, mimics aldosterone.</li>
+                    <li>Watch for hypokalemia (potassium loss).</li>
+                    <li>Overdose signs: Fluid overload, hypertension (reduce dose!).</li>
+                    <li>Deficiency can lead to hypotension/vascular collapse (Addison Disease).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nursing-process-adrenal">
+            <h2>17. Clinical Judgment: Nursing Process - Adrenal Hormones: Corticosteroids</h2>
+            <div class="info-card">
+                <p>Let's apply our nursing judgment to adrenal hormones (corticosteroids)! Our core concept is: <span class="highlight">Hormonal Regulation</span>.</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>Baseline Vital Signs:</strong> Note for future comparisons.</li>
+                        <li><strong>Lab Results:</strong> Assess especially **serum electrolytes and blood glucose**. (Potassium typically decreases, glucose increases with prolonged corticosteroid use).</li>
+                        <li><strong>Weight & Urine Output:</strong> Obtain for future comparisons. Corticosteroids can cause fluid retention and weight gain.</li>
+                        <li><strong>Medical & Herbal History:</strong> Assess for glaucoma, cataracts, peptic ulcer, psychiatric problems, or diabetes mellitus, as glucocorticoids can worsen these.</li>
+                    </ul>
+
+                    <h3>Analyze Cues & Prioritize Hypothesis [Patient Problems]: What's the biggest issue?</h3>
+                    <ul>
+                        <li>Disrupted fluid and electrolyte balance related to treatment regimen.</li>
+                        <li>Risk for decreased immunity.</li>
+                        <li>Risk for decreased self-concept.</li>
+                        <li>Risk for infection.</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li>The patient will report decreased signs and symptoms of inflammation.</li>
+                        <li>The patient will report minimal side effects from glucocorticoid therapy.</li>
+                        <li>The patient will not develop new or worsening infection.</li>
+                        <li>The patient will have increased knowledge of the medication regimen.</li>
+                        <li>The patient will maintain fluid and electrolyte balance.</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Determine Vital Signs:</strong> Corticosteroids can increase blood pressure and sodium/water retention.</li>
+                        <li><strong>Administer Corticosteroids:</strong> Only as ordered. Routes: oral, IM (not in deltoid), IV, aerosol, topical (apply thin layers). Report rashes, infection, purpura.</li>
+                        <li><strong>Record Weight:</strong> Report a weight gain of 5 lb in 2 days (indicates water retention from hyperaldosteronism).</li>
+                        <li><strong>Monitor Laboratory Values:</strong> Especially serum electrolytes and blood glucose. Potassium may decrease (<3.5 mEq/L); sodium and glucose may increase.</li>
+                        <li><strong>Watch for Hypokalemia:</strong> Signs: nausea, vomiting, muscular weakness, abdominal distension, paralytic ileus, irregular heart rate.</li>
+                        <li><strong>Assess for Side Effects:</strong> Especially with therapy >10 days or high doses. **Do NOT abruptly stop cortisone preparations – adrenal crisis can result!** Taper the dose.</li>
+                        <li><strong>Monitor Older Adults:</strong> Watch for increased osteoporosis (corticosteroids promote calcium loss).</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General Advice:</h4>
+                    <ul>
+                        <li><strong>Adherence & Tapering:</strong> Advise patients to take drugs as prescribed, and **caution them not to abruptly stop drugs.** When discontinued, the dose is tapered over 1 to 2 weeks.</li>
+                        <li><strong>Pregnancy:</strong> Do not take cortisone preparations (oral or topical) during pregnancy unless necessary and prescribed by provider, as drugs may be harmful to the fetus.</li>
+                        <li><strong>Herbal Interactions:</strong> Inform that certain herbal laxatives and diuretics may interact and increase severity of hypokalemia.</li>
+                        <li><strong>Infection Prevention:</strong> Teach patients to avoid large crowds and persons with respiratory infections, as corticosteroids suppress the immune system.</li>
+                        <li><strong>Inform Other Providers:</strong> Teach patients to inform other healthcare providers of all drugs taken.</li>
+                        <li><strong>Medical Alert ID:</strong> Encourage carrying a medical alert identification card, tag, or bracelet.</li>
+                        <li><strong>Administration:</strong> Counsel patients to take cortisone preparations **at mealtime or with food** to prevent gastric irritation.</li>
+                        <li><strong>Potassium-Rich Foods:</strong> Advise eating foods rich in potassium (fresh/dried fruits, vegetables, meats, nuts) as some corticosteroids promote potassium loss.</li>
+                        <li><strong>Family Education:</strong> Explain to the family that patient symptoms (e.g., mood changes) are due to the adrenal problem, not lack of interest. Explain that symptoms may progress if therapy is not followed.</li>
+                    </ul>
+                    <h4>Side Effects:</h4>
+                    <ul>
+                        <li><strong>Report Cushing Syndrome Signs:</strong> Teach patients to report signs/symptoms of Cushing syndrome: moon face, puffy eyelids, feet edema, increased bruising, dizziness, bleeding, and menstrual irregularity.</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li>Evaluate effectiveness of corticosteroid therapy. (If clinical manifestations haven't improved, a drug change may be needed.)</li>
+                        <li>Continue monitoring for side effects, especially with high doses.</li>
+                        <li>Evaluate the patient’s knowledge of the therapy.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: NP - Adrenal Hormones (Corticosteroids)</h4>
+                <ul>
+                    <li>**Assess:** VS, electrolytes/glucose, weight/I&O, medical/herbal history.</li>
+                    <li>**Problems:** Fluid/electrolyte imbalance, infection risk, self-concept.</li>
+                    <li>**Goals:** Decreased inflammation, minimal side effects, no new infection, patient knowledge.</li>
+                    <li>**Intervene:** Monitor VS, administer correctly (IM deep, no subcut), record weight (5lb/2day gain = fluid retention), monitor labs (K+ decrease, Na/glucose increase), watch for hypokalemia, **taper off!**, monitor older adults for osteoporosis.</li>
+                    <li>**Teach:** Adherence & tapering, pregnancy caution, herbal/diuretic interactions (hypokalemia), infection avoidance, inform all providers, MedicAlert, take with food, potassium-rich diet, educate family about adrenal issues, report Cushing signs.</li>
+                    <li>**Evaluate:** Effectiveness, side effects, patient knowledge.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="critical-thinking" class="nclex-next-gen">
+            <h3>18. NCLEX Next Gen! Critical Thinking Single Episode Case Study</h3>
+            <p class="case-study"><strong>Cognitive Skill: Analyze cues</strong></p>
+            <p class="case-study">A 68-year-old female presented to the clinic with complaints of fatigue and weight gain over a 6-month time frame. On further assessment, the nurse noted the following:</p>
+            <ul>
+                <li>Blood pressure 114/72 mm Hg</li>
+                <li>Heart rate 54 beats per minute</li>
+                <li>Respiratory rate 14 breaths per minute</li>
+                <li>Oxygen saturation 97% on room air</li>
+                <li>Dry skin</li>
+                <li>Voice hoarseness</li>
+                <li>Muscle weakness</li>
+                <li>Mildly enlarged thyroid gland</li>
+                <li>Hemoglobin 13 g/L</li>
+                <li>Hematocrit 40%</li>
+                <li>Serum sodium 138 mEq/L</li>
+                <li>Serum potassium 4.1 mEq/L</li>
+                <li>Serum calcium 9.8 mg/dL</li>
+                <li>Serum albumin 3.8 g/dL</li>
+                <li>Serum total protein 6.9 g/dL</li>
+                <li>Thyroid-stimulating hormone 10 mIU/L</li>
+            </ul>
+
+            <div class="fill-in-the-blank">
+                <p>Choose the most likely options for the information missing from the statements below by selecting from the list of options provided.</p>
+                <p>The nurse suspects ____1____, and when reviewing T3 and T4 levels, the nurse would expect the levels to be ____2____. The nurse reports the assessment findings to the patient’s medical provider, anticipating an order of ____3____.</p>
+                <p><strong>Option 1:</strong> Secondary hypoadrenalism, Primary hypoparathyroidism, Primary hyperpituitarism, Primary hypothyroidism, Secondary hyperadrenalism</p>
+                <p><strong>Option 2:</strong> Decreased, Increased, Normal</p>
+                <p><strong>Option 3:</strong> Cinacalcet, Prednisone, Alendronate, Somatropin, Propylthiouracil, Levothyroxine</p>
+                <button class="submit-btn" id="submit_case_study">Check My Answers!</button>
+                <div class="feedback" id="case_study_feedback"></div>
+                <div class="rationale" id="case_study_rationale">
+                    <h4>Rationale: Why these answers are correct!</h4>
+                    <p>The patient is exhibiting clinical manifestations of **primary hypothyroidism**, indicated by a TSH level of 10 mIU/L, which is elevated (normal TSH levels 0.5 to 5 mIU/L). TSH levels would be increased if there is not enough circulating thyroid hormone (T3 and T4). With primary hypothyroidism, total T3 and T4 levels would be **decreased**. The patient would be prescribed **levothyroxine** to replace the deficiency.</p>
+                    <p>Secondary hypoadrenalism is a deficiency of the adrenal glands due to other causes, such as hypopituitarism. The adrenal glands do not produce their hormones because the pituitary gland does not release adrenocorticotropic hormone (ACTH). Hypoadrenalism can result in decreased serum sodium and increased serum potassium; the serum sodium and potassium levels are normal. Primary hypoparathyroidism is a deficiency of the parathyroid gland, which regulates serum calcium. The serum calcium levels were normal. Hyperpituitarism could cause an elevated TSH level; but its other hormones, such as ACTH, would cause an increased activity to its respective endocrine gland, such as the adrenals. However, serum electrolytes (sodium and potassium) are normal. If the adrenal glands were hyperactive, serum sodium would be elevated, and serum potassium would most likely be decreased. Fatigue decreases metabolism, which can cause weight gain. Secondary hyperadrenalism can result in increased serum sodium and decreased serum potassium; these were normal. Fatigue could be due to anemia; however, the patient’s hemoglobin and hematocrit were normal.</p>
+                    <p><strong>References:</strong></p>
+                    <ul>
+                        <li>Endocrine Society. (2019). Hypothyroidism. Retrieved from https://www.hormone.org/diseases-and-conditions/hypothyroidism</li>
+                        <li>Endocrine Society. (2019). The endocrine system. https://www.hormone.org/what-is-endocrinology/the-endocrine-system</li>
+                        <li>Endocrine Society. (2020). Hypoparathyroidism. Retrieved from https://www.hormone.org/diseases-and-conditions/hypoparathyroidism</li>
+                        <li>Lab tests online. Retrieved from https://labtestsonline.org/</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Case Study Takeaways</h4>
+                <ul>
+                    <li>Elevated TSH + symptoms like fatigue, weight gain, dry skin, hoarseness suggests Primary Hypothyroidism.</li>
+                    <li>In Primary Hypothyroidism, T3 and T4 levels are typically decreased.</li>
+                    <li>Treatment for hypothyroidism is hormone replacement, typically Levothyroxine.</li>
+                    <li>Normal sodium, potassium, and calcium rule out most adrenal/parathyroid issues.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="review-questions">
+            <h2>19. Module Review Questions: Test Your Knowledge!</h2>
+
+            <div class="question-card" id="q1">
+                <p>1. A patient is receiving the drug somatropin. Which drug action would the nurse anticipate?</p>
+                <div class="options">
+                    <label><input type="radio" name="q1_option" value="a"> a. Act as an antiinflammatory agent</label>
+                    <label><input type="radio" name="q1_option" value="b"> b. Increase metabolic rate and oxygen consumption</label>
+                    <label><input type="radio" name="q1_option" value="c"> c. Stimulate growth in long bones at epiphyseal plates</label>
+                    <label><input type="radio" name="q1_option" value="d"> d. Promote water reabsorption from the renal tubules</label>
+                </div>
+                <button class="submit-btn" id="submit_q1">Check My Answer!</button>
+                <div class="feedback" id="q1_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q2">
+                <p>2. A patient is given desmopressin acetate. The nurse knows that this drug is used to treat which condition?</p>
+                <div class="options">
+                    <label><input type="radio" name="q2_option" value="a"> a. Gigantism</label>
+                    <label><input type="radio" name="q2_option" value="b"> b. Diabetes mellitus</label>
+                    <label><input type="radio" name="q2_option" value="c"> c. Diabetes insipidus</label>
+                    <label><input type="radio" name="q2_option" value="d"> d. Adrenal insufficiency</label>
+                </div>
+                <button class="submit-btn" id="submit_q2">Check My Answer!</button>
+                <div class="feedback" id="q2_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q3">
+                <p>3. A patient is taking levothyroxine. For which adverse effect would the nurse monitor?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3_option" value="a"> a. Tachycardia</label>
+                    <label><input type="radio" name="q3_option" value="b"> b. Drowsiness</label>
+                    <label><input type="radio" name="q3_option" value="c"> c. Constipation</label>
+                    <label><input type="radio" name="q3_option" value="d"> d. Weight gain</label>
+                </div>
+                <button class="submit-btn" id="submit_q3">Check My Answer!</button>
+                <div class="feedback" id="q3_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q4">
+                <p>4. A patient has just begun taking calcitriol. Which nursing action would the nurse do?</p>
+                <div class="options">
+                    <label><input type="radio" name="q4_option" value="a"> a. Monitor the patient’s weight.</label>
+                    <label><input type="radio" name="q4_option" value="b"> b. Monitor serum calcium levels.</label>
+                    <label><input type="radio" name="q4_option" value="c"> c. Teach side effects of alopecia and petechiae.</label>
+                    <label><input type="radio" name="q4_option" value="d"> d. Instruct the patient to avoid persons with respiratory infections.</label>
+                </div>
+                <button class="submit-btn" id="submit_q4">Check My Answer!</button>
+                <div class="feedback" id="q4_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q5">
+                <p>5. A patient is given corticotropin. The nurse knows to monitor the patient for which condition?</p>
+                <div class="options">
+                    <label><input type="radio" name="q5_option" value="a"> a. Weight gain</label>
+                    <label><input type="radio" name="q5_option" value="b"> b. Hyperkalemia</label>
+                    <label><input type="radio" name="q5_option" value="c"> c. Hypoglycemia</label>
+                    <label><input type="radio" name="q5_option" value="d"> d. Dehydration</label>
+                </div>
+                <button class="submit-btn" id="submit_q5">Check My Answer!</button>
+                <div class="feedback" id="q5_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q6">
+                <p>6. The nurse is administering prednisone to a newly admitted patient who is taking multiple other drugs. The nurse would consider which drug interaction with prednisone? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="q6_option" value="a"> a. Cardiac and central nervous system actions are increased when drug is taken with an adrenergic agent.</label>
+                    <label><input type="checkbox" name="q6_option" value="b"> b. Potassium-wasting diuretics increase potassium loss, resulting in hypokalemia.</label>
+                    <label><input type="checkbox" name="q6_option" value="c"> c. Risk for gastrointestinal bleeding and ulceration increases when drug is taken with aspirin or other nonsteroidal antiinflammatory drugs (NSAIDs).</label>
+                    <label><input type="checkbox" name="q6_option" value="d"> d. The action of prednisone is decreased when taken with phenytoin because phenytoin increases glucocorticoid metabolism.</label>
+                    <label><input type="checkbox" name="q6_option" value="e"> e. Risk for dysrhythmias and digitalis toxicity increase when drug is taken with cardiac glycosides.</label>
+                    <label><input type="checkbox" name="q6_option" value="f"> f. Dosage of antidiabetic agents may need to be decreased when taken concurrently with glucocorticoids.</label>
+                </div>
+                <button class="submit-btn" id="submit_q6">Submit Answer</button>
+                <div class="feedback" id="q6_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q7">
+                <p>7. The nurse is administering vasopressin to a patient. Which nursing intervention is indicated when administering vasopressin? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="q7_option" value="a"> a. Record urinary output.</label>
+                    <label><input type="checkbox" name="q7_option" value="b"> b. Observe the patient’s weight and note edema.</label>
+                    <label><input type="checkbox" name="q7_option" value="c"> c. Monitor the patient for decreased blood pressure.</label>
+                    <label><input type="checkbox" name="q7_option" value="d"> d. Closely monitor the patient’s blood glucose levels.</label>
+                    <label><input type="checkbox" name="q7_option" value="e"> e. Monitor the patient’s pulse for increased heart rate.</label>
+                    <label><input type="checkbox" name="q7_option" value="f"> f. Record the patient’s daily calcium levels.</label>
+                </div>
+                <button class="submit-btn" id="submit_q7">Submit Answer</button>
+                <div class="feedback" id="q7_feedback"></div>
+            </div>
+
+        </section>
+        <section id="drug-mastery-quiz">
+            <h2>20. Drug Mastery Challenge: Let's Master These Meds!</h2>
+            <p>Ready to test your knowledge on the drugs for endocrine disorders? Go through each card and see if you can recall the key information!</p>
+            <button id="startQuizBtn">Start Drug Mastery Challenge!</button>
+
+            <div class="quiz-card" id="drugQuizCard">
+                <div class="progress-tracker">Card <span id="currentCardNum">1</span> of <span id="totalCardsNum">0</span></div>
+                <h4 id="drugName">Drug Name Goes Here</h4>
+                <p id="drugQuestion">Question about the drug will appear here.</p>
+
+                <div class="quiz-controls">
+                    <button id="showAnswerBtn">Show Answer</button>
+                </div>
+
+                <div id="answerFeedback">
+                    <h5>Answer: <span id="answerType"></span></h5>
+                    <p id="answerContent"></p>
+                </div>
+
+                <div id="masteryButtons" style="display: none;">
+                    <p>Did you get it right?</p>
+                    <button id="correctBtn">Yes, I knew it!</button>
+                    <button id="incorrectBtn">No, I need to review.</button>
+                </div>
+            </div>
+
+            <div id="quizSummary">
+                <h4>Challenge Complete!</h4>
+                <p>You've gone through all the drugs!</p>
+                <p>Mastered on first try: <span id="masteredCount">0</span></p>
+                <p>Needed review: <span id="missedCount">0</span></p>
+                <button id="restartQuizBtn">Restart Full Quiz</button>
+                <button id="reviewMissedBtn">Review Missed Drugs</button>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Pituitary, Thyroid, Parathyroid, and Adrenal Disorders Learning Module. Designed for focused learning.</p>
+        </footer>
+    </div>
+
+    <div id="clockOutOverlay">
+        <div id="clockOutContent">
+            <h2>Clock Out!</h2>
+            <p>Take a moment to reset your focus. Your module will resume in:</p>
+            <div id="brainEmoji">🧠</div> <div id="countdownTimer">00:30</div>
+        </div>
+    </div>
+    <script>
+        // ==========================================
+        // Drug Data (This is the only part that can safely sit outside DOMContentLoaded)
+        // ==========================================
+        const drugs = [
+            {
+                name: "Somatropin",
+                class: "Growth Hormone (GH) Replacement",
+                keyActions: "Stimulates linear growth in children with GH deficiency; treats GH deficiency in adults.",
+                sideEffects: "Paresthesia, arthralgia, myalgia, peripheral edema, weakness, cephalgia, glucose fluctuations (hyperglycemia), hypothyroidism, hematuria, flu-like symptoms, hyperpigmentation.",
+                nursingConsiderations: "Administer subcut or IM (not oral). Discontinue if epiphyseal closure in children. Monitor blood glucose (can cause diabetes mellitus with prolonged use). Contraindicated in active malignancy, severe obesity, severe respiratory impairment, Prader-Willi syndrome (pediatric). Corticosteroids inhibit its effects. Enhances antidiabetic effects (can cause hypoglycemia)."
+            },
+            {
+                name: "Bromocriptine",
+                class: "Dopamine Agonist (GH Suppressant, Prolactin Suppressant)",
+                keyActions: "Inhibits secretion of GH (from pituitary adenomas) and Prolactin (PRL). Used for acromegaly, pituitary adenoma, hyperprolactinemia, to decrease lactation.",
+                sideEffects: "GI symptoms (nausea, anorexia, dyspepsia, xerostomia).",
+                nursingConsiderations: "Oral form, generally fewer side effects than other hyperpituitarism treatments. Adverse effects: cardiac toxicity (hypertension, MI, angina), cerebrovascular toxicity (stroke, seizure). Discontinue if hypertension occurs due to pregnancy."
+            },
+            {
+                name: "Levothyroxine Sodium",
+                class: "Thyroid Hormone Replacement (Synthetic T4)",
+                keyActions: "Drug of choice for primary hypothyroidism. Increases metabolic rate, oxygen consumption, glucose utilization; promotes gluconeogenesis and body growth; stimulates protein synthesis.",
+                sideEffects: "Nausea, vomiting, anorexia, diarrhea, cramps, tremors, nervousness, irritability, insomnia, headache, weight loss, diaphoresis, amenorrhea. (These are often signs of undermedication or overmedication).",
+                nursingConsiderations: "Take on an **empty stomach at least 30-60 minutes before breakfast** and other medications. Many drug-drug (e.g., increases effects of anticoagulants, TCAs; decreases effects of antidiabetics, digitalis) and food interactions (e.g., soy, coffee, cruciferous vegetables inhibit absorption). Monitor for adverse effects (tachycardia, hypertension, palpitations, osteoporosis, seizures) which usually indicate overmedication. Life-threatening: thyroid crisis, cardiac dysrhythmias."
+            },
+            {
+                name: "Methimazole",
+                class: "Thioamide Antithyroid Drug",
+                keyActions: "Decreases thyroid hormone production by interfering with synthesis of thyroid hormone. Used for hyperthyroidism, Graves disease, thyrotoxicosis, and pre-surgery/radioiodine treatment.",
+                sideEffects: "Skin rash, hives, nausea, alopecia, loss of hair pigment, petechiae or ecchymoses, weakness. Serious adverse: agranulocytosis (loss of WBCs).",
+                nursingConsiderations: "Does not destroy thyroid tissue; blocks action. Preferred over PTU due to less severe side effects and longer half-life (euthyroid state in 2-4 months). Monitor CBC for leukopenia, especially if sore throat and fever occur (signs of agranulocytosis). Prolonged use may cause goiter."
+            },
+            {
+                name: "Propylthiouracil (PTU)",
+                class: "Thioamide Antithyroid Drug",
+                keyActions: "Decreases thyroid hormone production by interfering with synthesis. Inhibits conversion of T4 to T3 peripherally. Used for hyperthyroidism, Graves disease (intolerance to methimazole, no surgery/radioiodine).",
+                sideEffects: "Similar to methimazole, but may have higher incidence of severe liver injury. Skin rash, hives, nausea, alopecia, loss of hair pigment, petechiae or ecchymoses, weakness. Serious adverse: agranulocytosis, severe liver failure.",
+                nursingConsiderations: "Higher risk of liver injury compared to methimazole, often reserved for patients who cannot tolerate methimazole or need to be treated during the first trimester of pregnancy. Monitor CBC for agranulocytosis. Monitor liver function tests closely."
+            },
+            {
+                name: "Calcitriol",
+                class: "Vitamin D Analogue",
+                keyActions: "Promotes calcium absorption from the GI tract and secretion from bone to bloodstream; reabsorbs calcium by kidneys; enhances intestinal absorption of dietary calcium; decreases serum phosphate, bone resorption, and PTH levels. Used to treat parathyroid disorders and manage hypocalcemia in chronic renal failure.",
+                sideEffects: "Early signs of hypercalcemia: fatigue, weakness, somnolence, cephalgia, nausea, vomiting, diarrhea, cramps, drowsiness, dizziness, vertigo, metallic taste, lethargy, constipation, xerostomia.",
+                nursingConsiderations: "Monitor serum calcium levels frequently (normal 8-10 mg/dL). Contraindicated in hypercalcemia, hypervitaminosis D. Many drug interactions (e.g., digoxin/verapamil increase dysrhythmias, thiazide diuretics enhance effects). Adverse reactions are late signs of hypercalcemia (anorexia, photophobia, cardiac arrhythmias)."
+            },
+            {
+                name: "Calcitonin-salmon",
+                class: "Calcitonin (Hypocalcemic Agent)",
+                keyActions: "Decreases serum calcium levels by binding to osteoclast receptor sites, inhibiting bone resorption. Prevents bone loss and fractures, increases bone density, alleviates pain. Used for hypercalcemia and Paget disease.",
+                sideEffects: "Allergic reactions, GI symptoms (nausea, vomiting), cephalgia, hypocalcemia (can be severe).",
+                nursingConsiderations: "Contraindicated in patients allergic to fish. Less effective than other hyperparathyroidism drugs. Monitor for hypocalcemia (tetany, seizures) and allergic reactions."
+            },
+            {
+                name: "Prednisone",
+                class: "Glucocorticoid/Corticosteroid (Intermediate-acting)",
+                keyActions: "Suppresses inflammation and immune responses; has mild mineralocorticoid activity. Used for adrenocortical insufficiency (Addison disease), inflammatory/allergic conditions, autoimmune disorders, organ transplant.",
+                sideEffects: "Fluid/sodium retention, increased appetite, sweating, headache, depression, mood changes, cataracts, amenorrhea, Cushing syndrome signs ('moon face', 'buffalo hump'), psychosis, immunosuppression, HPA suppression, hyperglycemia, osteoporosis.",
+                nursingConsiderations: "**Dosage is highly individualized and must be tapered slowly** when discontinuing to prevent adrenal crisis. Take with food to minimize GI irritation. Increases risk of GI bleeding with NSAIDs. Increases potassium loss with diuretics. Can increase blood glucose (may need increased antidiabetic dose). Monitor electrolytes, glucose, weight, signs of infection. Do not stop abruptly."
+            },
+            {
+                name: "Fludrocortisone",
+                class: "Mineralocorticoid",
+                keyActions: "Promotes sodium retention and potassium/hydrogen excretion in renal tubules. Mimics aldosterone, maintaining fluid balance. Used for adrenocortical insufficiency (Addison disease), usually with a glucocorticoid.",
+                sideEffects: "Fluid imbalance, fluid overload, hypertension (often signs of overdose). Hypokalemia (can cause metabolic alkalosis, GI symptoms, weakness, cardiac rhythm changes).",
+                nursingConsiderations: "Monitor serum potassium level closely. Overdose symptoms (fluid overload, hypertension) require dose reduction or temporary discontinuation. High-protein diet may be indicated with higher doses. Severe decrease can lead to hypotension and vascular collapse."
+            },
+            {
+                name: "Desmopressin Acetate",
+                class: "Antidiuretic Hormone (ADH) Replacement",
+                keyActions: "Promotes water reabsorption from renal tubules to maintain water balance. Used to treat diabetes insipidus (DI), hemophilia A, and von Willebrand disease type 1.",
+                sideEffects: "Hyponatremia (can lead to seizures), cephalgia, dyspepsia, diarrhea, nausea, vomiting, hypotension, tachycardia (due to hypovolemia).",
+                nursingConsiderations: "Administered intranasally, orally, or by injection. Unlike vasopressin, it does not induce ACTH release. Contraindicated in moderate to severe renal disease and hyponatremia. Monitor fluid and electrolytes closely."
+            },
+            {
+                name: "Hydrocortisone (Systemic)",
+                class: "Glucocorticoid/Corticosteroid (Short-acting)",
+                keyActions: "Replaces missing cortisol in adrenocortical insufficiency; anti-inflammatory, immunosuppressive. Used for adrenal crisis prophylaxis in ill patients or surgery.",
+                sideEffects: "Similar to prednisone but generally less pronounced with short-term use. Increased blood glucose, fluid retention, muscle weakness, risk of infection.",
+                nursingConsiderations: "Administer with meals to minimize GI irritation. Daily doses usually in the morning to match body's natural rhythm. Acetate formulations should never be given intravenously. Dosage highly individualized. Monitor for signs of infection and fluid/electrolyte imbalance."
+            },
+            {
+                name: "Dexamethasone (Systemic)",
+                class: "Glucocorticoid/Corticosteroid (Long-acting)",
+                keyActions: "Potent anti-inflammatory action with little to no mineralocorticoid activity. Used for severe inflammatory responses (head trauma, allergic reactions), adrenocortical insufficiency (with mineralocorticoid).",
+                sideEffects: "Similar to other systemic glucocorticoids, but longer duration increases risk of side effects with prolonged use: increased blood glucose, fluid retention, 'moon face', osteoporosis, peptic ulcers, growth retardation, adrenal atrophy.",
+                nursingConsiderations: "Longest-acting corticosteroid. Requires mineralocorticoid when treating adrenal insufficiency. Give oral dose with food. Interacts with many drugs (e.g., phenytoin, theophylline, rifampin decrease action; estrogen, NSAIDs increase action). May require increased insulin/oral antidiabetic doses."
+            }
+        ];
+
+        // ==========================================
+        // ALL JavaScript code and functions MUST be inside this single DOMContentLoaded listener.
+        // This ensures all HTML elements are available when the script tries to access them.
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- QUIZ VARIABLES AND ELEMENT SELECTIONS ---
+            let currentQuizDrugsCopy = [];
+            let currentDrugIndex = 0;
+            let masteredDrugs = [];
+            let missedDrugs = [];
+            const questionTypes = ['class', 'keyActions', 'sideEffects', 'nursingConsiderations'];
+
+            const startQuizBtn = document.getElementById('startQuizBtn');
+            const drugQuizCard = document.getElementById('drugQuizCard');
+            const drugNameEl = document.getElementById('drugName');
+            const drugQuestionEl = document.getElementById('drugQuestion');
+            const showAnswerBtn = document.getElementById('showAnswerBtn');
+            const answerFeedbackEl = document.getElementById('answerFeedback');
+            const answerTypeEl = document.getElementById('answerType');
+            const answerContentEl = document.getElementById('answerContent');
+            const masteryButtons = document.getElementById('masteryButtons');
+            const correctBtn = document.getElementById('correctBtn');
+            const incorrectBtn = document.getElementById('incorrectBtn');
+            const quizSummary = document.getElementById('quizSummary');
+            const masteredCountEl = document.getElementById('masteredCount');
+            const missedCountEl = document.getElementById('missedCount');
+            const restartQuizBtn = document.getElementById('restartQuizBtn');
+            const reviewMissedBtn = document.getElementById('reviewMissedBtn');
+            const currentCardNumEl = document.getElementById('currentCardNum');
+            const totalCardsNumEl = document.getElementById('totalCardsNum');
+
+            // --- MODULE PROGRESS BAR VARIABLES ---
+            const moduleProgressBar = document.getElementById('moduleProgressBar');
+            const sections = document.querySelectorAll('section[id]'); // Select all sections with an ID
+            let completedSectionsCount = 0; // Tracks number of completed logical sections
+
+            const completableSectionIds = new Set();
+            // Populate completableSectionIds with all relevant section IDs
+            document.querySelectorAll('section').forEach(section => {
+                if (section.id && (section.querySelector('.reveal-button') || section.querySelector('.question-card') || section.id === 'drug-mastery-quiz')) {
+                    completableSectionIds.add(section.id);
+                }
+            });
+
+            // This line MUST be after completableSectionIds is fully populated
+            const totalSections = completableSectionIds.size;
+
+
+            // --- HELPER FUNCTIONS ---
+
+            function updateProgressBar() {
+                const progress = (completedSectionsCount / totalSections) * 100;
+                moduleProgressBar.style.width = `${progress}%`;
+            }
+
+            function markSectionCompleted(sectionId) {
+                const navLink = document.getElementById('nav-' + sectionId); // Use ID now
+                if (navLink && !navLink.classList.contains('completed')) {
+                    navLink.classList.add('completed');
+                    if (completableSectionIds.has(sectionId)) {
+                        completedSectionsCount++;
+                        updateProgressBar();
+                        // The 'Clock Out' feature has been removed as per your request.
+                        // The micro-break prompt will no longer appear automatically.
+                    }
+                }
+            }
+
+            // --- Manual scrolling for navigation links ---
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link behavior (no page reload/new tab)
+                    const targetId = this.id.replace('nav-', ''); // Get the actual section ID
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // Optionally, update the URL hash without reloading
+                        // window.location.hash = targetId;
+                    }
+                });
+            });
+
+            // toggleReveal function (now called by event listener, no longer onclick)
+            function toggleReveal(button) {
+                const content = button.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                    button.textContent = button.dataset.originalText;
+                } else {
+                    content.style.display = "block";
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = "Click to Hide Details";
+                    const parentSection = button.closest('section');
+                    if (parentSection && parentSection.id) {
+                        markSectionCompleted(parentSection.id);
+                    }
+                }
+            }
+
+            // --- Question Checking Functions ---
+            function checkAnswer(questionId, correctAnswer) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOption = questionCard.querySelector('input[name="' + questionId + '_option"]:checked');
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                // Disable options after submission
+                questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+                if (!selectedOption) {
+                    feedbackDiv.textContent = "Oops! Please pick an answer before checking.";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                if (selectedOption.value === correctAnswer) {
+                    feedbackDiv.textContent = "Awesome! That's correct. Keep up the great work!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Not quite! The correct answer was: ${correctAnswer.toUpperCase()}. Review the material and try to understand why.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkMultipleAnswers(questionId, correctAnswers) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOptions = Array.from(questionCard.querySelectorAll('input[name="' + questionId + '_option"]:checked')).map(input => input.value);
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                // Disable options after submission
+                questionCard.querySelectorAll('input[type="checkbox"]').forEach(input => input.disabled = true);
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+
+                if (selectedOptions.length === 0) {
+                    feedbackDiv.textContent = "Don't forget to select your answers!";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                const isCorrect = correctAnswers.every(answer => selectedOptions.includes(answer)) &&
+                                       selectedOptions.every(answer => correctAnswers.includes(answer));
+
+                if (isCorrect) {
+                    feedbackDiv.textContent = "Fantastic! You got all the correct points!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Hold on! Double-check the options and review the related content. You might have missed something or picked too many/too few. Correct answers were: ${correctAnswers.join(', ').toUpperCase()}.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkCaseStudy() {
+                // For the case study, we just enable the rationale. It's a free-text input type question.
+                const feedbackDiv = document.getElementById('case_study_feedback');
+                const rationaleDiv = document.getElementById('case_study_rationale');
+
+                // Disable inputs and button after submission
+                document.querySelectorAll('#critical-thinking .fill-in-the-blank input[type="text"]').forEach(input => input.disabled = true);
+                document.getElementById('submit_case_study').disabled = true;
+
+                feedbackDiv.textContent = "Compare your answers with the detailed rationale below to refine your understanding. Keep up the great work!";
+                feedbackDiv.className = 'feedback correct'; // Always show as correct feedback type for case study
+                feedbackDiv.style.display = 'block';
+                rationaleDiv.style.display = 'block';
+                markSectionCompleted('critical-thinking');
+            }
+
+
+            // --- DRUG MASTERY QUIZ FUNCTIONS ---
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function startQuiz(reviewMode = false) {
+                if (!reviewMode) {
+                    currentQuizDrugsCopy = shuffleArray([...drugs]); // Start with all drugs shuffled
+                    masteredDrugs = [];
+                    missedDrugs = [];
+                } else {
+                    if (missedDrugs.length === 0) {
+                        alert("Fantastic! You've mastered all the drugs in the review pile. Starting a new full quiz!");
+                        currentQuizDrugsCopy = shuffleArray([...drugs]);
+                        masteredDrugs = [];
+                        missedDrugs = [];
+                    } else {
+                        currentQuizDrugsCopy = shuffleArray([...missedDrugs]); // Only review missed ones
+                        missedDrugs = []; // Clear missed for the new review round
+                    }
+                }
+
+                currentDrugIndex = 0;
+                startQuizBtn.style.display = 'none';
+                drugQuizCard.style.display = 'block';
+                quizSummary.style.display = 'none';
+                displayCurrentCard();
+                markSectionCompleted('drug-mastery-quiz'); // Mark quiz section completed when started
+            }
+
+            function displayCurrentCard() {
+                if (currentDrugIndex >= currentQuizDrugsCopy.length) {
+                    showQuizSummary();
+                    return;
+                }
+
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const randomQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+
+                drugNameEl.textContent = currentDrug.name;
+                currentCardNumEl.textContent = currentDrugIndex + 1;
+                totalCardsNumEl.textContent = currentQuizDrugsCopy.length;
+
+                let questionText = '';
+                switch (randomQuestionType) {
+                    case 'class':
+                        questionText = `What is the **drug class** for ${currentDrug.name}?`;
+                        break;
+                    case 'keyActions':
+                        questionText = `What is a **key action or use** of ${currentDrug.name}?`;
+                        break;
+                    case 'sideEffects':
+                        questionText = `Name one or two **common side effects** of ${currentDrug.name}.`;
+                        break;
+                    case 'nursingConsiderations':
+                        questionText = `What is an **important nursing consideration** when administering ${currentDrug.name}.`;
+                        break;
+                }
+                drugQuestionEl.innerHTML = questionText;
+
+                answerFeedbackEl.style.display = 'none';
+                masteryButtons.style.display = 'none';
+                showAnswerBtn.style.display = 'block';
+
+                drugQuizCard.dataset.currentQuestionType = randomQuestionType;
+            }
+
+            function showAnswer() {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const questionType = drugQuizCard.dataset.currentQuestionType;
+
+                answerTypeEl.textContent = questionType.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, str => str.toUpperCase());
+
+                let content = '';
+                switch (questionType) {
+                    case 'class':
+                        content = currentDrug.class;
+                        break;
+                    case 'keyActions':
+                        content = currentDrug.keyActions;
+                        break;
+                    case 'sideEffects':
+                        content = currentDrug.sideEffects;
+                        break;
+                    case 'nursingConsiderations':
+                        content = currentDrug.nursingConsiderations;
+                        break;
+                }
+                answerContentEl.textContent = content;
+
+                answerFeedbackEl.style.display = 'block';
+                showAnswerBtn.style.display = 'none';
+                masteryButtons.style.display = 'flex';
+            }
+
+            function handleMastery(isCorrect) {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                if (isCorrect) {
+                    if (!masteredDrugs.includes(currentDrug)) { // Only add if not already in mastered
+                        masteredDrugs.push(currentDrug);
+                    }
+                } else {
+                    if (!missedDrugs.includes(currentDrug)) { // Only add if not already in missed
+                        missedDrugs.push(currentDrug);
+                    }
+                }
+                masteryButtons.style.display = 'none';
+
+                setTimeout(() => {
+                    currentDrugIndex++;
+                    displayCurrentCard();
+                }, 1500); // 1.5 second delay before next card
+            }
+
+            function showQuizSummary() {
+                drugQuizCard.style.display = 'none';
+                quizSummary.style.display = 'block';
+
+                const uniqueMastered = [...new Set(masteredDrugs)];
+                const uniqueMissed = [...new Set(missedDrugs)];
+
+                masteredCountEl.textContent = uniqueMastered.length;
+                missedCountEl.textContent = uniqueMissed.length;
+            }
+
+            // --- EVENT LISTENERS ---
+
+            // Attach event listeners for all reveal buttons
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    toggleReveal(this); // 'this' refers to the button that was clicked
+                });
+            });
+
+            // Attach event listeners for quiz question submit buttons (by their IDs)
+            document.getElementById('submit_q1').addEventListener('click', () => checkAnswer('q1', 'c'));
+            document.getElementById('submit_q2').addEventListener('click', () => checkAnswer('q2', 'c'));
+            document.getElementById('submit_q3').addEventListener('click', () => checkAnswer('q3', 'a'));
+            document.getElementById('submit_q4').addEventListener('click', () => checkAnswer('q4', 'b'));
+            document.getElementById('submit_q5').addEventListener('click', () => checkAnswer('q5', 'a'));
+            document.getElementById('submit_q6').addEventListener('click', () => checkMultipleAnswers('q6', ['b', 'c', 'd', 'e']));
+            document.getElementById('submit_q7').addEventListener('click', () => checkMultipleAnswers('q7', ['a', 'b', 'c', 'e']));
+            document.getElementById('submit_case_study').addEventListener('click', checkCaseStudy);
+
+
+            // Quiz Mastery Challenge Event Listeners
+            startQuizBtn.addEventListener('click', () => startQuiz(false));
+            showAnswerBtn.addEventListener('click', showAnswer);
+            correctBtn.addEventListener('click', () => handleMastery(true));
+            incorrectBtn.addEventListener('click', () => handleMastery(false));
+            restartQuizBtn.addEventListener('click', () => startQuiz(false));
+            reviewMissedBtn.addEventListener('click', () => startQuiz(true));
+
+            // Text Size Controls
+            const increaseTextBtn = document.getElementById('increaseText');
+            const decreaseTextBtn = document.getElementById('decreaseText');
+            let currentFontSize = 16; // Base font size in px (matches default Open Sans)
+
+            increaseTextBtn.addEventListener('click', () => {
+                currentFontSize += 2;
+                document.body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            decreaseTextBtn.addEventListener('click', () => {
+                currentFontSize -= 2;
+                if (currentFontSize < 12) currentFontSize = 12; // Minimum size
+                document.body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            // Quick Notes persistence (uses localStorage)
+            const quickNotesTextarea = document.getElementById('quickNotesTextarea');
+            if (localStorage.getItem('adhdModuleNotes')) { // Renamed from 'adhdModuleNotes' to be more general
+                quickNotesTextarea.value = localStorage.getItem('adhdModuleNotes');
+            }
+            quickNotesTextarea.addEventListener('input', () => {
+                localStorage.setItem('adhdModuleNotes', quickNotesTextarea.value); // Renamed for consistency
+            });
+
+            // Micro-Break Prompts (Original functionality without Clock Out)
+            const microBreakPromptEl = document.getElementById('microBreakPrompt');
+            const breakPrompts = [
+                "Quick Break! Stand up and stretch, or take a few deep breaths!",
+                "Time for a 30-second mental reset. Look away from the screen for a moment!",
+                "Mini-Break! Wiggle your toes or do a quick shoulder roll.",
+                "Focus check! Take a sip of water and recenter. You're doing great!",
+                "Short pause! How about a quick doodle or scribble for 15 seconds!"
+            ];
+            let breakPromptTimeout;
+
+            function showMicroBreakPrompt() {
+                if (breakPromptTimeout) {
+                    clearTimeout(breakPromptTimeout);
+                }
+                const randomPrompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)];
+                microBreakPromptEl.textContent = randomPrompt;
+                microBreakPromptEl.style.display = 'block';
+                // Set a timer to hide it after the animation
+                breakPromptTimeout = setTimeout(() => {
+                    microBreakPromptEl.style.display = 'none';
+                }, 8000); // Matches animation duration
+            }
+
+            // --- Initial setup calls that run once DOM is fully loaded ---
+            // Initialize reveal button original text (needed for toggleReveal)
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.dataset.originalText = button.textContent;
+            });
+            updateProgressBar(); // Initial update
+        }); // END OF document.addEventListener('DOMContentLoaded', ...)
+    </script>
+</body>
+</html>
