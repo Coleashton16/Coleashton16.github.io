@@ -7,21 +7,30 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* --- Global Reset & Base Styles --- */
         :root {
-            --primary-blue: #0d6efd;
-            --secondary-gray: #6c757d;
-            --light-bg: #f8f9fa;
+            --primary-blue: #2c7ac2; /* Deeper, more professional blue */
+            --primary-blue-light: #e0f2ff; /* Very light blue for backgrounds */
+            --secondary-gray: #6f7c8d; /* Slightly darker gray for text */
+            --light-bg: #f5f8fa; /* Soft, very light background */
             --white-bg: #ffffff;
-            --dark-text: #212529;
-            --light-border: #dee2e6;
-            --shadow-light: rgba(0,0,0,0.05);
-            --shadow-medium: rgba(13, 110, 253, 0.15);
-            --border-radius-lg: 16px;
-            --border-radius-md: 12px;
-            --section-header-color: #343a40;
+            --dark-text: #344759; /* Near black for main text */
+            --light-border: #e0e6ed; /* Subtle border color */
+            --shadow-light: rgba(0,0,0,0.08); /* More visible but still soft shadow */
+            --shadow-medium: rgba(44, 122, 194, 0.2); /* Blue-tinted shadow for hover */
+            --border-radius-lg: 18px; /* Slightly larger radius */
+            --border-radius-md: 10px;
+            --section-header-color: #344759; /* Dark text for headers */
+
+            /* New colors for buttons and highlights */
+            --exam-red: #d9534f; /* A more muted, professional red */
+            --exam-red-hover: #c9302c;
+            --exam-red-light: #fbecec; /* Very light red for background */
+            --module-green: #5cb85c; /* A professional green */
+            --module-green-hover: #4cae4c;
+            --module-green-light: #edf7ed; /* Very light green */
         }
 
         html {
@@ -33,7 +42,7 @@
             background-color: var(--light-bg);
             color: var(--dark-text);
             margin: 0;
-            line-height: 1.6;
+            line-height: 1.65; /* Improved readability */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -41,11 +50,11 @@
         /* --- Top Navigation Menu --- */
         .top-nav {
             background-color: var(--primary-blue);
-            padding: 10px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky; /* Makes the nav bar stick to the top when scrolling */
+            padding: 12px 0; /* More vertical padding */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* Stronger, professional shadow */
+            position: sticky;
             top: 0;
-            z-index: 1000; /* Ensures it stays on top of other content */
+            z-index: 1000;
         }
 
         .top-nav-container {
@@ -53,7 +62,7 @@
             margin: 0 auto;
             padding: 0 24px;
             display: flex;
-            justify-content: center; /* Center the navigation items */
+            justify-content: center;
             align-items: center;
         }
 
@@ -62,64 +71,92 @@
             margin: 0;
             padding: 0;
             display: flex;
-            gap: 25px; /* Space between nav items */
+            gap: 30px; /* More space between nav items */
         }
 
         .top-nav-item a {
             color: white;
             text-decoration: none;
-            font-weight: 500;
-            font-size: 17px;
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            display: block; /* Make the whole padding area clickable */
+            font-weight: 600; /* Slightly bolder */
+            font-size: 1.05rem; /* Slightly larger font */
+            padding: 10px 18px; /* Generous padding */
+            border-radius: var(--border-radius-md);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: block;
+            position: relative; /* For the subtle underline effect */
+            overflow: hidden;
+        }
+
+        .top-nav-item a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background-color: white; /* Underline color */
+            transition: width 0.3s ease;
         }
 
         .top-nav-item a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
+            background-color: rgba(255, 255, 255, 0.25); /* More distinct hover */
+            transform: translateY(-3px); /* Nicer lift */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtle shadow on hover */
+        }
+
+        .top-nav-item a:hover::after {
+            width: 80%; /* Expand underline on hover */
         }
 
         /* --- Layout Container --- */
         .page-container {
-            max-width: 1000px; /* Wider for more content */
+            max-width: 1050px; /* Slightly wider for content */
             margin: 0 auto;
-            padding: 24px;
+            padding: 30px; /* More overall padding */
         }
 
         /* --- Header Section --- */
         .header {
             text-align: center;
-            padding: 48px 24px;
-            background-color: var(--white-bg);
+            padding: 60px 30px; /* More padding */
+            background: linear-gradient(135deg, var(--white-bg), var(--primary-blue-light)); /* Soft gradient */
             border-radius: var(--border-radius-lg);
-            margin-bottom: 32px;
-            box-shadow: 0 4px 12px var(--shadow-light);
+            margin-bottom: 40px;
+            box-shadow: 0 8px 25px var(--shadow-light); /* Enhanced shadow */
+            border: 1px solid var(--light-border); /* Subtle border */
         }
 
         .header h1 {
-            font-size: 42px;
+            font-size: 3.2rem; /* Larger, more impactful heading */
             font-weight: 700;
             color: var(--primary-blue);
-            margin: 0 0 12px 0;
+            margin: 0 0 15px 0;
             line-height: 1.2;
+            letter-spacing: -0.03em; /* Slightly tighter for aesthetics */
         }
 
         .header p {
-            font-size: 20px;
+            font-size: 1.3rem; /* Larger subtitle */
             color: var(--secondary-gray);
-            max-width: 700px;
+            max-width: 750px;
             margin: 0 auto;
         }
 
         /* --- Content Section (Modular Boxes) --- */
         .content-section {
             background-color: var(--white-bg);
-            padding: 32px;
+            padding: 35px; /* More padding */
             border-radius: var(--border-radius-lg);
-            margin-bottom: 32px;
-            box-shadow: 0 4px 12px var(--shadow-light);
+            margin-bottom: 40px;
+            box-shadow: 0 6px 20px var(--shadow-light); /* Consistent shadow */
+            border: 1px solid var(--light-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* For subtle hover */
+        }
+
+        .content-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         /* Collapsible Header for Content Sections */
@@ -127,96 +164,107 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 26px;
-            font-weight: 600;
+            font-size: 1.9rem; /* Larger header text */
+            font-weight: 700; /* Bolder */
             color: var(--section-header-color);
             margin-top: 0;
-            margin-bottom: 28px; /* Adjusted to be separate from content */
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--light-border);
-            text-align: center; /* For the h2 text itself */
-            cursor: pointer; /* Indicate clickability */
-            user-select: none; /* Prevent text selection on double-click */
+            margin-bottom: 30px; /* More space below header */
+            padding-bottom: 18px; /* More padding below text */
+            border-bottom: 3px solid var(--primary-blue); /* More prominent border */
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s ease, border-color 0.3s ease;
         }
 
         .collapsible-header:hover {
-            color: var(--primary-blue); /* Highlight on hover */
+            color: var(--primary-blue);
+            border-color: var(--module-green); /* Change border on hover */
         }
 
         .collapsible-header .collapse-icon {
-            font-size: 20px; /* Smaller icon */
-            margin-left: 15px;
+            font-size: 1.4rem; /* Larger icon */
+            margin-left: 20px;
             transition: transform 0.3s ease;
+            color: var(--secondary-gray); /* Icon color */
+        }
+
+        .collapsible-header:hover .collapse-icon {
+            color: var(--primary-blue); /* Icon color change on hover */
         }
 
         .collapsible-header .collapse-icon.rotated {
-            transform: rotate(180deg); /* Rotate when expanded */
+            transform: rotate(180deg);
         }
 
         /* Collapsible Content */
         .collapsible-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease-out; /* Smooth transition for collapse/expand */
-            padding-top: 0; /* Ensures no extra padding when collapsed */
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out; /* Smoother, with padding */
+            padding-top: 0;
         }
 
         .collapsible-content.expanded {
-            max-height: 2000px; /* Large enough value to show all content without being scrollable */
-            transition: max-height 0.6s ease-in; /* Slightly different transition for expansion */
+            max-height: 2500px; /* Sufficiently large */
+            transition: max-height 0.7s ease-in, padding 0.7s ease-in;
+            padding-top: 15px; /* Add padding when expanded */
         }
 
         /* --- Subsection Styling --- */
         .subsection {
-            background-color: #f0f8ff; /* Light blue background for subsections */
-            padding: 25px;
+            background-color: var(--primary-blue-light); /* Consistent light blue */
+            padding: 30px; /* More padding */
             border-radius: var(--border-radius-md);
-            margin-top: 25px;
-            border: 1px solid var(--primary-blue); /* Subtle blue border */
-            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.08);
+            margin-top: 30px; /* More spacing */
+            border: 1px solid var(--primary-blue);
+            box-shadow: 0 4px 15px rgba(44, 122, 194, 0.1); /* Subtle blue shadow */
         }
 
         .subsection h3 {
-            font-size: 22px;
+            font-size: 1.7rem; /* Larger subsection title */
             font-weight: 600;
             color: var(--primary-blue);
             margin-top: 0;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #cceeff; /* Lighter blue border */
-            text-align: left; /* Align subsection titles to the left */
+            margin-bottom: 25px; /* More space */
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--primary-blue); /* Dashed border for distinction */
+            text-align: left;
         }
         
         /* Special styling for the UNIT EXAM subsection */
         .subsection.unit-exam-highlight {
-            background-color: #fff3cd; /* Light warning yellow */
-            border-color: #ffc107; /* Darker yellow border */
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
-            padding: 30px;
+            background-color: var(--exam-red-light); /* Light red background */
+            border-color: var(--exam-red); /* Darker red border */
+            box-shadow: 0 6px 20px rgba(217, 83, 79, 0.2); /* Red-tinted shadow */
+            padding: 35px; /* More padding for emphasis */
             text-align: center;
+            margin-top: 40px; /* More separation */
         }
 
         .subsection.unit-exam-highlight h3 {
-            color: #dc3545; /* Red for emphasis */
-            font-style: italic; /* Italicize UNIT EXAM */
-            border-bottom: 2px solid #dc3545;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            font-size: 24px;
+            color: var(--exam-red); /* Red for emphasis */
+            font-style: italic;
+            border-bottom: 2px solid var(--exam-red);
+            padding-bottom: 20px; /* More padding */
+            margin-bottom: 20px;
+            font-size: 2rem; /* Larger */
+            letter-spacing: 0.05em; /* A bit spaced out */
+            text-transform: uppercase; /* Make it pop */
         }
 
         .subsection.unit-exam-highlight p {
-            font-size: 17px;
-            color: #495057;
-            margin-bottom: 25px;
+            font-size: 1.15rem; /* Larger text */
+            color: var(--dark-text);
+            margin-bottom: 30px; /* More space */
+            line-height: 1.7;
         }
 
 
         /* --- Button Grid for Resources --- */
         .button-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px; /* Adjusted gap for subsections */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Slightly wider min width */
+            gap: 25px; /* More gap */
             justify-content: center;
             align-items: stretch;
         }
@@ -225,8 +273,8 @@
             background: var(--white-bg);
             border: 1px solid var(--light-border);
             color: var(--dark-text);
-            padding: 20px; /* Slightly reduced padding for tighter fit in subsections */
-            font-size: 18px;
+            padding: 22px; /* Generous padding */
+            font-size: 1.1rem; /* Slightly larger font */
             font-weight: 600;
             text-decoration: none;
             border-radius: var(--border-radius-md);
@@ -238,168 +286,226 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px; /* Slightly reduced gap */
-            min-height: 90px; /* Minimum height for consistency */
+            gap: 10px; /* More space between icon and text */
+            min-height: 100px; /* Taller buttons */
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05); /* Subtle default shadow */
         }
 
-        /* Hover effect for buttons */
+        /* Hover effect for buttons - refined shimmer and lift */
         .resource-button:before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
+            left: -120%; /* Start further left */
             width: 100%;
             height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: all 0.4s ease;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent); /* Stronger shimmer */
+            transition: all 0.5s ease; /* Slower shimmer */
         }
 
         .resource-button:hover:before {
-            left: 100%;
+            left: 120%; /* End further right */
         }
 
         .resource-button:hover {
-            transform: translateY(-5px); /* Slightly less pronounced lift for nested buttons */
-            box-shadow: 0 8px 25px var(--shadow-medium);
+            transform: translateY(-7px); /* More pronounced lift */
+            box-shadow: 0 12px 35px var(--shadow-medium); /* Stronger, blue-tinted shadow */
             border-color: var(--primary-blue);
             color: var(--primary-blue);
         }
 
         .resource-button .icon {
-            font-size: 32px; /* Slightly smaller icons for subsections */
+            font-size: 2.2rem; /* Larger icons */
             line-height: 1;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, color 0.3s ease;
+            color: var(--primary-blue); /* Default icon color */
         }
 
         .resource-button:hover .icon {
-            transform: scale(1.1); /* Slightly less pronounced icon scale */
+            transform: scale(1.15); /* More pronounced icon scale */
+            color: var(--primary-blue); /* Ensure icon color stays consistent or changes nicely */
         }
         
-        /* Removed specific background/border for exam-button to make it consistent */
-        /* .resource-button.exam-button {
-            background-color: #f0f8ff;
-            color: var(--primary-blue);
-            border-color: #a7d9ff;
+        /* Specific styling for exam and learning module buttons */
+        .resource-button.exam-button {
+            background-color: var(--exam-red-light);
+            border-color: var(--exam-red);
+            color: var(--exam-red);
+            font-weight: 600;
+        }
+        .resource-button.exam-button .icon {
+            color: var(--exam-red);
         }
         .resource-button.exam-button:hover {
-            background-color: #e0f2ff;
-            border-color: var(--primary-blue);
-        } */
+            background-color: var(--exam-red-light); /* Maintain light background */
+            color: var(--exam-red-hover);
+            border-color: var(--exam-red-hover);
+            box-shadow: 0 12px 35px rgba(217, 83, 79, 0.3); /* Red shadow on hover */
+        }
+        .resource-button.exam-button:hover .icon {
+             color: var(--exam-red-hover);
+        }
+
+        /* Learning Module buttons (default is good, but can specify for clarity) */
+        .resource-button.learning-module-button {
+            background-color: var(--module-green-light);
+            border-color: var(--module-green);
+            color: var(--module-green);
+            font-weight: 600;
+        }
+        .resource-button.learning-module-button .icon {
+            color: var(--module-green);
+        }
+        .resource-button.learning-module-button:hover {
+            background-color: var(--module-green-light);
+            color: var(--module-green-hover);
+            border-color: var(--module-green-hover);
+            box-shadow: 0 12px 35px rgba(92, 184, 92, 0.3); /* Green shadow on hover */
+        }
+        .resource-button.learning-module-button:hover .icon {
+            color: var(--module-green-hover);
+        }
 
         /* Full width button for Unit 2 Exam Simulation */
         .resource-button.full-width-button {
-            grid-column: 1 / -1; /* Spans across all columns in the grid */
-            background-color: #dc3545; /* Red background for critical exam button */
+            grid-column: 1 / -1;
+            background-color: var(--exam-red); /* Strong red */
             color: white;
-            padding: 25px 20px; /* More padding */
-            font-size: 20px;
+            padding: 30px 25px; /* Even more padding */
+            font-size: 1.3rem; /* Larger font */
             font-weight: 700;
-            border-color: #bd2130;
-            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.25);
+            border-color: var(--exam-red-hover);
+            box-shadow: 0 8px 25px rgba(217, 83, 79, 0.4); /* Pronounced red shadow */
+            flex-direction: row; /* Icon and text side-by-side */
+            gap: 20px; /* Space out icon and text */
         }
 
         .resource-button.full-width-button:hover {
-            background-color: #c82333;
-            border-color: #bd2130;
-            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.35);
-            transform: translateY(-5px);
+            background-color: var(--exam-red-hover);
+            border-color: var(--exam-red);
+            box-shadow: 0 12px 35px rgba(217, 83, 79, 0.5);
+            transform: translateY(-10px); /* More dramatic lift */
         }
         .resource-button.full-width-button .icon {
-            font-size: 40px; /* Larger icon for the main exam button */
+            font-size: 3.5rem; /* Largest icon */
+            color: white; /* White icon for contrast */
         }
 
 
         /* --- Footer --- */
         .footer {
             text-align: center;
-            padding: 20px;
-            font-size: 14px;
+            padding: 30px; /* More padding */
+            font-size: 0.95rem;
             color: var(--secondary-gray);
-            margin-top: 40px;
+            margin-top: 50px; /* More margin */
+            border-top: 1px solid var(--light-border); /* Top border */
         }
 
         /* --- Responsive Adjustments --- */
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 36px;
+                font-size: 2.8rem;
             }
             .header p {
-                font-size: 18px;
+                font-size: 1.15rem;
             }
             .collapsible-header {
-                font-size: 24px;
+                font-size: 1.7rem;
             }
             .subsection h3 {
-                font-size: 20px;
+                font-size: 1.5rem;
             }
             .resource-button {
-                font-size: 17px;
-                padding: 18px;
+                font-size: 1rem;
+                padding: 20px;
+                min-height: 90px;
             }
             .resource-button .icon {
-                font-size: 30px;
+                font-size: 2rem;
             }
             .resource-button.full-width-button {
-                font-size: 18px;
-                padding: 20px;
+                font-size: 1.15rem;
+                padding: 25px 20px;
             }
             .resource-button.full-width-button .icon {
-                font-size: 36px;
+                font-size: 3rem;
             }
             .top-nav-list {
-                gap: 15px; /* Reduce gap on smaller screens */
+                gap: 20px;
             }
             .top-nav-item a {
-                font-size: 16px; /* Adjust font size */
-                padding: 6px 10px;
+                font-size: 1rem;
+                padding: 8px 12px;
+            }
+            .page-container {
+                padding: 20px;
+            }
+            .header {
+                padding: 40px 20px;
+            }
+            .content-section {
+                padding: 30px;
+            }
+            .subsection {
+                padding: 25px;
             }
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 550px) {
             .page-container {
-                padding: 16px;
+                padding: 15px;
             }
             .header, .content-section {
-                padding: 24px 18px;
-                margin-bottom: 24px;
+                padding: 25px 15px;
+                margin-bottom: 30px;
             }
             .header h1 {
-                font-size: 30px;
+                font-size: 2.2rem;
             }
             .header p {
-                font-size: 16px;
+                font-size: 1rem;
             }
             .collapsible-header {
-                font-size: 22px;
+                font-size: 1.5rem;
                 margin-bottom: 20px;
+                padding-bottom: 12px;
             }
             .subsection {
                 padding: 20px;
-                margin-top: 20px;
+                margin-top: 25px;
             }
             .subsection h3 {
-                font-size: 18px;
+                font-size: 1.3rem;
+                margin-bottom: 18px;
+                padding-bottom: 8px;
             }
             .button-grid {
                 grid-template-columns: 1fr; /* Stack buttons on very small screens */
-                gap: 15px;
+                gap: 18px;
             }
             .resource-button {
-                min-height: 80px;
-                padding: 15px;
+                min-height: 85px;
+                padding: 18px;
+                font-size: 0.95rem;
+            }
+            .resource-button .icon {
+                font-size: 1.8rem;
             }
             .resource-button.full-width-button {
-                font-size: 17px;
-                padding: 18px;
+                font-size: 1.05rem;
+                padding: 22px;
+                flex-direction: column; /* Stack icon and text for full-width on small screens */
+                gap: 10px;
             }
             .resource-button.full-width-button .icon {
-                font-size: 32px;
+                font-size: 2.8rem;
             }
             .subsection.unit-exam-highlight h3 {
-                font-size: 20px;
+                font-size: 1.8rem;
             }
             .subsection.unit-exam-highlight p {
-                font-size: 15px;
+                font-size: 1rem;
             }
             .top-nav-list {
                 flex-direction: column; /* Stack nav items vertically on very small screens */
@@ -407,12 +513,12 @@
                 gap: 10px;
             }
             .top-nav-item a {
-                font-size: 15px;
-                padding: 6px 12px;
-                width: fit-content; /* Adjust width for stacked items */
+                font-size: 0.9rem;
+                padding: 8px 15px;
+                width: fit-content;
             }
             .top-nav-container {
-                padding: 0 16px; /* Adjust padding for container */
+                padding: 0 15px;
             }
         }
     </style>
@@ -463,7 +569,7 @@
                             <a href="Upper Respiratory Pharmacology SDE.html" class="resource-button exam-button">
                                 <span class="icon">🔍</span> Upper Respiratory Pharmacology Diagnostic Exam
                             </a>
-                            <a href="Pharmacology Upper Respiratory Learning Module.html" class="resource-button">
+                            <a href="Pharmacology Upper Respiratory Learning Module.html" class="resource-button learning-module-button">
                                 <span class="icon">🧠</span> Upper Respiratory Learning Module
                             </a>
                         </div>
@@ -475,7 +581,7 @@
                             <a href="Pharmacology Lower Respiratory Disorders SDE.html" class="resource-button exam-button">
                                 <span class="icon">🩺</span> Lower Respiratory Pharmacology Diagnostic Exam
                             </a>
-                            <a href="Pharmacology Lower Respiratory Disorders Learning Module.html" class="resource-button">
+                            <a href="Pharmacology Lower Respiratory Disorders Learning Module.html" class="resource-button learning-module-button">
                                 <span class="icon">📚</span> Lower Respiratory Learning Module
                             </a>
                         </div>
@@ -487,10 +593,10 @@
                             <a href="Pharmacology Glucose and Hormones SDE.html" class="resource-button exam-button">
                                 <span class="icon">🧪</span> Hormone and Glucose Pharmacology Diagnostic Exam
                             </a>
-                            <a href="Hormones Learning Module Pharmacology.html" class="resource-button">
+                            <a href="Hormones Learning Module Pharmacology.html" class="resource-button learning-module-button">
                                 <span class="icon">🧬</span> Hormones Learning Module
                             </a>
-                            <a href="Pharmacology Antidiabetics Learning Module.html" class="resource-button">
+                            <a href="Pharmacology Antidiabetics Learning Module.html" class="resource-button learning-module-button">
                                 <span class="icon">💊</span> Antidiabetics Learning Module
                             </a>
                         </div>
@@ -517,13 +623,13 @@
                     <div class="subsection">
                         <h3>Perfusion/Cardiac</h3>
                         <div class="button-grid">
-                            <a href="Pharmacology Cardiac Glycosides Learning Module.html" class="resource-button">
+                            <a href="Pharmacology Cardiac Glycosides Learning Module.html" class="resource-button learning-module-button">
                                 <span class="icon">❤️</span> Cardiac Glycosides, Antianginals, Antidysrhythmics Learning Module
                             </a>
-                            <a href="Pharmacology Dieuretics Learning Module.html" class="resource-button">
+                            <a href="Pharmacology Dieuretics Learning Module.html" class="resource-button learning-module-button">
                                 <span class="icon">💧</span> Diuretics Learning Module
                             </a>
-                            <a href="Pharmacology Antihypertensives Learning Module.html" class="resource-button">
+                            <a href="Pharmacology Antihypertensives Learning Module.html" class="resource-button learning-module-button">
                                 <span class="icon">⬇️</span> Antihypertensives Learning Module
                             </a>
                         </div>
