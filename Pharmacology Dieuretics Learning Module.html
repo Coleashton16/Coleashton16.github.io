@@ -55,9 +55,9 @@
         }
 
         .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            width: 100%; /* Changed from max-width to width to make it span full screen */
+            margin: 20px auto; /* Keep vertical margin, auto for horizontal centering when not 100% wide */
+            padding: 20px min(5vw, 60px); /* Responsive horizontal padding, min 20px, max 60px or 5vw */
             background-color: var(--bg-white);
             border-radius: 8px;
             box-shadow: 0 4px 15px var(--shadow-light);
@@ -1940,8 +1940,8 @@
                 <div class="options">
                     <label><input type="radio" name="q5_option" value="a"> a. Instruct the patient to change positions quickly when getting out of bed.</label>
                     <label><input type="radio" name="q5_option" value="b"> b. Assess blood pressure before administration.</label>
-                    <label><input type="radio" name="q5_option" value="c"> c. Administer the drug at bedtime for maximum effectiveness.</label>
-                    <label><input type="radio" name="q5_option" value="d"> d. Teach the patient to avoid fruits to prevent hyperkalemia.</label>
+                    <label><input type="radio" name="q5_option" value="c"> d. Administer the drug at bedtime for maximum effectiveness.</label>
+                    <label><input type="radio" name="q5_option" value="d"> e. Teach the patient to avoid fruits to prevent hyperkalemia.</label>
                 </div>
                 <button class="submit-btn" id="submit_q5">Check My Answer!</button>
                 <div class="feedback" id="q5_feedback"></div>
@@ -2287,11 +2287,16 @@
                     masteredDrugs = [];
                     missedDrugs = [];
                 } else {
+                    // This block handles the case where the user wants to review missed drugs
+                    // It also handles if there are no missed drugs left to review
                     if (missedDrugs.length === 0) {
-                        alert("Fantastic! You've mastered all the drugs in the review pile. Starting a new full quiz!");
-                        currentQuizDrugsCopy = shuffleArray([...drugs]);
-                        masteredDrugs = [];
-                        missedDrugs = [];
+                        // Display message to user about no more missed drugs, then restart full quiz
+                        quizSummary.querySelector('h4').textContent = "Great job! No missed drugs left!";
+                        quizSummary.querySelector('p:first-of-type').textContent = "You've successfully reviewed all the drugs you previously needed to review. Starting a new full quiz.";
+                        quizSummary.style.display = 'block'; // Ensure summary is visible to show message
+                        drugQuizCard.style.display = 'none'; // Hide quiz card
+                        startQuizBtn.style.display = 'block'; // Show start button again
+                        return; // Exit function, don't start new round immediately without user interaction
                     } else {
                         currentQuizDrugsCopy = shuffleArray([...missedDrugs]); // Only review missed ones
                         missedDrugs = []; // Clear missed for the new review round
@@ -2399,6 +2404,18 @@
 
                 masteredCountEl.textContent = uniqueMastered.length;
                 missedCountEl.textContent = uniqueMissed.length;
+
+                // Customize summary message
+                if (uniqueMissed.length === 0 && uniqueMastered.length === drugs.length) {
+                    quizSummary.querySelector('h4').textContent = "Congratulations! All Drugs Mastered!";
+                    quizSummary.querySelector('p:first-of-type').textContent = "You knew every drug on your first try or successfully reviewed all of them!";
+                } else if (uniqueMastered.length > 0 && uniqueMissed.length > 0) {
+                    quizSummary.querySelector('h4').textContent = "Challenge Complete!";
+                    quizSummary.querySelector('p:first-of-type').textContent = "You've gone through all the drugs. Keep reviewing the ones you missed!";
+                } else {
+                    quizSummary.querySelector('h4').textContent = "Good effort!";
+                    quizSummary.querySelector('p:first-of-type').textContent = "Review the concepts and try again to master all the drugs.";
+                }
             }
 
             // --- EVENT LISTENERS ---
