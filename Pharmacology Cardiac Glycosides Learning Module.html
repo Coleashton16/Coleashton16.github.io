@@ -44,6 +44,8 @@
             line-height: 1.6;
             color: var(--text-color);
             background-color: var(--bg-light);
+            -webkit-font-smoothing: antialiased; /* Smoother fonts */
+            -moz-osx-font-smoothing: grayscale; /* Smoother fonts */
             transition: font-size 0.2s ease, filter 0.5s ease-in-out; /* Smooth text size change and blur */
         }
 
@@ -55,14 +57,14 @@
         }
 
         .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            max-width: 100%; /* Changed to 100% to make it full width */
+            margin: 0 auto; /* Center the container (still relevant for internal content if any max-widths were left) */
+            padding: 20px 40px; /* Increased horizontal padding for wider screens */
             background-color: var(--bg-white);
             border-radius: 8px;
             box-shadow: 0 4px 15px var(--shadow-light);
             box-sizing: border-box; /* Include padding and border in the element's total width and height */
-            min-height: calc(100vh - 40px); /* Ensure container is tall enough to trigger scroll */
+            min-height: calc(100vh - 0px); /* Ensure container is tall enough to trigger scroll, adjusted from 40px */
         }
 
         header {
@@ -794,7 +796,7 @@
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
-                padding: 10px;
+                padding: 10px; /* Reduced padding on smaller screens */
             }
 
             header h1 {
@@ -857,7 +859,7 @@
     <div class="container">
         <header>
             <h1>Module 40: Cardiac Glycosides, Antianginals, and Antidysrhythmics</h1>
-            <p>Mastering Pharmacology for Nursing Care - ADHD Friendly!</p>
+            <p>Mastering Pharmacology for Nursing Care</p>
             <div id="moduleProgressBarContainer">
                 <div id="moduleProgressBar"></div>
             </div>
@@ -2310,21 +2312,21 @@
                 keyActions: "Increases blood glucose by stimulating glycogenolysis (glycogen breakdown) in the liver. Used to treat insulin-induced hypoglycemia when patient is unconscious or unable to ingest sugar.",
                 sideEffects: "Nausea, vomiting, abdominal pain, hypo/hypertension, tachycardia, headache, hypo/hyperglycemia.",
                 nursingConsiderations: "Available for parenteral use (subcut, IM, IV). Teach family members how to administer for emergency hypoglycemia. Blood glucose should increase within 10 minutes. Follow with oral carbohydrates once conscious. Protects brain and retina during hypoglycemia."
-             },
+            },
              {
                 name: "Milrinone lactate",
                 class: "Phosphodiesterase (PDE) Inhibitor (Positive Inotrope)",
                 keyActions: "Inhibits PDE, leading to increased stroke volume and cardiac output and vasodilation. Used for acute decompensated heart failure.",
                 sideEffects: "Headache, hypotension, tachycardia, dysrhythmias (severe), injection site reaction, tremor, nausea, vomiting, hypokalemia, thrombocytopenia, angina.",
                 nursingConsiderations: "Administered intravenously for short-term use (no longer than 48-72 hours). High-alert medication. Requires close monitoring of ECG and cardiac status due to risk of severe cardiac dysrhythmias. Monitor electrolytes, especially potassium."
-             },
+            },
              {
                 name: "Nesiritide",
                 class: "Atrial Natriuretic Peptide Hormone",
                 keyActions: "Inhibits ADH by increasing urine sodium loss. Promotes vasodilation, natriuresis, and diuresis. Used for acute decompensated heart failure with dyspnea.",
                 sideEffects: "Orthostatic hypotension, headache, drowsiness, anxiety, nausea, tachycardia, back pain, bradycardia, angina, insomnia, hypoglycemia, dysrhythmias.",
                 nursingConsiderations: "Administered intravenously. Monitor BP closely, especially for orthostatic hypotension. May cause hypotension. Assess for signs of fluid volume changes and improvement in dyspnea."
-             }
+            }
         ];
 
         // ==========================================
@@ -2492,8 +2494,8 @@
                 // Check if all selected options are in the correct answers AND
                 // if all correct answers were selected (no missing ones)
                 const isCorrect = selectedOptions.every(answer => correctSet.has(answer)) &&
-                                correctAnswers.every(answer => selectedOptions.includes(answer)) &&
-                                selectedOptions.length === correctAnswers.length; // Ensure no extra incorrect options were selected
+                                 correctAnswers.every(answer => selectedOptions.includes(answer)) &&
+                                 selectedOptions.length === correctAnswers.length; // Ensure no extra incorrect options were selected
 
                 if (isCorrect) {
                     feedbackDiv.textContent = "Fantastic! You got all the correct points!";
@@ -2545,14 +2547,14 @@
 
                 // Question 2: Lab Values
                 const cs_q2_answers = {
-                    'cs_q2_a': 'priority',      // Potassium (K) 3.0 mEq/L
-                    'cs_q2_b': 'no_priority',   // Sodium (Na) 135 mEq/L
-                    'cs_q2_c': 'no_priority',   // Creatinine 1.0 mg/dL
-                    'cs_q2_d': 'priority',      // Chloride (Cl) 90 mEq/L
-                    'cs_q2_e': 'no_priority',   // Blood urea nitrogen (BUN) 10 mg/dL
-                    'cs_q2_f': 'priority',      // Digoxin 3 ng/mL
-                    'cs_q2_g': 'no_priority',   // Hematocrit 38%
-                    'cs_q2_h': 'priority'       // B-type natriuretic peptide (BNP) 1000 pg/mL
+                    'cs_q2_a': 'priority',     // Potassium (K) 3.0 mEq/L
+                    'cs_q2_b': 'no_priority',    // Sodium (Na) 135 mEq/L
+                    'cs_q2_c': 'no_priority',    // Creatinine 1.0 mg/dL
+                    'cs_q2_d': 'priority',       // Chloride (Cl) 90 mEq/L
+                    'cs_q2_e': 'no_priority',    // Blood urea nitrogen (BUN) 10 mg/dL
+                    'cs_q2_f': 'priority',       // Digoxin 3 ng/mL
+                    'cs_q2_g': 'no_priority',    // Hematocrit 38%
+                    'cs_q2_h': 'priority'        // B-type natriuretic peptide (BNP) 1000 pg/mL
                 };
                 for (const qId in cs_q2_answers) {
                     const selectedCheckbox = document.querySelector(`input[name="${qId}"][value="${cs_q2_answers[qId]}"]`);
@@ -2562,11 +2564,13 @@
                     } else {
                         selectedCheckbox.closest('tr').style.backgroundColor = '#d4edda';
                     }
-                     const otherCheckbox = document.querySelector(`input[name="${qId}"]:not([value="${cs_q2_answers[qId]}"])`);
-                    if (otherCheckbox && otherCheckbox.checked) {
-                        allCsCorrect = false;
-                        otherCheckbox.closest('tr').style.backgroundColor = '#f8d7da';
-                    }
+                    const otherCheckboxes = document.querySelectorAll(`input[name="${qId}"]:not([value="${cs_q2_answers[qId]}"])`);
+                    otherCheckboxes.forEach(cb => {
+                        if (cb.checked) {
+                            allCsCorrect = false;
+                            cb.closest('tr').style.backgroundColor = '#f8d7da';
+                        }
+                    });
                 }
 
 
@@ -2591,7 +2595,7 @@
                     'cs_q4_c': 'ineffective',
                     'cs_q4_d': 'ineffective'
                 };
-                 for (const qId in cs_q4_answers) {
+                for (const qId in cs_q4_answers) {
                     const selectedCheckbox = document.querySelector(`input[name="${qId}"][value="${cs_q4_answers[qId]}"]`);
                     if (!selectedCheckbox || !selectedCheckbox.checked) {
                         allCsCorrect = false;
@@ -2616,9 +2620,9 @@
                                    selectedQ5.length === cs_q5_correct.length;
                 if (!isQ5Correct) {
                     allCsCorrect = false;
-                    document.querySelector('#critical-thinking #cs_q5').closest('.fill-in-the-blank').style.backgroundColor = '#f8d7da';
+                    document.querySelector('#critical-thinking .fill-in-the-blank .options').style.backgroundColor = '#f8d7da';
                 } else {
-                    document.querySelector('#critical-thinking #cs_q5').closest('.fill-in-the-blank').style.backgroundColor = '#d4edda';
+                    document.querySelector('#critical-thinking .fill-in-the-blank .options').style.backgroundColor = '#d4edda';
                 }
 
                 // Question 6: Matching Patient Questions to Nurse Responses
