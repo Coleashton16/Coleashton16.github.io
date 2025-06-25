@@ -1,0 +1,2510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 44: Antihyperlipidemics & Peripheral Blood Flow Drugs (ADHD Friendly)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@400;600&display=swap');
+
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --secondary-color: #28a745; /* Green */
+            --accent-color: #ffc107; /* Yellow */
+            --info-color: #17a2b8; /* Cyan */
+            --alert-color: #dc3545; /* Red */
+            --text-color: #333;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --border-color: #dee2e6;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --focus-border: #6c757d; /* Gray for focus boxes */
+            --quiz-bg: #d4edda; /* Light green for quizzes */
+            --reveal-bg: #e9ecef; /* Light gray for revealed content */
+            --drug-card-bg: #f0f0f0; /* Light gray for drug quiz card */
+            --button-mastered: #28a745; /* Green for Yes */
+            --button-missed: #dc3545; /* Red for No */
+            --progress-bar-bg: #e0e0e0;
+            --progress-bar-fill: #4CAF50; /* Green fill */
+            --break-prompt-bg: #ffebee; /* Light red for break prompts */
+            --break-prompt-border: #ef9a9a; /* Medium red for border */
+        }
+
+        /* Crucial adjustments for iframe scrolling */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+            transition: font-size 0.2s ease, filter 0.5s ease-in-out;
+        }
+
+        body.blurred > *:not(#clockOutOverlay) {
+            filter: blur(5px);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .container {
+            max-width: 100%; /* Make it as wide as the screen */
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            box-sizing: border-box;
+            min-height: calc(100vh - 40px);
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+
+        #moduleProgressBarContainer {
+            width: 90%;
+            height: 10px;
+            background-color: var(--progress-bar-bg);
+            border-radius: 5px;
+            margin: 15px auto 0;
+            overflow: hidden;
+        }
+
+        #moduleProgressBar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--progress-bar-fill);
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 10px 0;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            margin: 5px 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: default;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            cursor: default;
+        }
+
+        nav ul li a.completed {
+            background-color: #1e7e34;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+        }
+
+        h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h2 {
+            font-size: 2em;
+        }
+
+        h3 {
+            font-size: 1.5em;
+        }
+
+        h4 {
+            font-size: 1.2em;
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        section:hover {
+            transform: translateY(-3px);
+        }
+
+        .objectives ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .objective-item {
+            margin-bottom: 8px;
+        }
+
+        .info-card {
+            background-color: var(--bg-light);
+            border-left: 5px solid var(--info-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .reveal-button {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            display: block;
+            width: fit-content;
+        }
+
+        .reveal-button:hover {
+            background-color: #ffda6a;
+        }
+
+        .reveal-content {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: var(--reveal-bg);
+            border-left: 3px solid var(--secondary-color);
+            border-radius: 5px;
+        }
+
+        .question-card {
+            background-color: var(--quiz-bg);
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-card p {
+            font-weight: 600;
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .question-card .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .question-card .options input[type="radio"],
+        .question-card .options input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .question-card .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .question-card .feedback.correct {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .question-card .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .question-card .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .question-card .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .prototype-drug-chart-container {
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        .prototype-drug-chart-container th, .prototype-drug-chart-container td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .prototype-drug-chart-container th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .prototype-drug-chart-container tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .note, .focus-prompt, .quick-fact {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .note {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+        }
+
+        .focus-prompt {
+            background-color: #d1ecf1;
+            border-left: 5px solid #0c5460;
+            color: #0c5460;
+        }
+
+        .quick-fact {
+            background-color: #e2f0d9;
+            border-left: 5px solid #6ab04c;
+            color: #4a7d32;
+        }
+
+        .highlight {
+            background-color: #ffe082;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .nclex-next-gen {
+            background-color: #e6f7ff;
+            border: 2px solid #a6d9f5;
+            padding: 25px;
+            margin: 40px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .nclex-next-gen h3 {
+            color: #2196f3;
+            border-bottom: 1px dashed #a6d9f5;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .nclex-next-gen .case-study {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .nclex-next-gen .fill-in-the-blank {
+            margin-top: 20px;
+        }
+
+        .nclex-next-gen .fill-in-the-blank textarea {
+            width: calc(100% - 20px);
+            min-height: 80px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            resize: vertical;
+        }
+
+        .nclex-next-gen .fill-in-the-blank button {
+            margin-top: 15px;
+        }
+
+        .nclex-next-gen .rationale {
+            background-color: #e0f2f7;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .nclex-next-gen .rationale p {
+            margin: 0;
+            font-size: 0.95em;
+        }
+
+        .figure-placeholder {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #eef;
+            border: 1px dashed #bbb;
+            border-radius: 5px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .recap {
+            background-color: #f0f8ff;
+            border-left: 5px solid #add8e6;
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .recap h4 {
+            color: #36a2eb;
+            border-bottom: 1px solid #add8e6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            border-bottom: 1px dotted var(--primary-color);
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85em;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #drug-mastery-quiz .quiz-card {
+            background-color: var(--drug-card-bg);
+            border: 1px solid var(--primary-color);
+            padding: 25px;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            display: none;
+            text-align: center;
+        }
+
+        #drug-mastery-quiz .quiz-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.8em;
+            border-bottom: none;
+        }
+
+        #drug-mastery-quiz .quiz-card p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        #drug-mastery-quiz .quiz-controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz .quiz-controls button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        #drug-mastery-quiz .quiz-controls button:active {
+            transform: translateY(1px);
+        }
+
+        #drug-mastery-quiz #startQuizBtn {
+            background-color: var(--secondary-color);
+            color: white;
+            display: block;
+            margin: 20px auto;
+            width: fit-content;
+            padding: 15px 30px;
+            font-size: 1.4em;
+        }
+        #drug-mastery-quiz #startQuizBtn:hover {
+            background-color: #218838;
+        }
+
+        #drug-mastery-quiz #showAnswerBtn {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+        #drug-mastery-quiz #showAnswerBtn:hover {
+            background-color: #e0a800;
+        }
+
+        #drug-mastery-quiz #answerFeedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--reveal-bg);
+            border: 1px dashed var(--info-color);
+            text-align: left;
+            display: none;
+        }
+
+        #drug-mastery-quiz #answerFeedback h5 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        #drug-mastery-quiz #masteryButtons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        #drug-mastery-quiz #masteryButtons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn {
+            background-color: var(--button-mastered);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#correctBtn:hover {
+            background-color: #218838;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn {
+            background-color: var(--button-missed);
+            color: white;
+        }
+        #drug-mastery-quiz #masteryButtons button#incorrectBtn:hover {
+            background-color: #c82333;
+        }
+
+        #drug-mastery-quiz #quizSummary {
+            display: none;
+            padding: 25px;
+            background-color: #e6ffe6;
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            text-align: center;
+        }
+        #drug-mastery-quiz #quizSummary h4 {
+            color: var(--secondary-color);
+            font-size: 2em;
+            margin-bottom: 15px;
+            border-bottom: none;
+        }
+        #drug-mastery-quiz #quizSummary p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        #drug-mastery-quiz #quizSummary button {
+            margin: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#restartQuizBtn:hover {
+            background-color: #0056b3;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn {
+            background-color: var(--alert-color);
+            color: white;
+        }
+        #drug-mastery-quiz #quizSummary button#reviewMissedBtn:hover {
+            background-color: #c82333;
+        }
+
+        #drug-mastery-quiz .progress-tracker {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .quick-note-area {
+            background-color: #f7f7f7;
+            border: 1px dashed #ccc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .quick-note-area h3 {
+            color: #666;
+            border-bottom: 1px solid #ddd;
+            margin-top: 0;
+        }
+
+        .quick-note-area textarea {
+            width: calc(100% - 10px);
+            min-height: 100px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            resize: vertical;
+        }
+
+        .text-size-controls {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .text-size-controls button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 44px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .micro-break-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--break-prompt-bg);
+            border: 2px solid var(--break-prompt-border);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-weight: bold;
+            color: var(--alert-color);
+            display: none;
+            animation: fadeInOut 8s forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        }
+
+        #clockOutOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+        }
+
+        #clockOutOverlay.active {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 0.5s ease-in;
+        }
+
+        #clockOutContent {
+            background-color: var(--bg-white);
+            color: var(--text-color);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+
+        #clockOutOverlay.active #clockOutContent {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        #clockOutContent h2 {
+            color: var(--primary-color);
+            font-family: 'Roboto', sans-serif;
+            font-size: 2.8em;
+            margin-top: 0;
+            border-bottom: none;
+        }
+
+        #brainEmoji {
+            font-size: 6em;
+            margin: 20px 0;
+            display: block;
+            animation: floatUpDown 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes floatUpDown {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); }
+        }
+
+        #countdownTimer {
+            font-family: 'Roboto', monospace;
+            font-size: 4.5em;
+            font-weight: 700;
+            color: var(--alert-color);
+            margin: 20px 0;
+        }
+
+        @media (max-width: 500px) {
+            #clockOutContent {
+                padding: 25px;
+            }
+            #clockOutContent h2 {
+                font-size: 2em;
+            }
+            #brainEmoji {
+                font-size: 4em;
+            }
+            #countdownTimer {
+                font-size: 3.5em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li {
+                margin: 5px 0;
+            }
+
+            .prototype-drug-chart-container {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .prototype-drug-chart-container thead {
+                display: none;
+            }
+
+            .prototype-drug-chart-container tbody tr {
+                display: block;
+                margin-bottom: 10px;
+                border: 1px solid var(--border-color);
+                border-radius: 5px;
+            }
+
+            .prototype-drug-chart-container tbody td {
+                display: block;
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            .prototype-drug-chart-container tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+
+            .micro-break-prompt {
+                width: 90%;
+                left: 5%;
+                transform: translateX(0%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Chapter 44: Antihyperlipidemics & Drugs to Improve Peripheral Blood Flow</h1>
+            <p>Mastering Medications for Vascular Health - ADHD Friendly!</p>
+            <div id="moduleProgressBarContainer">
+                <div id="moduleProgressBar"></div>
+            </div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a id="nav-objectives">Objectives</a></li>
+                <li><a id="nav-intro">Intro</a></li>
+                <li><a id="nav-lipoproteins">Lipoproteins</a></li>
+                <li><a id="nav-apolipoproteins">Apolipoproteins</a></li>
+                <li><a id="nav-nonpharmacologic">Nonpharm. Methods</a></li>
+                <li><a id="nav-antihyperlipidemics">Antihyperlipidemics</a></li>
+                <li><a id="nav-statins">Statins</a></li>
+                <li><a id="nav-peripheral-blood-flow">Peripheral Blood Flow</a></li>
+                <li><a id="nav-cilostazol">Cilostazol</a></li>
+                <li><a id="nav-pentoxifylline">Pentoxifylline</a></li>
+                <li><a id="nav-np-antihyperlipidemics">NP: Antihyperlipidemics</a></li>
+                <li><a id="nav-np-cilostazol">NP: Cilostazol</a></li>
+                <li><a id="nav-case-study">Case Study</a></li>
+                <li><a id="nav-review-questions">Review Qs</a></li>
+                <li><a id="nav-drug-mastery-quiz">Drug Challenge!</a></li>
+            </ul>
+        </nav>
+
+        <div class="text-size-controls">
+            <button id="increaseText">A+</button>
+            <button id="decreaseText">A-</button>
+        </div>
+
+        <div class="micro-break-prompt" id="microBreakPrompt">
+            Quick Break! Stand up and stretch, or take a few deep breaths!
+        </div>
+
+        <section id="objectives" class="objectives">
+            <h2>Your Learning Adventure Starts Here!</h2>
+            <p>By the end of this module, you'll be able to:</p>
+            <ul>
+                <li class="objective-item"><strong>Describe the action</strong> of antihyperlipidemics and drugs that improve peripheral blood flow.</li>
+                <li class="objective-item"><strong>Compare and differentiate the side effects and adverse reactions</strong> of antihyperlipidemics, peripheral vasodilators, and blood viscosity reducer agents.</li>
+                <li class="objective-item"><strong>Apply the Clinical Judgment [Nursing Process]</strong>, including patient teaching, for antihyperlipidemics and blood viscosity reducer agents.</li>
+            </ul>
+            <p class="note"><strong>Bonus!</strong> For extra info and cool tools, check out <a href="http://evolve.elsevier.com/McCuistion/pharmacology" target="_blank">evolve.elsevier.com/McCuistion/pharmacology</a></p>
+        </section>
+
+        <div class="quick-note-area">
+            <h3>Quick Notes / Brain Dump Space</h3>
+            <textarea id="quickNotesTextarea" placeholder="Jot down thoughts, questions, or key takeaways here... (Note: These will try to save to your browser's local storage, but backup important info!)"></textarea>
+        </div>
+
+        <section id="intro">
+            <h2>1. Introduction: Managing Blood Lipids and Flow</h2>
+            <div class="info-card">
+                <p>This chapter focuses on medications designed to keep your cardiovascular system running smoothly in two main ways:</p>
+                <ol>
+                    <li>Drugs that <strong>lower blood lipid concentrations</strong>. These are known by several names: <span class="highlight">antihyperlipidemics</span>, antilipidemics, antilipemics, or hypolipidemics. We'll primarily use "antihyperlipidemics" in this module.</li>
+                    <li>Drugs that <strong>improve blood flow</strong>, especially to the extremities. These include:
+                        <ul>
+                            <li><span class="highlight">Peripheral vasodilators:</span> They widen (dilate) blood vessels that have been narrowed by <span class="tooltip-container">vasospasm<span class="tooltip-text">A sudden, temporary narrowing of a blood vessel that reduces blood flow.</span></span>.</li>
+                            <li><span class="highlight">Blood viscosity reducer agents:</span> These decrease the thickness (viscosity) of blood and increase the flexibility of red blood cells, helping blood flow more easily.</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+            <div class="recap">
+                <h4>Recap: Introduction</h4>
+                <ul>
+                    <li>Two main drug types: Antihyperlipidemics (lower blood fats) and Drugs to Improve Peripheral Blood Flow (peripheral vasodilators & blood viscosity reducers).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="lipoproteins">
+            <h2>2. Lipoproteins: The Fat Transporters</h2>
+            <div class="info-card">
+                <p>Lipids—which include cholesterol, triglycerides, and phospholipids—don't travel freely in your bloodstream. They're bound within a shell of protein, forming carriers called <span class="tooltip-container">lipoproteins<span class="tooltip-text">Complexes of lipids (fats) and proteins that transport fats through the bloodstream. They are classified by their density, which is determined by the ratio of fat to protein.</span></span>. An excess of one or more lipids in the blood is called <span class="tooltip-container">hyperlipidemia<span class="tooltip-text">Also known as hyperlipoproteinemia, this is a condition characterized by abnormally high levels of lipids (fats) in the blood, such as cholesterol and triglycerides.</span></span> or hyperlipoproteinemia.</p>
+                <button class="reveal-button">Meet the Major Lipoprotein Categories!</button>
+                <div class="reveal-content">
+                    <h4>The Four Major Lipoprotein Categories:</h4>
+                    <ul>
+                        <li><span class="highlight"><strong>High-Density Lipoprotein (HDL):</strong></span>
+                            <ul>
+                                <li>Known as “friendly” or “good” lipoprotein.</li>
+                                <li>It's the smallest and densest lipoprotein, meaning it contains more protein and less fat.</li>
+                                <li><strong>Function:</strong> Removes cholesterol from the bloodstream and delivers it to the liver for excretion in bile (think of it as cleaning up cholesterol).</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Low-Density Lipoprotein (LDL):</strong></span>
+                            <ul>
+                                <li>Often called the “bad” lipoprotein.</li>
+                                <li>Contains 50% to 60% of the cholesterol in the bloodstream.</li>
+                                <li><strong>Risk:</strong> Elevated LDL significantly increases the risk for developing <span class="tooltip-container">atherosclerotic plaques<span class="tooltip-text">Deposits of fatty substances, cholesterol, cellular waste products, calcium, and fibrin that build up on the inner lining of arteries, leading to atherosclerosis (hardening and narrowing of the arteries).</span></span> and heart disease.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Very-Low-Density Lipoprotein (VLDL):</strong></span>
+                            <ul>
+                                <li>Carries mostly triglycerides and less cholesterol.</li>
+                                <li>Also contributes to plaque buildup.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Chylomicrons:</strong></span>
+                            <ul>
+                                <li>Large particles that primarily transport dietary fatty acids and cholesterol from the intestines to the liver.</li>
+                                <li>Composed mostly of triglycerides.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4>Serum Lipid Measurement and Risk:</h4>
+                    <p>Serum cholesterol and triglyceride measurements are common baseline tests. A 12- to 14-hour fasting lipid profile may be ordered if levels are high.</p>
+                    <p>When cholesterol, triglycerides, and LDL are elevated, the patient is at increased risk for <span class="tooltip-container">coronary artery disease (CAD)<span class="tooltip-text">A condition in which plaque builds up inside the coronary arteries, which supply oxygen-rich blood to the heart muscle, leading to narrowing and hardening of the arteries.</span></span>.</p>
+
+                    <div class="info-card">
+                        <h4>TABLE: Serum Lipid Values (Reference Values)</h4>
+                        <table class="prototype-drug-chart-container">
+                            <thead>
+                                <tr>
+                                    <th>Lipids</th>
+                                    <th>Desirable (mg/dL)</th>
+                                    <th>Low Risk (mg/dL)</th>
+                                    <th>Moderate Risk (mg/dL)</th>
+                                    <th>High Risk (mg/dL)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Lipids">Cholesterol</td>
+                                    <td data-label="Desirable (mg/dL)">150–200</td>
+                                    <td data-label="Low Risk (mg/dL)">200</td>
+                                    <td data-label="Moderate Risk (mg/dL)">200–240</td>
+                                    <td data-label="High Risk (mg/dL)">>240</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Lipids">Triglycerides</td>
+                                    <td data-label="Desirable (mg/dL)">40–150</td>
+                                    <td data-label="Low Risk (mg/dL)">Values vary with age.</td>
+                                    <td data-label="Moderate Risk (mg/dL)">Values vary with age.</td>
+                                    <td data-label="High Risk (mg/dL)">>190</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Lipids">LDL</td>
+                                    <td data-label="Desirable (mg/dL)">&lt;100</td>
+                                    <td data-label="Low Risk (mg/dL)">100–130</td>
+                                    <td data-label="Moderate Risk (mg/dL)">130–159</td>
+                                    <td data-label="High Risk (mg/dL)">>160</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Lipids">HDL</td>
+                                    <td data-label="Desirable (mg/dL)">>60</td>
+                                    <td data-label="Low Risk (mg/dL)">50–60</td>
+                                    <td data-label="Moderate Risk (mg/dL)">35–50</td>
+                                    <td data-label="High Risk (mg/dL)">&lt;35</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="note"><strong>Note:</strong> These are general guidelines; individual patient risk factors and clinical judgment always apply.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Lipoproteins</h4>
+                <ul>
+                    <li>Lipoproteins transport lipids (cholesterol, triglycerides) in blood. Hyperlipidemia = high lipids.</li>
+                    <li>**HDL ("Good"):** Removes cholesterol, delivers to liver. Smallest, densest.</li>
+                    <li>**LDL ("Bad"):** 50-60% of cholesterol, increases atherosclerosis/heart disease risk.</li>
+                    <li>**VLDL:** Carries mostly triglycerides.</li>
+                    <li>**Chylomicrons:** Transport dietary fats.</li>
+                    <li>Elevated cholesterol, triglycerides, LDL, and low HDL increase CAD risk.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="apolipoproteins">
+            <h2>3. Apolipoproteins: The Protein Markers</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Apolipoproteins<span class="tooltip-text">The protein components of lipoproteins that act as structural elements, enzyme cofactors, and ligands for receptor binding. They help guide lipoproteins through the bloodstream and regulate lipid metabolism.</span></span> are specialized proteins found within the lipoprotein shell. They play a crucial role in lipid metabolism and are important indicators of cardiovascular risk.</p>
+                <button class="reveal-button">Key Apolipoproteins and Their Significance</button>
+                <div class="reveal-content">
+                    <h4>Main Apolipoproteins:</h4>
+                    <ul>
+                        <li><span class="highlight"><strong>Apolipoprotein A-1 (apoA-1):</strong></span> This is the major component of HDL. Higher levels are associated with higher HDL and lower cardiovascular risk.</li>
+                        <li><span class="highlight"><strong>Apolipoprotein B (apoB):</strong></span> This is the major component of LDL. It exists in two forms: apoB-100 and apoB-48.
+                            <ul>
+                                <li><span class="highlight"><strong>ApoB-100:</strong></span> Found in VLDL and LDL. It is considered a **better indicator of risk for CAD than LDL alone** because it reflects the total number of atherogenic (plaque-forming) particles.</li>
+                                <li>ApoB-48: Found in chylomicrons.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>Apolipoprotein E (apoE):</strong></span> Plays a role in clearing triglyceride-rich lipoproteins.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Apolipoproteins</h4>
+                <ul>
+                    <li>Proteins in lipoprotein shell.</li>
+                    <li>**ApoA-1:** Major component of HDL.</li>
+                    <li>**ApoB-100:** Major component of LDL and VLDL. **Better CAD risk indicator than LDL alone.**</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nonpharmacologic">
+            <h2>4. Nonpharmacologic Methods of Cholesterol Reduction: Lifestyle First!</h2>
+            <div class="info-card">
+                <p>Before jumping to medications, lifestyle changes are always the first line of defense against high cholesterol. Nurses play a crucial role in educating patients on these methods!</p>
+                <button class="reveal-button">Strategies for Nonpharmacologic Cholesterol Reduction</button>
+                <div class="reveal-content">
+                    <h3>Dietary Modifications:</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Reduce Saturated Fats and Cholesterol:</strong></span> Focus on lowering intake of these from the diet.</li>
+                        <li><strong>Total Fat Intake:</strong> Should be 30% or less of total caloric intake.</li>
+                        <li><strong>Cholesterol Intake:</strong> Should be 300 mg/day or less.</li>
+                        <li><strong>Read Food Labels:</strong> Advise patients to actively read labels to make appropriate food choices.</li>
+                        <li><strong>Choose Lean Meats:</strong> Especially chicken and fish, over red meats.</li>
+                    </ul>
+                    <div class="quick-fact">
+                        <h4>Why Diet Alone Isn't Always Enough:</h4>
+                        <p>In many cases, diet alone won't get blood lipid levels to target. This is because 75% to 85% of serum cholesterol is produced by your own body (<span class="tooltip-container">endogenously<span class="tooltip-text">Originating or produced within an organism, tissue, or cell. In this context, it refers to cholesterol synthesized internally by the body, rather than from dietary intake.</span></span>). Dietary modification typically only lowers total cholesterol by 10% to 30%. Also, adherence to strict diets can be challenging long-term.</p>
+                    </div>
+                    <h3>Exercise:</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Regular physical activity</strong></span> is a vital nonpharmacologic method.</li>
+                        <li>It helps to **reduce cholesterol** and significantly **increase HDL** (the "good" cholesterol).</li>
+                        <li>For older adults, activities like walking and bicycling are excellent choices.</li>
+                    </ul>
+                    <h3>Smoking Cessation:</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Eliminating smoking</strong></span> is another critical risk factor reduction.</li>
+                        <li>Smoking is known to **increase LDL cholesterol** and **decrease HDL**, making it a major contributor to dyslipidemia and cardiovascular disease.</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Patient Teaching Emphasis!</h4>
+                        <p>If nonpharmacologic methods are ineffective and hyperlipidemia persists, antihyperlipidemic drugs will be prescribed. However, it's crucial to emphasize to the patient that **dietary changes and an exercise program need to be continued (or initiated) even after drug therapy begins.** Medications are an adjunct, not a replacement for healthy lifestyle.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Nonpharmacologic Methods</h4>
+                <ul>
+                    <li>Always first-line.</li>
+                    <li>**Diet:** Reduce saturated fats/cholesterol (<30% total fat, <300mg cholesterol/day), lean meats, read labels.</li>
+                    <li>**Exercise:** Reduces cholesterol, increases HDL.</li>
+                    <li>**Smoking Cessation:** Increases LDL, decreases HDL. Eliminate it!</li>
+                    <li>Lifestyle changes are *adjunct* to, not replaced by, drug therapy.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="antihyperlipidemics">
+            <h2>5. Antihyperlipidemics: The Drug Classes</h2>
+            <div class="info-card">
+                <p>When lifestyle changes aren't enough, various classes of antihyperlipidemic drugs step in to lower blood lipid levels. The choice of drug depends on the specific type of hyperlipidemia (lipoprotein phenotype).</p>
+                <div class="info-card">
+                    <h4>TABLE: Hyperlipidemia: Lipoprotein Phenotypes</h4>
+                    <table class="prototype-drug-chart-container">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Major Lipids</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Type">I</td>
+                                <td data-label="Major Lipids">Increased chylomicrons and increased triglycerides; uncommon</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Type">IIA</td>
+                                <td data-label="Major Lipids">Increased low-density lipoprotein (LDL) and increased cholesterol; common</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Type">IIB</td>
+                                <td data-label="Major Lipids">Increased very low-density lipoprotein (VLDL), increased LDL, increased cholesterol and triglycerides; very common</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Type">III</td>
+                                <td data-label="Major Lipids">Moderately increased cholesterol and triglycerides; uncommon</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Type">IV</td>
+                                <td data-label="Major Lipids">Increased VLDL and markedly increased triglycerides; very common</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Type">V</td>
+                                <td data-label="Major Lipids">Increased chylomicrons, VLDL, and triglycerides; uncommon</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="note"><strong>Note:</strong> Types II and IV are commonly associated with coronary artery disease.</p>
+                </div>
+                <button class="reveal-button">Explore the Different Antihyperlipidemic Drug Groups!</button>
+                <div class="reveal-content">
+                    <h3>Antihyperlipidemic Drug Groups:</h3>
+                    <p>The main classes of drugs used to lower lipid levels include:</p>
+                    <ol>
+                        <li><span class="highlight"><strong>Statins (HMG-CoA Reductase Inhibitors):</strong></span> Generally have fewer adverse effects and are well tolerated, making them a first-line choice.</li>
+                        <li><span class="highlight"><strong>Bile-Acid Sequestrants:</strong></span></li>
+                        <li><span class="highlight"><strong>Fibrates (Fibric Acid Derivatives):</strong></span></li>
+                        <li><span class="highlight"><strong>Nicotinic Acid (Niacin):</strong></span></li>
+                        <li><span class="highlight"><strong>Cholesterol Absorption Inhibitors:</strong></span></li>
+                    </ol>
+
+                    <h4>Bile-Acid Sequestrants: Binding Fats in the Gut</h4>
+                    <ul>
+                        <li><span class="highlight"><strong>Mechanism:</strong></span> These drugs bind with bile acids in the intestine, forming an insoluble complex that is excreted in the feces. This prevents reabsorption of bile acids, forcing the liver to use more cholesterol to produce new bile acids, thereby reducing LDL cholesterol (LDL-C) levels.</li>
+                        <li><span class="highlight"><strong>Cholestyramine:</strong></span> One of the first antihyperlipidemics, effective against hyperlipidemia type II.</li>
+                        <li><span class="highlight"><strong>Colestipol:</strong></span> Similar to cholestyramine in effectiveness.</li>
+                        <li><span class="highlight"><strong>Colesevelam:</strong></span> A newer bile acid sequestrant with fewer side effects (less constipation, flatulence, cramping) and less impact on the absorption of fat-soluble vitamins. It is often the first-choice bile-acid sequestrant.</li>
+                        <li><strong>Administration:</strong> Drugs like cholestyramine come in a gritty powder that must be mixed thoroughly in water or juice.</li>
+                        <li><strong>Side Effects:</strong> Constipation, peptic ulcer, anorexia, nausea, vomiting, diarrhea, steatorrhea, abdominal pain, eructation, flatulence, osteoporosis, GI bleeding.</li>
+                        <li><strong>Adjunct Use:</strong> This group may be used as an adjunct to statins for additive effect.</li>
+                    </ul>
+
+                    <h4>Fibrates (Fibric Acid Derivatives): Targeting Triglycerides and VLDL</h4>
+                    <ul>
+                        <li><span class="highlight"><strong>Mechanism:</strong></span> More effective for reducing triglyceride and VLDL levels than for reducing LDL. They activate peroxisome proliferator-activated receptor alpha (PPARα), which increases the synthesis of lipoprotein lipase (LPL) and reduces the production of triglycerides in the liver.</li>
+                        <li><span class="highlight"><strong>Gemfibrozil:</strong></span> Used primarily to reduce hyperlipidemia type IV, but also effective for type II.</li>
+                        <li><span class="highlight"><strong>Fenofibrate:</strong></span> Similar actions and side effects to gemfibrozil.</li>
+                        <li><strong>Protein Binding & Interactions:</strong> Both gemfibrozil and fenofibrate are **highly protein bound**. They should **not be taken with anticoagulants** (like warfarin) because they compete for protein sites, increasing the risk of bleeding. The anticoagulant dose should be reduced and INR closely monitored if co-administered.</li>
+                        <li><strong>Side Effects:</strong> Dizziness, headache, weakness, nausea, diarrhea, constipation, abdominal pain, cholelithiasis (gallstones), back pain, elevated hepatic enzymes.</li>
+                    </ul>
+
+                    <h4>Niacin (Vitamin B3): Powerful but Challenging</h4>
+                    <ul>
+                        <li><span class="highlight"><strong>Mechanism:</strong></span> Reduces VLDL and LDL by inhibiting synthesis of VLDL in the liver. It's very effective at lowering cholesterol and has a desirable effect on the lipid profile.</li>
+                        <li><strong>Dosage & Side Effects:</strong> Requires large doses. Has numerous side effects, which can make it difficult for patients to tolerate initially (as few as 20% can tolerate).
+                            <ul>
+                                <li>Common: Flushing of the skin, GI disturbances (nausea, vomiting, diarrhea), pruritus (itching), headache, cough, rash, edema, weakness.</li>
+                                <li>Serious: Hypotension, dizziness, hyperglycemia, hyperuricemia (gout risk), abnormal liver function (elevated serum liver enzymes).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Improving Tolerance:</strong> With proper counseling, careful drug titration (starting low and gradually increasing), and concomitant use of aspirin (to reduce flushing), tolerance can increase to 60% to 70%.</li>
+                        <li><strong>Recommendation:</strong> Niacin is typically only recommended in specific clinical situations, such as triglyceride levels over 500 mg/dL or if a patient is intolerant to other treatments.</li>
+                    </ul>
+
+                    <h4>Cholesterol Absorption Inhibitors: Blocking Dietary Intake</h4>
+                    <ul>
+                        <li><span class="highlight"><strong>Ezetimibe:</strong></span>
+                            <ul>
+                                <li><strong>Mechanism:</strong> Acts on the cells in the small intestine to inhibit the absorption of dietary and biliary cholesterol.</li>
+                                <li><strong>Effects:</strong> Decreases serum cholesterol, LDL, triglycerides, and apoB levels. Causes only a small increase in HDL.</li>
+                                <li><strong>Combination Therapy:</strong> For optimum effect, it must be combined with a statin (e.g., simvastatin).</li>
+                                <li><strong>Side Effects:</strong> Diarrhea, arthralgia (joint pain), abdominal and back pain, fatigue, infection, pharyngitis, elevated hepatic enzymes, cholelithiasis, myalgia (muscle pain).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Antihyperlipidemics (Classes)</h4>
+                <ul>
+                    <li>Choice depends on lipoprotein phenotype.</li>
+                    <li>**Bile-Acid Sequestrants (Cholestyramine, Colesevelam):** Bind bile acids in gut, reduce LDL. Gritty powder. Side effects: constipation, GI upset. Colesevelam has fewer side effects.</li>
+                    <li>**Fibrates (Gemfibrozil, Fenofibrate):** Reduce triglycerides/VLDL. Highly protein bound – avoid with anticoagulants (bleeding risk!).</li>
+                    <li>**Niacin (Vitamin B3):** Reduces VLDL/LDL. Very effective but has significant flushing/GI side effects (can use aspirin to mitigate). Only for specific cases (high triglycerides or intolerance to other meds).</li>
+                    <li>**Cholesterol Absorption Inhibitors (Ezetimibe):** Inhibits cholesterol absorption in intestine. Combined with statins for optimum effect. Side effects: GI upset, headaches, myalgia.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="statins">
+            <h2>6. Statins: The Gold Standard for Cholesterol Reduction</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Statins<span class="tooltip-text">A class of drugs (HMG-CoA reductase inhibitors) that lower cholesterol by inhibiting an enzyme involved in cholesterol synthesis in the liver. They are highly effective at lowering LDL cholesterol and are first-line treatment for dyslipidemia.</span></span> are the most potent and widely used antihyperlipidemics, known for their effectiveness in lowering LDL cholesterol and reducing cardiovascular events.</p>
+                <button class="reveal-button">Statins: Mechanism, Benefits, & Monitoring!</button>
+                <div class="reveal-content">
+                    <h3>Mechanism of Action:</h3>
+                    <ul>
+                        <li>Statins inhibit the enzyme <span class="highlight"><strong>HMG-CoA reductase</strong></span>, which is a crucial step in cholesterol biosynthesis in the liver.</li>
+                        <li>By inhibiting cholesterol synthesis, statins decrease the concentration of total cholesterol, significantly decrease LDL, and slightly increase HDL cholesterol.</li>
+                        <li>Reduction of LDL cholesterol may be seen as early as 2 weeks after initiating therapy.</li>
+                        <li>This group of drugs has been highly effective in decreasing CAD and reducing mortality rates.</li>
+                    </ul>
+                    <h3>Common Statin Drugs:</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Atorvastatin calcium (Lipitor)</strong></span></li>
+                        <li>Fluvastatin (Lescol)</li>
+                        <li>Lovastatin (Mevacor) - was the first statin used.</li>
+                        <li>Pravastatin sodium (Pravachol)</li>
+                        <li>Simvastatin (Zocor)</li>
+                        <li>Pitavastatin (Livalo)</li>
+                        <li><span class="highlight"><strong>Rosuvastatin (Crestor)</strong></span></li>
+                    </ul>
+                    <p>Atorvastatin, lovastatin, rosuvastatin, and simvastatin are generally considered more effective at lowering LDL than other statins. Rosuvastatin and atorvastatin are among the most prescribed drugs.</p>
+                    <h3>Combination Therapies with Statins:</h3>
+                    <p>Statins can be combined with other drugs to enhance their antihyperlipidemic effect or to address co-existing conditions:</p>
+                    <ul>
+                        <li>Atorvastatin and Amlodipine (a calcium channel blocker for blood pressure).</li>
+                        <li>Simvastatin and Ezetimibe (a cholesterol absorption inhibitor for added cholesterol reduction).</li>
+                    </ul>
+
+                    <div class="info-card">
+                        <h4>TABLE: Combination Antihyperlipidemic Drugs (Examples)</h4>
+                        <table class="prototype-drug-chart-container">
+                            <thead>
+                                <tr>
+                                    <th>Generic</th>
+                                    <th>Route and Dosage</th>
+                                    <th>Uses and Considerations</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Generic">Amlodipine and atorvastatin</td>
+                                    <td data-label="Route and Dosage">A: PO: Initially 5–10 mg amlodipine and 10–20 mg atorvastatin daily; maint: 10 mg amlodipine and 10–80 mg atorvastatin daily; max: 10 mg amlodipine and 80 mg atorvastatin daily. Older A: PO: 2.5 mg amlodipine and 10–20 mg atorvastatin; max: 10 mg amlodipine and 80 mg atorvastatin.</td>
+                                    <td data-label="Uses and Considerations">For hypercholesterolemia, hyperlipoproteinemia, and hypertriglyceridemia. May cause headache, fatigue, nasopharyngitis, gynecomastia, dyspepsia, nausea, diarrhea, arthralgia, palpitations, and edema.</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Generic">Ezetimibe and simvastatin</td>
+                                    <td data-label="Route and Dosage">A: PO: Initially 10 mg ezetimibe and 10–20 mg simvastatin qd at hs; maint: 10 mg ezetimibe and 40 mg simvastatin daily; max: 10 mg ezetimibe and 40 mg simvastatin daily.</td>
+                                    <td data-label="Uses and Considerations">For hypercholesterolemia and hyperlipoproteinemia. May cause headache, diarrhea, myalgia, infection, influenza, musculoskeletal pain, and elevated hepatic enzymes.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Important Considerations:</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Lifetime Commitment:</strong></span> If antihyperlipidemic therapy is withdrawn, cholesterol and LDL levels will return to pretreatment levels. Patients must understand that this therapy is typically a lifetime commitment.</li>
+                        <li><span class="highlight"><strong>Rebound Effect:</strong></span> Abruptly stopping a statin drug can cause a threefold rebound effect in cholesterol levels, which may lead to death from acute myocardial infarction (AMI). Patients should always consult their healthcare provider before stopping a statin.</li>
+                    </ul>
+
+                    <h3>Laboratory Tests for Cardiovascular Risk (Beyond Lipids):</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Homocysteine:</strong></span>
+                            <ul>
+                                <li>An amino acid (reference values: 4 to 17 µmol/L fasting).</li>
+                                <li>A by-product of protein (found in eggs, chicken, beef, cheddar cheese).</li>
+                                <li>High levels are linked to cardiovascular disease, stroke, and Alzheimer disease. It may promote blood clotting and can damage the inner lining of blood vessels.</li>
+                                <li>Can be lowered by Vitamin B6 (pyridoxine), Vitamin B12 (cyanocobalamin), and Folic Acid.</li>
+                            </ul>
+                        </li>
+                        <li><span class="highlight"><strong>High-Sensitivity C-Reactive Protein (hsCRP):</strong></span>
+                            <ul>
+                                <li><span class="quick-fact">Low risk: &lt;1 mg/L; Moderate risk: 1 to 3 mg/L; High risk: >3 mg/L.</span></li>
+                                <li>The standard C-reactive protein (CRP) is produced in the liver in response to tissue injury and inflammation.</li>
+                                <li>The hsCRP is a highly sensitive test for detecting inflammatory protein associated with cardiovascular and peripheral vascular disease.</li>
+                                <li>Often ordered with cholesterol screening. Approximately one-third of heart attack patients have normal cholesterol and blood pressure. A positive hsCRP can indicate high risk for CAD, predicting inflammatory processes from atherosclerotic plaque buildup.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <div class="prototype-drug-chart-container">
+                        <h3>Prototype Drug Chart: Atorvastatin (Lipitor)</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Drug Class</th>
+                                    <th>Dosage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Drug Class">Antihyperlipidemic: HMG-CoA reductase inhibitor</td>
+                                    <td data-label="Dosage">A: PO: Initially 10–20 mg qd; maint: 10–80 mg qd; max: 80 mg qd</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Contraindications</th>
+                                </tr>
+                                <tr>
+                                    <td data-label="Contraindications" colspan="2">Hepatic disease/encephalopathy, cholestasis, pregnancy, breastfeeding. <br>Caution: Alcohol use disorder, diabetes mellitus, seizures, renal impairment, stroke, hypotension, hypothyroidism, electrolyte imbalance, rhabdomyolysis, older adults.</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Drug-Lab-Food Interactions</th>
+                                </tr>
+                                <tr>
+                                    <td data-label="Drug-Lab-Food Interactions" colspan="2"><strong>Drug:</strong> Decreased effect with antacids, phenytoin, and propranolol; may increase digoxin level, oral contraceptive efficacy; increased drug effects with macrolide antibiotics and antifungals.<br><strong>Food:</strong> Grapefruit juice should be avoided as it could cause an increase in drug concentration.</td>
+                                </tr>
+                                <tr>
+                                    <th>Pharmacokinetics</th>
+                                    <th>Pharmacodynamics</th>
+                                </tr>
+                                <tr>
+                                    <td data-label="Pharmacokinetics"><strong>Absorption:</strong> Rapid<br><strong>Distribution:</strong> PB: 98% (highly protein bound)<br><strong>Metabolism:</strong> t½: 14–30 h<br><strong>Excretion:</strong> Primarily in feces</td>
+                                    <td data-label="Pharmacodynamics"><strong>PO:</strong> Onset: UK<br><strong>Peak:</strong> 1–2 h<br><strong>Duration:</strong> UK<br><strong>Therapeutic Effects/Uses:</strong> To decrease cholesterol levels and serum lipids, especially LDL and triglycerides; for treatment of atherosclerosis, hypercholesterolemia, hyperlipoproteinemia, and hypertriglyceridemia.<br><strong>Mechanism of Action:</strong> Inhibits HMG-CoA reductase, the enzyme necessary for hepatic production of cholesterol.</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Side Effects</th>
+                                </tr>
+                                <tr>
+                                    <td data-label="Side Effects" colspan="2">Dizziness, insomnia, memory impairment, flushing, nightmares, blurred vision, weakness, myalgia (muscle pain), dyspepsia, nausea, diarrhea, flatulence, abdominal pain, peripheral neuropathy.</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Adverse Reactions</th>
+                                </tr>
+                                <tr>
+                                    <td data-label="Adverse Reactions" colspan="2"><span class="highlight">Rhabdomyolysis (rare)</span>, tendon rupture, hyperglycemia, diabetes mellitus.<br><strong>Life-threatening:</strong> Hepatic/renal failure, stroke, leukopenia, hemolytic anemia, thrombocytopenia.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Side Effects and Adverse Reactions (Across Antihyperlipidemic Classes):</h3>
+                    <ul>
+                        <li><strong>Bile-Acid Sequestrants (e.g., Cholestyramine):</strong> Constipation, peptic ulcer. Constipation can be managed by increasing fluids and fiber.</li>
+                        <li><strong>Niacin:</strong> GI disturbances (nausea, vomiting, diarrhea), flushing of the skin, abnormal liver function (elevated serum liver enzymes), hyperglycemia, hyperuricemia. Aspirin and careful titration can improve tolerance.</li>
+                        <li><span class="highlight"><strong>Statins:</strong></span>
+                            <ul>
+                                <li><strong>Liver Enzyme Elevation:</strong> Can cause a dose-related increase in liver enzyme levels (ALP, ALT, GGT). Baseline liver enzyme studies are crucial, and monitoring should continue. Statins are contraindicated in acute hepatic disorders.</li>
+                                <li><strong>Eye Health:</strong> Annual eye examination is needed due to possible cataract formation.</li>
+                                <li><span class="focus-prompt"><strong>Rhabdomyolysis:</strong></span> This is a serious skeletal muscle adverse effect, though rare. It is muscle disintegration that can become fatal. Patients must immediately report any **unexplained muscle aches or weakness**, especially if accompanied by fever or malaise.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <div class="complementary-alternative-therapy note">
+                        <h4>Complementary and Alternative Therapies & Statins:</h4>
+                        <p>Be aware of potential interactions:</p>
+                        <ul>
+                            <li><strong>May increase liver enzymes:</strong> Black cohosh.</li>
+                            <li><strong>May increase drug levels of statins:</strong> Chinese skullcap (especially rosuvastatin), Ginkgo biloba, Green tea.</li>
+                            <li><strong>May increase side effects of statins:</strong> Cranberry (simvastatin), Green tea.</li>
+                            <li><strong>May decrease effect and drug levels of statins:</strong> St. John’s wort.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Statins</h4>
+                <ul>
+                    <li>**Mechanism:** Inhibit HMG-CoA reductase (enzyme for cholesterol synthesis in liver).</li>
+                    <li>**Effects:** Decrease total cholesterol, LDL; slightly increase HDL. Rapid LDL reduction (2 weeks), CAD/mortality reduction.</li>
+                    <li>**Common:** Atorvastatin, Simvastatin, Rosuvastatin (top prescribed).</li>
+                    <li>**Combinations:** With amlodipine, ezetimibe.</li>
+                    <li>**Lifetime commitment:** Cholesterol rebounds if stopped. **Abrupt discontinuation → 3x rebound effect → AMI/death risk.**</li>
+                    <li>**Lab monitoring:** Serum liver enzymes (ALT, ALP, GGT) at baseline and periodically. Annual eye exam.</li>
+                    <li>**Key Adverse Effect:** <span class="highlight"><strong>Rhabdomyolysis</strong></span> (muscle pain/weakness, fever, malaise → report immediately!).</li>
+                    <li>**Interactions:** Grapefruit juice increases levels. Many herbals interact.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="peripheral-blood-flow">
+            <h2>7. Drugs to Improve Peripheral Blood Flow: Helping Circulation in the Extremities</h2>
+            <div class="info-card">
+                <p>Poor blood flow to the extremities is a common problem, especially in older adults, often linked to conditions like Peripheral Arterial Disease (PAD).</p>
+                <button class="reveal-button">Understanding PAD and How Drugs Can Help!</button>
+                <div class="reveal-content">
+                    <h3>Peripheral Arterial Disease (PAD) / Peripheral Vascular Disease (PVD):</h3>
+                    <ul>
+                        <li><strong>Characteristics:</strong> Numbness and coolness of the extremities, <span class="tooltip-container">claudication<span class="tooltip-text">Cramping pain or weakness in the leg or arm muscles that occurs during exercise and is relieved by rest; a classic symptom of peripheral arterial disease.</span></span> (<span class="tooltip-container">intermittent claudication<span class="tooltip-text">A specific type of claudication where pain in the legs or buttocks occurs during walking or exercise, but disappears after a few minutes of rest. It's caused by insufficient blood flow to the muscles.</span></span> is pain and weakness of a limb when walking, but no symptoms at rest), and possible leg ulcers.</li>
+                        <li><strong>Primary Cause:</strong> <span class="tooltip-container">Arteriosclerosis<span class="tooltip-text">A general term for hardening and thickening of the artery walls.</span></span> and <span class="highlight">hyperlipidemia</span>, leading to <span class="tooltip-container">atherosclerosis<span class="tooltip-text">A specific type of arteriosclerosis characterized by the buildup of fatty plaques within the arteries, leading to narrowing and hardening of the vessels.</span></span> (plaque buildup), which occludes arteries.</li>
+                        <li><strong>Conditions related to Vasospasm:</strong> Peripheral vasodilators are more effective for disorders caused by vasospasm (like <span class="tooltip-container">Raynaud disease<span class="tooltip-text">A condition in which some areas of the body, typically the fingers or toes, feel numb and cool in response to cold temperatures or stress due to narrowed arteries.</span></span>) than from severe vessel occlusion or arteriosclerosis (like arteriosclerosis obliterans or thromboangiitis obliterans [Buerger disease]). In Raynaud disease, cold exposure or emotional upset can trigger vasospasm of the toes and fingers.</li>
+                        <li><strong>Diabetes Mellitus:</strong> Patients with diabetes are 2 to 4 times more likely to develop PAD and intermittent claudication.</li>
+                    </ul>
+                    <h3>Medications Used to Improve Peripheral Blood Flow:</h3>
+                    <ul>
+                        <li><span class="highlight"><strong>Peripheral Vasodilators:</strong></span> Increase blood flow to the extremities by widening vessels.</li>
+                        <li><strong>Statins (HMG-CoA reductase inhibitors):</strong> For patients with PAD and dyslipidemia, statins can improve intermittent claudication symptoms and lower lipids.</li>
+                        <li><strong>Antihypertensive drugs:</strong> Ramipril (an ACE inhibitor) can improve both PAD and hypertension.</li>
+                        <li><strong>Other vasodilators:</strong> The alpha blocker prazosin and the calcium channel blocker nifedipine have been used.</li>
+                        <li><strong>Antiplatelet drugs:</strong> Clopidogrel and aspirin have been used to decrease PAD symptoms.</li>
+                        <li><span class="highlight"><strong>Cilostazol:</strong></span> An antiplatelet drug specifically approved by the US FDA for treating intermittent claudication.</li>
+                        <li><strong>Herbal remedies:</strong> Ginkgo biloba (not FDA approved for this use) has been used for intermittent claudication due to its vasodilating and antioxidant effects. (Caution: can interact with antiplatelets).</li>
+                    </ul>
+                    <div class="note">
+                        <h4>Important Note on PAD Treatment:</h4>
+                        <p>Most drugs used for treating PAD do not cure the underlying health problem but can aid in relieving symptoms and improving quality of life.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Peripheral Blood Flow Drugs</h4>
+                <ul>
+                    <li>**PAD/PVD:** Numbness, coolness, claudication, leg ulcers. Caused by arteriosclerosis/atherosclerosis.</li>
+                    <li>**Peripheral Vasodilators:** Increase blood flow. More effective for vasospasm (Raynaud) than occlusion.</li>
+                    <li>**Other Meds for PAD:** Statins, ACE inhibitors (ramipril), alpha blockers (prazosin), calcium channel blockers (nifedipine), antiplatelets (aspirin, clopidogrel).</li>
+                    <li>**Cilostazol:** FDA approved for intermittent claudication.</li>
+                    <li>Most drugs relieve symptoms, don't cure.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="cilostazol">
+            <h2>8. Cilostazol: Dual Action for Claudication</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Cilostazol<span class="tooltip-text">An antiplatelet drug and vasodilator used to treat intermittent claudication in peripheral arterial disease. It improves blood flow and reduces pain by inhibiting platelet aggregation and causing vasodilation.</span></span> is a unique drug with a dual purpose: it acts as an antiplatelet by inhibiting platelet aggregation, and it causes vasodilation, specifically to treat intermittent claudication.</p>
+                <button class="reveal-button">Cilostazol: Pharmacologic Details</button>
+                <div class="reveal-content">
+                    <div class="prototype-drug-chart-container">
+                        <h3>Prototype Drug Chart: Cilostazol</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Drug Class</th>
+                                    <th>Dosage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Drug Class">Direct-acting vasodilator / Antiplatelet</td>
+                                    <td data-label="Dosage">A: PO: 50–100 mg q12h 30 min before or 2 h after morning and evening meals with full glass of water; do not administer with grapefruit juice; max: 200 mg qd.</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Contraindications</th>
+                                </tr>
+                                <tr>
+                                    <td data-label="Contraindications" colspan="2">Heart failure, hypersensitivity, bleeding disorders. <br>Caution: Hepatic and renal disease, tobacco smokers, cardiovascular disease, dysrhythmias, pregnancy, breastfeeding, older adults.</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Drug-Lab-Food Interactions</th>
+                                </tr>
+                                <tr>
+                                    <td data-label="Drug-Lab-Food Interactions" colspan="2"><strong>Drug:</strong> Increased effects with aspirin, cimetidine, clarithromycin, erythromycin, enoxaparin, ticlopidine, warfarin.<br><strong>Food:</strong> Grapefruit and green tea will increase levels; ginger and ginkgo biloba may prolong bleeding time; St. John’s wort will decrease effect.</td>
+                                </tr>
+                                <tr>
+                                    <th>Pharmacokinetics</th>
+                                    <th>Pharmacodynamics</th>
+                                </tr>
+                                <tr>
+                                    <td data-label="Pharmacokinetics"><strong>Absorption:</strong> PO: Readily absorbed<br><strong>Distribution:</strong> PB: 95%–98% (highly protein bound)<br><strong>Metabolism:</strong> t½: 11–13 h<br><strong>Excretion:</strong> In urine (74%), feces (20%)</td>
+                                    <td data-label="Pharmacodynamics"><strong>PO:</strong> Onset: 2–12 wk<br><strong>Peak:</strong> UK<br><strong>Duration:</strong> UK<br><strong>Therapeutic Effects/Uses:</strong> To treat peripheral vascular disease and claudication.<br><strong>Mechanism of Action:</strong> Acts directly to inhibit platelet aggregation and cause vasodilation, especially in femoral vasculature.</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Side Effects</th>
+                                </tr>
+                                <tr>
+                                    <td data-label="Side Effects" colspan="2">Dizziness, headache, nasopharyngitis, rhinitis, cough, dyspepsia, myalgia, flushing, nausea, vomiting, flatulence, diarrhea, melena, back and abdominal pain, peripheral edema, infection, influenza, cholelithiasis.</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Adverse Reactions</th>
+                                </tr>
+                                <tr>
+                                    <td data-label="Adverse Reactions" colspan="2">Tachycardia, palpitations, angina, HF, MI, hypo/hypertension, peptic ulcer, gout, diabetes mellitus, elevated hepatic enzymes.<br><strong>Life-threatening:</strong> Thrombocytopenia, leukopenia, aplastic anemia, agranulocytosis, dysrhythmias, Stevens-Johnson syndrome.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="complementary-alternative-therapy note">
+                        <h4>Complementary and Alternative Therapies & Cilostazol:</h4>
+                        <ul>
+                            <li><strong>Licorice:</strong> May cause hypokalemia, which can potentiate drug toxicity.</li>
+                            <li><strong>Ginger and Ginkgo biloba:</strong> May prolong bleeding time when taken with Cilostazol.</li>
+                            <li><strong>St. John’s wort:</strong> May decrease Cilostazol's effect.</li>
+                            <li><strong>Grapefruit and Green tea:</strong> May increase Cilostazol levels.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Cilostazol</h4>
+                <ul>
+                    <li>Dual action: **Antiplatelet** (inhibits aggregation) and **Vasodilator** (femoral vasculature).</li>
+                    <li>**Uses:** Treats intermittent claudication in PAD.</li>
+                    <li>**Pharmacokinetics:** Readily absorbed, highly protein bound (95-98%), half-life 11-13h.</li>
+                    <li>**Pharmacodynamics:** Onset 2-12 weeks.</li>
+                    <li>**Side Effects:** Dizziness, headache, GI upset (nausea, diarrhea), flushing, myalgia.</li>
+                    <li>**Adverse/Life-threatening:** Tachycardia, palpitations, HF, dysrhythmias, bleeding, blood dyscrasias (thrombocytopenia, leukopenia, aplastic anemia).</li>
+                    <li>**Interactions:** Increased effects with aspirin, macrolides, warfarin. Avoid grapefruit juice, green tea. Watch licorice, ginger, ginkgo.</li>
+                    <li>**Contraindicated in heart failure.**</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="pentoxifylline">
+            <h2>9. Pentoxifylline: Improving Blood Viscosity</h2>
+            <div class="info-card">
+                <p><span class="tooltip-container">Pentoxifylline<span class="tooltip-text">A hemorrheologic agent (blood viscosity reducer) that improves microcirculation and tissue perfusion by decreasing blood viscosity and increasing the flexibility of erythrocytes (red blood cells). Used to treat intermittent claudication.</span></span> is classified as a <span class="highlight">hemorrheologic agent</span> or <span class="highlight">blood viscosity reducer agent</span>. It works by making your blood "thinner" and your red blood cells more flexible, which helps blood flow better through tiny vessels.</p>
+                <button class="reveal-button">Pentoxifylline: How it Works and What to Watch For</button>
+                <div class="reveal-content">
+                    <h4>Mechanism of Action:</h4>
+                    <ul>
+                        <li>Improves microcirculation and tissue perfusion by:
+                            <ul>
+                                <li>**Decreasing blood viscosity** (making blood less thick).</li>
+                                <li>**Improving the flexibility of erythrocytes** (red blood cells), allowing them to squeeze through narrowed vessels more easily.</li>
+                            </ul>
+                        </li>
+                        <li>It also inhibits aggregation of platelets and red blood cells.</li>
+                        <li>These actions ultimately increase tissue oxygenation.</li>
+                    </ul>
+                    <h4>Uses:</h4>
+                    <ul>
+                        <li>Approved by the FDA for patients with <span class="highlight"><strong>intermittent claudication</strong></span>.</li>
+                        <li>Has also been prescribed for those with Buerger disease (thromboangiitis obliterans) resulting from arterial occlusions.</li>
+                    </ul>
+                    <div class="quick-fact">
+                        <h4>Effectiveness Note:</h4>
+                        <p>In one research study, pentoxifylline was not determined to be more effective than a placebo for treating intermittent claudication. However, it remains a prescribed option.</p>
+                    </div>
+                    <h4>Side Effects and Adverse Reactions:</h4>
+                    <ul>
+                        <li>Most common side effects are **nausea and vomiting**.</li>
+                        <li>Other side effects: Blurred vision, confusion, constipation, cholestasis, tachycardia, edema, hypotension.</li>
+                    </ul>
+                    <h4>Important Considerations:</h4>
+                    <ul>
+                        <li><strong>Administration:</strong> Should be taken with food to minimize GI upset.</li>
+                        <li><strong>Smoking:</strong> Patients should **avoid smoking** because nicotine increases vasoconstriction, counteracting the drug's effects.</li>
+                        <li><strong>Antihypertensive Drug Interactions:</strong> If a patient is taking an antihypertensive drug along with pentoxifylline, the antihypertensive dosage may need to be decreased to avoid excessive hypotension.</li>
+                        <li><strong>Overdose Reactions:</strong> Tachycardia, hypotension, and blurred vision can occur with overdose.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Pentoxifylline</h4>
+                <ul>
+                    <li>**Class:** Hemorrheologic agent / Blood viscosity reducer.</li>
+                    <li>**Mechanism:** Decreases blood viscosity, increases erythrocyte flexibility → improves microcirculation & tissue perfusion (and tissue oxygenation).</li>
+                    <li>**Uses:** Intermittent claudication.</li>
+                    <li>**Side Effects:** Nausea, vomiting (most common). Blurred vision, confusion, tachycardia, hypotension.</li>
+                    <li>**Admin:** Take with food.</li>
+                    <li>**Avoid smoking** (nicotine causes vasoconstriction).</li>
+                    <li>May require **antihypertensive dose adjustment.**</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="np-antihyperlipidemics">
+            <h2>10. Clinical Judgment [Nursing Process]—Antihyperlipidemics</h2>
+            <div class="info-card">
+                <p>Applying the nursing process to antihyperlipidemic therapy is essential for patient safety, medication effectiveness, and promoting long-term cardiovascular health. Our core concept here is **Perfusion** – ensuring adequate blood flow to deliver oxygen and nutrients to body cells.</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation for Antihyperlipidemics!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>Assess vital signs</strong> and obtain baseline serum chemistry values (total cholesterol, triglycerides, LDL, HDL, AST, ALT, CPK).</li>
+                        <li><strong>Obtain a comprehensive medical history:</strong>
+                            <ul>
+                                <li>Statin drugs are contraindicated for patients with liver disorders and in pregnant patients.</li>
+                                <li>Note any history of alcohol use disorder, diabetes mellitus, seizures, renal impairment, stroke, hypotension, hypothyroidism, electrolyte imbalance, or rhabdomyolysis.</li>
+                            </ul>
+                        </li>
+                        <li>**Important for Statins:** Baseline liver enzyme studies should be obtained before initiating therapy.</li>
+                        <li>**Important for Fibrates:** Gemfibrozil and fenofibrate are highly protein-bound; assess for concomitant use of anticoagulants like warfarin and be prepared to monitor INR closely.</li>
+                    </ul>
+
+                    <h3>Analyze Cues and Prioritize Hypotheses [Patient Problems]: What's the biggest issue?</h3>
+                    <p>Potential patient problems or risks associated with antihyperlipidemic therapy or the underlying condition:</p>
+                    <ul>
+                        <li><strong>Hyperglycemia:</strong> Especially with niacin and sometimes statins.</li>
+                        <li><strong>Vomiting/Nausea/GI upset:</strong> Common side effects across many classes.</li>
+                        <li><strong>Ischemia:</strong> From the underlying hyperlipidemia leading to atherosclerosis.</li>
+                        <li><strong>Decreased visual acuity:</strong> Possible with statins (cataract formation).</li>
+                        <li><strong>Muscle pain/weakness:</strong> Risk of rhabdomyolysis with statins.</li>
+                        <li><strong>Bleeding:</strong> Especially with fibrates and anticoagulants, or if patient takes antiplatelets/herbs.</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li>The patient’s cholesterol level will be less than 200 mg/dL in 6 to 8 weeks (or reach other desired lipid targets).</li>
+                        <li>The patient will choose foods from a list that are low in fat, cholesterol, and complex sugars.</li>
+                        <li>The patient will experience no severe side effects or adverse reactions.</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Monitor the patient’s blood lipid levels:</strong> Cholesterol, triglycerides, LDL, and HDL.
+                            <ul>
+                                <li>Frequency: Every 6 to 8 weeks for the first 6 months after statin therapy, then every 3 to 6 months.</li>
+                                <li>For a lipid-level profile, the patient should fast for 12 to 14 hours.</li>
+                                <li>Desired values: Cholesterol &lt;200 mg/dL; Triglycerides &lt;150 mg/dL (can vary); LDL &lt;100 mg/dL; HDL >60 mg/dL.</li>
+                                <li>Recall: Cholesterol >240 mg/dL, LDL >160 mg/dL, and HDL &lt;35 mg/dL significantly increase risk for cardiovascular/cerebrovascular events.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Monitor laboratory tests for liver function:</strong> ALT, alkaline phosphatase (ALP), and gamma-glutamyl transferase (GGT). Antihyperlipidemic drugs, especially statins, can cause liver disorders.</li>
+                        <li><strong>Observe for signs and symptoms of gastrointestinal (GI) upset.</strong> Taking the drug with sufficient water or with meals may alleviate some discomfort.</li>
+                        <li><strong>If patient complains of muscle pain or tenderness (myalgia):</strong> Report immediately, as this can be a sign of rhabdomyolysis. CPK levels may be monitored.</li>
+                        <li><strong>Monitor for signs of bleeding</strong> (petechiae, ecchymosis, GI bleeding) if patient is on combination therapy or taking interacting substances.</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General:</h4>
+                    <ul>
+                        <li><strong>Emphasize the need to comply with the drug regimen</strong> to lower blood lipids; this is often a long-term commitment.</li>
+                        <li>Inform patients that it may take several weeks before blood lipid levels decline.</li>
+                        <li>Explain that laboratory tests for blood lipids and liver enzymes are typically ordered every 3 to 6 months.</li>
+                        <li>Advise patients to have an **annual eye examination** and to report changes in visual acuity (due to rare cataract formation risk with statins).</li>
+                        <li>Advise patients taking **gemfibrozil** that the drug may increase their risk for bleeding if they are also taking an oral anticoagulant (e.g., warfarin); bleeding should be reported.</li>
+                        <li>**Caution patients not to abruptly stop taking their statin drug** because a serious rebound effect might occur that could lead to acute myocardial infarction (AMI) and possible death. They must talk to their healthcare provider before stopping.</li>
+                    </ul>
+                    <h4>Self-Administration:</h4>
+                    <ul>
+                        <li>Teach patients to **mix cholestyramine/colestipol powder well in water or juice**.</li>
+                        <li>Instruct patients to take **nicotinic acid (niacin) with meals** to decrease GI discomfort.</li>
+                        <li>Advise patients taking **atorvastatin (and other statins)** that it may be taken without regard to meals, but **grapefruit juice should be avoided** as it could increase drug concentration.</li>
+                    </ul>
+                    <h4>Side Effects:</h4>
+                    <ul>
+                        <li>Advise patients that constipation may occur with cholestyramine and colestipol; increasing fluid intake and food bulk should help.</li>
+                        <li>Explain that flushing is common with niacin and should decrease with continued use (start at low dose). Advise that large doses of niacin can cause vasodilation, dizziness, and faintness (syncope).</li>
+                        <li>Explain that ezetimibe may cause headaches and GI upset; report if persistent.</li>
+                        <li>Encourage patients to **promptly report any unexplained muscle tenderness or weakness** (myalgia) that may be caused by rhabdomyolysis when taking statins.</li>
+                    </ul>
+                    <h4>Diet:</h4>
+                    <ul>
+                        <li>Explain that GI discomfort is common. Suggest increasing fluid intake when taking medication.</li>
+                        <li>**Emphasize that a low-fat, low-cholesterol diet is not a substitute for medication, but an essential adjunct.** Patients must continue these dietary changes.</li>
+                        <li>Encourage patients to consume foods that are low in animal fats, cholesterol, and complex sugars.</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li>Evaluate effectiveness of the antihyperlipidemic drug. The patient’s cholesterol level (and other lipid targets) should be within the desired range.</li>
+                        <li>Determine that the patient is maintaining a low-fat, low-cholesterol diet and adhering to other lifestyle modifications.</li>
+                        <li>Confirm the patient is free from significant side effects or adverse reactions (especially rhabdomyolysis or liver toxicity).</li>
+                        <li>Patient demonstrates understanding of medication regimen, side effects, and when to report concerns.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: NP - Antihyperlipidemics</h4>
+                <ul>
+                    <li>**Concept:** Perfusion. Goal: Achieve target lipid levels, no severe side effects.</li>
+                    <li>**Assess:** VS, baseline labs (cholesterol, triglycerides, LDL, HDL, AST, ALT, CPK). Medical history (liver disorders, pregnancy contraindications for statins). Look for protein-bound drug interactions.</li>
+                    <li>**Problems:** Hyperglycemia, GI upset, ischemia, decreased vision (statins), muscle pain (rhabdomyolysis risk), bleeding.</li>
+                    <li>**Plan:** Cholesterol &lt;200 mg/dL, low-fat diet adherence, no adverse effects.</li>
+                    <li>**Intervene:** Monitor lipid panels (fasting 12-14h), liver enzymes (ALT, ALP, GGT), GI upset. Report myalgia/weakness STAT (rhabdo!).</li>
+                    <li>**Teach:** Compliance is key, labs every 3-6 months, annual eye exams, **NEVER abruptly stop statins (rebound AMI risk!)**. Mix powder drugs well. Niacin with meals, start low. Avoid grapefruit juice with statins. Report ALL side effects. **Diet is adjunct, not substitute.**</li>
+                    <li>**Evaluate:** Lipid levels in range, diet adherence, no side effects.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="np-cilostazol">
+            <h2>11. Clinical Judgment [Nursing Process]—Peripheral Vasodilator: Cilostazol</h2>
+            <div class="info-card">
+                <p>Applying the nursing process for Cilostazol involves optimizing peripheral blood flow while managing its unique side effect profile. Our core concept remains **Perfusion** – the passage of blood flow to deliver oxygen and nutrients to body cells.</p>
+                <button class="reveal-button">Your Nursing Superpowers: Assessment to Evaluation for Cilostazol!</button>
+                <div class="reveal-content">
+                    <h3>Recognize Cues [Assessment]: What do you notice?</h3>
+                    <ul>
+                        <li><strong>Obtain baseline vital signs</strong> for future comparison, especially blood pressure and heart rate.</li>
+                        <li><strong>Assess for signs of inadequate blood flow to the extremities:</strong> pallor, coolness of extremities, and pain (especially claudication pain with activity).</li>
+                        <li><strong>Obtain a thorough medical history:</strong> Cilostazol is **contraindicated in heart failure**, hypersensitivity, and bleeding disorders. Use with caution in patients with hepatic and renal disease, tobacco smokers, cardiovascular disease (dysrhythmias), pregnancy, breastfeeding, and older adults.</li>
+                        <li><strong>Gather a complete drug history:</strong> Note any concomitant use of aspirin or other antiplatelets, cimetidine, macrolide antibiotics, warfarin, or herbal products (ginger, ginkgo, St. John's wort, green tea, licorice) that can interact with cilostazol.</li>
+                    </ul>
+
+                    <h3>Analyze Cues and Prioritize Hypotheses [Patient Problems]: What's the biggest issue?</h3>
+                    <p>Potential patient problems or risks when administering Cilostazol:</p>
+                    <ul>
+                        <li><strong>Hyperglycemia</strong> (less common, but noted as adverse effect).</li>
+                        <li><strong>Hypotension</strong> (orthostatic hypotension is a risk).</li>
+                        <li><strong>Ischemia</strong> (from underlying PAD, aim is to improve).</li>
+                        <li><strong>Discomfort</strong> (claudication pain is target symptom).</li>
+                        <li><strong>Bleeding risk:</strong> Due to antiplatelet action.</li>
+                        <li><strong>Cardiac events:</strong> Tachycardia, palpitations, angina, heart failure, dysrhythmias.</li>
+                        <li><strong>GI disturbances:</strong> Nausea, abdominal pain, diarrhea.</li>
+                    </ul>
+
+                    <h3>Generate Solutions [Planning]: What's the goal?</h3>
+                    <ul>
+                        <li>The patient’s legs will be warm and pink, indicating improved circulation.</li>
+                        <li>The patient will report that pain (especially claudication) has decreased, and walking distance has increased.</li>
+                        <li>The patient will experience no significant side effects or adverse reactions, particularly cardiovascular or bleeding events.</li>
+                    </ul>
+
+                    <h3>Take Action [Nursing Interventions]: What do YOU do?</h3>
+                    <ul>
+                        <li><strong>Monitor vital signs, especially blood pressure and heart rate.</strong> Tachycardia and orthostatic hypotension can be problematic with peripheral vasodilators like cilostazol.</li>
+                        <li><strong>Observe for signs of bleeding or excessive bruising</strong> due to cilostazol's antiplatelet effects.</li>
+                        <li>**Assess for improved blood flow:** Check skin color, temperature, capillary refill, and pulses in the extremities.</li>
+                        <li>**Monitor for cardiac symptoms:** Palpitations, chest pain, signs of heart failure (contraindication!).</li>
+                        <li>**Monitor for GI disturbances:** Nausea, abdominal pain, diarrhea.</li>
+                    </ul>
+
+                    <h3>Patient Teaching: Empowering Your Patient!</h3>
+                    <h4>General:</h4>
+                    <ul>
+                        <li>Inform patients that a desired therapeutic response may take **1.5 to 3 months** to become apparent. This is not a fast-acting drug for symptom relief.</li>
+                        <li>Advise patients **not to smoke** because smoking increases vasospasm and counteracts the drug's effects.</li>
+                        <li>Instruct patients to use **aspirin or aspirin-like compounds only with the health care provider’s approval**, as salicylates also help prevent platelet aggregation, potentially increasing bleeding risk with cilostazol.</li>
+                        <li>Advise patients that **grapefruit juice and green tea will increase cilostazol levels** and should be avoided.</li>
+                        <li>Inform patients about potential **herbal interactions** (ginger, ginkgo biloba, St. John's wort, licorice) that can prolong bleeding time or alter drug effects.</li>
+                    </ul>
+                    <h4>Side Effects:</h4>
+                    <ul>
+                        <li>Encourage patients to **change position slowly but frequently** to avoid orthostatic hypotension. This is common when taking high doses of a vasodilator.</li>
+                        <li>Instruct patients to report side effects of cilostazol, such as flushing, headaches, dizziness, palpitations, and GI upset (nausea, diarrhea, abdominal pain).</li>
+                        <li>**Emphasize reporting any signs of bleeding or bruising immediately.**</li>
+                        <li>**Crucially, instruct patients to report any new or worsening signs of heart failure** (e.g., swelling, increased shortness of breath, rapid weight gain) due to the contraindication.</li>
+                    </ul>
+                    <h4>Diet:</h4>
+                    <ul>
+                        <li>Suggest that patients with gastrointestinal (GI) disturbances take cilostazol **with meals**.</li>
+                        <li>Advise patients **not to ingest alcohol** with a vasodilator because it may cause a hypotensive reaction.</li>
+                    </ul>
+
+                    <h3>Evaluate Outcomes [Evaluation]: Did it work?</h3>
+                    <ul>
+                        <li>Evaluate effectiveness of cilostazol therapy: Confirm that blood flow is increased in extremities (legs warm and pink, improved pulses) and pain (claudication) has subsided or walking distance has increased.</li>
+                        <li>The patient should experience no significant side effects from the prescribed drug.</li>
+                        <li>Patient verbalizes understanding of medication regimen, precautions, and when to report symptoms.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: NP - Cilostazol</h4>
+                <ul>
+                    <li>**Concept:** Perfusion. Goal: Improve blood flow, decrease pain.</li>
+                    <li>**Assess:** Baseline VS, extremity perfusion (pallor, coolness, pain). Check for **Heart Failure contraindication!** Drug/herb interactions.</li>
+                    <li>**Problems:** Hypotension, discomfort (claudication), bleeding risk, cardiac events, GI upset.</li>
+                    <li>**Plan:** Warm/pink legs, decreased pain/increased walking, no severe side effects.</li>
+                    <li>**Intervene:** Monitor VS (tachycardia, orthostatic hypotension!), bleeding signs, perfusion assessment, watch for cardiac symptoms.</li>
+                    <li>**Teach:** **Onset 1.5-3 months.** **NO SMOKING.** Avoid grapefruit juice/green tea. Check with provider for aspirin/NSAIDs. Change positions slowly. Report flushing, headaches, dizziness, **ANY bleeding**, or **signs of HF**. Take with meals. No alcohol.</li>
+                    <li>**Evaluate:** Improved perfusion, reduced pain, increased walking, no side effects.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="case-study" class="nclex-next-gen">
+            <h3>12. Critical Thinking Case Study: Hyperlipidemia Management</h3>
+            <p class="case-study">The patient had a myocardial infarction (MI) 3 years ago. He was prescribed gemfibrozil 600 mg twice daily before meals, but his cholesterol remained between 220 and 240 mg/dL, and his LDL was 140 mg/dL. His anticholesterol drug was changed to simvastatin 20 mg/day in the evening.</p>
+
+            <div class="fill-in-the-blank">
+                <p>1. How does simvastatin differ from gemfibrozil?</p>
+                <textarea id="cs_q1_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_q1_text">Check My Answer!</button>
+                <div class="feedback" id="cs_q1_text_feedback"></div>
+                <div class="rationale" id="cs_q1_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS:</strong> Simvastatin is an HMG-CoA reductase inhibitor (statin) that primarily works by inhibiting cholesterol synthesis in the liver, leading to a significant decrease in LDL and a slight increase in HDL. Gemfibrozil is a fibric acid derivative (fibrate) that is more effective at reducing triglyceride and VLDL levels, with less impact on LDL. Therefore, their primary mechanisms of action and main targets for lipid reduction differ.</p>
+                </div>
+            </div>
+
+            <div class="fill-in-the-blank">
+                <p>2. Why do you think the patient’s cholesterol drug, gemfibrozil, was changed to simvastatin?</p>
+                <textarea id="cs_q2_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_q2_text">Check My Answer!</button>
+                <div class="feedback" id="cs_q2_text_feedback"></div>
+                <div class="rationale" id="cs_q2_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS:</strong> The patient's cholesterol remained between 220 and 240 mg/dL, and his LDL was 140 mg/dL while on gemfibrozil. Given that LDL (low-density lipoprotein) is the "bad" cholesterol directly linked to atherosclerotic plaques and heart disease, and the patient had a history of MI, the primary goal of therapy would be to significantly lower his LDL. Statins like simvastatin are highly effective at lowering LDL cholesterol, whereas gemfibrozil primarily targets triglycerides and VLDL. The change was likely made because gemfibrozil was not effectively achieving the desired LDL reduction for a patient with established cardiovascular disease (post-MI), and simvastatin is a more potent LDL-lowering agent.</p>
+                </div>
+            </div>
+
+            <div class="fill-in-the-blank">
+                <p>3. While the patient is taking simvastatin, which group of serum levels should be monitored?</p>
+                <textarea id="cs_q3_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_q3_text">Check My Answer!</button>
+                <div class="feedback" id="cs_q3_text_feedback"></div>
+                <div class="rationale" id="cs_q3_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS:</strong> While the patient is taking simvastatin, the nurse should monitor **serum liver enzymes (AST, ALT, ALP, GGT)** and **CPK (creatine phosphokinase)** levels. Elevated liver enzymes can indicate drug-induced liver injury, a known adverse effect of statins. Elevated CPK levels, especially if accompanied by muscle pain or weakness, can indicate rhabdomyolysis, a severe muscle disintegration that can be fatal.</p>
+                </div>
+            </div>
+
+            <div class="fill-in-the-blank">
+                <p>4. How long after taking simvastatin should the patient’s cholesterol and lipoproteins be checked?</p>
+                <textarea id="cs_q4_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_q4_text">Check My Answer!</button>
+                <div class="feedback" id="cs_q4_text_feedback"></div>
+                <div class="rationale" id="cs_q4_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS:</strong> LDL cholesterol reduction with statins can be seen as early as 2 weeks after initiating therapy. However, to achieve the full therapeutic effect and evaluate the overall lipid profile accurately, cholesterol and lipoproteins should typically be checked **2 to 4 weeks after initiating therapy, and then every 3 to 6 months** once the therapeutic effect is achieved or as indicated by the healthcare provider.</p>
+                </div>
+            </div>
+
+            <div class="fill-in-the-blank">
+                <p>5. What is the maximum dose for simvastatin?</p>
+                <textarea id="cs_q5_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_q5_text">Check My Answer!</button>
+                <div class="feedback" id="cs_q5_text_feedback"></div>
+                <div class="rationale" id="cs_q5_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS:</strong> The maximum daily dose for simvastatin (Zocor) is 40 mg. Higher doses were previously available but were associated with an increased risk of muscle toxicity (rhabdomyolysis) and are generally avoided unless specifically indicated and carefully monitored.</p>
+                </div>
+            </div>
+
+            <div class="fill-in-the-blank">
+                <p>6. The patient complains of muscle pain and muscle weakness. What might this indicate?</p>
+                <textarea id="cs_q6_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_q6_text">Check My Answer!</button>
+                <div class="feedback" id="cs_q6_text_feedback"></div>
+                <div class="rationale" id="cs_q6_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS:</strong> Muscle pain (myalgia) and muscle weakness are important symptoms that might indicate **rhabdomyolysis**, a rare but serious adverse reaction to statin drugs. Rhabdomyolysis involves the disintegration of striated muscle fibers, releasing muscle proteins into the bloodstream, which can lead to acute renal failure. This symptom should be reported immediately to the healthcare provider.</p>
+                </div>
+            </div>
+
+            <div class="fill-in-the-blank">
+                <p>7. Could the patient receive both gemfibrozil and simvastatin? Explain your answer.</p>
+                <textarea id="cs_q7_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_q7_text">Check My Answer!</button>
+                <div class="feedback" id="cs_q7_text_feedback"></div>
+                <div class="rationale" id="cs_q7_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS:</strong> Concomitant use of gemfibrozil and simvastatin is generally **not recommended and is largely contraindicated**, as it significantly increases the risk of **rhabdomyolysis** (severe muscle damage). While combining a fibrate with a statin might seem beneficial for managing both high LDL and high triglycerides, the interaction between these two classes, particularly with simvastatin and gemfibrozil, substantially elevates the risk of muscle toxicity. If a patient requires therapy for both high LDL and high triglycerides, alternative combinations with a lower risk profile (e.g., a different statin or fibrate, or other lipid-lowering agents like ezetimibe, PCSK9 inhibitors, or icosapent ethyl) would be considered by the healthcare provider.</p>
+                </div>
+            </div>
+
+            <div class="fill-in-the-blank">
+                <p>8. The patient is on vacation and does not have enough simvastatin tablets. What should he do?</p>
+                <textarea id="cs_q8_text" placeholder="Type your answer here."></textarea>
+                <button class="submit-btn" id="submit_cs_q8_text">Check My Answer!</button>
+                <div class="feedback" id="cs_q8_text_feedback"></div>
+                <div class="rationale" id="cs_q8_text_rationale">
+                    <h4>Rationale: Why this answer is correct!</h4>
+                    <p><strong>ANS:</strong> The patient should **contact his healthcare provider immediately** (or a local physician if his own provider is unavailable) to arrange for a prescription refill. It is crucial **not to abruptly stop taking simvastatin** because this can cause a threefold rebound effect in cholesterol levels, significantly increasing the risk of acute myocardial infarction (heart attack) and potentially death. The provider can advise on obtaining an emergency supply or a temporary prescription.</p>
+                </div>
+            </div>
+            <div class="recap">
+                <h4>Recap: Case Study Takeaways</h4>
+                <ul>
+                    <li>Statins (e.g., simvastatin) primarily lower LDL; fibrates (e.g., gemfibrozil) primarily lower triglycerides.</li>
+                    <li>Choice of drug depends on the patient's primary lipid abnormalities and cardiovascular risk.</li>
+                    <li>**Monitor liver enzymes and CPK** (for rhabdomyolysis) with statin therapy.</li>
+                    <li>**Muscle pain/weakness with statins is a medical emergency** (rhabdomyolysis risk).</li>
+                    <li>Combining simvastatin with gemfibrozil is generally **contraindicated** due to increased rhabdomyolysis risk.</li>
+                    <li>**NEVER abruptly stop statin therapy** due to severe rebound effect risk; always consult a healthcare provider.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="review-questions">
+            <h2>13. Module Review Questions: Test Your Knowledge!</h2>
+
+            <div class="question-card" id="q1_review">
+                <p>1. A patient has a serum cholesterol level of 265 mg/dL, a triglyceride level of 235 mg/dL, and a low-density lipoprotein of 180 mg/dL. What do these serum levels indicate?</p>
+                <div class="options">
+                    <label><input type="radio" name="q1_review_option" value="a"> a. Hypolipidemia</label>
+                    <label><input type="radio" name="q1_review_option" value="b"> b. Normolipidemia</label>
+                    <label><input type="radio" name="q1_review_option" value="c"> c. Hyperlipidemia</label>
+                    <label><input type="radio" name="q1_review_option" value="d"> d. Alipidemia</label>
+                </div>
+                <button class="submit-btn" id="submit_q1_review">Submit Answer</button>
+                <div class="feedback" id="q1_review_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q2_review">
+                <p>2. The nurse knows that a patient’s total cholesterol level should be within which range?</p>
+                <div class="options">
+                    <label><input type="radio" name="q2_review_option" value="a"> a. 150 to 200 mg/dL</label>
+                    <label><input type="radio" name="q2_review_option" value="b"> b. 200 to 225 mg/dL</label>
+                    <label><input type="radio" name="q2_review_option" value="c"> c. 225 to 250 mg/dL</label>
+                    <label><input type="radio" name="q2_review_option" value="d"> d. Greater than 250 mg/dL</label>
+                </div>
+                <button class="submit-btn" id="submit_q2_review">Submit Answer</button>
+                <div class="feedback" id="q2_review_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q3_review">
+                <p>3. A patient has a low-density lipoprotein of 175 mg/dL and a high-density lipoprotein of 30 mg/dL. What teaching should the nurse implement for this patient?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3_review_option" value="a"> a. Discuss medications ordered, dietary changes, and exercise.</label>
+                    <label><input type="radio" name="q3_review_option" value="b"> b. No changes in lifestyle are needed; continue with the current plan.</label>
+                    <label><input type="radio" name="q3_review_option" value="c"> c. Discuss how to have fat intake be 40% of caloric intake.</label>
+                    <label><input type="radio" name="q3_review_option" value="d"> d. Begin keeping a food diary, and schedule laboratory work to be repeated in 6 months.</label>
+                </div>
+                <button class="submit-btn" id="submit_q3_review">Submit Answer</button>
+                <div class="feedback" id="q3_review_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q4_review">
+                <p>4. Which laboratory test value does the nurse realize can contribute to the development of cardiovascular disease and stroke?</p>
+                <div class="options">
+                    <label><input type="radio" name="q4_review_option" value="a"> a. Decreased antidiuretic hormone</label>
+                    <label><input type="radio" name="q4_review_option" value="b"> b. Increased homocysteine level</label>
+                    <label><input type="radio" name="q4_review_option" value="c"> c. Decreased triglycerides</label>
+                    <label><input type="radio" name="q4_review_option" value="d"> d. Increased high-density lipoprotein level</label>
+                </div>
+                <button class="submit-btn" id="submit_q4_review">Submit Answer</button>
+                <div class="feedback" id="q4_review_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q5_review">
+                <p>5. A patient is taking lovastatin. Which serum level is most important for the nurse to monitor?</p>
+                <div class="options">
+                    <label><input type="radio" name="q5_review_option" value="a"> a. Blood urea nitrogen</label>
+                    <label><input type="radio" name="q5_review_option" value="b"> b. Complete blood count</label>
+                    <label><input type="radio" name="q5_review_option" value="c"> c. Cardiac enzymes</label>
+                    <label><input type="radio" name="q5_review_option" value="d"> d. Hepatic enzymes</label>
+                </div>
+                <button class="submit-btn" id="submit_q5_review">Submit Answer</button>
+                <div class="feedback" id="q5_review_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q6_review">
+                <p>6. For what severe skeletal muscle adverse reaction should the nurse observe in a patient taking rosuvastatin?</p>
+                <div class="options">
+                    <label><input type="radio" name="q6_review_option" value="a"> a. Myasthenia gravis</label>
+                    <label><input type="radio" name="q6_review_option" value="b"> b. Rhabdomyolysis</label>
+                    <label><input type="radio" name="q6_review_option" value="c"> c. Dyskinesia</label>
+                    <label><input type="radio" name="q6_review_option" value="d"> d. Agranulocytosis</label>
+                </div>
+                <button class="submit-btn" id="submit_q6_review">Submit Answer</button>
+                <div class="feedback" id="q6_review_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q7_review">
+                <p>7. A patient is taking ezetimibe and asks the nurse how it works. The nurse should explain that ezetimibe does what?</p>
+                <div class="options">
+                    <label><input type="radio" name="q7_review_option" value="a"> a. Inhibits absorption of dietary cholesterol in the intestines</label>
+                    <label><input type="radio" name="q7_review_option" value="b"> b. Binds with bile acids in the intestines to reduce low-density lipoprotein levels</label>
+                    <label><input type="radio" name="q7_review_option" value="c"> c. Inhibits 3-hydroxy-3-methylglutaryl-coenzyme A reductase, which is necessary for cholesterol production in the liver</label>
+                    <label><input type="radio" name="q7_review_option" value="d"> d. Forms insoluble complexes and reduces circulating cholesterol in the blood</label>
+                </div>
+                <button class="submit-btn" id="submit_q7_review">Submit Answer</button>
+                <div class="feedback" id="q7_review_feedback"></div>
+            </div>
+
+            <div class="question-card" id="q8_review">
+                <p>8. A patient is diagnosed with peripheral arterial disease. He is prescribed pentoxifylline. What does the nurse realize are the effects of pentoxifylline? (Select all that apply.)</p>
+                <div class="options">
+                    <label><input type="checkbox" name="q8_review_option" value="a"> a. May lead to hypertension and bradycardia</label>
+                    <label><input type="checkbox" name="q8_review_option" value="b"> b. Improves microcirculation and tissue perfusion</label>
+                    <label><input type="checkbox" name="q8_review_option" value="c"> c. Decreases blood viscosity and improves flexibility of erythrocytes</label>
+                    <label><input type="checkbox" name="q8_review_option" value="d"> d. Alleviates intermittent claudication</label>
+                    <label><input type="checkbox" name="q8_review_option" value="e"> e. Commonly causes an adverse effect of rhabdomyolysis</label>
+                    <label><input type="checkbox" name="q8_review_option" value="f"> f. Allows vasodilation of arteries in skeletal muscles</label>
+                </div>
+                <button class="submit-btn" id="submit_q8_review">Submit Answer</button>
+                <div class="feedback" id="q8_review_feedback"></div>
+            </div>
+
+        </section>
+        <section id="drug-mastery-quiz">
+            <h2>14. Drug Mastery Challenge: Let's Master These Vascular Meds!</h2>
+            <p>Ready to test your knowledge on the drugs for managing hyperlipidemia and improving blood flow? Go through each card and see if you can recall the key information!</p>
+            <button id="startQuizBtn">Start Drug Mastery Challenge!</button>
+
+            <div class="quiz-card" id="drugQuizCard">
+                <div class="progress-tracker">Card <span id="currentCardNum">1</span> of <span id="totalCardsNum">0</span></div>
+                <h4 id="drugName">Drug Name Goes Here</h4>
+                <p id="drugQuestion">Question about the drug will appear here.</p>
+
+                <div class="quiz-controls">
+                    <button id="showAnswerBtn">Show Answer</button>
+                </div>
+
+                <div id="answerFeedback">
+                    <h5>Answer: <span id="answerType"></span></h5>
+                    <p id="answerContent"></p>
+                </div>
+
+                <div id="masteryButtons" style="display: none;">
+                    <p>Did you get it right?</p>
+                    <button id="correctBtn">Yes, I knew it!</button>
+                    <button id="incorrectBtn">No, I need to review.</button>
+                </div>
+            </div>
+
+            <div id="quizSummary">
+                <h4>Challenge Complete!</h4>
+                <p>You've gone through all the drugs!</p>
+                <p>Mastered on first try: <span id="masteredCount">0</span></p>
+                <p>Needed review: <span id="missedCount">0</span></p>
+                <button id="restartQuizBtn">Restart Full Quiz</button>
+                <button id="reviewMissedBtn">Review Missed Drugs</button>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Chapter 44: Antihyperlipidemics & Peripheral Blood Flow Learning Module. Designed for focused learning.</p>
+        </footer>
+    </div>
+
+    <div id="clockOutOverlay">
+        <div id="clockOutContent">
+            <h2>Clock Out!</h2>
+            <p>Take a moment to reset your focus. Your module will resume in:</p>
+            <div id="brainEmoji">🧠</div> <div id="countdownTimer">00:30</div>
+        </div>
+    </div>
+    <script>
+        // ==========================================
+        // Drug Data (This is the only part that can safely sit outside DOMContentLoaded)
+        // ==========================================
+        const drugs = [
+            {
+                name: "Atorvastatin (Lipitor)",
+                class: "Antihyperlipidemic (HMG-CoA Reductase Inhibitor / Statin)",
+                keyActions: "Inhibits HMG-CoA reductase in the liver, decreasing cholesterol synthesis, significantly lowering LDL, and slightly increasing HDL. Used to decrease cholesterol/serum lipids, treat atherosclerosis, hypercholesterolemia, hyperlipoproteinemia, and hypertriglyceridemia.",
+                sideEffects: "Dizziness, insomnia, memory impairment, flushing, nightmares, blurred vision, weakness, myalgia, dyspepsia, nausea, diarrhea, flatulence, abdominal pain, peripheral neuropathy.",
+                nursingConsiderations: "Monitor serum liver enzymes (AST, ALT, ALP, GGT) at baseline and periodically. Monitor CPK if muscle pain/weakness occurs. Patients must immediately report unexplained muscle tenderness or weakness (risk of rhabdomyolysis). Lifetime commitment; abrupt discontinuation can cause rebound AMI/death. Avoid grapefruit juice. Contraindicated in liver disease, pregnancy, breastfeeding."
+            },
+            {
+                name: "Cholestyramine",
+                class: "Antihyperlipidemic (Bile-Acid Sequestrant)",
+                keyActions: "Reduces LDL cholesterol by binding with bile acids in the intestine, leading to their excretion. This forces the liver to use more cholesterol to make bile. Used for hypercholesterolemia.",
+                sideEffects: "Constipation (common), anorexia, nausea, vomiting, diarrhea, steatorrhea, abdominal pain, eructation, flatulence, osteoporosis, peptic ulcer, GI bleeding.",
+                nursingConsiderations: "Administer as a gritty powder mixed thoroughly in water or juice. Increase fluid and fiber intake to alleviate constipation. May affect absorption of fat-soluble vitamins (A, D, E, K); administer other medications 1 hour before or 4-6 hours after. Colesevelam is a newer agent with fewer GI side effects and less vitamin malabsorption."
+            },
+            {
+                name: "Gemfibrozil",
+                class: "Antihyperlipidemic (Fibrate / Fibric Acid Derivative)",
+                keyActions: "More effective for reducing triglyceride and VLDL levels than for reducing LDL. Activates PPARα, increasing LPL and reducing liver triglyceride production. Used for hyperlipoproteinemia (Type IV, IIB) and hypertriglyceridemia.",
+                sideEffects: "Dizziness, headache, elevated hepatic enzymes, fatigue, nausea, vomiting, dyspepsia, abdominal pain, cholelithiasis (gallstones), constipation, diarrhea.",
+                nursingConsiderations: "Administer twice daily, 30 min before morning and evening meals. Highly protein bound; contraindicated with anticoagulants like warfarin due to increased bleeding risk (competes for protein sites); if co-administered, reduce anticoagulant dose and monitor INR closely. Monitor liver function tests."
+            },
+            {
+                name: "Niacin (Vitamin B3)",
+                class: "Antihyperlipidemic (Nicotinic Acid)",
+                keyActions: "Reduces VLDL and LDL by inhibiting VLDL synthesis in the liver. Highly effective at lowering cholesterol. Used for hypercholesterolemia, hypertriglyceridemia (especially >500 mg/dL).",
+                sideEffects: "Flushing of the skin (common), hypotension, dizziness, headache, cough, pruritus, nausea, vomiting, diarrhea, hyperglycemia, hyperuricemia (gout), rash, edema, weakness.",
+                nursingConsiderations: "Requires large doses and has numerous side effects, limiting tolerance. Administer with meals to decrease GI discomfort. Aspirin (30 min before) and careful titration can help reduce flushing. Only recommended in specific clinical situations due to side effect profile."
+            },
+            {
+                name: "Ezetimibe",
+                class: "Antihyperlipidemic (Cholesterol Absorption Inhibitor)",
+                keyActions: "Acts on cells in the small intestine to inhibit absorption of dietary and biliary cholesterol. Decreases serum cholesterol, LDL, triglycerides, and apoB. Causes a small increase in HDL. Used for hypercholesterolemia.",
+                sideEffects: "Diarrhea, arthralgia, abdominal and back pain, fatigue, infection, pharyngitis, elevated hepatic enzymes, cholelithiasis, myalgia.",
+                nursingConsiderations: "Administer once daily. For optimum effect, it must be combined with a statin (e.g., simvastatin). Monitor liver enzymes. Explain potential headaches and GI upset."
+            },
+            {
+                name: "Cilostazol",
+                class: "Direct-Acting Vasodilator / Antiplatelet",
+                keyActions: "Inhibits platelet aggregation AND causes vasodilation, especially in femoral vasculature, to improve blood flow. Used to treat peripheral vascular disease and intermittent claudication.",
+                sideEffects: "Dizziness, headache, nasopharyngitis, rhinitis, cough, dyspepsia, myalgia, flushing, nausea, vomiting, flatulence, diarrhea, melena, back and abdominal pain, peripheral edema.",
+                nursingConsiderations: "Administer 30 min before or 2 h after meals. Therapeutic response may take 1.5 to 3 months. Contraindicated in heart failure, hypersensitivity, bleeding disorders. Avoid smoking. Use aspirin/anticoagulants with caution (increased bleeding). Change position slowly for orthostatic hypotension. Avoid grapefruit juice, green tea. Watch for tachycardia, palpitations, dysrhythmias, signs of HF."
+            },
+            {
+                name: "Pentoxifylline",
+                class: "Hemorrheologic Agent / Blood Viscosity Reducer",
+                keyActions: "Improves microcirculation and tissue perfusion by decreasing blood viscosity and improving flexibility of erythrocytes. Also inhibits aggregation of platelets and red blood cells. Used for intermittent claudication.",
+                sideEffects: "Nausea, vomiting (most common), blurred vision, confusion, constipation, cholestasis, tachycardia, edema, hypotension.",
+                nursingConsiderations: "Administer with meals. Avoid smoking (nicotine increases vasoconstriction). If patient is on antihypertensives, their dose may need to be decreased to avoid excessive hypotension. Overdose can cause tachycardia, hypotension, blurred vision."
+            }
+        ];
+
+        // ==========================================
+        // ALL other JavaScript code and functions MUST be inside this single DOMContentLoaded listener.
+        // This ensures all HTML elements are available when the script tries to access them.
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- QUIZ VARIABLES AND ELEMENT SELECTIONS ---
+            let currentQuizDrugsCopy = [];
+            let currentDrugIndex = 0;
+            let masteredDrugs = [];
+            let missedDrugs = [];
+            const questionTypes = ['class', 'keyActions', 'sideEffects', 'nursingConsiderations'];
+
+            const startQuizBtn = document.getElementById('startQuizBtn');
+            const drugQuizCard = document.getElementById('drugQuizCard');
+            const drugNameEl = document.getElementById('drugName');
+            const drugQuestionEl = document.getElementById('drugQuestion');
+            const showAnswerBtn = document.getElementById('showAnswerBtn');
+            const answerFeedbackEl = document.getElementById('answerFeedback');
+            const answerTypeEl = document.getElementById('answerType');
+            const answerContentEl = document.getElementById('answerContent');
+            const masteryButtons = document.getElementById('masteryButtons');
+            const correctBtn = document.getElementById('correctBtn');
+            const incorrectBtn = document.getElementById('incorrectBtn');
+            const quizSummary = document.getElementById('quizSummary');
+            const masteredCountEl = document.getElementById('masteredCount');
+            const missedCountEl = document.getElementById('missedCount');
+            const restartQuizBtn = document.getElementById('restartQuizBtn');
+            const reviewMissedBtn = document.getElementById('reviewMissedBtn');
+            const currentCardNumEl = document.getElementById('currentCardNum');
+            const totalCardsNumEl = document.getElementById('totalCardsNum');
+
+            // --- MODULE PROGRESS BAR VARIABLES ---
+            const moduleProgressBar = document.getElementById('moduleProgressBar');
+            let completedSectionsCount = 0;
+
+            // Define all section IDs that should count towards progress
+            const completableSectionIds = new Set([
+                'objectives', 'intro', 'lipoproteins', 'apolipoproteins', 'nonpharmacologic',
+                'antihyperlipidemics', 'statins', 'peripheral-blood-flow', 'cilostazol',
+                'pentoxifylline', 'np-antihyperlipidemics', 'np-cilostazol',
+                'case-study', 'review-questions', 'drug-mastery-quiz', 'quick-note-area'
+            ]);
+
+            const totalSections = completableSectionIds.size;
+
+            // --- HELPER FUNCTIONS ---
+
+            function updateProgressBar() {
+                const progress = (completedSectionsCount / totalSections) * 100;
+                moduleProgressBar.style.width = `${progress}%`;
+            }
+
+            function markSectionCompleted(sectionId) {
+                const navLink = document.getElementById('nav-' + sectionId);
+                if (navLink && !navLink.classList.contains('completed')) {
+                    navLink.classList.add('completed');
+                    if (completableSectionIds.has(sectionId)) {
+                        completedSectionsCount++;
+                        updateProgressBar();
+                        if (completedSectionsCount > 0 && completedSectionsCount % 3 === 0 && completedSectionsCount !== totalSections) {
+                            showMicroBreakPrompt();
+                        }
+                    }
+                }
+            }
+
+            markSectionCompleted('objectives');
+            markSectionCompleted('quick-note-area');
+
+            // --- Manual scrolling for navigation links ---
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const targetId = this.id.replace('nav-', '');
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            // toggleReveal function
+            function toggleReveal(button) {
+                const content = button.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                    button.textContent = button.dataset.originalText;
+                } else {
+                    content.style.display = "block";
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = "Click to Hide Details";
+                    const parentSection = button.closest('section');
+                    if (parentSection && parentSection.id) {
+                        markSectionCompleted(parentSection.id);
+                    }
+                }
+            }
+
+            // --- Question Checking Functions ---
+            function checkAnswer(questionId, correctAnswer) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOption = questionCard.querySelector('input[name="' + questionId + '_option"]:checked');
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                questionCard.querySelectorAll('input[type="radio"]').forEach(input => input.disabled = true);
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+                if (!selectedOption) {
+                    feedbackDiv.textContent = "Oops! Please pick an answer before checking.";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                if (selectedOption.value === correctAnswer) {
+                    feedbackDiv.textContent = "Awesome! That's correct. Keep up the great work!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Not quite! The correct answer was: ${correctAnswer.toUpperCase()}. Review the material and try to understand why.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkMultipleAnswers(questionId, correctAnswers) {
+                const questionCard = document.getElementById(questionId);
+                const selectedOptions = Array.from(questionCard.querySelectorAll('input[name="' + questionId + '_option"]:checked')).map(input => input.value);
+                const feedbackDiv = questionCard.querySelector('.feedback');
+
+                questionCard.querySelectorAll('input[type="checkbox"]').forEach(input => input.disabled = true);
+                const submitBtn = questionCard.querySelector('.submit-btn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+
+                if (selectedOptions.length === 0) {
+                    feedbackDiv.textContent = "Don't forget to select your answers!";
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackDiv.style.display = 'block';
+                    return;
+                }
+
+                const isCorrect = correctAnswers.every(answer => selectedOptions.includes(answer)) &&
+                                       selectedOptions.every(answer => correctAnswers.includes(answer));
+
+                if (isCorrect) {
+                    feedbackDiv.textContent = "Fantastic! You got all the correct points!";
+                    feedbackDiv.className = 'feedback correct';
+                } else {
+                    feedbackDiv.textContent = `Hold on! Double-check the options and review the related content. You might have missed something or picked too many/too few. Correct answers were: ${correctAnswers.join(', ').toUpperCase()}.`;
+                    feedbackDiv.className = 'feedback incorrect';
+                }
+                feedbackDiv.style.display = 'block';
+                markSectionCompleted(questionCard.closest('section').id);
+            }
+
+            function checkCaseStudyFreeText(questionId, rationaleId) {
+                const textarea = document.getElementById(questionId + '_text');
+                const feedbackDiv = document.getElementById(questionId + '_text_feedback');
+                const rationaleDiv = document.getElementById(rationaleId);
+                const submitBtn = document.getElementById('submit_' + questionId + '_text');
+
+                textarea.disabled = true;
+                submitBtn.disabled = true;
+
+                feedbackDiv.textContent = "Good attempt! Compare your answer with the detailed rationale below to refine your understanding. Keep up the great work!";
+                feedbackDiv.className = 'feedback correct';
+                feedbackDiv.style.display = 'block';
+                rationaleDiv.style.display = 'block';
+                markSectionCompleted(rationaleDiv.closest('section').id);
+            }
+
+            // --- DRUG MASTERY QUIZ FUNCTIONS ---
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function startQuiz(reviewMode = false) {
+                if (!reviewMode) {
+                    currentQuizDrugsCopy = shuffleArray([...drugs]);
+                    masteredDrugs = [];
+                    missedDrugs = [];
+                } else {
+                    if (missedDrugs.length === 0) {
+                        alert("Fantastic! You've mastered all the drugs in the review pile. Starting a new full quiz!");
+                        currentQuizDrugsCopy = shuffleArray([...drugs]);
+                        masteredDrugs = [];
+                        missedDrugs = [];
+                    } else {
+                        currentQuizDrugsCopy = shuffleArray([...missedDrugs]);
+                        missedDrugs = [];
+                    }
+                }
+
+                currentDrugIndex = 0;
+                startQuizBtn.style.display = 'none';
+                drugQuizCard.style.display = 'block';
+                quizSummary.style.display = 'none';
+                displayCurrentCard();
+                markSectionCompleted('drug-mastery-quiz');
+            }
+
+            function displayCurrentCard() {
+                if (currentDrugIndex >= currentQuizDrugsCopy.length) {
+                    showQuizSummary();
+                    return;
+                }
+
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const randomQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+
+                drugNameEl.textContent = currentDrug.name;
+                currentCardNumEl.textContent = currentDrugIndex + 1;
+                totalCardsNumEl.textContent = currentQuizDrugsCopy.length;
+
+                let questionText = '';
+                switch (randomQuestionType) {
+                    case 'class':
+                        questionText = `What is the **drug class** for ${currentDrug.name}?`;
+                        break;
+                    case 'keyActions':
+                        questionText = `What is a **key action or use** of ${currentDrug.name}?`;
+                        break;
+                    case 'sideEffects':
+                        questionText = `Name one or two **common side effects** of ${currentDrug.name}.`;
+                        break;
+                    case 'nursingConsiderations':
+                        questionText = `What is an **important nursing consideration** when administering ${currentDrug.name}?`;
+                        break;
+                }
+                drugQuestionEl.innerHTML = questionText;
+
+                answerFeedbackEl.style.display = 'none';
+                masteryButtons.style.display = 'none';
+                showAnswerBtn.style.display = 'block';
+
+                drugQuizCard.dataset.currentQuestionType = randomQuestionType;
+            }
+
+            function showAnswer() {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                const questionType = drugQuizCard.dataset.currentQuestionType;
+
+                answerTypeEl.textContent = questionType.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, str => str.toUpperCase());
+
+                let content = '';
+                switch (questionType) {
+                    case 'class':
+                        content = currentDrug.class;
+                        break;
+                    case 'keyActions':
+                        content = currentDrug.keyActions;
+                        break;
+                    case 'sideEffects':
+                        content = currentDrug.sideEffects;
+                        break;
+                    case 'nursingConsiderations':
+                        content = currentDrug.nursingConsiderations;
+                        break;
+                }
+                answerContentEl.textContent = content;
+
+                answerFeedbackEl.style.display = 'block';
+                showAnswerBtn.style.display = 'none';
+                masteryButtons.style.display = 'flex';
+            }
+
+            function handleMastery(isCorrect) {
+                const currentDrug = currentQuizDrugsCopy[currentDrugIndex];
+                if (isCorrect) {
+                    if (!missedDrugs.includes(currentDrug)) {
+                        masteredDrugs.push(currentDrug);
+                    }
+                    const missedIndex = missedDrugs.indexOf(currentDrug);
+                    if (missedIndex > -1) {
+                        missedDrugs.splice(missedIndex, 1);
+                    }
+
+                } else {
+                    if (!missedDrugs.includes(currentDrug)) {
+                        missedDrugs.push(currentDrug);
+                    }
+                    const masteredIndex = masteredDrugs.indexOf(currentDrug);
+                    if (masteredIndex > -1) {
+                        masteredDrugs.splice(masteredIndex, 1);
+                    }
+                }
+                masteryButtons.style.display = 'none';
+
+                setTimeout(() => {
+                    currentDrugIndex++;
+                    displayCurrentCard();
+                }, 1500);
+            }
+
+            function showQuizSummary() {
+                drugQuizCard.style.display = 'none';
+                quizSummary.style.display = 'block';
+
+                const uniqueMastered = [...new Set(masteredDrugs)];
+                const uniqueMissed = [...new Set(missedDrugs)];
+
+                masteredCountEl.textContent = uniqueMastered.length;
+                missedCountEl.textContent = uniqueMissed.length;
+            }
+
+            // --- EVENT LISTENERS ---
+
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    toggleReveal(this);
+                });
+            });
+
+            // Case Study Questions
+            document.getElementById('submit_cs_q1_text').addEventListener('click', () => checkCaseStudyFreeText('cs_q1', 'cs_q1_text_rationale'));
+            document.getElementById('submit_cs_q2_text').addEventListener('click', () => checkCaseStudyFreeText('cs_q2', 'cs_q2_text_rationale'));
+            document.getElementById('submit_cs_q3_text').addEventListener('click', () => checkCaseStudyFreeText('cs_q3', 'cs_q3_text_rationale'));
+            document.getElementById('submit_cs_q4_text').addEventListener('click', () => checkCaseStudyFreeText('cs_q4', 'cs_q4_text_rationale'));
+            document.getElementById('submit_cs_q5_text').addEventListener('click', () => checkCaseStudyFreeText('cs_q5', 'cs_q5_text_rationale'));
+            document.getElementById('submit_cs_q6_text').addEventListener('click', () => checkCaseStudyFreeText('cs_q6', 'cs_q6_text_rationale'));
+            document.getElementById('submit_cs_q7_text').addEventListener('click', () => checkCaseStudyFreeText('cs_q7', 'cs_q7_text_rationale'));
+            document.getElementById('submit_cs_q8_text').addEventListener('click', () => checkCaseStudyFreeText('cs_q8', 'cs_q8_text_rationale'));
+
+            // Review Questions
+            document.getElementById('submit_q1_review').addEventListener('click', () => checkAnswer('q1_review', 'c'));
+            document.getElementById('submit_q2_review').addEventListener('click', () => checkAnswer('q2_review', 'a'));
+            document.getElementById('submit_q3_review').addEventListener('click', () => checkAnswer('q3_review', 'a'));
+            document.getElementById('submit_q4_review').addEventListener('click', () => checkAnswer('q4_review', 'b'));
+            document.getElementById('submit_q5_review').addEventListener('click', () => checkAnswer('q5_review', 'd'));
+            document.getElementById('submit_q6_review').addEventListener('click', () => checkAnswer('q6_review', 'b'));
+            document.getElementById('submit_q7_review').addEventListener('click', () => checkAnswer('q7_review', 'a'));
+            document.getElementById('submit_q8_review').addEventListener('click', () => checkMultipleAnswers('q8_review', ['b', 'c', 'd'])); // a, e, f are incorrect based on details
+
+            // Quiz Mastery Challenge Event Listeners
+            startQuizBtn.addEventListener('click', () => startQuiz(false));
+            showAnswerBtn.addEventListener('click', showAnswer);
+            correctBtn.addEventListener('click', () => handleMastery(true));
+            incorrectBtn.addEventListener('click', () => handleMastery(false));
+            restartQuizBtn.addEventListener('click', () => startQuiz(false));
+            reviewMissedBtn.addEventListener('click', () => startQuiz(true));
+
+            // Text Size Controls
+            const body = document.body;
+            const increaseTextBtn = document.getElementById('increaseText');
+            const decreaseTextBtn = document.getElementById('decreaseText');
+            let currentFontSize = 16;
+
+            increaseTextBtn.addEventListener('click', () => {
+                currentFontSize += 2;
+                body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            decreaseTextBtn.addEventListener('click', () => {
+                currentFontSize -= 2;
+                if (currentFontSize < 12) currentFontSize = 12;
+                body.style.fontSize = `${currentFontSize}px`;
+            });
+
+            // Quick Notes persistence (uses localStorage)
+            const quickNotesTextarea = document.getElementById('quickNotesTextarea');
+            if (localStorage.getItem('antihyperlipidModuleNotes')) {
+                quickNotesTextarea.value = localStorage.getItem('antihyperlipidModuleNotes');
+            }
+            quickNotesTextarea.addEventListener('input', () => {
+                localStorage.setItem('antihyperlipidModuleNotes', quickNotesTextarea.value);
+            });
+
+            // Micro-Break Prompts & Clock Out Logic
+            const microBreakPromptEl = document.getElementById('microBreakPrompt');
+            const breakPrompts = [
+                "Quick Break! Stand up and stretch, or take a few deep breaths!",
+                "Time for a 30-second mental reset. Look away from the screen for a moment!",
+                "Mini-Break! Wiggle your toes or do a quick shoulder roll.",
+                "Focus check! Take a sip of water and recenter. You're doing great!",
+                "Short pause! How about a quick doodle or scribble for 15 seconds?"
+            ];
+            let breakPromptTimeout;
+
+            const clockOutOverlay = document.getElementById('clockOutOverlay');
+            const countdownTimerEl = document.getElementById('countdownTimer');
+            let countdownInterval;
+
+            function showMicroBreakPrompt() {
+                if (breakPromptTimeout) {
+                    clearTimeout(breakPromptTimeout);
+                }
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+
+                const randomChanceForClockOut = Math.random();
+                const shouldTriggerClockOut = (completedSectionsCount > 0 && completedSectionsCount % 3 === 0 && randomChanceForClockOut < 0.7);
+
+                if (shouldTriggerClockOut) {
+                    startClockOut();
+                } else {
+                    const randomPrompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)];
+                    microBreakPromptEl.textContent = randomPrompt;
+                    microBreakPromptEl.style.display = 'block';
+                    breakPromptTimeout = setTimeout(() => {
+                        microBreakPromptEl.style.display = 'none';
+                    }, 8000);
+                }
+            }
+
+            function startClockOut() {
+                microBreakPromptEl.style.display = 'none';
+
+                clockOutOverlay.classList.add('active');
+                document.body.classList.add('blurred');
+
+                let timeLeft = 30;
+                countdownTimerEl.textContent = '00:30';
+
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+
+                    const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    countdownTimerEl.textContent = formattedTime;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(countdownInterval);
+                        endClockOut();
+                    }
+                }, 1000);
+            }
+
+            function endClockOut() {
+                clockOutOverlay.classList.remove('active');
+                document.body.classList.remove('blurred');
+                microBreakPromptEl.textContent = "Welcome back! Let's get back to it!";
+                microBreakPromptEl.style.display = 'block';
+                setTimeout(() => {
+                    microBreakPromptEl.style.display = 'none';
+                }, 5000);
+            }
+
+            // --- Initial setup calls that run once DOM is fully loaded ---
+            document.querySelectorAll('.reveal-button').forEach(button => {
+                button.dataset.originalText = button.textContent;
+            });
+            updateProgressBar();
+        });
+    </script>
+</body>
+</html>
