@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Addiction SDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #3498db;
+            --primary-dark-blue: #2980b9;
+            --secondary-orange: #f39c12;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #ecf0f1;
+            --bg-white: #FFFFFF;
+            --border-light: #e0e4eb;
+            --success-green: #2ecc71;
+            --danger-red: #e74c3c;
+            --shadow-color: rgba(44, 62, 80, 0.1);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            box-sizing: border-box;
+        }
+
+        .quiz-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .quiz-header {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            padding: 0.75rem 2rem;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            position: absolute;
+            left: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
+        .animated-icon {
+            position: absolute;
+            right: 0;
+            animation: inspect 4s ease-in-out infinite;
+        }
+
+        .animated-icon svg { width: 30px; height: 30px; fill: var(--primary-blue); }
+        .quiz-header h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+        .version-info { font-size: 0.7rem; color: var(--text-light); margin-top: 0.2rem; }
+        
+        .quiz-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        #initial-screen { text-align: center; padding: 2rem; }
+        #initial-screen h2 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-dark-blue); }
+        #initial-screen p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 1rem auto 2rem auto; color: var(--text-light); }
+        #start-btn { background-color: var(--primary-blue); color: white; padding: 1rem 2.5rem; font-size: 1.1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
+        #start-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+        
+        #quiz-form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 15px 40px var(--shadow-color);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            box-sizing: border-box;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        
+        #quiz-form.is-transitioning { opacity: 0; transform: scale(0.98); }
+
+        .question-header { font-size: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; flex-shrink: 0; border-bottom: 1px dashed var(--border-light); color: var(--text-light); font-weight: 500; }
+        .question-header strong { font-weight: 700; color: var(--primary-blue); }
+        .question-text { font-size: 1.25rem; font-weight: 500; line-height: 1.6; margin-top: 0; margin-bottom: 1rem; flex-shrink: 0; }
+        
+        .options-container { 
+            flex-grow: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0.5rem 0;
+        }
+
+        .options-container label { padding: 0.8rem 1.2rem; margin-bottom: 0.75rem; font-size: 1rem; border: 2px solid var(--border-light); border-radius: 10px; display: flex; align-items: center; transition: all 0.2s ease-in-out; cursor: pointer; }
+        .options-container label:hover { background-color: var(--bg-light); border-color: var(--primary-blue); }
+        .options-container input { margin-right: 1rem; flex-shrink: 0; transform: scale(1.2); accent-color: var(--primary-blue); }
+        
+        .question-footer { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .flag-container label { cursor: pointer; font-weight: 500; color: var(--text-light); display: flex; align-items: center; }
+        .flag-container input { margin-right: 0.5rem; }
+        .confidence-slider-container { display: flex; align-items: center; gap: 1rem; }
+        .confidence-slider-container label { font-weight: 500; color: var(--text-light); }
+        .confidence-slider { max-width: 150px; }
+
+        #navigation-btn { padding: 0.8rem 2rem; font-size: 1rem; background-color: var(--primary-blue); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        #navigation-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+
+        #results-area { animation: fadeIn 0.8s ease-out; box-sizing: border-box; width: 100%; height: 100%; overflow-y: auto; padding: 2rem; }
+        .results-summary, #confidence-analysis, #study-focus, #results-details { background-color: var(--bg-white); margin: 0 auto 2rem auto; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px var(--shadow-color); max-width: 1000px; }
+        .results-summary { text-align: center; }
+
+        .score-animation-container { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--primary-blue); display: flex; justify-content: center; align-items: center; margin: 1.5rem auto; position: relative; background-color: var(--bg-white); }
+        .score-animation-circle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--success-green) 0% 0%, var(--border-light) 0% 100%); transition: background 1.5s ease-out; }
+        .score-animation-inner { position: relative; z-index: 2; background-color: var(--bg-white); width: calc(100% - 16px); height: calc(100% - 16px); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .score-animation-text { font-size: 2.5rem; font-weight: 800; color: var(--text-dark); }
+        
+        #confidence-analysis h3, #study-focus h3, #results-details h2 { margin-top: 0; border-bottom: 2px solid; padding-bottom: 1rem; font-size: 1.5rem; margin-bottom: 1.5rem; }
+        #confidence-analysis h3 { color: var(--primary-dark-blue); border-color: var(--primary-blue); }
+        #study-focus h3 { color: #c0392b; border-color: #e74c3c; }
+        #results-details h2 { color: var(--text-dark); border-color: var(--border-light); }
+        
+        .result-question { border: 1px solid var(--border-light); padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 12px; }
+        .result-question p strong { display: block; margin-bottom: 1rem; font-size: 1.1em; color: var(--text-dark); }
+        .result-question ul { list-style-type: none; padding: 0; margin: 0; }
+        .result-question li { padding: 0.8rem 1.2rem; border-radius: 8px; margin-bottom: 0.6rem; font-size: 1rem; }
+        .correct-answer-label { background-color: var(--light-green-bg); color: #27ae60; font-weight: 600; }
+        .incorrect-answer-label { background-color: var(--light-red-bg); color: var(--danger-red); text-decoration: line-through; }
+        .missed-correct-answer-label { border: 2px dashed var(--success-green); }
+        .rationale { margin-top: 1.5rem; padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--primary-blue); background-color: var(--light-blue-bg); font-size: 0.95rem; }
+
+        .hidden { display: none !important; }
+        .confetti { position: fixed; width: 10px; height: 10px; opacity: 0; animation: confetti-fall 5s linear forwards; border-radius: 50%; z-index: 9999; }
+        @keyframes confetti-fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+        @keyframes inspect { 0% { transform: rotate(-15deg); } 50% { transform: rotate(10deg); } 100% { transform: rotate(-15deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-wrapper">
+        <header class="quiz-header">
+            <div class="header-content">
+                <div class="logo">VSREP</div>
+                <div>
+                    <h1>Mental Health Cognition - SDE</h1>
+                    <div class="version-info">
+                        <span>Engine: V4.0</span> | <span>Test: V2.0</span>
+                    </div>
+                </div>
+                <div class="animated-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-content">
+            <div id="initial-screen">
+                <h2>Welcome to the Diagnostic Exam</h2>
+                <p>You will be presented with one question at a time. Once you answer, you cannot go back. Please read each question carefully before proceeding.</p>
+                <button id="start-btn">Start Exam</button>
+            </div>
+
+            <form id="quiz-form" class="hidden"></form>
+
+            <div id="results-area" class="hidden"></div>
+        </main>
+    </div>
+
+<script>
+    const fullQuizData = [ 
+      {
+        "questionText": "An 82-year-old client is admitted with pneumonia and is acutely confused, disoriented, and reporting seeing insects on the walls. The client's daughter states this started suddenly yesterday. Which condition does the nurse suspect, and what is the priority nursing outcome?",
+        "options": {
+            "A": "Alzheimer's disease; client will be oriented to time, place, and person.",
+            "B": "Delirium; client will remain safe and free from injury.",
+            "C": "Schizophrenia; client will verbalize understanding of their illness.",
+            "D": "Vascular dementia; client will connect with community support services."
+        },
+        "correctAnswer": "B",
+        "rationale": "The abrupt onset, disturbance in attention, visual hallucinations, and underlying physiological cause (pneumonia) are classic signs of delirium. The absolute priority outcome for a client with acute confusion is safety, including preventing falls and injury. The other conditions do not fit the acute presentation.",
+        "section": "Delirium"
+    },
+    {
+        "questionText": "A nurse is assessing a client with late-stage Alzheimer's disease who is unable to identify their own reflection in a mirror. The nurse documents this finding as which of the 'A's of Alzheimer's?",
+        "options": {
+            "A": "Aphasia",
+            "B": "Apraxia",
+            "C": "Agnosia",
+            "D": "Amnesia"
+        },
+        "correctAnswer": "C",
+        "rationale": "Agnosia is the loss of sensory ability to recognize objects. This includes visual agnosia, where a client cannot recognize familiar objects or, in severe cases, familiar faces or even their own reflection. Aphasia is loss of language, and apraxia is loss of purposeful movement.",
+        "section": "Symptoms of Alzheimer’s Disease"
+    },
+    {
+        "questionText": "A client with schizophrenia is experiencing command hallucinations to harm another client. After ensuring immediate safety, which nursing intervention is most critical?",
+        "options": {
+            "A": "Ask the client to describe the hallucination in detail to the group.",
+            "B": "Avoid touching the client to prevent increasing their anxiety.",
+            "C": "Address the client's paranoia by exploring their magical thinking.",
+            "D": "Decrease stimuli and attempt to engage the client in a reality-based, concrete activity."
+        },
+        "correctAnswer": "D",
+        "rationale": "The text lists specific interventions for hallucinations. For a client experiencing distressing command hallucinations, the priority is to manage the acute symptoms. Decreasing stimuli reduces sensory input that can fuel the hallucination, and engaging in a concrete, reality-based activity (like folding towels) helps distract the client and focus their attention away from the internal stimuli.",
+        "section": "Nursing Interventions for hallucinations"
+    },
+    {
+        "questionText": "A client with Borderline Personality Disorder (BPD) tells the day-shift nurse, 'You're the only one who understands me. The night-shift nurse is horrible and lazy.' What is the nurse's most therapeutic action?",
+        "options": {
+            "A": "Accept the compliment and promise to discuss the night nurse's behavior with the manager.",
+            "B": "Confront the client about their manipulation and refusal to see the good in others.",
+            "C": "Identify the behavior as 'splitting' and set firm, consistent boundaries with the client and staff.",
+            "D": "Document the client's statement and avoid assigning the night nurse to the client in the future."
+        },
+        "correctAnswer": "C",
+        "rationale": "This is a classic example of splitting, a primary defense mechanism in BPD. The most therapeutic nursing action is to recognize the behavior, not take it personally, and maintain clear, consistent boundaries. This includes communicating with the team to ensure all staff respond consistently, which is key to managing this behavior.",
+        "section": "Borderline Personality Disorder"
+    },
+    {
+        "questionText": "A client taking a first-generation antipsychotic for schizophrenia develops a shuffling gait, drooling, and mask-like facial expressions. The nurse recognizes these as signs of which extrapyramidal side effect (EPS)?",
+        "options": {
+            "A": "Acute dystonia",
+            "B": "Tardive dyskinesia",
+            "C": "Agranulocytosis",
+            "D": "Pseudo Parkinsonism"
+        },
+        "correctAnswer": "D",
+        "rationale": "The symptoms described—shuffling gait, drooling, and a blunted, mask-like affect—are hallmark signs of Pseudo Parkinsonism, a common EPS associated with dopamine-blocking, first-generation antipsychotics. Acute dystonia involves muscle spasms, tardive dyskinesia involves involuntary movements (often of the mouth), and agranulocytosis is a blood disorder.",
+        "section": "Potentially Dangerous Responses to Antipsychotics"
+    },
+    {
+        "questionText": "A client with Alzheimer's disease cannot recall what they ate for breakfast. When asked, they state, 'I had a wonderful meal of steak and eggs with the Queen of England.' The nurse identifies this as which defense mechanism?",
+        "options": {
+            "A": "Denial",
+            "B": "Perseveration",
+            "C": "Confabulation",
+            "D": "Agnosia"
+        },
+        "correctAnswer": "C",
+        "rationale": "Confabulation is the 'creation of stories in place of missing memories to maintain self-esteem.' The client is unconsciously creating a plausible (though false) story to fill in the memory gap, which is a hallmark of this defense mechanism in clients with dementia.",
+        "section": "Assessment of Alzheimer's Disease"
+    },
+    {
+        "questionText": "Which statement accurately differentiates delirium from a major neurocognitive disorder (dementia)?",
+        "options": {
+            "A": "Delirium has a slow, insidious onset, while dementia is always abrupt.",
+            "B": "Level of consciousness is unchanged in delirium but fluctuates in dementia.",
+            "C": "Dementia is considered a medical emergency, while delirium is a chronic condition.",
+            "D": "Delirium has an acute onset and fluctuating course, while major NCD is a progressive deterioration."
+        },
+        "correctAnswer": "D",
+        "rationale": "The text clearly distinguishes delirium by its 'Abrupt onset with periods of lucidity' and 'Acute Onset Fluctuating Course.' In contrast, major neurocognitive disorders are defined as a 'Progressive deterioration of cognitive functioning.' This is the key differentiating factor.",
+        "section": "Delirium & Major Neurocognitive Disorders"
+    },
+    {
+        "questionText": "A client with schizophrenia states, 'The blue bird sings a song for the king's ring.' The nurse recognizes this speech pattern as:",
+        "options": {
+            "A": "Neologisms",
+            "B": "Word salad",
+            "C": "Clang association",
+            "D": "Echolalia"
+        },
+        "correctAnswer": "C",
+        "rationale": "Clang association is defined as choosing 'Words chosen based on sound.' The client is connecting the words 'sings,' 'king,' and 'ring' based on their rhyming sound, not their meaning. This is a classic example of this specific alteration in speech.",
+        "section": "Alterations in Speech"
+    },
+    {
+        "questionText": "A client with Antisocial Personality Disorder demands an early release from the group therapy session, stating 'It's boring and a waste of my time.' Which nursing response is most appropriate?",
+        "options": {
+            "A": "Agree to the client's request to avoid a power struggle.",
+            "B": "State firmly, 'The group session lasts for one hour. You are expected to stay for the entire time.'",
+            "C": "Ask the client to explain what feelings are making them want to leave the group.",
+            "D": "Offer the client a one-on-one session instead of the group."
+        },
+        "correctAnswer": "B",
+        "rationale": "The implementation plan for Antisocial PD emphasizes 'Boundaries, consistency, support, and limits.' A firm, neutral, and matter-of-fact restatement of the expectation (the limit) is the most therapeutic approach. It avoids getting into a power struggle and reinforces the structure the client needs. Exploring feelings is often ineffective as they have a profound lack of empathy and remorse.",
+        "section": "Antisocial Personality Disorder (Cont.)"
+    },
+    {
+        "questionText": "A client with schizophrenia sits in a chair for hours without moving or speaking and has a blunted affect. The nurse documents these findings as which type of symptoms?",
+        "options": {
+            "A": "Positive symptoms",
+            "B": "Cognitive symptoms",
+            "C": "Affective symptoms",
+            "D": "Negative symptoms"
+        },
+        "correctAnswer": "D",
+        "rationale": "Negative symptoms are the 'absence of essential human qualities.' The lack of movement (avolition), lack of speech (alogia), and reduced emotional expression (affective blunting) are all classic negative symptoms that contribute to poor social functioning.",
+        "section": "Negative Symptoms"
+    },
+    {
+        "questionText": "A client with Alzheimer's disease is given a toothbrush and told to brush their teeth but is unable to perform the task, despite having the physical ability to do so. This is an example of:",
+        "options": {
+            "A": "Apraxia",
+            "B": "Agnosia",
+            "C": "Aphasia",
+            "D": "Apathy"
+        },
+        "correctAnswer": "A",
+        "rationale": "Apraxia is the 'Loss of purposeful movement' in the absence of motor impairment. The client understands the command and has the motor ability, but cannot execute the sequence of movements required to complete the familiar task of brushing their teeth.",
+        "section": "Symptoms of Alzheimer’s Disease"
+    },
+    {
+        "questionText": "A nurse is creating a plan of care for a client with delirium in an ICU setting. Which intervention is the highest priority?",
+        "options": {
+            "A": "Placing a large calendar and clock on the wall.",
+            "B": "Ensuring the client wears their hearing aids and glasses.",
+            "C": "Minimizing the use of physical restraints.",
+            "D": "Assigning the same caregiver for each shift if possible."
+        },
+        "correctAnswer": "C",
+        "rationale": "The implementation slide for delirium explicitly states to 'Minimize use of restraints (increases confusion).' While all the other interventions are correct and part of the plan, the use of restraints can lead to injury and worsen the client's agitation and confusion, making its minimization a top safety priority.",
+        "section": "Delirium - Implementation"
+    },
+    {
+        "questionText": "A client with schizophrenia is experiencing a delusion of grandeur. Which statement by the client would be an example of this specific delusion?",
+        "options": {
+            "A": "The FBI is monitoring my every move through the television.",
+            "B": "I am a messenger from God and I control the weather.",
+            "C": "My wife is cheating on me with the mailman.",
+            "D": "The doctor put a tracking chip in my arm during my last visit."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text defines a delusion of grandeur as a 'False belief that one is powerful and important.' The statement about being a messenger from God and controlling the weather is a classic example of this type of grandiose delusion. The other options are examples of persecutory or jealous delusions.",
+        "section": "Types of Delusions"
+    },
+    {
+        "questionText": "A client with Paranoid Personality Disorder refuses to attend group therapy, stating 'I'm not talking about my problems in front of all those people. They will use it against me.' Which nursing intervention is most appropriate?",
+        "options": {
+            "A": "Insisting the client attend the group to confront their social anxiety.",
+            "B": "Respecting the client's refusal and exploring the option of individual psychotherapy.",
+            "C": "Being overly friendly and reassuring the client that everyone in the group is trustworthy.",
+            "D": "Assigning the client to co-lead the group to give them a sense of control."
+        },
+        "correctAnswer": "B",
+        "rationale": "The treatment slide for Paranoid PD mentions 'Psychotherapy versus group therapy,' indicating that group therapy may not be suitable due to the pervasive mistrust. The nurse's best action is to counteract mistrust by not forcing the issue. Respecting the client's feelings and exploring the alternative of individual therapy, where a trusting relationship can be built one-on-one, is the most therapeutic approach.",
+        "section": "Paranoid Personality Disorder (Cont.)"
+    },
+    {
+        "questionText": "Which client is at highest risk for developing delirium?",
+        "options": {
+            "A": "A 25-year-old client recovering from a mild concussion at home.",
+            "B": "A 45-year-old client admitted for a routine colonoscopy.",
+            "C": "A 78-year-old client on day 3 post-hip replacement surgery.",
+            "D": "A 50-year-old client attending an outpatient psychiatric clinic."
+        },
+        "correctAnswer": "C",
+        "rationale": "The epidemiology of delirium states it affects 11% to 35% of surgical clients. Advanced age, post-operative stress, infection risk, anesthesia, and polypharmacy make an elderly post-surgical client extremely high-risk for developing delirium.",
+        "section": "Delirium - Epidemiology"
+    },
+    {
+        "questionText": "A client taking a second-generation antipsychotic complains of extreme thirst, frequent urination, and fatigue. The nurse should be concerned about the development of which condition?",
+        "options": {
+            "A": "Neuroleptic malignant syndrome (NMS)",
+            "B": "Agranulocytosis",
+            "C": "Metabolic syndrome",
+            "D": "Tardive dyskinesia"
+        },
+        "correctAnswer": "C",
+        "rationale": "Second-generation antipsychotics carry a significant risk of 'metabolic syndrome,' which includes weight gain, dyslipidemia, and insulin resistance leading to hyperglycemia (high blood sugar). The client's symptoms of polydipsia (thirst) and polyuria (frequent urination) are classic signs of hyperglycemia, a key component of metabolic syndrome.",
+        "section": "Second-Generation Antipsychotics"
+    },
+    {
+        "questionText": "A client with Schizophrenia tells the nurse, 'The trilliwing grollicks are plopping in the carbitron.' This is an example of what?",
+        "options": {
+            "A": "Clang association",
+            "B": "Word salad",
+            "C": "Associative looseness",
+            "D": "Neologisms"
+        },
+        "correctAnswer": "D",
+        "rationale": "Neologisms are words that have 'Meaning for the client only.' The words 'trilliwing,' 'grollicks,' and 'carbitron' are made-up words, not just a jumble of real words (word salad) or words connected by sound (clang).",
+        "section": "Alterations in Speech"
+    },
+    {
+        "questionText": "A client with Narcissistic Personality Disorder is not selected for a leadership role in a group project and becomes enraged. The nurse understands this reaction is due to what underlying issue?",
+        "options": {
+            "A": "A profound lack of empathy for the person who was selected.",
+            "B": "A disinhibited expression of antagonism.",
+            "C": "A weak self-esteem and hypersensitivity to criticism.",
+            "D": "An inability to view both positive and negative aspects of others."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text states that individuals with Narcissistic PD have 'Weak self-esteem and hypersensitivity to criticism.' The rage (narcissistic rage) is a defense against the perceived slight or criticism, which threatens their fragile sense of self-worth that is hidden beneath the grandiose exterior.",
+        "section": "Narcissistic Personality Disorder"
+    },
+    {
+        "questionText": "A client is brought to the ED with a high fever, muscle rigidity, and altered mental status. The client has been taking haloperidol. The nurse suspects Neuroleptic Malignant Syndrome (NMS). What is the priority nursing intervention?",
+        "options": {
+            "A": "Administer the next dose of haloperidol.",
+            "B": "Assess for signs of tardive dyskinesia.",
+            "C": "Stop the antipsychotic medication immediately and notify the provider.",
+            "D": "Obtain a complete blood count to check for agranulocytosis."
+        },
+        "correctAnswer": "C",
+        "rationale": "NMS is a life-threatening medical emergency. The absolute priority is to stop the causative agent—the antipsychotic medication. After stopping the medication, the nurse must notify the provider immediately to initiate supportive care (cooling, hydration) and potentially order medications to treat the symptoms.",
+        "section": "Potentially Dangerous Responses to Antipsychotics"
+    },
+    {
+        "questionText": "What is the primary difference between a mild neurocognitive disorder and a major neurocognitive disorder?",
+        "options": {
+            "A": "Mild NCD is caused by Alzheimer's, while Major NCD is caused by vascular changes.",
+            "B": "Mild NCD does not interfere with Activities of Daily Living (ADLs), while Major NCD does.",
+            "C": "Mild NCD involves memory loss, while Major NCD involves aphasia and apraxia.",
+            "D": "Mild NCD is temporary, while Major NCD is always progressive."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text provides a clear distinction: 'Mild: Does not interfere with ADLs; does not necessarily progress' versus 'Major: Interferes with daily functioning and independence.' The impact on ADLs is the key factor that separates a mild from a major diagnosis.",
+        "section": "Mild and Major Neurocognitive Disorders"
+    },
+    {
+        "questionText": "A client with schizophrenia is exhibiting waxy flexibility. The nurse would expect to observe the client:",
+        "options": {
+            "A": "Mimicking the movements of the nurse.",
+            "B": "Maintaining a bizarre posture that the nurse places them in.",
+            "C": "Performing repetitive, stereotyped behaviors.",
+            "D": "Refusing to move or follow any commands."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text defines waxy flexibility as 'maintaining a posture another puts the client in.' The nurse could move the client's arm into an unusual position, and the client would hold it there, demonstrating this specific type of catatonic behavior.",
+        "section": "Alterations in Behavior"
+    },
+    {
+        "questionText": "A client with Borderline Personality Disorder has superficial scratches on their arm after a conflict with their roommate. Which nursing action is most therapeutic?",
+        "options": {
+            "A": "Notify the family immediately and recommend a higher level of care.",
+            "B": "Provide first aid in a neutral, matter-of-fact manner without offering special attention.",
+            "C": "Explore the deep, underlying reasons for the self-harming behavior.",
+            "D": "Restrict all privileges and place the client on one-to-one observation."
+        },
+        "correctAnswer": "B",
+        "rationale": "The implementation slide for BPD states to 'Respond matter-of-factly to superficial self-injuries.' Providing excessive attention can positively reinforce the self-harming behavior. The most therapeutic approach is to attend to the wound calmly and professionally, which addresses the physical need without reinforcing the maladaptive behavior.",
+        "section": "Borderline Personality Disorder (Cont.)"
+    },
+    {
+        "questionText": "A client with a known history of dementia is admitted. Which of the following is an example of a nursing intervention that follows the 'person-centered care approach'?",
+        "options": {
+            "A": "Enforcing a strict, universal schedule for all clients on the unit.",
+            "B": "Asking the client's family about their lifelong habits and preferences to incorporate into the daily plan.",
+            "C": "Administering sedative medication whenever the client becomes agitated.",
+            "D": "Focusing all care on completing physical tasks as efficiently as possible."
+        },
+        "correctAnswer": "B",
+        "rationale": "A person-centered care approach focuses on the individual's unique history, values, and preferences, not just their diagnosis. Learning about the client's past and what is important to them allows the nurse to tailor care that promotes well-being and reduces distress, for example, knowing they always liked to wake up early or listen to a certain type of music.",
+        "section": "Nursing Process - Intervention for Alzheimer's"
+    },
+    {
+        "questionText": "A client with schizophrenia believes that the thoughts of his coworkers are being placed into his mind. The nurse should document this as which type of thought disorder?",
+        "options": {
+            "A": "Thought blocking",
+            "B": "Thought insertion",
+            "C": "Thought deletion",
+            "D": "Magical thinking"
+        },
+        "correctAnswer": "B",
+        "rationale": "Thought insertion is the false belief that thoughts are being placed into one's mind by an outside person or force. The client's belief that coworkers' thoughts are entering his mind is a classic example of this specific delusion.",
+        "section": "Disorders or Distortions of Thought"
+    },
+    {
+        "questionText": "A client with Obsessive-Compulsive Personality Disorder is struggling to complete a simple task, repeatedly restarting because of minor imperfections. The nurse understands this behavior is driven by:",
+        "options": {
+            "A": "A constant need for admiration from others.",
+            "B": "An unhealthy focus on perfection and inflexible standards.",
+            "C": "An inability to view both positive and negative aspects of a situation.",
+            "D": "A profound lack of empathy for those waiting for the task to be completed."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text lists 'Rigidity; inflexible standards for others and self' and an 'Unhealthy focus on perfection' as key characteristics of OCPD. This perfectionism is often self-defeating and interferes with project completion, as seen in the client's behavior.",
+        "section": "Obsessive-Compulsive Personality Disorder"
+    },
+    {
+        "questionText": "A client in the acute phase of schizophrenia is not eating or drinking and has disorganized speech. What is the priority goal for this phase?",
+        "options": {
+            "A": "Help the client understand their illness and treatment.",
+            "B": "Ensure client safety and medical stabilization.",
+            "C": "Achieve independence and a satisfactory quality of life.",
+            "D": "Prevent relapse and maintain achievement."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text clearly outlines the goals for each phase. For Phase I (Acute), the priority is 'Client safety and medical stabilization.' The client's lack of intake and disorganization pose immediate threats to their physical health and safety, which must be addressed before any psychoeducation or long-term goals can be considered.",
+        "section": "Planning - Goals"
+    },
+    {
+        "questionText": "A client taking a first-generation antipsychotic develops a severe muscle spasm in their neck, causing their head to be twisted to one side. The nurse should identify this as:",
+        "options": {
+            "A": "Pseudo Parkinsonism",
+            "B": "Tardive dyskinesia",
+            "C": "Waxy flexibility",
+            "D": "Acute dystonia"
+        },
+        "correctAnswer": "D",
+        "rationale": "Acute dystonia is an extrapyramidal side effect characterized by sudden, sustained muscle contractions or spasms. Torticollis (a spasm of the neck muscles) is a common and frightening form of acute dystonia that requires immediate intervention.",
+        "section": "Potentially Dangerous Responses to Antipsychotics"
+    },
+    {
+        "questionText": "A client with schizophrenia has significant negative symptoms, including avolition and anergia. Which nursing diagnosis would be the most appropriate?",
+        "options": {
+            "A": "Disturbed thought process",
+            "B": "Risk for other-directed violence",
+            "C": "Self-care deficit",
+            "D": "Impaired verbal communication"
+        },
+        "correctAnswer": "C",
+        "rationale": "Avolition (loss of motivation) and anergia (lack of energy) directly impede a person's ability to initiate and complete basic activities such as hygiene, grooming, and dressing. This leads to a 'Self-care deficit,' which is a common and significant problem related to negative symptoms.",
+        "section": "Negative Symptoms"
+    },
+    {
+        "questionText": "What is the primary goal of establishing clear and consistent boundaries when caring for a client with Borderline Personality Disorder?",
+        "options": {
+            "A": "To punish the client for their manipulative behaviors.",
+            "B": "To increase the client's feelings of guilt and remorse.",
+            "C": "To provide a predictable and safe environment that minimizes splitting and manipulation.",
+            "D": "To demonstrate the nurse's power and authority over the client."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text emphasizes boundaries for BPD. Consistent boundaries provide structure and security. They are not punitive. They create a safe, predictable therapeutic relationship where the client's testing behaviors (like splitting and manipulation) are not reinforced, which helps the client learn more adaptive ways of interacting.",
+        "section": "Borderline Personality Disorder (Cont.)"
+    },
+    {
+        "questionText": "A client is diagnosed with Dementia with Lewy bodies. The nurse should anticipate that this client will likely exhibit which symptoms in addition to cognitive decline?",
+        "options": {
+            "A": "Severe social anxiety and unwillingness to forgive.",
+            "B": "Antagonistic and disinhibited behaviors.",
+            "C": "Parkinsonian features and visual hallucinations.",
+            "D": "Amnesia for a specific traumatic event."
+        },
+        "correctAnswer": "C",
+        "rationale": "While not detailed, the text lists 'Dementia with Lewy bodies' and 'Parkinson’s disease' under Major Neurocognitive Disorders. A key clinical feature distinguishing Dementia with Lewy bodies is the presence of Parkinsonian motor symptoms (like tremors and rigidity) and often prominent, early visual hallucinations, along with fluctuating cognition.",
+        "section": "Major Neurocognitive Disorders & Critical Thinking"
+    },
+    {
+        "questionText": "The nurse asks a client with schizophrenia, 'What brought you to the hospital?' The client replies, 'A car. Cars have wheels. Wheels go round and round. I like to go round on the merry-go-round.' This is an example of:",
+        "options": {
+            "A": "Tangentiality",
+            "B": "Associative looseness",
+            "C": "Thought blocking",
+            "D": "Symbolic speech"
+        },
+        "correctAnswer": "B",
+        "rationale": "Associative looseness is a pattern of speech where the connections between thoughts are loose and illogical. The client starts with a logical answer ('A car') but then drifts from one idea ('car') to a loosely associated one ('wheels') to another ('round and round') without a clear, logical progression. It is more disjointed than tangentiality.",
+        "section": "Alterations in Speech"
+    },
+    {
+        "questionText": "A client with Antisocial Personality Disorder is found to be bullying another client. What is the nurse's first action?",
+        "options": {
+            "A": "Explore the client's feelings of empathy for the other person.",
+            "B": "Immediately and safely intervene to stop the behavior.",
+            "C": "Place the client in restraints as a punishment.",
+            "D": "Require both clients to attend group therapy together."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text lists 'Risk for other-directed violence' as a key nursing diagnosis and 'Maintaining safety is the priority.' The nurse's first responsibility is to ensure the safety of all clients. This requires immediately stopping the harmful interaction in a calm but firm manner. Exploring feelings is futile, and punishment is not therapeutic.",
+        "section": "Antisocial Personality Disorder & Safety"
+    },
+    {
+        "questionText": "A client with schizoaffective disorder is experiencing both psychotic symptoms and severe depression. The nurse knows this client is at a particularly high risk for what?",
+        "options": {
+            "A": "Agranulocytosis",
+            "B": "Anosognosia",
+            "C": "Suicide",
+            "D": "Catatonia"
+        },
+        "correctAnswer": "C",
+        "rationale": "The section on 'Affective Symptoms' in schizophrenia states that assessment for depression is crucial as it 'Increases suicide risk.' The presence of a co-occurring mood disorder like depression significantly elevates the risk of suicide in individuals with a psychotic disorder.",
+        "section": "Affective Symptoms"
+    },
+    {
+        "questionText": "The primary therapeutic purpose of a nurse using 'active listening' techniques like SOLER with a withdrawn, paranoid client is to:",
+        "options": {
+            "A": "Gather as much information as quickly as possible.",
+            "B": "Convince the client that their beliefs are false.",
+            "C": "Convey interest and build trust through non-verbal cues.",
+            "D": "Maintain a defensive posture to ensure the nurse's safety."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text describes SOLER as a way to indicate that the 'nurse is interested and willing to listen.' For a client who is paranoid and mistrustful, these non-verbal behaviors (facing the client, open posture, leaning in) are crucial for building a therapeutic alliance and conveying empathy and trustworthiness without being 'overly friendly.'",
+        "section": "ACTIVE LISTENING"
+    },
+    {
+        "questionText": "A client is diagnosed with a 'mild' neurocognitive disorder. Which of the following would be consistent with this diagnosis?",
+        "options": {
+            "A": "The client requires assistance with bathing, dressing, and feeding.",
+            "B": "The client has become disoriented and is a safety risk if left alone.",
+            "C": "The client needs to use a calendar and lists to manage their schedule but is still living independently.",
+            "D": "The client's cognitive decline is rapid and fluctuates throughout the day."
+        },
+        "correctAnswer": "C",
+        "rationale": "The key differentiator for a 'mild' NCD is that it 'Does not interfere with ADLs.' The client recognizes their cognitive deficits and uses compensatory strategies (calendar, lists) to maintain their independence in daily functioning. The other options describe a major NCD or delirium.",
+        "section": "Mild and Major Neurocognitive Disorders"
+    },
+    {
+        "questionText": "A client in the prodromal phase of schizophrenia might exhibit which of the following?",
+        "options": {
+            "A": "Severe, disabling hallucinations and delusions.",
+            "B": "A return to their previous level of functioning.",
+            "C": "Mild changes in thinking and mood, such as being anxious or obsessive.",
+            "D": "Waxy flexibility and other signs of catatonia."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text defines the prodromal phase as the 'Onset; mild changes in thinking, reality, mood changes.' These symptoms are often vague and can appear long before the first full-blown psychotic episode. Severe symptoms are characteristic of the acute phase.",
+        "section": "Phases of Schizophrenia"
+    },
+    {
+        "questionText": "A client with Paranoid Personality Disorder is given a new medication. The nurse should use which approach when providing education?",
+        "options": {
+            "A": "A very friendly, cheerful approach to put the client at ease.",
+            "B": "A vague explanation to avoid giving the client information they could use against you.",
+            "C": "A neutral, kind, and professional approach, providing clear written information.",
+            "D": "Insist that the client's family member be present to ensure the information is heard."
+        },
+        "correctAnswer": "C",
+        "rationale": "The guidelines for Paranoid PD specify to 'avoid being overly friendly' and to 'project a neutral but kind affect.' Providing clear, factual, written information respects the client's need for control and information without being intrusive or overly emotional, which could increase their suspicion.",
+        "section": "Paranoid Personality Disorder (Cont.)"
+    },
+    {
+        "questionText": "A client taking olanzapine (a second-generation antipsychotic) has a WBC count of 2,500/mm³ and a neutrophil count of 1,000/mm³. What is the nurse's priority action?",
+        "options": {
+            "A": "Administer the next dose as scheduled.",
+            "B": "Institute reverse isolation and notify the provider immediately.",
+            "C": "Assess the client for extrapyramidal side effects.",
+            "D": "Check the client's blood pressure and pulse."
+        },
+        "correctAnswer": "B",
+        "rationale": "Agranulocytosis (lowered WBC/neutrophils) is a potentially fatal side effect of some antipsychotics. A neutrophil count below 1,500 indicates neutropenia, and below 1,000 is severe. The client is at extreme risk for infection. The priority is to protect the client from infection (reverse isolation) and immediately report this critical lab finding to the provider. The medication will need to be held.",
+        "section": "Potentially Dangerous Responses to Antipsychotics"
+    },
+    {
+        "questionText": "Anosognosia, the inability to realize one is ill, is a particularly challenging symptom in schizophrenia because it:",
+        "options": {
+            "A": "Directly causes the positive symptoms like hallucinations.",
+            "B": "Leads to resistance to treatment and medication non-adherence.",
+            "C": "Is the primary cause of affective blunting and apathy.",
+            "D": "Is a side effect of long-term antipsychotic medication use."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text states that anosognosia is 'Caused by the illness itself' and 'May result in resistance to or cessation of treatment.' If a person does not believe they are ill, they will not see the need for medication or therapy, making treatment adherence a major challenge for recovery.",
+        "section": "Self-Assessment - Anosognosia"
+    },
+    {
+        "questionText": "Which nursing diagnosis is universally a priority for clients with antisocial, borderline, and narcissistic personality disorders?",
+        "options": {
+            "A": "Disturbed thought process",
+            "B": "Impaired social interaction",
+            "C": "Self-care deficit",
+            "D": "Risk for suicide"
+        },
+        "correctAnswer": "B",
+        "rationale": "While suicide risk is high in BPD, and other diagnoses may apply, the core feature of all Cluster B personality disorders is a severe and pervasive difficulty with interpersonal relationships. This manifests as manipulation, lack of empathy, emotional dysregulation, and antagonism, making 'Impaired social interaction' a central problem for all three.",
+        "section": "Cluster B (Erratic)"
+    },
+    {
+        "questionText": "Which of these is a negative symptom of schizophrenia?",
+        "options": {
+            "A": "Paranoia",
+            "B": "Anergia",
+            "C": "A delusion",
+            "D": "A hallucination"
+        },
+        "correctAnswer": "B",
+        "rationale": "Negative symptoms are an absence of something that should be present. Anergia is defined as a 'Lack of energy.' It is a negative symptom. Paranoia, delusions, and hallucinations are all positive symptoms—the presence of something that should not be there.",
+        "section": "Negative Symptoms"
+    },
+    {
+        "questionText": "A home health nurse is visiting a client with severe dementia. The family caregiver appears exhausted and states, 'I haven't left the house in three weeks. I can't do this anymore.' What is the nurse's most appropriate action?",
+        "options": {
+            "A": "Recommend immediate long-term residential placement for the client.",
+            "B": "Provide the caregiver with information about community supports like respite care and adult day care.",
+            "C": "Suggest the caregiver take a vacation while the nurse looks after the client.",
+            "D": "Praise the caregiver for their dedication and encourage them to keep trying."
+        },
+        "correctAnswer": "B",
+        "rationale": "The nurse's role includes connecting caregivers to support services. The caregiver is expressing burnout, a common and serious issue. Providing specific, practical resources like respite care (short-term relief) and adult day care addresses the caregiver's immediate need for a break and support, which can help sustain them in their role.",
+        "section": "Community Support"
+    },
+    {
+        "questionText": "A client is experiencing a persecutory delusion. An appropriate nursing intervention would be to:",
+        "options": {
+            "A": "Gently argue with the client, presenting facts to disprove the delusion.",
+            "B": "Ask the client to describe the delusion in great detail.",
+            "C": "Validate the part of the delusion that may be real while clarifying reality.",
+            "D": "Focus the conversation on the delusion to understand its origin."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text lists intervention 'f. Validate if part of the delusion is false,' which implies validating the part that is real. A better interpretation based on standard practice is to validate the underlying feeling. For example, if a client says 'The FBI is after me,' the nurse can say, 'That must feel very frightening' (validating the feeling), but then state, 'I want you to know you are safe here.' This avoids arguing about the delusion itself.",
+        "section": "Nursing Interventions for Delusions"
+    },
+    {
+        "questionText": "A client with schizotypal personality disorder is being admitted. The nurse would expect this client to exhibit behaviors characteristic of which cluster?",
+        "options": {
+            "A": "Cluster A: Eccentric",
+            "B": "Cluster B: Erratic",
+            "C": "Cluster C: Anxious",
+            "D": "A mix of Cluster B and C"
+        },
+        "correctAnswer": "A",
+        "rationale": "Although schizotypal is not detailed, the slide on personality disorder clusters lists 'Paranoid' under 'Cluster A: Eccentric.' Schizotypal, along with schizoid, are the other disorders in Cluster A, all characterized by odd, eccentric, and socially withdrawn behaviors.",
+        "section": "Personality Disorders"
+    },
+    {
+        "questionText": "A client taking fluphenazine (a first-generation antipsychotic) develops a fever of 103°F, severe muscle rigidity, and is diaphoretic with an unstable blood pressure. What is the nurse's immediate priority?",
+        "options": {
+            "A": "Assess for auditory hallucinations.",
+            "B": "Administer a PRN dose of an anticholinergic for EPS.",
+            "C": "Recognize this as Neuroleptic Malignant Syndrome and initiate emergency medical support.",
+            "D": "Check the client's last WBC count from their lab results."
+        },
+        "correctAnswer": "C",
+        "rationale": "The combination of high fever, 'lead pipe' muscle rigidity, and autonomic instability (diaphoresis, unstable BP) are the cardinal signs of Neuroleptic Malignant Syndrome (NMS), a life-threatening emergency. The priority is to recognize the syndrome and get immediate medical help. While checking labs is important, it is not the first action.",
+        "section": "Potentially Dangerous Responses to Antipsychotics"
+    },
+    {
+        "questionText": "Which outcome is most realistic for a client with Antisocial Personality Disorder?",
+        "options": {
+            "A": "The client will develop genuine empathy for others.",
+            "B": "The client will demonstrate verbal self-restraint from abusive behaviors.",
+            "C": "The client will form long-term, trusting therapeutic relationships.",
+            "D": "The client will consistently adhere to all unit rules without prompting."
+        },
+        "correctAnswer": "B",
+        "rationale": "The outcomes slide for Antisocial PD lists 'Abusive behavior self-restraint' but notes that these goals will be difficult to accomplish. Developing genuine empathy is highly unlikely. A more realistic, measurable outcome is that the client can learn, for pragmatic reasons, to control their verbal outbursts and outwardly conform to expectations, even if their underlying personality is unchanged.",
+        "section": "Antisocial Personality Disorder (Cont.) - Outcomes"
+    },
+    {
+        "questionText": "The nurse is planning care for a client with delirium. Which intervention would be most helpful in orienting the client?",
+        "options": {
+            "A": "Placing complex medical equipment out of the client's sight.",
+            "B": "Administering a benzodiazepine to reduce anxiety.",
+            "C": "Using visual cues, such as family photos and a large-print calendar.",
+            "D": "Encouraging the client to reminisce about their childhood."
+        },
+        "correctAnswer": "C",
+        "rationale": "The planning slide for delirium specifically mentions 'Visual cues in the environment for orientation.' Concrete, simple, and visible cues like a calendar, clock, and familiar photos can help orient a confused client without requiring complex cognitive processing.",
+        "section": "Delirium - Planning"
+    },
+    {
+        "questionText": "A client with schizophrenia is exhibiting poverty of speech. The nurse would expect the client to:",
+        "options": {
+            "A": "Speak very rapidly and be difficult to interrupt.",
+            "B": "Invent new words with private meanings.",
+            "C": "Provide very brief, empty replies to questions.",
+            "D": "Repeat the nurse's words back to them."
+        },
+        "correctAnswer": "C",
+        "rationale": "Poverty of speech is synonymous with alogia, which is a 'Reduction in speech.' This manifests as brief, restricted, and empty responses. The quantity of speech is significantly reduced.",
+        "section": "Negative Symptoms"
+    },
+    {
+        "questionText": "A client diagnosed with Borderline Personality Disorder has a history of multiple, intense, unstable relationships and frantic fears of abandonment. This is a core deficit in which area?",
+        "options": {
+            "A": "Impulse control",
+            "B": "Interpersonal functioning",
+            "C": "Cognitive functioning",
+            "D": "Affective regulation"
+        },
+        "correctAnswer": "B",
+        "rationale": "While all areas are affected, the pattern of unstable relationships and fear of abandonment is a primary example of severe impairment in interpersonal functioning. This, along with identity disturbance, is a hallmark of BPD.",
+        "section": "Borderline Personality Disorder"
+    },
+    {
+        "questionText": "A client is prescribed a long-acting injectable antipsychotic. The nurse explains that the primary advantage of this formulation is to:",
+        "options": {
+            "A": "Reduce the risk of metabolic syndrome.",
+            "B": "Eliminate all extrapyramidal side effects.",
+            "C": "Improve medication adherence in clients who are unable or unwilling to take oral medication daily.",
+            "D": "Provide a faster onset of action than oral medications."
+        },
+        "correctAnswer": "C",
+        "rationale": "The primary clinical indication for using a long-acting injectable (LAI) formulation is to address the problem of non-adherence, which is common in schizophrenia due to factors like anosognosia. By providing medication that lasts for several weeks or months, the LAI ensures the client receives consistent treatment without relying on daily oral intake.",
+        "section": "Psychobiological Interventions"
+    },
+    {
+        "questionText": "A client with a long-standing diagnosis of Paranoid Personality Disorder is hospitalized and develops a post-operative delirium. How would the nurse expect the client's baseline personality to influence the presentation of their delirium?",
+        "options": {
+            "A": "The client will likely be calm and compliant due to the confusion.",
+            "B": "The client's delusions during delirium will likely be grandiose in nature.",
+            "C": "The client will be particularly prone to persecutory delusions and suspiciousness of the care team.",
+            "D": "The client will exhibit splitting behaviors, idealizing and then devaluing the nursing staff."
+        },
+        "correctAnswer": "C",
+        "rationale": "This question requires synthesizing two different diagnoses. A person's underlying personality often colors the presentation of delirium. A client with baseline paranoid traits (mistrust, suspicion) is highly likely to develop persecutory delusions and be exceptionally mistrustful of staff when they become delirious, as the delirium amplifies their core personality characteristics.",
+        "section": "Delirium & Paranoid Personality Disorder"
+    },
+    {
+        "questionText": "The nurse is providing education to staff about the Diathesis-Stress Model. Which of the following client scenarios best illustrates this model?",
+        "options": {
+            "A": "A client develops Narcissistic PD after receiving excessive praise throughout childhood.",
+            "B": "A client with a strong genetic family history of schizophrenia develops psychosis after heavy substance use in college.",
+            "C": "A client with Antisocial PD consistently engages in criminal behavior.",
+            "D": "A client develops a fear of hospitals after a traumatic medical experience."
+        },
+        "correctAnswer": "B",
+        "rationale": "The Diathesis-Stress model posits that a disorder results from a pre-existing vulnerability (diathesis) combined with a significant environmental stressor. In this case, the genetic history is the diathesis, and the heavy substance use (a risk factor mentioned for schizophrenia) is the environmental stressor that triggers the onset of the illness.",
+        "section": "Personality Disorders - Risk factors & Schizophrenia"
+    },
+    {
+        "questionText": "A client on a first-generation antipsychotic has a temperature of 102.8°F, a heart rate of 130 bpm, and is diaphoretic with 'lead pipe' muscle rigidity. A client on a second-generation antipsychotic has a temperature of 101.5°F and complains of a severe sore throat. What is the nurse's priority action?",
+        "options": {
+            "A": "Administer PRN benztropine to the first client for EPS.",
+            "B": "Assess the second client for metabolic syndrome.",
+            "C": "Recognize both as potential medical emergencies (NMS and Agranulocytosis) and notify the provider immediately about both clients.",
+            "D": "Isolate the second client due to the sore throat and focus care on the first client."
+        },
+        "correctAnswer": "C",
+        "rationale": "This is a complex prioritization question. The first client is exhibiting classic signs of Neuroleptic Malignant Syndrome (NMS). The second client's fever and severe sore throat are hallmark signs of Agranulocytosis. Both are life-threatening emergencies listed in the text. The nurse cannot prioritize one over the other; the correct action is to recognize the extreme danger for both clients and get immediate medical intervention for both simultaneously.",
+        "section": "Potentially Dangerous Responses to Antipsychotics"
+    },
+    {
+        "questionText": "A nurse feels intensely frustrated and angry after an interaction with a client with Borderline Personality Disorder who was using splitting to disrupt the team. According to the 'Personality Disorder Interventions' slide, what is the nurse's most professional action?",
+        "options": {
+            "A": "Requesting not to be assigned to the client again.",
+            "B": "Confronting the client about the feelings of frustration they are causing.",
+            "C": "Discussing these countertransference issues with trusted staff members or a supervisor.",
+            "D": "Suppressing the feelings of anger to appear more professional."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text explicitly states to 'Discuss countertransference issues (negative feelings towards the patient by staff) with staff members.' This professional intervention allows the nurse to process their own valid emotional reaction in a safe, therapeutic space, preventing those feelings from negatively impacting client care. It is a key strategy for maintaining objectivity and preventing staff burnout.",
+        "section": "Personality Disorder Interventions"
+    },
+    {
+        "questionText": "What is the primary difference in the therapeutic goal when managing a persecutory delusion versus managing a superficial self-injury in a client with BPD?",
+        "options": {
+            "A": "The delusion requires validation of the client's feeling, while the self-injury requires a matter-of-fact response to avoid reinforcement.",
+            "B": "The delusion requires immediate antipsychotic medication, while the self-injury requires group therapy.",
+            "C": "The delusion requires focusing on the reality of the situation, while the self-injury requires focusing on the unreality of their feelings.",
+            "D": "The delusion requires setting firm limits, while the self-injury requires a more flexible and empathetic approach."
+        },
+        "correctAnswer": "A",
+        "rationale": "This question requires comparing two different intervention strategies from the text. For delusions, the nurse should validate the underlying feeling ('That must be scary') without validating the delusion itself. For superficial self-harm in BPD, the text says to 'Respond matter-of-factly' to avoid reinforcing the behavior with special attention. This highlights the different therapeutic approaches needed for different symptoms.",
+        "section": "Nursing Interventions for Delusions & BPD Interventions"
+    },
+    {
+        "questionText": "A client is in the maintenance/residual phase of schizophrenia. Which nursing intervention is the priority during this phase?",
+        "options": {
+            "A": "Ensuring client safety and providing immediate medical stabilization.",
+            "B": "Focusing on psychoeducation to help the client understand the illness.",
+            "C": "Monitoring for acute symptom exacerbation and stabilizing medications.",
+            "D": "Providing education and resources to prevent relapse and promote independence."
+        },
+        "correctAnswer": "D",
+        "rationale": "The text outlines the goals for each phase. Phase III (Maintenance) focuses on 'Maintain achievement,' 'Prevent relapse,' and 'Achieve independence, satisfactory quality of life.' Interventions are geared towards long-term management, such as medication adherence, use of community resources, and recognizing early signs of relapse.",
+        "section": "Goals - Planning"
+    },
+    {
+        "questionText": "A client with Antisocial Personality Disorder agrees to all unit rules during admission but is later found to be secretly taking items from other clients. This behavior is most consistent with which characteristic of the disorder?",
+        "options": {
+            "A": "A profound lack of empathy and absence of remorse or guilt.",
+            "B": "A tendency to be jealous and controlling in relationships.",
+            "C": "An unhealthy focus on perfection and rigid standards.",
+            "D": "A pattern of emotional lability and impulsivity."
+        },
+        "correctAnswer": "A",
+        "rationale": "The core features of Antisocial PD are a disregard for the rights of others, a profound lack of empathy, and an absence of remorse. The client's ability to present as compliant while simultaneously exploiting others demonstrates this core deficit. They do not feel guilty about their actions and see others as objects to be used.",
+        "section": "Antisocial Personality Disorder"
+    },
+    {
+        "questionText": "The nurse is assessing a client and notes they exhibit echolalia. The nurse would expect the client to do what?",
+        "options": {
+            "A": "Use words based on their sound rather than their meaning.",
+            "B": "Maintain a posture they are placed in for a long time.",
+            "C": "Pathologically repeat the words spoken by the nurse.",
+            "D": "Jumble words together in a meaningless way."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text provides a direct definition of echolalia as the 'Pathological repetition of another’s words.' This is a specific type of alteration in speech seen in schizophrenia.",
+        "section": "Alterations in Speech"
+    },
+    {
+        "questionText": "After teaching a group of nursing students about neurocognitive disorders, which statement by a student indicates a need for further clarification?",
+        "options": {
+            "A": "Delirium is an acute condition that is often reversible if the underlying cause is treated.",
+            "B": "Major NCD is characterized by a decline from a previous level of functioning that interferes with independence.",
+            "C": "A client with a Mild NCD can still perform their ADLs, although they may need to use compensatory strategies.",
+            "D": "A key feature of a Major NCD is a significant disturbance of consciousness that fluctuates."
+        },
+        "correctAnswer": "D",
+        "rationale": "This statement is incorrect. The text explicitly states that Major Neurocognitive Disorders have 'No change in consciousness.' It is Delirium that is characterized by a 'Disturbance of Consciousness.' The student is confusing the key features of the two disorders.",
+        "section": "Delirium & Major Neurocognitive Disorders"
+    },
+    {
+        "questionText": "A client with Narcissistic PD tells the nurse, 'It must be so rewarding for you to get to work with someone as important and intelligent as me.' What is the most therapeutic nursing response?",
+        "options": {
+            "A": "It is rewarding to work with all of my clients.",
+            "B": "Yes, it is an honor to be your nurse.",
+            "C": "What makes you think you are more important than other clients?",
+            "D": "You seem to have a very high opinion of yourself."
+        },
+        "correctAnswer": "A",
+        "rationale": "The guidelines for NPD state to 'Remain neutral' and 'Avoid power struggles.' This response is neutral, respectful, and gently reframes the client's statement to be more inclusive and reality-based, without directly challenging their grandiosity (which would cause narcissistic rage) or validating it.",
+        "section": "Narcissistic Personality Disorder - Guidelines"
+    },
+    {
+        "questionText": "A client with schizophrenia is experiencing 'thought blocking.' What would the nurse most likely observe during a conversation?",
+        "options": {
+            "A": "The client rapidly shifts from one unrelated topic to another.",
+            "B": "The client suddenly stops talking in the middle of a sentence and remains silent.",
+            "C": "The client speaks in a very fast, pressured manner that is difficult to interrupt.",
+            "D": "The client repeats a single phrase or behavior over and over."
+        },
+        "correctAnswer": "B",
+        "rationale": "Thought blocking is a disorder of thought process where there is an abrupt interruption in the train of thought. To the observer, it appears as if the client suddenly goes blank and stops speaking mid-sentence, often unable to recall what they were saying.",
+        "section": "Disorders or Distortions of Thought"
+    },
+    {
+        "questionText": "Which of the following is an example of a nurse implementing a 'person-centered care approach' for a client with dementia?",
+        "options": {
+            "A": "Creating a standardized plan of care for all clients with dementia on the unit.",
+            "B": "Playing classical music during personal care because the client was a professional musician.",
+            "C": "Administering all medications at 9:00 AM sharp, regardless of client preference.",
+            "D": "Completing all ADLs for the client to ensure they are done quickly."
+        },
+        "correctAnswer": "B",
+        "rationale": "Person-centered care involves tailoring interventions to the individual's unique history and preferences. Learning that the client was a musician and using that knowledge to provide a comforting and familiar sensory experience (playing classical music) is a perfect example of this approach.",
+        "section": "Nursing Process - Intervention for Alzheimer's"
+    },
+    {
+        "questionText": "A client with BPD who frequently uses splitting is being cared for by a student nurse. What is the most important guidance the supervising nurse can give the student?",
+        "options": {
+            "A": "Spend extra time with the client to become their 'favorite' nurse.",
+            "B": "Avoid communicating with other staff about the client to maintain confidentiality.",
+            "C": "Be aware of the potential for manipulation and maintain firm, consistent communication and boundaries.",
+            "D": "Immediately grant any reasonable request to build a trusting relationship."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text highlights 'Teamwork and safety' and 'Provide clear and consistent boundaries' for BPD. For a student, the most crucial guidance is to be aware of splitting and manipulation, to not take it personally, and to maintain consistent boundaries in line with the entire team's approach. This prevents the student from being drawn into the client's attempts to divide the staff.",
+        "section": "Borderline Personality Disorder (Cont.) - Implementation"
+    },
+    {
+        "questionText": "A client is exhibiting depersonalization. The client would most likely make which statement?",
+        "options": {
+            "A": "I feel like I am observing myself from outside my own body.",
+            "B": "I feel like the world around me is strange and unreal.",
+            "C": "I feel bugs crawling on my skin.",
+            "D": "I feel that I am a famous celebrity."
+        },
+        "correctAnswer": "A",
+        "rationale": "Depersonalization is an alteration in perception where one has a feeling of detachment or unreality regarding oneself or one's own body. The feeling of being an outside observer of oneself is the classic description of this phenomenon. Feeling the world is unreal is derealization. The other options are a tactile hallucination and a delusion.",
+        "section": "Alterations in Perception"
+    },
+    {
+        "questionText": "What is the primary purpose of conducting a thorough review of medications for a client presenting with symptoms of a neurocognitive disorder?",
+        "options": {
+            "A": "To identify if the client has been non-adherent with their prescriptions.",
+            "B": "To rule out substance-induced dementia or medication-induced delirium.",
+            "C": "To determine which medications are covered by the client's insurance.",
+            "D": "To assess for potential extrapyramidal side effects."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text lists 'Substance-induced dementia' as a type of major NCD and delirium can be caused by medication toxicity. A key part of the diagnostic process ('Review of recent symptoms, meds, and nutrition') is to identify and rule out reversible causes for the cognitive impairment. Many common medications can cause confusion in older adults, and this must be assessed before a diagnosis of a primary dementia is made.",
+        "section": "Nursing Process - Assessment for Alzheimer's"
+    },
+    {
+        "questionText": "Which symptom, if present, would most clearly differentiate schizophrenia from a Cluster A personality disorder?",
+        "options": {
+            "A": "Social anxiety and withdrawal.",
+            "B": "Odd or eccentric beliefs.",
+            "C": "Persistent, disabling auditory hallucinations and functional impairment.",
+            "D": "A blunted or constricted affect."
+        },
+        "correctAnswer": "C",
+        "rationale": "While Cluster A personality disorders involve odd beliefs and social withdrawal, they typically lack the frank, persistent psychosis seen in schizophrenia. The presence of disabling hallucinations, along with significant functional impairment for at least 6 months (DSM-V criteria), is the key differentiator that points towards schizophrenia.",
+        "section": "Schizophrenia Clinical Picture & Personality Disorders"
+    },
+    {
+        "questionText": "A client with Obsessive-Compulsive Personality Disorder is admitted to the hospital. Which nursing action would likely cause the most anxiety for this client?",
+        "options": {
+            "A": "Providing the client with a detailed schedule of their daily plan of care.",
+            "B": "Informing the client that their group therapy session has been cancelled for the day.",
+            "C": "Asking the client to list their goals for their hospitalization.",
+            "D": "Maintaining a neutral but kind affect during interactions."
+        },
+        "correctAnswer": "B",
+        "rationale": "The guidelines for OCPD state to 'Remember that the client has difficulty dealing with unexpected changes.' The cancellation of a scheduled activity disrupts their rigid structure and control, which is a significant source of anxiety for individuals with this disorder.",
+        "section": "Obsessive-Compulsive Personality Disorder (Cont.)"
+    },
+    {
+        "questionText": "A client with schizophrenia has not showered in a week and has no interest in participating in unit activities. The nurse identifies this as avolition and anhedonia. What is the priority nursing intervention?",
+        "options": {
+            "A": "Document the client's refusal to participate in care.",
+            "B": "Gently but firmly assist the client with completing their morning hygiene.",
+            "C": "Explore the client's past experiences to find the cause of their lack of motivation.",
+            "D": "Withhold privileges until the client agrees to shower."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text notes that apathy and avolition lead to deficits in basic activities like hygiene. The negative symptoms make it impossible for the client to initiate these activities on their own. The appropriate nursing action is to provide direct, supportive assistance to help the client complete essential ADLs, which is a key part of milieu management.",
+        "section": "Negative Symptoms & Implementation"
+    },
+    {
+        "questionText": "Which of the following is an example of a nurse using the communication technique of 'setting firm limits'?",
+        "options": {
+            "A": "A nurse tells a client, 'It sounds like you are feeling very angry right now.'",
+            "B": "A nurse tells a client with a persecutory delusion, 'We can talk about your concerns for five minutes, then we need to discuss your medication.'",
+            "C": "A nurse sits with a client in silence after they share something difficult.",
+            "D": "A nurse asks a client directly, 'Are you hearing voices?'"
+        },
+        "correctAnswer": "B",
+        "rationale": "The text lists 'set firm limits on amount time spent talking about the delusion' as an intervention. This response acknowledges the client's concern but structures the conversation by placing a clear time limit on the non-reality-based topic before redirecting to a therapeutic task. This is the definition of setting limits.",
+        "section": "Nursing Interventions for Delusions"
+    },
+    {
+        "questionText": "What is the primary advantage of a second-generation antipsychotic over a first-generation antipsychotic?",
+        "options": {
+            "A": "They are significantly less expensive.",
+            "B": "They treat both positive and negative symptoms.",
+            "C": "They do not cause any weight gain.",
+            "D": "They have no risk of causing dangerous side effects."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text clearly outlines this as the main advantage. First-generation antipsychotics primarily target positive symptoms. Second-generation antipsychotics 'Treat both positive and negative symptoms,' offering a broader spectrum of efficacy, particularly for the debilitating negative symptoms that impair functioning.",
+        "section": "Second-Generation Antipsychotics"
+    },
+     {
+        "questionText": "A client with schizophrenia is experiencing a delusion of persecution, stating, 'The government has agents following me everywhere.' Which nursing intervention is most appropriate?",
+        "options": {
+            "A": "Arranging for a security guard to be posted outside the client's door to help them feel safe.",
+            "B": "Telling the client, 'That's not true, no one is following you here.'",
+            "C": "Being open and honest in interactions and focusing conversations on reality-based topics.",
+            "D": "Encouraging the client to write down all their experiences with the agents to get a clearer picture."
+        },
+        "correctAnswer": "C",
+        "rationale": "The intervention slide for delusions specifically states to 'Be open and honest in interaction to reduce suspiciousness' and to 'Focus conversation on reality-based topics rather than on the delusion.' Arguing about the delusion or playing into it is not therapeutic. The goal is to build trust and ground the client in reality.",
+        "section": "Nursing Interventions for Delusions"
+    },
+    {
+        "questionText": "Which client presents with symptoms most characteristic of the prodromal phase of schizophrenia?",
+        "options": {
+            "A": "A 45-year-old client who has had stable, residual negative symptoms for the past 5 years.",
+            "B": "A 30-year-old client who is exhibiting waxy flexibility and gross disorganization.",
+            "C": "A 19-year-old college student who reports a recent onset of social anxiety, difficulty concentrating, and a feeling that 'things are not quite right.'",
+            "D": "An 18-year-old client who is experiencing intense auditory command hallucinations."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text describes the prodromal phase as the 'Onset; mild changes in thinking, reality, mood changes' that can appear months to a year before a full episode. The 19-year-old's vague, subclinical symptoms of anxiety and altered reality testing are classic for this phase. The other options describe the maintenance/residual phase or the acute phase.",
+        "section": "Phases of Schizophrenia"
+    },
+    {
+        "questionText": "The nurse is assessing a client with Alzheimer's disease who is having a conversation, but stops mid-sentence and repeatedly says the same phrase, 'it's time to go.' This is an example of which defense mechanism?",
+        "options": {
+            "A": "Confabulation",
+            "B": "Denial",
+            "C": "Avoidance of questions",
+            "D": "Perseveration"
+        },
+        "correctAnswer": "D",
+        "rationale": "Perseveration is defined in the text as the 'repetition of phrases or behavior.' The client is stuck in a cognitive loop, repeating the same phrase. Confabulation would be creating a story, and denial would be refusing to accept a reality.",
+        "section": "Assessment of Alzheimer's Disease"
+    },
+    {
+        "questionText": "A nurse is teaching a student about the difference between second-generation and first-generation antipsychotics. Which statement by the student indicates a correct understanding?",
+        "options": {
+            "A": "First-generation drugs are better because they have no risk of weight gain, unlike second-generation drugs.",
+            "B": "Second-generation drugs are preferred because they treat both positive and negative symptoms with a lower risk of EPS.",
+            "C": "Only first-generation drugs can be given as a long-acting injectable.",
+            "D": "Second-generation drugs work by only blocking dopamine receptors, while first-generation drugs block both serotonin and dopamine."
+        },
+        "correctAnswer": "B",
+        "rationale": "This statement correctly synthesizes the key advantages of second-generation antipsychotics as listed in the text: they 'Treat both positive and negative symptoms' and have 'Minimal to no EPS or tardive dyskinesia.' The other statements contain inaccuracies about side effects, formulations, and mechanisms of action.",
+        "section": "Second-Generation Antipsychotics"
+    },
+    {
+        "questionText": "A client with Antisocial Personality Disorder is consistently charming to some staff members while being dismissive and rude to others, causing conflict on the unit. What is the priority nursing action for the team?",
+        "options": {
+            "A": "Ensuring all staff members maintain consistent boundaries and communicate frequently about the client's behavior.",
+            "B": "Assigning only the 'charmed' staff members to the client to improve their mood.",
+            "C": "Placing the client in seclusion to prevent further disruption.",
+            "D": "Rewarding the client with privileges when they are charming to all staff."
+        },
+        "correctAnswer": "A",
+        "rationale": "The implementation plan for Antisocial PD highlights 'Boundaries, consistency, support, and limits' and 'Teamwork and safety (prime).' The client is manipulating the team. The priority is for the entire team to work together, maintain consistent rules and expectations, and communicate openly to prevent being split by the client's behavior.",
+        "section": "Antisocial Personality Disorder (Cont.)"
+    },
+    {
+        "questionText": "A client is experiencing a tactile hallucination. Which statement would the nurse expect to hear from the client?",
+        "options": {
+            "A": "I smell smoke, but there is no fire.",
+            "B": "This food tastes like poison.",
+            "C": "I feel spiders crawling on my arms.",
+            "D": "I see a man standing in the corner of the room."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text lists tactile as a type of hallucination. Tactile hallucinations involve the sense of touch. The sensation of bugs crawling on the skin (formication) is a classic example of a tactile hallucination. The other options describe olfactory, gustatory, and visual hallucinations, respectively.",
+        "section": "Alterations in Perception"
+    },
+    {
+        "questionText": "A client with delirium has their arm in a restraint due to pulling at their IV line. The nurse notes the client is becoming more agitated. What is the nurse's best action?",
+        "options": {
+            "A": "Tightening the restraint to ensure the IV line is secure.",
+            "B": "Administering a PRN sedative medication to calm the client.",
+            "C": "Discontinuing the restraint and having a staff member or family member sit with the client.",
+            "D": "Explaining to the client that the restraint will be removed when they stop pulling at their IV."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text explicitly states to 'Minimize use of restraints (increases confusion).' The client's increased agitation confirms this. The best practice and least restrictive alternative is to remove the restraint and use a one-to-one sitter to ensure the client's safety and the security of the IV line.",
+        "section": "Delirium - Implementation"
+    },
+    {
+        "questionText": "A client with schizophrenia is exhibiting a bizarre affect. What would the nurse observe?",
+        "options": {
+            "A": "A complete lack of emotional expression.",
+            "B": "An emotional expression that is reduced in intensity.",
+            "C": "An emotional expression that is odd, illogical, and incongruent with the situation.",
+            "D": "An emotional expression that is appropriate for the context of the conversation."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text lists bizarre affect as a type of outward emotional expression. A bizarre affect is one that is odd and doesn't make sense in the context of the situation, for example, laughing while discussing a sad topic. A lack of expression is a flat affect, and reduced intensity is a blunted affect.",
+        "section": "Negative Symptoms - Affect"
+    },
+    {
+        "questionText": "A client with Obsessive-Compulsive Personality Disorder is given a group project with a deadline. The nurse would anticipate the client might struggle with what?",
+        "options": {
+            "A": "A lack of motivation to begin the project.",
+            "B": "Difficulty understanding the project's instructions.",
+            "C": "Completing the project because their strict standards and focus on perfection interfere.",
+            "D": "A tendency to exploit other group members to get the work done."
+        },
+        "correctAnswer": "C",
+        "rationale": "The characteristics of OCPD include an 'unhealthy focus on perfection' and 'Strict standards [that] interfere with project completion.' The client's own rigidity and need for everything to be perfect often paralyzes them, making it difficult to finish tasks on time.",
+        "section": "Obsessive-Compulsive Personality Disorder"
+    },
+    {
+        "questionText": "Which assessment finding is a key feature of delirium but NOT of dementia?",
+        "options": {
+            "A": "Memory impairment.",
+            "B": "Difficulty with problem-solving.",
+            "C": "A disturbance of consciousness.",
+            "D": "Aphasia."
+        },
+        "correctAnswer": "C",
+        "rationale": "The overall assessment slide for delirium explicitly lists 'Disturbance of Consciousness.' Conversely, the slide for neurocognitive disorders states 'No change in consciousness.' This is a critical and reliable feature used to differentiate the two conditions.",
+        "section": "Delirium & Major Neurocognitive Disorders"
+    },
+    {
+        "questionText": "A client taking clozapine (a second-generation antipsychotic) calls the clinic complaining of a sudden fever and a severe sore throat. What is the nurse's priority instruction to the client?",
+        "options": {
+            "A": "Take acetaminophen for the fever and rest.",
+            "B": "This is a common side effect; it should pass in a day or two.",
+            "C": "Go to the nearest emergency department immediately for a blood test.",
+            "D": "Gargle with salt water for the sore throat."
+        },
+        "correctAnswer": "C",
+        "rationale": "Fever and sore throat are hallmark signs of agranulocytosis, a life-threatening side effect listed for antipsychotics where the white blood cell count drops dangerously low. This is a medical emergency. The client needs to have a CBC drawn immediately to confirm the diagnosis and receive medical intervention.",
+        "section": "Potentially Dangerous Responses to Antipsychotics"
+    },
+    {
+        "questionText": "A client with schizophrenia is exhibiting negativism. What behavior would the nurse expect?",
+        "options": {
+            "A": "The client mimics the nurse's movements.",
+            "B": "The client resists or opposes the nurse's requests and attempts to move them.",
+            "C": "The client has a reduced ability to experience pleasure.",
+            "D": "The client makes up new words with private meanings."
+        },
+        "correctAnswer": "B",
+        "rationale": "Negativism is a behavioral alteration listed in the text. It is characterized by resistance to instructions or attempts to be moved. The client may do the opposite of what is asked or resist all efforts to be cared for.",
+        "section": "Alterations in Behavior"
+    },
+    {
+        "questionText": "A client with dementia has lost the sensory ability to recognize the smell of smoke from a fire. This is an example of what?",
+        "options": {
+            "A": "Olfactory agnosia",
+            "B": "Gustatory hallucination",
+            "C": "Anosognosia",
+            "D": "Anergia"
+        },
+        "correctAnswer": "A",
+        "rationale": "Agnosia is the 'loss of sensory ability to recognize objects' or, more broadly, sensory input. Since 'olfactory' refers to the sense of smell, the inability to recognize a familiar smell like smoke is olfactory agnosia, a specific type of agnosia that poses a significant safety risk.",
+        "section": "Symptoms of Alzheimer’s Disease"
+    },
+    {
+        "questionText": "A nurse is creating a plan for a client with BPD who exhibits emotional lability. Which intervention is most appropriate?",
+        "options": {
+            "A": "Encourage the client to suppress their emotions to maintain control.",
+            "B": "Help the client connect their feelings to the events and actions that preceded them.",
+            "C": "Administer a first-generation antipsychotic for mood swings.",
+            "D": "Use a friendly, cheerful approach to try and improve the client's mood."
+        },
+        "correctAnswer": "B",
+        "rationale": "The 'Personality Disorder Interventions' slide lists 'Help patients connect feelings to events and actions.' Emotional lability is rapid, intense mood shifts. Helping the client identify the triggers for these shifts is a foundational step in learning to manage them, which is a key goal of therapies like DBT.",
+        "section": "Personality Disorder Interventions"
+    },
+    {
+        "questionText": "A client with a history of Parkinson's disease develops progressive memory loss, problem-solving difficulty, and is unable to live independently. This condition would be classified as:",
+        "options": {
+            "A": "A Major Neurocognitive Disorder",
+            "B": "An extrapyramidal side effect",
+            "C": "Delirium",
+            "D": "A Cluster C personality disorder"
+        },
+        "correctAnswer": "A",
+        "rationale": "The text lists 'Parkinson’s disease' as one of the causes of a Major Neurocognitive Disorder. The client's progressive decline that 'interferes with daily functioning and independence' meets the criteria for a major NCD.",
+        "section": "Major Neurocognitive Disorders"
+    },
+    {
+        "questionText": "Which of the following is considered a cognitive symptom of schizophrenia?",
+        "options": {
+            "A": "Avolition",
+            "B": "A delusion of grandeur",
+            "C": "Anhedonia",
+            "D": "Impaired executive functioning"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text explicitly lists 'Impaired executive functioning' under the heading 'Cognitive Symptoms.' Avolition and anhedonia are negative symptoms, and a delusion is a positive symptom. This requires differentiating between the four main symptom categories.",
+        "section": "Cognitive Symptoms"
+    },
+    {
+        "questionText": "The nurse is providing health teaching for a family of a client with Alzheimer's disease. Which risk factor, mentioned in the text, can be modified to potentially slow cognitive decline?",
+        "options": {
+            "A": "Age",
+            "B": "Family history",
+            "C": "Cardiovascular disease",
+            "D": "History of a single traumatic brain injury"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text lists 'Cardiovascular disease' as a risk factor. Unlike age, genetics, or a past TBI, cardiovascular health is modifiable through diet, exercise, and medication. Managing blood pressure, cholesterol, and blood sugar can help protect brain health and is a key area for health promotion.",
+        "section": "Alzheimer’s Disease - Risk factors"
+    },
+    {
+        "questionText": "A client who has been stable in the maintenance phase of schizophrenia reports increased feelings of depression and anxiety. The nurse recognizes that these affective symptoms may indicate what?",
+        "options": {
+            "A": "The development of a Cluster C personality disorder.",
+            "B": "An impending relapse of their psychotic symptoms.",
+            "C": "The successful achievement of a new baseline.",
+            "D": "A normal part of the recovery process that does not require intervention."
+        },
+        "correctAnswer": "B",
+        "rationale": "The slide on 'Affective Symptoms' is crucial here. It states that depression 'May herald impending relapse.' The nurse must recognize these new affective symptoms as a warning sign that the client's condition may be destabilizing, requiring proactive intervention to prevent a full-blown psychotic episode.",
+        "section": "Affective Symptoms"
+    },
+    {
+        "questionText": "A client with Paranoid Personality Disorder is required to attend group therapy. Which action by the nurse leader of the group would be most helpful for this client?",
+        "options": {
+            "A": "Requiring the client to be the first to share their feelings with the group.",
+            "B": "Clearly explaining the rules and purpose of the group and adhering to the schedule.",
+            "C": "Using humor and an overly friendly tone to make the client feel welcome.",
+            "D": "Allowing the client to remain silent and not participate."
+        },
+        "correctAnswer": "B",
+        "rationale": "The treatment guidelines for PPD emphasize the need to 'counteract mistrust by (a) adhering to schedules.' Structure and predictability reduce anxiety and suspicion. Clearly outlining the rules and purpose of the group provides this structure and helps the client know what to expect, which is more therapeutic than forcing participation or being overly friendly.",
+        "section": "Paranoid Personality Disorder (Cont.)"
+    },
+    {
+        "questionText": "A client with dementia frequently repeats the same story about their childhood. What is the most likely reason for this behavior?",
+        "options": {
+            "A": "The client is experiencing a delusion of grandeur.",
+            "B": "The client's long-term memory is more intact than their short-term memory, and they are using perseveration.",
+            "C": "The client is experiencing a gustatory hallucination.",
+            "D": "The client is exhibiting disinhibited behavior characteristic of antisocial personality disorder."
+        },
+        "correctAnswer": "B",
+        "rationale": "In dementia like Alzheimer's, short-term memory loss is a primary symptom, while remote (long-term) memories often remain preserved until later stages. The client is returning to a familiar, intact memory. The repetition of this story is a form of perseveration, which is common in dementia.",
+        "section": "Alzheimer’s Disease Clinical Picture & Assessment"
+    },
+    {
+        "questionText": "A client with schizophrenia is exhibiting 'boundary impairment.' Which behavior would the nurse expect to see?",
+        "options": {
+            "A": "The client refuses to make eye contact or speak to the nurse.",
+            "B": "The client stands inappropriately close to the nurse and touches their arm without permission.",
+            "C": "The client believes the nurse can read their mind.",
+            "D": "The client is unable to initiate or sustain goal-directed activities."
+        },
+        "correctAnswer": "B",
+        "rationale": "Boundary impairment, listed under 'Alterations in Behavior,' refers to a difficulty in understanding and maintaining the standard physical and social distances between people. Standing too close, touching others without permission, or taking others' belongings are common examples.",
+        "section": "Alterations in Behavior"
+    },
+    {
+        "questionText": "Which of the following is an example of an 'Advanced Practice Intervention' listed in the text?",
+        "options": {
+            "A": "Monitoring fluid intake during the acute phase.",
+            "B": "Providing supervision and limit setting in the milieu.",
+            "C": "Prescribing medications and providing family therapy.",
+            "D": "Assisting a client with hygiene and grooming."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text has a specific slide for 'Advanced Practice Interventions.' 'Medication prescription and monitoring' and 'Family therapy' are both explicitly listed. These are interventions that require an advanced practice license (like an APRN), as opposed to basic nursing interventions like monitoring intake or providing supervision.",
+        "section": "Advanced Practice Interventions"
+    },
+    {
+        "questionText": "A client with BPD states they feel 'empty' inside and are considering self-harm. The nurse recognizes this feeling is related to which core issue of the disorder?",
+        "options": {
+            "A": "A profound lack of empathy.",
+            "B": "A disturbed personal identity.",
+            "C": "Unhealthy focus on perfection.",
+            "D": "A delusion of persecution."
+        },
+        "correctAnswer": "B",
+        "rationale": "Chronic feelings of emptiness are a key feature of BPD and are directly related to a 'Disturbed personal identity,' which is listed as a nursing diagnosis. The client lacks a stable sense of self, leading to these distressing feelings and often to impulsive or self-harming behaviors to try and 'feel something.'",
+        "section": "Borderline Personality Disorder (Cont.) - Nursing diagnoses"
+    },
+    {
+        "questionText": "What is the primary purpose of a Mini-Mental State Examination (MMSE) in the assessment for a neurocognitive disorder?",
+        "options": {
+            "A": "To diagnose the specific cause of dementia, such as Alzheimer's vs. vascular.",
+            "B": "To provide an objective measure of cognitive functioning and document decline over time.",
+            "C": "To assess for the presence of delusions and hallucinations.",
+            "D": "To determine if the client has a co-occurring personality disorder."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text lists the MMSE under 'Diagnostic tests.' The MMSE is a standardized mental status questionnaire that provides a numerical score for various cognitive domains (orientation, recall, attention, etc.). Its primary use is to screen for cognitive impairment and to track changes in cognitive function over time, helping to assess the severity and progression of the disorder.",
+        "section": "Nursing Process - Diagnostic tests"
+    },
+    {
+        "questionText": "Which statement by a nurse demonstrates a correct understanding of anosognosia?",
+        "options": {
+            "A": "Anosognosia is the client's willful denial of their illness.",
+            "B": "Anosognosia is a neurological symptom of the illness itself that impairs insight.",
+            "C": "Anosognosia can be overcome with direct psychoeducation.",
+            "D": "Anosognosia is a sign that the client's antipsychotic medication is not working."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text is very clear that anosognosia is the 'Inability to realize they are ill' and is 'Caused by the illness itself.' This is a critical distinction: it is not a psychological defense mechanism like denial, but a neurological deficit. This understanding changes the nurse's approach from one of convincing the client to one of building an alliance and managing symptoms.",
+        "section": "Self-Assessment - Anosognosia"
+    },
+    {
+        "questionText": "A client diagnosed with Schizophrenia, Acute Phase, is exhibiting motor retardation, affective blunting, and alogia. Which nursing diagnosis is the highest priority?",
+        "options": {
+            "A": "Impaired verbal communication",
+            "B": "Social isolation",
+            "C": "Risk for fluid volume deficit",
+            "D": "Defensive coping"
+        },
+        "correctAnswer": "C",
+        "rationale": "While the other diagnoses are relevant, the combination of motor retardation (not moving), blunted affect, and alogia (not speaking) puts the client at high risk for not meeting their basic physiological needs. The nurse's priority assessment and intervention must be to 'Monitor fluid intake' (and nutrition) to prevent a life-threatening imbalance, a key implementation for the acute phase.",
+        "section": "Implementation - Acute phase & Maslow's Hierarchy"
+    },
+    {
+        "questionText": "The nurse is providing care for a client with Narcissistic Personality Disorder. Which of the following is a key component of the care plan?",
+        "options": {
+            "A": "Consistently providing the client with praise and admiration to boost their self-esteem.",
+            "B": "Avoiding power struggles and role modeling empathy.",
+            "C": "Using a very friendly and familiar communication style.",
+            "D": "Focusing on the client's strengths while ignoring their shortcomings."
+        },
+        "correctAnswer": "B",
+        "rationale": "The 'Guidelines for Nursing Care' for NPD explicitly state to 'Avoid power struggles or becoming defensive' and to 'Role model empathy.' The client's entitlement and hypersensitivity can easily lead to power struggles. The nurse's role is to remain neutral and demonstrate the empathy that the client lacks.",
+        "section": "Narcissistic Personality Disorder - Guidelines for Nursing Care"
+    },
+    {
+        "questionText": "A client is experiencing derealization. What would the client most likely report feeling?",
+        "options": {
+            "A": "That their body does not belong to them.",
+            "B": "That the environment around them is strange or unreal.",
+            "C": "That others are talking about them.",
+            "D": "That their thoughts are being broadcast out loud."
+        },
+        "correctAnswer": "B",
+        "rationale": "Derealization is an 'Alteration in Perception.' It is specifically the feeling that one's surroundings have become unfamiliar, strange, or unreal. This is contrasted with depersonalization, which is a feeling of detachment from oneself.",
+        "section": "Alterations in Perception"
+    },
+    {
+        "questionText": "A client with schizophrenia states, 'I can't take that medication, it's poison.' Which nursing intervention is most appropriate?",
+        "options": {
+            "A": "Administering the medication in a long-acting injectable form without the client's consent.",
+            "B": "Arguing with the client and explaining the chemical composition of the medication.",
+            "C": "Acknowledging the client's fear and focusing on a reality-based discussion about the medication's intended effect.",
+            "D": "Documenting the client's refusal and discontinuing the medication."
+        },
+        "correctAnswer": "C",
+        "rationale": "This statement reflects both a delusion (paranoia) and anosognosia. The nurse should not argue ('Do not argue with the client...') but should acknowledge the feeling ('I understand you are concerned about what you are taking') and then gently present reality ('This medication is to help with the voices you've been hearing'). This builds trust and avoids confrontation.",
+        "section": "Nursing Interventions for Delusions & Anosognosia"
+    },
+    {
+        "questionText": "Which finding differentiates tardive dyskinesia from other extrapyramidal side effects?",
+        "options": {
+            "A": "It occurs within the first few hours of the first dose of an antipsychotic.",
+            "B": "It involves a sudden, severe spasm of the neck and back muscles.",
+            "C": "It is characterized by involuntary, choreoathetoid movements, especially of the face and tongue.",
+            "D": "It presents with a shuffling gait, drooling, and tremor."
+        },
+        "correctAnswer": "C",
+        "rationale": "Tardive dyskinesia is a distinct EPS characterized by involuntary and often bizarre movements, most commonly worm-like movements of the tongue (vermicular movements) and puckering of the lips. It typically has a later onset than acute dystonia (B) or pseudo parkinsonism (D) and is a major long-term risk.",
+        "section": "Potentially Dangerous Responses to Antipsychotics"
+    },
+    ];
+
+    let finalQuizData = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let confidenceRatings = {};
+    let flaggedForReview = new Set();
+    const NUM_QUESTIONS_TO_SELECT = 30;
+
+    const initialScreen = document.getElementById('initial-screen');
+    const startBtn = document.getElementById('start-btn');
+    const quizForm = document.getElementById('quiz-form');
+    const resultsArea = document.getElementById('results-area');
+
+    function prepareQuizData() {
+        const shuffledPool = [...fullQuizData].sort(() => 0.5 - Math.random());
+        const questionsNeeded = Math.min(NUM_QUESTIONS_TO_SELECT, shuffledPool.length);
+        finalQuizData = shuffledPool.slice(0, questionsNeeded);
+    }
+
+    function prepareAndStartQuiz() {
+        prepareQuizData();
+        if (finalQuizData.length === 0) {
+            alert("No questions loaded.");
+            return;
+        }
+        initialScreen.classList.add('hidden');
+        quizForm.classList.remove('hidden');
+        displayCurrentQuestion();
+    }
+
+    function displayCurrentQuestion() {
+        if (currentQuestionIndex >= finalQuizData.length) return;
+        const qData = finalQuizData[currentQuestionIndex];
+        
+        let optionsHTML = '<div class="options-container">';
+        const inputType = qData.type === 'sata' ? 'checkbox' : 'radio';
+        
+        for (const [key, text] of Object.entries(qData.options)) {
+            optionsHTML += `<label><input type="${inputType}" name="answer" value="${key}"> ${text}</label>`;
+        }
+        optionsHTML += '</div>';
+
+        quizForm.innerHTML = `
+            <div class="question-header">
+                Question <strong>${currentQuestionIndex + 1}</strong> of ${finalQuizData.length}
+            </div>
+            <p class="question-text">${qData.questionText}</p>
+            ${optionsHTML}
+            <div class="question-footer">
+                <div class="flag-container">
+                    <label><input type="checkbox" class="flag-for-review"> Flag for Review</label>
+                </div>
+                <div class="confidence-slider-container">
+                    <label>Confidence:</label>
+                    <input type="range" min="1" max="5" value="3" class="confidence-slider">
+                </div>
+                 <button type="submit" id="navigation-btn">${(currentQuestionIndex === finalQuizData.length - 1) ? "Submit Exam" : "Next Question"}</button>
+            </div>
+        `;
+    }
+    
+    function saveAnswer() {
+        const qData = finalQuizData[currentQuestionIndex];
+        if (!qData) return;
+
+        const selectedOptions = quizForm.querySelectorAll('input[name="answer"]:checked');
+        if (qData.type === 'sata') {
+            userAnswers[currentQuestionIndex] = Array.from(selectedOptions).map(cb => cb.value);
+        } else {
+            userAnswers[currentQuestionIndex] = selectedOptions.length ? selectedOptions[0].value : null;
+        }
+
+        const flagInput = quizForm.querySelector('.flag-for-review');
+        if(flagInput && flagInput.checked) {
+            flaggedForReview.add(currentQuestionIndex);
+        }
+
+        const confidenceInput = quizForm.querySelector('.confidence-slider');
+        if(confidenceInput) {
+            confidenceRatings[currentQuestionIndex] = parseInt(confidenceInput.value, 10);
+        }
+    }
+    
+    // --- FUNCTION RESTORED ---
+    function handleNavigation() {
+        saveAnswer();
+        quizForm.classList.add('is-transitioning');
+        
+        setTimeout(() => {
+            if (currentQuestionIndex < finalQuizData.length - 1) {
+                currentQuestionIndex++;
+                displayCurrentQuestion();
+                quizForm.classList.remove('is-transitioning');
+            } else {
+                submitQuiz();
+            }
+        }, 300);
+    }
+
+    function submitQuiz() {
+        quizForm.classList.add('hidden');
+        resultsArea.classList.remove('hidden');
+        displayResults();
+    }
+    
+    function checkAnswerCorrectness(qData, userAnswer) {
+        if (userAnswer === null || userAnswer === undefined) return false;
+        if (qData.type === 'sata') {
+            if (!Array.isArray(userAnswer) || typeof qData.correctAnswer !== 'string') return false;
+            const sortedUser = [...userAnswer].sort();
+            const sortedCorrect = [...(qData.correctAnswer.split(','))].sort();
+            return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+        }
+        return userAnswer === qData.correctAnswer;
+    }
+
+    function displayResults() {
+        let correctCount = 0;
+        finalQuizData.forEach((q, i) => { if (checkAnswerCorrectness(q, userAnswers[i])) correctCount++; });
+        const score = finalQuizData.length > 0 ? (correctCount / finalQuizData.length) * 100 : 0;
+
+        let resultsHTML = `
+            <div class="results-summary">
+                 <h2>Exam Complete!</h2>
+                 <div class="score-animation-container">
+                    <div class="score-animation-circle"></div>
+                    <div class="score-animation-inner">
+                        <span class="score-animation-text">${score.toFixed(0)}%</span>
+                    </div>
+                 </div>
+                 <p>You answered <strong>${correctCount}</strong> out of <strong>${finalQuizData.length}</strong> questions correctly.</p>
+            </div>
+        `;
+        
+        resultsArea.innerHTML = resultsHTML;
+        resultsArea.innerHTML += generateConfidenceAnalysis();
+        resultsArea.innerHTML += generateStudyFocus();
+        resultsArea.innerHTML += generateDetailedReview();
+
+        setTimeout(() => {
+            const scoreCircle = document.querySelector('.score-animation-circle');
+            if (scoreCircle) {
+                scoreCircle.style.background = `conic-gradient(var(--success-green) ${score}%, var(--border-light) ${score}% 100%)`;
+            }
+        }, 100);
+
+        if (score >= 80) {
+            triggerConfetti();
+        }
+    }
+
+    function generateDetailedReview() {
+        let detailsHTML = '<div id="results-details"><h2>Question Review</h2>';
+        finalQuizData.forEach((qData, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = checkAnswerCorrectness(qData, userAnswer);
+            
+            let resultBodyHTML = '<ul>';
+            for (const [key, text] of Object.entries(qData.options)) {
+                let li_class = '';
+                const isCorrectOpt = qData.type === 'sata' ? qData.correctAnswer.includes(key) : key === qData.correctAnswer;
+                const isUserSelect = Array.isArray(userAnswer) ? userAnswer.includes(key) : key === userAnswer;
+                if (isCorrectOpt) li_class = 'correct-answer-label';
+                if (isUserSelect && !isCorrectOpt) li_class = 'incorrect-answer-label';
+                if (!isUserSelect && isCorrectOpt && !isCorrect) li_class = 'missed-correct-answer-label';
+                resultBodyHTML += `<li class="${li_class}">${text}</li>`;
+            }
+            resultBodyHTML += '</ul>';
+
+            detailsHTML += `
+                <div class="result-question">
+                    <p><strong>Question ${index + 1}: ${qData.questionText}</strong></p>
+                    ${resultBodyHTML}
+                    <div class="rationale"><strong>Rationale:</strong> ${qData.rationale || 'N/A'}</div>
+                </div>`;
+        });
+        detailsHTML += '</div>';
+        return detailsHTML;
+    }
+    
+    function generateConfidenceAnalysis() {
+        let correctAndConfident = 0, correctButUnsure = 0, incorrectAndConfident = 0, incorrectButUnsure = 0;
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const confidence = confidenceRatings[index] || 3;
+            if (confidence >= 4) { if (isCorrect) correctAndConfident++; else incorrectAndConfident++; } 
+            else { if (isCorrect) correctButUnsure++; else incorrectButUnsure++; }
+        });
+        return `
+            <div id="confidence-analysis">
+                <h3>Confidence Analysis</h3>
+                <ul>
+                    <li>Correct & Confident: <strong>${correctAndConfident}</strong></li>
+                    <li>Correct but Unsure: <strong>${correctButUnsure}</strong></li>
+                    <li>Incorrect & Confident: <strong>${incorrectAndConfident}</strong></li>
+                    <li>Incorrect but Unsure: <strong>${incorrectButUnsure}</strong></li>
+                </ul>
+            </div>`;
+    }
+
+    function generateStudyFocus() {
+        const topicCounts = {};
+        finalQuizData.forEach((qData, index) => {
+            if (!checkAnswerCorrectness(qData, userAnswers[index])) {
+                const topic = qData.section || "General";
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+            }
+        });
+        const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+        let focusHTML = '<div id="study-focus"><h3>Personalized Study Focus</h3>';
+        if (sortedTopics.length > 0) {
+            focusHTML += '<p>Based on your performance, focus your review on these topics:</p><ul>';
+            sortedTopics.forEach(topic => { focusHTML += `<li><strong>${topic[0]}</strong> (${topic[1]} item${topic[1] > 1 ? 's' : ''} missed)</li>`; });
+            focusHTML += '</ul>';
+        } else {
+            focusHTML += '<p>Excellent work! No specific weak areas were identified.</p>';
+        }
+        focusHTML += '</div>';
+        return focusHTML;
+    }
+
+    function triggerConfetti() {
+        const numConfetti = 150;
+        for (let i = 0; i < numConfetti; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 90%, 60%)`;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 6000);
+        }
+    }
+
+    startBtn.addEventListener('click', prepareAndStartQuiz);
+    quizForm.addEventListener('submit', e => { 
+        e.preventDefault(); 
+        handleNavigation(); 
+    });
+</script>
+
+</body>
+</html>
