@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Addiction SDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #3498db;
+            --primary-dark-blue: #2980b9;
+            --secondary-orange: #f39c12;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #ecf0f1;
+            --bg-white: #FFFFFF;
+            --border-light: #e0e4eb;
+            --success-green: #2ecc71;
+            --danger-red: #e74c3c;
+            --shadow-color: rgba(44, 62, 80, 0.1);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            box-sizing: border-box;
+        }
+
+        .quiz-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .quiz-header {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            padding: 0.75rem 2rem;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            position: absolute;
+            left: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
+        .animated-icon {
+            position: absolute;
+            right: 0;
+            animation: inspect 4s ease-in-out infinite;
+        }
+
+        .animated-icon svg { width: 30px; height: 30px; fill: var(--primary-blue); }
+        .quiz-header h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+        .version-info { font-size: 0.7rem; color: var(--text-light); margin-top: 0.2rem; }
+        
+        .quiz-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        #initial-screen { text-align: center; padding: 2rem; }
+        #initial-screen h2 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-dark-blue); }
+        #initial-screen p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 1rem auto 2rem auto; color: var(--text-light); }
+        #start-btn { background-color: var(--primary-blue); color: white; padding: 1rem 2.5rem; font-size: 1.1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
+        #start-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+        
+        #quiz-form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 15px 40px var(--shadow-color);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            box-sizing: border-box;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        
+        #quiz-form.is-transitioning { opacity: 0; transform: scale(0.98); }
+
+        .question-header { font-size: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; flex-shrink: 0; border-bottom: 1px dashed var(--border-light); color: var(--text-light); font-weight: 500; }
+        .question-header strong { font-weight: 700; color: var(--primary-blue); }
+        .question-text { font-size: 1.25rem; font-weight: 500; line-height: 1.6; margin-top: 0; margin-bottom: 1rem; flex-shrink: 0; }
+        
+        .options-container { 
+            flex-grow: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0.5rem 0;
+        }
+
+        .options-container label { padding: 0.8rem 1.2rem; margin-bottom: 0.75rem; font-size: 1rem; border: 2px solid var(--border-light); border-radius: 10px; display: flex; align-items: center; transition: all 0.2s ease-in-out; cursor: pointer; }
+        .options-container label:hover { background-color: var(--bg-light); border-color: var(--primary-blue); }
+        .options-container input { margin-right: 1rem; flex-shrink: 0; transform: scale(1.2); accent-color: var(--primary-blue); }
+        
+        .question-footer { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .flag-container label { cursor: pointer; font-weight: 500; color: var(--text-light); display: flex; align-items: center; }
+        .flag-container input { margin-right: 0.5rem; }
+        .confidence-slider-container { display: flex; align-items: center; gap: 1rem; }
+        .confidence-slider-container label { font-weight: 500; color: var(--text-light); }
+        .confidence-slider { max-width: 150px; }
+
+        #navigation-btn { padding: 0.8rem 2rem; font-size: 1rem; background-color: var(--primary-blue); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        #navigation-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+
+        #results-area { animation: fadeIn 0.8s ease-out; box-sizing: border-box; width: 100%; height: 100%; overflow-y: auto; padding: 2rem; }
+        .results-summary, #confidence-analysis, #study-focus, #results-details { background-color: var(--bg-white); margin: 0 auto 2rem auto; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px var(--shadow-color); max-width: 1000px; }
+        .results-summary { text-align: center; }
+
+        .score-animation-container { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--primary-blue); display: flex; justify-content: center; align-items: center; margin: 1.5rem auto; position: relative; background-color: var(--bg-white); }
+        .score-animation-circle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--success-green) 0% 0%, var(--border-light) 0% 100%); transition: background 1.5s ease-out; }
+        .score-animation-inner { position: relative; z-index: 2; background-color: var(--bg-white); width: calc(100% - 16px); height: calc(100% - 16px); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .score-animation-text { font-size: 2.5rem; font-weight: 800; color: var(--text-dark); }
+        
+        #confidence-analysis h3, #study-focus h3, #results-details h2 { margin-top: 0; border-bottom: 2px solid; padding-bottom: 1rem; font-size: 1.5rem; margin-bottom: 1.5rem; }
+        #confidence-analysis h3 { color: var(--primary-dark-blue); border-color: var(--primary-blue); }
+        #study-focus h3 { color: #c0392b; border-color: #e74c3c; }
+        #results-details h2 { color: var(--text-dark); border-color: var(--border-light); }
+        
+        .result-question { border: 1px solid var(--border-light); padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 12px; }
+        .result-question p strong { display: block; margin-bottom: 1rem; font-size: 1.1em; color: var(--text-dark); }
+        .result-question ul { list-style-type: none; padding: 0; margin: 0; }
+        .result-question li { padding: 0.8rem 1.2rem; border-radius: 8px; margin-bottom: 0.6rem; font-size: 1rem; }
+        .correct-answer-label { background-color: var(--light-green-bg); color: #27ae60; font-weight: 600; }
+        .incorrect-answer-label { background-color: var(--light-red-bg); color: var(--danger-red); text-decoration: line-through; }
+        .missed-correct-answer-label { border: 2px dashed var(--success-green); }
+        .rationale { margin-top: 1.5rem; padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--primary-blue); background-color: var(--light-blue-bg); font-size: 0.95rem; }
+
+        .hidden { display: none !important; }
+        .confetti { position: fixed; width: 10px; height: 10px; opacity: 0; animation: confetti-fall 5s linear forwards; border-radius: 50%; z-index: 9999; }
+        @keyframes confetti-fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+        @keyframes inspect { 0% { transform: rotate(-15deg); } 50% { transform: rotate(10deg); } 100% { transform: rotate(-15deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-wrapper">
+        <header class="quiz-header">
+            <div class="header-content">
+                <div class="logo">VSREP</div>
+                <div>
+                    <h1>Mental Health Addiction - SDE</h1>
+                    <div class="version-info">
+                        <span>Engine: V4.0</span> | <span>Test: V2.0</span>
+                    </div>
+                </div>
+                <div class="animated-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-content">
+            <div id="initial-screen">
+                <h2>Welcome to the Diagnostic Exam</h2>
+                <p>You will be presented with one question at a time. Once you answer, you cannot go back. Please read each question carefully before proceeding.</p>
+                <button id="start-btn">Start Exam</button>
+            </div>
+
+            <form id="quiz-form" class="hidden"></form>
+
+            <div id="results-area" class="hidden"></div>
+        </main>
+    </div>
+
+<script>
+    const fullQuizData = [ 
+      {
+        "questionText": "A nurse is assessing a client with a history of chronic alcohol use who presents with confusion, ataxia, and nystagmus. The nurse anticipates that immediate administration of which intervention will be prioritized to prevent progression to Korsakoff syndrome?",
+        "options": {
+            "A": "Intravenous diazepam",
+            "B": "Oral chlordiazepoxide",
+            "C": "Intravenous thiamine (Vitamin B1)",
+            "D": "A fluid bolus of 5% Dextrose in water"
+        },
+        "correctAnswer": "C",
+        "rationale": "The client's symptoms (confusion, ataxia) are classic signs of Wernicke's encephalopathy, a precursor to the amnestic Wernicke-Korsakoff syndrome. The text states that replacement therapy with thiamine (vitamin B1) can prevent this neurodegenerative disorder. Administering glucose-containing fluids without prior thiamine can worsen the condition by depleting the remaining thiamine stores.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "A client is admitted for alcohol detoxification. Their initial CIWA score is 12. The nurse administers a dose of lorazepam as per protocol. Two hours later, the client is lethargic with a respiratory rate of 10 breaths/minute. Which nursing action is the most appropriate?",
+        "options": {
+            "A": "Administer another dose of lorazepam to prevent seizures.",
+            "B": "Withhold the next scheduled dose and notify the provider.",
+            "C": "Document the findings and re-assess in one hour.",
+            "D": "Prepare to administer naloxone for benzodiazepine reversal."
+        },
+        "correctAnswer": "B",
+        "rationale": "Lorazepam, a benzodiazepine, can cause CNS and respiratory depression. A respiratory rate of 10 indicates significant depression. The priority is patient safety, which involves withholding further doses of the causative agent and immediately notifying the provider. Administering more lorazepam would be dangerous. Naloxone is for opioid reversal, not benzodiazepines. Simple documentation is insufficient for this level of respiratory depression.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "During a health screening, a 50-year-old male client reports drinking 'about two 6-packs of beer a week'. Based on the provided guidelines, how should the nurse interpret this information?",
+        "options": {
+            "A": "The client's consumption is within safe limits for a male.",
+            "B": "The client is engaging in binge-drinking.",
+            "C": "The client's consumption is slightly below the 'at-risk' weekly limit.",
+            "D": "The client is engaging in 'at-risk' drinking."
+        },
+        "correctAnswer": "C",
+        "rationale": "The definition of 'at-risk' drinking for men is more than 14 standard drinks in any one week. Two 6-packs of beer equals 12 standard drinks. Therefore, the client's consumption is close to, but still below, the weekly threshold for 'at-risk' drinking. It doesn't meet the definition of binge-drinking, which is typically about 4-5 drinks on one occasion.",
+        "section": "Etiology"
+    },
+    {
+        "questionText": "A nurse is creating a plan of care for a client withdrawing from long-term, heavy cannabis use. Which symptoms should the nurse anticipate and plan interventions for? Select all that apply.",
+        "options": {
+            "A": "Fruity-scented breath",
+            "B": "Irritability and anger",
+            "C": "Insomnia and restlessness",
+            "D": "Kussmaul respirations",
+            "E": "Anxiety"
+        },
+        "correctAnswer": ["B", "C", "E"],
+        "rationale": "While the text doesn't detail cannabis withdrawal symptoms, they are generally the opposite of the drug's effects. Common symptoms include irritability, anger, aggression, anxiety, insomnia, disturbing dreams, and restlessness. Fruity breath and Kussmaul respirations are hallmark signs of Diabetic Ketoacidosis (DKA), not cannabis withdrawal.",
+        "section": "Substances That Lead to Use Disorders"
+    },
+    {
+        "questionText": "A client with a known heroin addiction is admitted with pinpoint pupils, a respiratory rate of 6 breaths/minute, and stupor. The nurse recognizes these as signs of intoxication with which class of substance?",
+        "options": {
+            "A": "Stimulants",
+            "B": "Hallucinogens",
+            "C": "Opioids",
+            "D": "Sedative-hypnotics"
+        },
+        "correctAnswer": "C",
+        "rationale": "The classic triad of opioid overdose (intoxication) is CNS depression (stupor), respiratory depression (bradypnea), and pupillary constriction (miosis/pinpoint pupils). Heroin is an opioid. Stimulants would cause mydriasis (dilated pupils) and tachycardia. Hallucinogens cause reality distortion. Sedatives can cause respiratory depression but are less likely to cause pinpoint pupils.",
+        "section": "Opioids"
+    },
+    {
+        "questionText": "A nurse is educating a student about the systemic effects of chronic alcoholism. The nurse knows the teaching is successful if the student correctly identifies which conditions as potential complications? Select all that apply.",
+        "options": {
+            "A": "Leukopenia",
+            "B": "Thrombocytopenia",
+            "C": "Hyperthyroidism",
+            "D": "Pancreatitis",
+            "E": "Alcoholic Cardiomyopathy"
+        },
+        "correctAnswer": ["A", "B", "D", "E"],
+        "rationale": "The content explicitly lists peripheral neuropathy, alcoholic myopathy and cardiomyopathy, esophagitis, gastritis, pancreatitis, alcoholic hepatitis, cirrhosis, leukopenia, and thrombocytopenia as systemic effects of alcoholism. Hyperthyroidism is not listed as a direct systemic effect.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "Which statement from a client's spouse would indicate the need for a referral to Al-Anon?",
+        "options": {
+            "A": "My teenage son has started drinking and I'm worried about him.",
+            "B": "I need help to stop my own gambling problem.",
+            "C": "I am so overwhelmed and exhausted from dealing with my husband's alcoholism.",
+            "D": "My husband has finally agreed to go to meetings to stop drinking."
+        },
+        "correctAnswer": "C",
+        "rationale": "Al-Anon is a support group specifically for friends and family members of individuals with alcoholism. The spouse's statement of feeling overwhelmed by the husband's drinking is the classic reason to seek support from Al-Anon. Alateen is for teenagers, Gamblers Anonymous is for the individual with the gambling problem, and Alcoholics Anonymous (AA) is for the individual with the alcohol problem.",
+        "section": "Resources"
+    },
+    {
+        "questionText": "A nurse is reviewing the plan of care for a client admitted for a suspected inhalant use disorder. The nurse should prioritize monitoring for which of the following complications?",
+        "options": {
+            "A": "Hypertensive crisis",
+            "B": "Sudden cardiac death",
+            "C": "Severe gastrointestinal bleeding",
+            "D": "Acute kidney injury"
+        },
+        "correctAnswer": "B",
+        "rationale": "Inhalants (solvents, propellants, fuels) are highly cardiotoxic and can cause fatal arrhythmias and 'sudden sniffing death syndrome,' even with first-time use. While other organ damage can occur with chronic use, acute cardiac events are a top priority concern for safety.",
+        "section": "Inhalants"
+    },
+    {
+        "questionText": "According to the DSM-5, which of the following is recognized as a non-substance–related addiction because it activates similar reward systems in the brain?",
+        "options": {
+            "A": "Sex addiction",
+            "B": "Shopping addiction",
+            "C": "Exercise addiction",
+            "D": "Gambling disorder"
+        },
+        "correctAnswer": "D",
+        "rationale": "The content explicitly states, 'Gambling Disorder: Only non-substance–related addiction included in the DSM-5' and notes that it 'Activates similar reward systems in the brain.' While other process addictions exist, gambling is the only one formally recognized in this way in the DSM-5.",
+        "section": "Clinical Picture – Non-Substance"
+    },
+    {
+        "questionText": "A nurse is administering chlordiazepoxide for alcohol withdrawal. The nurse explains to the client that this drug belongs to which class of medications?",
+        "options": {
+            "A": "Barbiturates",
+            "B": "Benzodiazepines",
+            "C": "Opioid agonists",
+            "D": "Anxiolytics"
+        },
+        "correctAnswer": "B",
+        "rationale": "The medication table clearly classifies chlordiazepoxide as a benzodiazepine. While it has anxiolytic (anti-anxiety) effects, 'Anxiolytics' is a functional class, whereas 'Benzodiazepines' is the specific pharmacological class. It is not a barbiturate or an opioid.",
+        "section": "Medications for Alcohol Withdrawal"
+    },
+    {
+        "questionText": "A client presents to the emergency department after ingesting a large amount of a substance. The client is agitated, hypervigilant, has dilated pupils, and reports feeling like 'bugs are crawling' on their skin. The nurse suspects intoxication from which substance?",
+        "options": {
+            "A": "Heroin",
+            "B": "Alcohol",
+            "C": "Cocaine",
+            "D": "Cannabis"
+        },
+        "correctAnswer": "C",
+        "rationale": "The clinical picture of agitation, hypervigilance, and mydriasis (dilated pupils) is classic for stimulant intoxication. The specific tactile hallucination of formication ('bugs crawling') is strongly associated with cocaine and methamphetamine use. Opioids (heroin) and alcohol would cause CNS depression, and cannabis effects vary but do not typically present this way.",
+        "section": "Clinical Picture - Stimulants"
+    },
+    {
+        "questionText": "A nurse is using the CAGE-AID screening tool. Which question is appropriate for the 'G' in the acronym?",
+        "options": {
+            "A": "Have you ever felt you needed to Go for a drink first thing in the morning?",
+            "B": "Have you ever felt Guilty about your drinking or drug use?",
+            "C": "Have people ever Given you advice about your drinking or drug use?",
+            "D": "Have you ever Grown annoyed by people criticizing your drinking or drug use?"
+        },
+        "correctAnswer": "B",
+        "rationale": "The CAGE acronym stands for: Cut down, Annoyed, Guilty, Eye-opener. Therefore, 'G' represents the question about feeling Guilty.",
+        "section": "Screening Tools"
+    },
+    {
+        "questionText": "A client with a co-occurring psychiatric disorder and a substance use disorder (SUD) is being admitted. The nurse understands that this comorbidity is:",
+        "options": {
+            "A": "Rare, occurring in less than 10% of clients with an SUD.",
+            "B": "Common, with up to 50% of those with an SUD having a co-occurring disorder.",
+            "C": "Only relevant if the psychiatric disorder is schizophrenia.",
+            "D": "A result of medical comorbidity, not a separate issue."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text on comorbidity states there is a 'High rate of SUD with a psychiatric disorder' and that 'up to 50% of those with SUD have a co-occurring disorder.' This highlights that dual diagnosis is a very common and significant clinical issue.",
+        "section": "Comorbidity"
+    },
+    {
+        "questionText": "Which nursing intervention is considered a first-line priority when beginning care for a client in acute substance withdrawal?",
+        "options": {
+            "A": "Exploring harmful thoughts and spiritual distress.",
+            "B": "Promoting safety and sleep.",
+            "C": "Enrolling the client in a 12-step program.",
+            "D": "Providing in-depth nutritional counseling."
+        },
+        "correctAnswer": "B",
+        "rationale": "The implementation slide clearly states, 'Promoting safety and sleep: first-line interventions.' During the acute phase of withdrawal, the client is at high risk for physiological instability, injury, and severe agitation. Establishing a safe environment and promoting rest are the foundational priorities before other therapeutic interventions can be effective.",
+        "section": "Implementation"
+    },
+    {
+        "questionText": "Which medication works by potentiating the effects of gamma-aminobutyric acid (GABA) to produce an anxiolytic and sedative effect during alcohol withdrawal?",
+        "options": {
+            "A": "Naltrexone",
+            "B": "Methadone",
+            "C": "Thiamine",
+            "D": "Diazepam"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text describes benzodiazepines as depressing the CNS, 'likely by potentiating gamma-aminobutyric acid (GABA).' Diazepam is listed as a benzodiazepine used for this purpose. Naltrexone and methadone are for opioid use disorder, and thiamine is a vitamin.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "A client is being discharged from detoxification to a residential facility that offers a structured environment and continued therapy before they transition back to independent living. The nurse identifies this level of care as a:",
+        "options": {
+            "A": "Partial hospitalization program (PHP)",
+            "B": "Intensive outpatient (IOP) program",
+            "C": "Halfway house",
+            "D": "Detoxification unit"
+        },
+        "correctAnswer": "C",
+        "rationale": "The care continuum slide lists 'Halfway houses' as a step after rehabilitation. These facilities provide a supportive, substance-free residential setting that helps bridge the gap between inpatient rehab and returning to the community. PHP and IOP are non-residential.",
+        "section": "Care continuum for substance abuse"
+    },
+    {
+        "questionText": "A client states, 'I've tried to stop using heroin, but I get so sick. I start pouring sweat, my stomach cramps, and my whole body aches.' The nurse recognizes these symptoms as being characteristic of which condition?",
+        "options": {
+            "A": "Opioid Intoxication",
+            "B": "Stimulant Withdrawal",
+            "C": "Opioid Withdrawal",
+            "D": "Hallucinogen-induced psychosis"
+        },
+        "correctAnswer": "C",
+        "rationale": "The symptoms described—sweating, cramping, and body aches—are classic signs of the flu-like syndrome associated with opioid (e.g., heroin) withdrawal. Intoxication would present with euphoria and respiratory depression. Stimulant withdrawal is characterized more by fatigue, depression, and increased appetite.",
+        "section": "Opioids"
+    },
+    {
+        "questionText": "A nurse is caring for a client with alcoholic cirrhosis. The nurse should prioritize monitoring for which of the following signs of this advanced liver disease?",
+        "options": {
+            "A": "Peripheral neuropathy",
+            "B": "Jaundice and ascites",
+            "C": "Wernicke-Korsakoff syndrome",
+            "D": "Pancreatitis"
+        },
+        "correctAnswer": "B",
+        "rationale": "While neuropathy, Wernicke-Korsakoff, and pancreatitis are all complications of alcoholism, jaundice (yellowing of the skin/eyes) and ascites (fluid accumulation in the abdomen) are hallmark signs of advanced liver failure, specifically cirrhosis. Cirrhosis is listed as a major systemic effect.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "What is the primary goal of the 'brief intervention' component of the SBIRT process?",
+        "options": {
+            "A": "To conduct a comprehensive substance abuse assessment.",
+            "B": "To immediately detoxify the client from all substances.",
+            "C": "To increase the client's insight and awareness regarding their substance use and motivate them toward behavioral change.",
+            "D": "To refer the client to the highest level of care available, such as inpatient rehabilitation."
+        },
+        "correctAnswer": "C",
+        "rationale": "SBIRT stands for Screening, Brief Intervention, and Referral to Treatment. The Brief Intervention is a short, motivational conversation aimed at raising awareness of the risks of the client's current substance use and exploring their willingness to make a change. It is not a full assessment or a referral by itself, but rather the crucial step that encourages change.",
+        "section": "Screening Tools"
+    },
+    {
+        "questionText": "A client is brought in by family who states he has been using a 'club drug'. The client is experiencing a profound disturbance in reality, seeing and hearing things that are not there. Which class of substance is most likely responsible?",
+        "options": {
+            "A": "Opioid",
+            "B": "Sedative-hypnotic",
+            "C": "Stimulant",
+            "D": "Hallucinogen"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text states that hallucinogens 'cause a profound disturbance in reality.' The client's symptoms of seeing and hearing things that are not present are characteristic of hallucinations. While some 'club drugs' can have hallucinogenic properties, the primary class responsible for this specific effect is hallucinogens.",
+        "section": "Clinical Picture - Stimulants"
+    },
+    {
+        "questionText": "A nurse is administering diazepam IV. Which nursing consideration is critical for safe administration?",
+        "options": {
+            "A": "Monitor for hypertensive crisis.",
+            "B": "Ensure the client has eaten a full meal.",
+            "C": "Do not mix the solution with other IV solutions.",
+            "D": "Have thiamine available at the bedside."
+        },
+        "correctAnswer": "C",
+        "rationale": "The medication table for diazepam explicitly includes the nursing consideration: 'Don’t mix with other IV solutions.' This indicates a potential for incompatibility that could cause precipitation or inactivation of the drug. This is a critical safety consideration for IV administration.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "Which medical comorbidity is frequently associated with substance use disorders due to shared risk factors such as lifestyle and compromised immune function?",
+        "options": {
+            "A": "Asthma",
+            "B": "Tuberculosis (TB)",
+            "C": "Glaucoma",
+            "D": "Osteoporosis"
+        },
+        "correctAnswer": "B",
+        "rationale": "The content on medical comorbidity specifically lists TB as a related condition. This is often due to factors like living in congregate settings, poor nutrition, and neglect of health that can be common among individuals with severe SUDs.",
+        "section": "Comorbidity"
+    },
+    {
+        "questionText": "Which of the following is the most widely used *illegal* drug in the world, according to the provided text?",
+        "options": {
+            "A": "Cocaine",
+            "B": "Heroin",
+            "C": "Cannabis (Marijuana)",
+            "D": "Methamphetamine"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text directly states that Cannabis (Marijuana) is the 'Most widely used illegal drug in the world.'",
+        "section": "Sedative, hypnotic, and antianxiety medications"
+    },
+    {
+        "questionText": "A client who has been sober for 6 months tells the nurse, 'I feel like I don't even know how to have fun anymore. My whole life used to be about drinking.' The nurse recognizes this client is experiencing which common implementation-phase challenge?",
+        "options": {
+            "A": "Acute withdrawal",
+            "B": "Poor nutrition and hydration",
+            "C": "Spiritual distress",
+            "D": "Lack of self-care"
+        },
+        "correctAnswer": "C",
+        "rationale": "The implementation slide lists 'Exploring harmful thoughts and spiritual distress' as a key nursing action. Spiritual distress in recovery often manifests as a feeling of emptiness, loss of meaning, or difficulty finding a new purpose or sense of self outside of the addiction. The client's statement is a classic example of this struggle.",
+        "section": "Implementation"
+    },
+    {
+        "questionText": "A pregnant client admits to heavy, daily alcohol consumption throughout her pregnancy. The nurse should include education and screening for which condition in the newborn?",
+        "options": {
+            "A": "Wernicke-Korsakoff syndrome",
+            "B": "Fetal Alcohol Syndrome",
+            "C": "Opioid withdrawal syndrome",
+            "D": "Congenital heart disease"
+        },
+        "correctAnswer": "B",
+        "rationale": "The text identifies Fetal Alcohol Syndrome as a major consequence of alcohol use during pregnancy, characterized by 'mental retardation, delayed growth and development, and distinctive facial abnormalities.' This is the primary concern for the newborn of a mother with heavy alcohol consumption.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "Which finding in a client receiving diazepam for alcohol withdrawal would require the nurse's immediate intervention?",
+        "options": {
+            "A": "Blood pressure of 110/70 mmHg",
+            "B": "Heart rate of 95 bpm",
+            "C": "Report of drowsiness",
+            "D": "Sudden onset of tachycardia"
+        },
+        "correctAnswer": "D",
+        "rationale": "The adverse effects of diazepam listed include drowsiness, decreased blood pressure, and tachycardia. While drowsiness is expected, a sudden onset of tachycardia can be a sign of a paradoxical reaction or an adverse cardiovascular event and warrants immediate investigation. A BP of 110/70 and HR of 95 are within relatively normal limits during withdrawal, and drowsiness is an expected therapeutic effect.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "Which substance is one of the most widely used psychoactive substances in the world and can result in both intoxication and withdrawal syndromes?",
+        "options": {
+            "A": "Heroin",
+            "B": "Phenobarbital",
+            "C": "Inhalants",
+            "D": "Nicotine/tobacco"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text describes Nicotine/tobacco as 'One of the most widely used psychoactive substance in the world' and explicitly states it 'Can result in intoxication and withdrawal.'",
+        "section": "Clinical Picture - Stimulants"
+    },
+    {
+        "questionText": "A client is prescribed naltrexone for opioid use disorder. The nurse educates the client that this medication works by:",
+        "options": {
+            "A": "Substituting a safer, long-acting opioid to prevent withdrawal.",
+            "B": "Causing a severe, unpleasant reaction if opioids are used.",
+            "C": "Blocking the euphoric and sedative effects of opioids.",
+            "D": "Potentiating GABA to reduce anxiety and cravings."
+        },
+        "correctAnswer": "C",
+        "rationale": "Naltrexone is an opioid antagonist. Its primary mechanism of action is to block opioid receptors in the brain, thereby preventing any ingested opioids from producing the 'high' or euphoric effects. This reduces the incentive to use the drug. Methadone and buprenorphine are substitution therapies. Disulfiram causes unpleasant reactions with alcohol, and GABA potentiation is the mechanism of benzodiazepines.",
+        "section": "Opioids"
+    },
+    {
+        "questionText": "The World Health Organization (WHO) added which condition to its classification of diseases in 2018, defined as 'impaired control over digital or video gaming'?",
+        "options": {
+            "A": "Internet addiction",
+            "B": "Shopping disorder",
+            "C": "Gaming disorder",
+            "D": "Social media addiction"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text on non-substance addictions specifically mentions that in '2018 WHO added “gaming disorder”' and provides its definition.",
+        "section": "Clinical Picture – Non-Substance"
+    },
+    {
+        "questionText": "A nurse is working on a unit that follows a specific chain of command. If a staff RN has a clinical concern about a client's safety that is not being adequately addressed, to whom should the nurse report first?",
+        "options": {
+            "A": "Unit Manager",
+            "B": "Supervisor",
+            "C": "Charge Nurse",
+            "D": "Medical Director"
+        },
+        "correctAnswer": "C",
+        "rationale": "The provided text outlines a clear chain of command: 'Unit RN reports to: Charge Nurse'. Following the proper chain of command is essential for effective communication and problem resolution in a healthcare setting. The RN's immediate supervisor is the Charge Nurse.",
+        "section": "Resources"
+    },
+    {
+        "questionText": "A client with a history of barbiturate abuse is admitted. The nurse should be aware that withdrawal from barbiturates (e.g., phenobarbital) is similar to withdrawal from which other substance?",
+        "options": {
+            "A": "Opioids",
+            "B": "Stimulants",
+            "C": "Alcohol",
+            "D": "Hallucinogens"
+        },
+        "correctAnswer": "C",
+        "rationale": "Barbiturates are sedative-hypnotics and, like alcohol, are CNS depressants that enhance GABAergic inhibition. Abrupt cessation of either substance can lead to a potentially life-threatening withdrawal syndrome characterized by autonomic hyperactivity, seizures, and delirium. Therefore, their withdrawal patterns are clinically similar and managed similarly.",
+        "section": "Sedative, hypnotic, and antianxiety medications"
+    },
+    {
+        "questionText": "A client with a long history of alcoholism presents with muscle weakness and a weak, enlarged heart on echocardiogram. The nurse identifies these findings as consistent with which systemic effect?",
+        "options": {
+            "A": "Alcoholic hepatitis",
+            "B": "Peripheral neuropathy",
+            "C": "Alcoholic myopathy and cardiomyopathy",
+            "D": "Thrombocytopenia"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text lists 'Alcoholic myopathy and cardiomyopathy' as a systemic effect. Myopathy refers to muscle weakness, and cardiomyopathy refers to disease of the heart muscle, often leading to an enlarged and poorly functioning heart. These findings directly match this diagnosis.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "When planning care for a client in early recovery from substance abuse, which interventions support the implementation goal of reintroducing good nutrition and hydration? Select all that apply.",
+        "options": {
+            "A": "Offering frequent, small, nutrient-dense snacks and meals.",
+            "B": "Encouraging intake of fluids, especially water or electrolyte-containing drinks.",
+            "C": "Limiting access to caffeine and sugary beverages.",
+            "D": "Administering IV thiamine as ordered.",
+            "E": "Providing a large meal immediately upon admission."
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "The implementation slide lists 'Reintroduce good nutrition and hydration' as a key goal. This is achieved by offering appealing, nutrient-dense food (A); encouraging fluids (B); limiting non-nutritious options like caffeine/sugar (C); and replacing depleted vitamins like thiamine (D). A large meal (E) may not be well-tolerated by a client who may be nauseous or malnourished.",
+        "section": "Implementation"
+    },
+    {
+        "questionText": "A client tells the nurse, 'I've tried Alcoholics Anonymous (AA) but it's not for me. I don't believe in a higher power.' Which nursing response is most appropriate?",
+        "options": {
+            "A": "You must follow the 12 steps exactly for it to work.",
+            "B": "The higher power can be the group itself or anything you choose; it doesn't have to be God.",
+            "C": "I will document your non-compliance with the treatment plan.",
+            "D": "Perhaps you would be better suited for a rehabilitation facility."
+        },
+        "correctAnswer": "B",
+        "rationale": "A common misconception about AA is that it requires a specific religious belief. A therapeutic response clarifies that the concept of a 'Higher Power' is open to individual interpretation and can mean the collective wisdom of the group, the universe, or any concept greater than oneself. This response is supportive, educational, and addresses the client's specific barrier.",
+        "section": "Relapse prevention"
+    },
+    {
+        "questionText": "A client is being treated with methadone for an opioid use disorder. The nurse educates the client that the primary purpose of this therapy is to:",
+        "options": {
+            "A": "Act as an antagonist to block the effects of any illicit opioids used.",
+            "B": "Replace the illicit opioid with a legal, long-acting, and safer alternative to reduce harm and prevent withdrawal.",
+            "C": "Induce a mild state of euphoria to satisfy cravings without the risks of heroin.",
+            "D": "Cause an adverse reaction if the client relapses on heroin or fentanyl."
+        },
+        "correctAnswer": "B",
+        "rationale": "Methadone is an opioid agonist used as a replacement or substitution therapy. It is a long-acting opioid that, when taken as prescribed, prevents withdrawal symptoms and reduces cravings without producing the intense high of shorter-acting opioids like heroin. This stabilizes the client and reduces the harms associated with illegal drug use. Naltrexone is an antagonist (A), and disulfiram causes adverse reactions (D).",
+        "section": "Opioids"
+    },
+    {
+        "questionText": "Which factor is a key difference between binge-drinking and heavy drinking?",
+        "options": {
+            "A": "Binge-drinking refers only to hard liquor, while heavy drinking includes beer and wine.",
+            "B": "Binge-drinking refers to the amount consumed on a single occasion, while heavy drinking refers to the frequency and amount over time.",
+            "C": "Heavy drinking leads to intoxication, while binge-drinking does not.",
+            "D": "Heavy drinking is a recognized medical diagnosis, while binge-drinking is a social term."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text lists 'Binge-drinking versus heavy drinking' as a key concept. Binge-drinking is defined by the number of drinks consumed in a short period (e.g., 4-5 drinks in 2 hours), while heavy drinking is defined by the total number of drinks consumed per week over a longer period. One can be a heavy drinker without binge-drinking, and vice-versa.",
+        "section": "Clinical Picture - Depressant"
+    },
+    {
+        "questionText": "A client being treated for alcohol withdrawal states, 'I just had a shot of whiskey an hour before I came in.' They are not yet showing any withdrawal symptoms. When should the nurse anticipate the first signs of withdrawal are likely to appear?",
+        "options": {
+            "A": "Within the next 1-2 hours.",
+            "B": "In 6 to 8 hours.",
+            "C": "In 48 to 72 hours.",
+            "D": "In 4 to 5 days."
+        },
+        "correctAnswer": "B",
+        "rationale": "Alcohol withdrawal symptoms typically begin within 6 to 8 hours after the last drink, as the blood alcohol level begins to drop. The most severe symptoms, such as seizures and delirium tremens, typically peak around 24-72 hours. The client is not yet in withdrawal because there is still alcohol in their system.",
+        "section": "Clinical Picture - Depressant"
+    },
+    {
+        "questionText": "A nurse is reviewing a client's lab results and notes a low white blood cell count (leukopenia) and a low platelet count (thrombocytopenia). The client has a history of chronic heavy alcohol use. The nurse understands these findings are most likely due to:",
+        "options": {
+            "A": "An acute infection.",
+            "B": "Bone marrow suppression from alcohol.",
+            "C": "Dehydration and hemoconcentration.",
+            "D": "A co-occurring psychiatric disorder."
+        },
+        "correctAnswer": "B",
+        "rationale": "The slide on systemic effects of alcoholism explicitly lists 'Leukopenia' and 'Thrombocytopenia'. Chronic alcohol consumption has a direct toxic effect on the bone marrow, suppressing its ability to produce white blood cells and platelets, leading to these cytopenias.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "Which principle is paramount when a nurse is caring for a client with a substance use disorder, particularly regarding their personal information and treatment status?",
+        "options": {
+            "A": "Confidentiality",
+            "B": "Safety/Staffing",
+            "C": "Chain of Command",
+            "D": "Abuse"
+        },
+        "correctAnswer": "A",
+        "rationale": "The 'Resources' slide lists 'Confidentiality' as a key legal/ethical principle. Due to the stigma and legal implications of substance use disorders, strict confidentiality under regulations like 42 CFR Part 2 is legally required and essential for building a therapeutic, trusting relationship with the client.",
+        "section": "Resources"
+    },
+    {
+        "questionText": "A client is admitted after being found unresponsive with a needle nearby. The provider suspects an opioid overdose. Which medication should the nurse be prepared to administer that is NOT listed in the 'pharmacologic treatment' section for long-term management?",
+        "options": {
+            "A": "Methadone",
+            "B": "Buprenorphine",
+            "C": "Naltrexone",
+            "D": "Naloxone"
+        },
+        "correctAnswer": "D",
+        "rationale": "Methadone, buprenorphine, and naltrexone are listed as pharmacologic treatments for managing opioid use disorder over the long term. Naloxone (Narcan) is a fast-acting opioid antagonist used specifically for the emergency reversal of an acute opioid overdose. It is an immediate, life-saving intervention, not a long-term treatment.",
+        "section": "Opioids"
+    },
+    {
+        "questionText": "A client states, 'I only use barbiturates that my friend gives me. I don't see the problem since it's a real prescription medication.' Which is the most appropriate response by the nurse?",
+        "options": {
+            "A": "Using prescription drugs that are not prescribed for you is illegal and dangerous.",
+            "B": "Barbiturates are not as dangerous as illegal drugs like heroin.",
+            "C": "As long as you don't take too many, you will probably be fine.",
+            "D": "You should ask your friend if the prescription is still valid."
+        },
+        "correctAnswer": "A",
+        "rationale": "This response is factual, non-judgmental, and educational. It correctly identifies that using a controlled substance without a prescription is both illegal and carries significant health risks, directly addressing the client's misconception. The other options minimize the danger or provide incorrect information.",
+        "section": "Sedative, hypnotic, and antianxiety medications"
+    },
+    {
+        "questionText": "The nurse identifies that a client with a substance use disorder and a co-occurring major depressive disorder is at highest risk for which outcome?",
+        "options": {
+            "A": "Successful, rapid recovery.",
+            "B": "Suicide and relapse.",
+            "C": "Wernicke-Korsakoff syndrome.",
+            "D": "Developing a gambling disorder."
+        },
+        "correctAnswer": "B",
+        "rationale": "Psychiatric comorbidity, especially depression, significantly complicates treatment and worsens prognosis. The combined effects of a substance use disorder (impulsivity, hopelessness) and major depression (anhedonia, suicidal ideation) create a synergistic effect, placing the client at a very high risk for both suicide and relapse.",
+        "section": "Comorbidity"
+    },
+    {
+        "questionText": "A client in an intensive outpatient program (IOP) for alcohol use disorder is working on relapse prevention. Which strategy is most crucial for the nurse to reinforce?",
+        "options": {
+            "A": "Learning to identify personal triggers and developing coping skills.",
+            "B": "Finding a halfway house to move into after the program.",
+            "C": "Securing a prescription for diazepam for anxiety.",
+            "D": "Focusing solely on attending AA meetings every day."
+        },
+        "correctAnswer": "A",
+        "rationale": "The cornerstone of relapse prevention is self-awareness. Helping the client identify the people, places, things, and feelings that trigger cravings and then developing healthy, specific coping strategies to manage those triggers is the most proactive and empowering approach. While AA is helpful, it is only one tool. A halfway house may not be necessary, and relying on a benzodiazepine can be a cross-addiction risk.",
+        "section": "Relapse prevention"
+    },
+    {
+        "questionText": "A nurse is providing care for a client withdrawing from alprazolam. The nurse knows not to discontinue this medication abruptly to avoid which potential complications? Select all that apply.",
+        "options": {
+            "A": "Vomiting",
+            "B": "Sweating",
+            "C": "Tremors",
+            "D": "Severe hypertension",
+            "E": "Cramps"
+        },
+        "correctAnswer": ["A", "B", "C", "E"],
+        "rationale": "The medication table for Diazepam, a similar benzodiazepine, lists 'Withdrawal = vomiting, sweating, cramps, tremors' as a key nursing consideration. The principle of tapering applies to all benzodiazepines, including alprazolam, to prevent a potentially severe withdrawal syndrome. Hypertension is less common; hypotension is more of a concern as an adverse effect of the drug itself.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "Which type of medical comorbidity is a direct result of the irritating effects of alcohol on the mucosal lining of the gastrointestinal tract?",
+        "options": {
+            "A": "Stroke",
+            "B": "Cirrhosis of the liver",
+            "C": "Esophagitis and gastritis",
+            "D": "Leukopenia"
+        },
+        "correctAnswer": "C",
+        "rationale": "The content on systemic effects lists 'Esophagitis, gastritis, and pancreatitis.' Esophagitis (inflammation of the esophagus) and gastritis (inflammation of the stomach lining) are caused by the direct contact of alcohol, a gastric irritant, with these tissues.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "According to the provided text, which two theories attempt to explain the high rate of comorbidity between substance use disorders and other psychiatric disorders?",
+        "options": {
+            "A": "The text does not specify any theories.",
+            "B": "The genetic predisposition theory and the social learning theory.",
+            "C": "The text mentions two theories but does not name or describe them.",
+            "D": "The self-medication theory and the shared neurobiological pathways theory."
+        },
+        "correctAnswer": "C",
+        "rationale": "The slide on comorbidity notes a high rate of SUD with psychiatric disorders and then states, '2 theories'. However, it does not proceed to name or explain what those two theories are. Therefore, the only accurate statement is that the text acknowledges the existence of two theories without detailing them.",
+        "section": "Comorbidity"
+    },
+    {
+        "questionText": "A client is in the rehabilitation phase of treatment. Which nursing intervention best supports the goal of improving self-care?",
+        "options": {
+            "A": "Administering medications for withdrawal on a strict schedule.",
+            "B": "Establishing a structured daily routine that includes time for personal hygiene.",
+            "C": "Performing a CIWA assessment every 4 hours.",
+            "D": "Referring the client to Al-Anon meetings."
+        },
+        "correctAnswer": "B",
+        "rationale": "The implementation slide lists 'Support for self-care (hygiene)' as a key intervention. In rehabilitation (post-detox), clients often need to re-learn or be motivated to perform activities of daily living. Establishing a routine helps structure the day and ensures that hygiene and other self-care activities are not neglected.",
+        "section": "Implementation"
+    },
+    {
+        "questionText": "A client with a gambling disorder tells the nurse, 'It's not like I'm hurting my body with a drug. It's just a little fun.' The nurse's best response is based on the understanding that gambling:",
+        "options": {
+            "A": "Is not a true addiction because it doesn't involve a substance.",
+            "B": "Can lead to dysfunction and activates the same reward pathways in the brain as drugs.",
+            "C": "Is only a problem if you lose more money than you can afford.",
+            "D": "Is less serious than a substance addiction and easier to treat."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text on gambling disorder explicitly states that it 'Activates similar reward systems in the brain' as substances and 'can lead to dysfunction.' This response educates the client on the neurobiological basis of their addiction and validates that it is a serious condition, comparable to a substance use disorder.",
+        "section": "Clinical Picture – Non-Substance"
+    },
+    {
+        "questionText": "The nurse is providing post-mortem care for a client who died from an overdose. The family is asking questions about the cause of death. What is the nurse's ethical and legal responsibility regarding the information shared?",
+        "options": {
+            "A": "Provide a full, detailed explanation of the overdose event to the immediate family.",
+            "B": "Share information only with the individual who holds the power of attorney for healthcare and as permitted by facility policy.",
+            "C": "Refuse to answer any questions and refer the family to the risk management department.",
+            "D": "Explain that all information is protected by HIPAA and cannot be shared with anyone."
+        },
+        "correctAnswer": "B",
+        "rationale": "While confidentiality (listed under legal/ethical) extends after death, the designated legal next-of-kin or executor typically has a right to health information. The most prudent and correct action is to share information only with the legally designated representative, following strict facility policies on the release of information post-mortem. A blanket refusal is not therapeutic, and sharing widely violates confidentiality.",
+        "section": "Resources"
+    },
+    {
+        "questionText": "A client is admitted for alcohol withdrawal. The nurse notes in the history that the client also has a diagnosis of alcoholic cardiomyopathy. Which assessment finding requires immediate intervention?",
+        "options": {
+            "A": "CIWA score of 10",
+            "B": "Client report of anxiety",
+            "C": "Crackles on lung auscultation",
+            "D": "Presence of fine tremors in hands"
+        },
+        "correctAnswer": "C",
+        "rationale": "Alcoholic cardiomyopathy weakens the heart muscle, predisposing the client to heart failure. Crackles in the lungs are a classic sign of pulmonary edema resulting from left-sided heart failure. This indicates a life-threatening complication that requires immediate intervention, taking priority over expected withdrawal symptoms like anxiety, tremors, or a moderate CIWA score.",
+        "section": "Alcoholism: Systemic effects & Comorbidity"
+    },
+    {
+        "questionText": "A nurse is providing discharge teaching to a client with a history of seizures during alcohol withdrawal. The client has a new prescription for oral diazepam to be used during the outpatient taper. Which client statement indicates a need for further education?",
+        "options": {
+            "A": "I should not stop taking this medication abruptly.",
+            "B": "I will avoid drinking alcohol while taking this medication.",
+            "C": "This medication may make me feel drowsy, so I shouldn't drive.",
+            "D": "If I feel a craving for alcohol, I should take an extra dose of this medication."
+        },
+        "correctAnswer": "D",
+        "rationale": "Diazepam is prescribed on a fixed schedule to manage withdrawal symptoms, not on an as-needed basis for cravings. Using a benzodiazepine to manage cravings is a form of misuse and can lead to a secondary addiction. The client must adhere to the prescribed tapering schedule. The other statements reflect correct understanding of the medication's use and side effects.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "During an admission assessment, a client states, 'I drink a lot, and my wife gets annoyed. I feel guilty sometimes, but I need a drink in the morning to calm my nerves.' Which screening tool has this client already screened positive on?",
+        "options": {
+            "A": "CIWA",
+            "B": "SBIRT",
+            "C": "CAGE",
+            "D": "CAGE-AID"
+        },
+        "correctAnswer": "C",
+        "rationale": "The client has answered 'yes' to at least three of the four CAGE questions: Annoyed (wife gets annoyed), Guilty (I feel guilty), and Eye-opener (I need a drink in the morning). A positive response to two or more questions is considered a positive screen. While CAGE-AID also would be positive, CAGE is the most specific tool for alcohol based on the statement.",
+        "section": "Screening Tools"
+    },
+    {
+        "questionText": "A nurse is caring for a client with a history of chronic alcohol abuse and pancreatitis. Which dietary instruction is most appropriate for this client as part of the implementation plan?",
+        "options": {
+            "A": "A high-fat, low-carbohydrate diet to promote satiety.",
+            "B": "Frequent small meals that are low in fat.",
+            "C": "A clear liquid diet until all withdrawal symptoms have passed.",
+            "D": "A regular diet with no restrictions to improve caloric intake."
+        },
+        "correctAnswer": "B",
+        "rationale": "Pancreatitis is a listed systemic effect of alcoholism. An inflamed pancreas is aggravated by fatty foods, which stimulate pancreatic enzyme secretion. Therefore, the standard dietary management for both acute and chronic pancreatitis involves a low-fat diet. Frequent small meals are better tolerated than large ones.",
+        "section": "Implementation & Systemic effects"
+    },
+    {
+        "questionText": "A 20-year-old client is admitted after being found unconscious. The client has dilated pupils, tachycardia, and severe jaw-clenching (bruxism). The nurse finds a pacifier in the client's pocket. The nurse suspects intoxication with which type of substance?",
+        "options": {
+            "A": "Heroin",
+            "B": "Phenobarbital",
+            "C": "Club drugs like MDMA (Ecstasy)",
+            "D": "Cannabis"
+        },
+        "correctAnswer": "C",
+        "rationale": "The combination of stimulant effects (tachycardia, dilated pupils) and severe bruxism is highly characteristic of MDMA (Ecstasy/Molly), a common 'club drug.' Users often carry pacifiers or lollipops to manage the intense jaw-clenching. Opioids and barbiturates cause CNS depression, not stimulation.",
+        "section": "Club Drugs"
+    },
+    {
+        "questionText": "A nurse is teaching a group of students about Fetal Alcohol Syndrome (FAS). The nurse should emphasize that this condition is characterized by which of the following? Select all that apply.",
+        "options": {
+            "A": "Distinctive facial abnormalities",
+            "B": "Accelerated growth during childhood",
+            "C": "Delayed growth and development",
+            "D": "Mental retardation",
+            "E": "Absence of withdrawal symptoms at birth"
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "The text explicitly states that Fetal Alcohol Syndrome is characterized by 'mental retardation, delayed growth and development, and distinctive facial abnormalities.' Growth is delayed, not accelerated. Newborns can experience alcohol withdrawal.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "A client is admitted for opioid detoxification. The provider is considering starting buprenorphine. The nurse knows that to avoid precipitating withdrawal, this medication should only be initiated when?",
+        "options": {
+            "A": "The client expresses a strong desire to quit.",
+            "B": "The client is showing clear, objective signs of withdrawal.",
+            "C": "The client's last use of heroin was less than 4 hours ago.",
+            "D": "The client has a negative urine drug screen for all opioids."
+        },
+        "correctAnswer": "B",
+        "rationale": "Buprenorphine is a partial opioid agonist. If given while the client still has a full agonist (like heroin) in their system, it will displace the full agonist from opioid receptors and can precipitate a severe, acute withdrawal syndrome. Therefore, it must be started only when the client is already in mild to moderate withdrawal.",
+        "section": "Opioids"
+    },
+    {
+        "questionText": "A client in a rehabilitation facility reports feeling hopeless and says, 'My life is ruined. I've lost my family and my job.' According to the implementation guidelines, which nursing action is most appropriate?",
+        "options": {
+            "A": "Immediately transitioning the client to a higher level of care.",
+            "B": "Administering a PRN anxiolytic to calm the client.",
+            "C": "Exploring these harmful thoughts and feelings of spiritual distress with the client.",
+            "D": "Encouraging the client to focus on nutrition and hygiene instead."
+        },
+        "correctAnswer": "C",
+        "rationale": "The implementation slide lists 'Exploring harmful thoughts and spiritual distress' as a key intervention. The client's statements reflect profound emotional and spiritual pain. The nurse's role is to engage therapeutically, validate these feelings, and explore them in a safe context, assessing for any risk of self-harm. While other interventions are important, directly addressing the client's expressed distress is the priority.",
+        "section": "Implementation"
+    },
+    {
+        "questionText": "A nurse is assessing a client who has been inhaling gasoline. The nurse should be on high alert for which specific physical sign associated with inhalant use?",
+        "options": {
+            "A": "Pinpoint pupils",
+            "B": "Rash or sores around the mouth and nose",
+            "C": "Significant weight gain",
+            "D": "Severe muscle cramping"
+        },
+        "correctAnswer": "B",
+        "rationale": "Chronic use of inhalants, particularly solvents and glues ('huffing'), often leads to a characteristic 'huffer's rash' or sores on the face, mouth, and nose from the chemical irritation. This is a key diagnostic clue for this specific type of substance use disorder.",
+        "section": "Inhalants"
+    },
+    {
+        "questionText": "A client with a gambling disorder is referred to Gamblers Anonymous. The nurse explains that this group is based on the same principles as which other resource?",
+        "options": {
+            "A": "The CIWA scale",
+            "B": "The SBIRT model",
+            "C": "Alcoholics Anonymous (AA)",
+            "D": "The DSM-5"
+        },
+        "correctAnswer": "C",
+        "rationale": "Gamblers Anonymous, like Nar-Anon and Al-Anon, is a 12-step program modeled directly after the principles and structure of Alcoholics Anonymous. It uses a fellowship model of peer support to help individuals recover from their addiction.",
+        "section": "Resources"
+    },
+    {
+        "questionText": "A client is prescribed lorazepam for alcohol withdrawal. Which listed adverse effect requires the nurse to implement safety precautions related to ambulation?",
+        "options": {
+            "A": "Increased salivation",
+            "B": "Hepatic dysfunction",
+            "C": "CNS depressant effects",
+            "D": "Orthostatic ↓BP"
+        },
+        "correctAnswer": "D",
+        "rationale": "The medication table for lorazepam lists 'Orthostatic ↓BP' (orthostatic hypotension) as an adverse effect. This condition, a drop in blood pressure upon standing, can cause dizziness and lightheadedness, significantly increasing the risk of falls. The nurse must implement fall precautions.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "Which statement best describes the primary reason for the high rate of medical comorbidities, such as GI disturbances and stroke, in clients with substance use disorders?",
+        "options": {
+            "A": "The direct physiological toxicity of the substance and associated self-neglect.",
+            "B": "A genetic predisposition to both addiction and medical illness.",
+            "C": "The high cost of illicit substances preventing spending on healthcare.",
+            "D": "The side effects of medications used to treat the addiction."
+        },
+        "correctAnswer": "A",
+        "rationale": "Medical comorbidities arise from a combination of the direct toxic effects of the substance on the body's organs (e.g., alcohol on the liver and pancreas) and the behavioral patterns associated with addiction, such as poor nutrition, hygiene, and neglect of health maintenance, which increase the risk for a wide range of illnesses.",
+        "section": "Comorbidity"
+    },
+    {
+        "questionText": "A client who attends group therapy three evenings a week for three hours but lives at home and works during the day is participating in which level of care?",
+        "options": {
+            "A": "Detoxification",
+            "B": "Rehabilitation (inpatient)",
+            "C": "Partial hospitalization (PHP)",
+            "D": "Intensive outpatient (IOP) treatment"
+        },
+        "correctAnswer": "D",
+        "rationale": "Intensive outpatient (IOP) treatment involves a structured program with scheduled sessions (typically 9 or more hours per week) but allows the client to live at home and continue with work or school. This description fits IOP perfectly. PHP is more intensive, often 5 days a week for most of the day.",
+        "section": "Care continuum for substance abuse"
+    },
+    {
+        "questionText": "A nurse is teaching about the dangers of mixing alcohol with benzodiazepines. The nurse should explain that combining these two substances leads to what synergistic effect?",
+        "options": {
+            "A": "Severe hypertension and stroke",
+            "B": "Potentially lethal respiratory depression",
+            "C": "Acute renal failure",
+            "D": "Serotonin syndrome"
+        },
+        "correctAnswer": "B",
+        "rationale": "Both alcohol and benzodiazepines are CNS depressants. When taken together, their effects are potentiated, leading to a much greater degree of sedation and respiratory depression than either substance would cause alone. This combination is extremely dangerous and can be fatal.",
+        "section": "Medication: Benzodiazepines & Clinical Picture - Depressant"
+    },
+    {
+        "questionText": "A client states, 'I don't have an addiction. I just have a little too much fun with cocaine on the weekends.' This statement is an example of which psychological factor related to addiction?",
+        "options": {
+            "A": "High impulsivity",
+            "B": "Stress response dampening",
+            "C": "Denial or cognitive distortion",
+            "D": "Sociocultural acceptance"
+        },
+        "correctAnswer": "C",
+        "rationale": "Psychological factors contribute to addiction. The client's minimization of their use and inability to see it as a problem is a classic example of denial, a common defense mechanism and cognitive distortion used to protect the addiction.",
+        "section": "Etiology"
+    },
+    {
+        "questionText": "Which specific cancer type is explicitly mentioned in the text as a systemic effect of alcoholism?",
+        "options": {
+            "A": "Lung cancer",
+            "B": "Head and neck cancer",
+            "C": "Colorectal cancer",
+            "D": "Leukemia"
+        },
+        "correctAnswer": "B",
+        "rationale": "The text, under the list of systemic effects of alcoholism, specifically includes 'Cancer (head and neck)'. Alcohol is a major risk factor for cancers of the oral cavity, pharynx, larynx, and esophagus.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "A nurse is reviewing the adverse effects of chlordiazepoxide. The text lists 'hangover' as a side effect. The nurse interprets this to mean the client may experience which symptoms?",
+        "options": {
+            "A": "Euphoria and increased energy the next day.",
+            "B": "Residual sedation, lethargy, and headache.",
+            "C": "Nausea, vomiting, and abdominal cramps.",
+            "D": "A strong craving for the medication upon waking."
+        },
+        "correctAnswer": "B",
+        "rationale": "The 'hangover' effect of long-acting benzodiazepines like chlordiazepoxide refers to the continuation of the drug's sedative effects into the next day. This manifests as drowsiness, lethargy, impaired concentration, and headache, similar to an alcohol hangover.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "A teenager is brought to the clinic by a parent who is concerned about addiction. The parent states, 'My son's grades are dropping, he quit the basketball team, and he's spending all his time playing video games, sometimes for 12 hours straight.' This behavior aligns with the WHO's definition of what disorder?",
+        "options": {
+            "A": "Gambling disorder",
+            "B": "Internet addiction",
+            "C": "Gaming disorder",
+            "D": "Social isolation disorder"
+        },
+        "correctAnswer": "C",
+        "rationale": "The WHO's definition of 'gaming disorder' includes 'impaired control over digital or video gaming' leading to 'adverse effects on personal health and overall function.' The client's drop in grades and quitting sports demonstrate significant adverse effects on his overall function due to excessive gaming.",
+        "section": "Clinical Picture – Non-Substance"
+    },
+    {
+        "questionText": "What is the primary difference in mechanism of action between methadone and naltrexone in the treatment of opioid use disorder?",
+        "options": {
+            "A": "Methadone is an agonist, while naltrexone is an antagonist.",
+            "B": "Methadone is taken orally, while naltrexone is an implant.",
+            "C": "Methadone treats withdrawal, while naltrexone treats intoxication.",
+            "D": "Methadone is habituating, while naltrexone is not."
+        },
+        "correctAnswer": "A",
+        "rationale": "This is the fundamental difference. Methadone is a full opioid agonist that replaces the illicit opioid. Naltrexone is an opioid antagonist that blocks the effects of opioids. Their opposing mechanisms dictate how and when they are used in treatment.",
+        "section": "Opioids"
+    },
+    {
+        "questionText": "The text lists 'Stroke & Neuro alterations' as a medical comorbidity of substance use. This is most strongly associated with the acute use of which class of substances?",
+        "options": {
+            "A": "Cannabis",
+            "B": "Opioids",
+            "C": "Stimulants (e.g., cocaine, methamphetamine)",
+            "D": "Hallucinogens"
+        },
+        "correctAnswer": "C",
+        "rationale": "Stimulants like cocaine and methamphetamine cause intense vasoconstriction and a rapid, severe increase in blood pressure and heart rate. This dramatically increases the risk of both ischemic and hemorrhagic strokes, even in young, otherwise healthy individuals.",
+        "section": "Comorbidity & Clinical Picture - Stimulants"
+    },
+    {
+        "questionText": "The unit manager is reviewing the facility's protocol for alcohol withdrawal, which is based on the CIWA scale. The manager reinforces that the purpose of using this scale is to guide:",
+        "options": {
+            "A": "The administration of symptom-triggered benzodiazepine therapy.",
+            "B": "The decision of when to discharge the client.",
+            "C": "The diagnosis of Wernicke-Korsakoff syndrome.",
+            "D": "The referral to an appropriate 12-step program."
+        },
+        "correctAnswer": "A",
+        "rationale": "The CIWA scale provides an objective, numerical score for the severity of alcohol withdrawal symptoms. In modern practice, this score is used to guide 'symptom-triggered' therapy, where medications like benzodiazepines are given only when the score exceeds a certain threshold (e.g., 8 or 10), preventing both under- and over-medication.",
+        "section": "CIWA scale"
+    },
+    {
+        "questionText": "A client with a severe alcohol use disorder has a blood pressure of 90/50 mmHg and a heart rate of 120 bpm. The medication administration record shows scheduled chlordiazepoxide. What is the nurse's priority action?",
+        "options": {
+            "A": "Administer the chlordiazepoxide to manage the tachycardia.",
+            "B": "Hold the chlordiazepoxide and notify the provider of the hypotension.",
+            "C": "Give the client a large glass of water to increase blood pressure.",
+            "D": "Document the vital signs as expected during withdrawal."
+        },
+        "correctAnswer": "B",
+        "rationale": "The medication table for chlordiazepoxide lists '↓BP' as a significant adverse effect. The client is already hypotensive (BP 90/50). Administering another dose of a medication that can further lower blood pressure is unsafe. The priority is to hold the medication and notify the provider for further direction. The tachycardia is likely compensatory for the low blood pressure.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "Which resource would be most appropriate to recommend to the 15-year-old daughter of a client with a substance use disorder?",
+        "options": {
+            "A": "Alcoholics Anonymous (AA)",
+            "B": "Al-Anon",
+            "C": "Nar-Anon",
+            "D": "Alateen"
+        },
+        "correctAnswer": "D",
+        "rationale": "The 'Resources' slide lists Alateen. This is a fellowship specifically for adolescent children and teenagers whose lives have been affected by someone else's drinking or substance use. While Al-Anon is for family members in general, Alateen provides a more age-appropriate peer support environment.",
+        "section": "Resources"
+    },
+    {
+        "questionText": "A client is experiencing a 'profound disturbance in reality' after ingesting an unknown substance. Which nursing interventions are the highest priority? Select all that apply.",
+        "options": {
+            "A": "Placing the client in a quiet, low-stimulus environment.",
+            "B": "Orienting the client to person, place, and time frequently.",
+            "C": "Ensuring one-to-one observation for safety.",
+            "D": "Administering a benzodiazepine as ordered for agitation.",
+            "E": "Encouraging the client to describe their hallucinations in detail."
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "A client experiencing a hallucination-induced reality disturbance is at high risk for unpredictable behavior and self-harm. The first priority is safety, achieved by ensuring constant observation (C) and reducing external stimuli that could worsen paranoia or agitation (A). Administering a sedative like a benzodiazepine is often necessary to ensure client and staff safety (D). While reorientation is good, it may not be effective and is a lower priority than safety. Encouraging detailed descriptions could be frightening or escalate the psychosis.",
+        "section": "Hallucinogens & Implementation"
+    },
+    {
+        "questionText": "The text states chlordiazepoxide is 'habituating'. What is the most significant clinical implication of this property?",
+        "options": {
+            "A": "The medication will cause a hangover effect.",
+            "B": "The medication carries a potential for tolerance and dependence.",
+            "C": "The medication should not be mixed with other IV solutions.",
+            "D": "The medication is the first-line treatment for alcohol withdrawal."
+        },
+        "correctAnswer": "B",
+        "rationale": "'Habituating' is another term for habit-forming. This means that the medication itself has properties that can lead to physical and psychological dependence, creating a risk for a new or secondary addiction if not used carefully and tapered appropriately.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "A client with a long history of stimulant abuse is admitted to the rehabilitation unit. The nurse's plan of care should prioritize monitoring for which withdrawal symptoms?",
+        "options": {
+            "A": "Hypertension, tachycardia, and seizures.",
+            "B": "Severe depression with suicidal ideation.",
+            "C": "Auditory and visual hallucinations.",
+            "D": "Nausea, vomiting, and diaphoresis."
+        },
+        "correctAnswer": "B",
+        "rationale": "While the acute intoxication phase of stimulants involves hyperactivity, the withdrawal phase is often the opposite. It is characterized by a 'crash,' which includes profound depression, anhedonia, fatigue, and hypersomnia. This depression can be severe and is associated with a high risk of suicidal thoughts and behaviors, making it a safety priority.",
+        "section": "Clinical Picture - Stimulants"
+    },
+    {
+        "questionText": "According to the provided statistics, if a mental health clinic has 1000 clients with a diagnosed substance use disorder, approximately how many can the nurse expect to have a co-occurring psychiatric disorder?",
+        "options": {
+            "A": "About 63",
+            "B": "About 94",
+            "C": "Up to 500",
+            "D": "About 165"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text on comorbidity states that 'up to 50% of those with SUD have a co-occurring disorder.' Therefore, in a population of 1000 clients with SUD, the nurse could expect that as many as 500 (50%) might have a dual diagnosis. The other numbers relate to the general population prevalence of alcohol dependence or any substance abuse.",
+        "section": "Comorbidity"
+    },
+    {
+        "questionText": "A nurse is caring for a client who is actively withdrawing from alcohol. Which intervention best addresses the implementation priority of 'Promoting safety and sleep'?",
+        "options": {
+            "A": "Leading a mandatory group therapy session on relapse prevention.",
+            "B": "Providing a high-carbohydrate meal to promote drowsiness.",
+            "C": "Implementing seizure precautions and keeping the room lighting dim.",
+            "D": "Encouraging the client to call family members for support."
+        },
+        "correctAnswer": "C",
+        "rationale": "Promoting safety is the first-line intervention. Clients in alcohol withdrawal are at high risk for seizures. Implementing seizure precautions (e.g., padded side rails, suction at bedside) is a direct safety measure. Dimming the lights helps reduce stimulation, which can promote rest and decrease agitation and the risk of hallucinations.",
+        "section": "Implementation"
+    },
+    {
+        "questionText": "Which of these substances leads to a use disorder by acting as a CNS depressant, similar to alcohol?",
+        "options": {
+            "A": "Cocaine",
+            "B": "Hallucinogens",
+            "C": "Nicotine",
+            "D": "Sedative-hypnotics"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text lists sedative-hypnotics (which include benzodiazepines and barbiturates) as a class of substances that lead to use disorders. These substances, like alcohol, are CNS depressants, and their intoxication and withdrawal profiles can be similar. The other options are stimulants or hallucinogens.",
+        "section": "Substances That Lead to Use Disorders"
+    },
+    {
+        "questionText": "A client with an opioid use disorder states they want to try naltrexone. What essential piece of information must the nurse provide the client regarding this medication?",
+        "options": {
+            "A": "The client must be completely free of all opioids before starting the medication.",
+            "B": "The medication will reduce cravings but will not block the effects of heroin.",
+            "C": "This is a long-acting benzodiazepine that will help with anxiety.",
+            "D": "The client will need to visit a clinic daily to receive their dose."
+        },
+        "correctAnswer": "A",
+        "rationale": "Naltrexone is an opioid antagonist. If it is taken while opioids are still in the client's system, it will cause severe, precipitated withdrawal. The client must have a period of abstinence (typically 7-10 days) before initiating naltrexone to avoid this. Daily dosing is associated with methadone, not typically naltrexone.",
+        "section": "Opioids"
+    },
+    {
+        "questionText": "The charge nurse is making assignments for a client who is actively detoxing from alcohol and has a CIWA score of 18. This client requires frequent assessments and PRN medications. According to the principles listed in the text, this assignment decision falls under which category?",
+        "options": {
+            "A": "Confidentiality",
+            "B": "Chain of Command",
+            "C": "Safety/Staffing",
+            "D": "Legal/Ethical"
+        },
+        "correctAnswer": "C",
+        "rationale": "The 'Resources' slide lists 'Safety/Staffing' as a key concept. Assigning an unstable client who requires intensive monitoring and intervention to an appropriately experienced nurse is a critical staffing decision made to ensure client safety. It's about matching client acuity with nursing skill and workload.",
+        "section": "Resources"
+    },
+    {
+        "questionText": "A client is being treated for intoxication with an amphetamine-type stimulant. The nurse should prioritize assessment for which of the following life-threatening cardiovascular events?",
+        "options": {
+            "A": "Bradycardia and hypotension",
+            "B": "Atrial fibrillation with a slow ventricular response",
+            "C": "Myocardial infarction and hypertensive crisis",
+            "D": "Peripheral vascular occlusion"
+        },
+        "correctAnswer": "C",
+        "rationale": "Amphetamines cause a massive release of catecholamines, leading to extreme tachycardia, hypertension, and vasoconstriction. This places immense strain on the cardiovascular system, creating a high risk for acute myocardial infarction (heart attack) and hypertensive crisis, which can lead to stroke or aortic dissection.",
+        "section": "Clinical Picture - Stimulants"
+    },
+    {
+        "questionText": "A client's family member asks the nurse, 'What causes addiction? Is it a choice or a disease?' Based on the etiological factors listed, which is the most accurate response?",
+        "options": {
+            "A": "Addiction is a purely psychological issue related to a lack of willpower.",
+            "B": "Addiction is a complex disease resulting from an interaction of neurobiological, psychological, and sociocultural factors.",
+            "C": "Addiction is caused by a single neurochemical imbalance in the brain's reward center.",
+            "D": "Addiction is primarily a learned behavior from exposure to social and cultural norms."
+        },
+        "correctAnswer": "B",
+        "rationale": "This response accurately reflects the content on the 'Etiology' slide, which lists neurobiological, psychological, and sociocultural factors. It correctly frames addiction as a complex, multifactorial disease rather than simplifying it to a single cause or a moral failing.",
+        "section": "Etiology"
+    },
+    {
+        "questionText": "A client has been in a residential rehabilitation program for 3 weeks. They have stable vital signs and are medically clear from withdrawal. According to the care continuum, which of the following would be an appropriate next step for this client?",
+        "options": {
+            "A": "Return to the detoxification unit.",
+            "B": "Transition to a halfway house or intensive outpatient treatment.",
+            "C": "Discharge home with no further follow-up.",
+            "D": "Admission to a psychiatric hospital for long-term care."
+        },
+        "correctAnswer": "B",
+        "rationale": "The care continuum shows a progression from detox to rehabilitation, followed by less intensive options like halfway houses, partial hospitalization, or IOP. After successfully completing inpatient rehab, the appropriate 'step-down' in care would be a transitional living environment (halfway house) or a robust outpatient program (IOP) to support their ongoing recovery.",
+        "section": "Care continuum for substance abuse"
+    },
+    {
+        "questionText": "The nurse is reviewing the nursing considerations for diazepam. The text notes it was once called 'Mother's little helper'. This historical nickname alludes to the drug's widespread use for what indication?",
+        "options": {
+            "A": "Alcohol withdrawal",
+            "B": "Seizure disorders",
+            "C": "Anxiety and stress in suburban housewives",
+            "D": "Sleep disturbances in the elderly"
+        },
+        "correctAnswer": "C",
+        "rationale": "The term 'Mother's Little Helper' was popularized by a Rolling Stones song in the 1960s, referring to the widespread prescription of benzodiazepines like diazepam to women, particularly housewives, to cope with feelings of anxiety, stress, and dissatisfaction. This note highlights the drug's history and potential for misuse.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "A client with chronic alcoholism tells the nurse they were diagnosed with alcoholic hepatitis. The nurse understands this condition is a precursor to which more severe, irreversible liver disease?",
+        "options": {
+            "A": "Pancreatitis",
+            "B": "Gastritis",
+            "C": "Cirrhosis of the liver",
+            "D": "Wernicke-Korsakoff syndrome"
+        },
+        "correctAnswer": "C",
+        "rationale": "The list of systemic effects shows a progression of liver damage. Alcoholic hepatitis is an acute inflammation of the liver. If the heavy drinking continues, this inflammation leads to progressive scarring and fibrosis, resulting in the irreversible and life-threatening condition of cirrhosis.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "Which statement accurately differentiates between the concepts of 'addiction' and 'intoxication'?",
+        "options": {
+            "A": "Intoxication is the chronic disease process, while addiction is the immediate effect of the substance.",
+            "B": "Addiction is the chronic, relapsing disease, while intoxication refers to the reversible, substance-specific syndrome of recent ingestion.",
+            "C": "Intoxication and addiction are interchangeable terms for substance use disorder.",
+            "D": "Addiction refers to needing more of a substance, while intoxication refers to the symptoms of stopping the substance."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text lists addiction, intoxication, tolerance, and withdrawal as distinct concepts. Addiction is the overall disease state. Intoxication is the immediate, temporary set of physiological and psychological changes that occur after ingesting a substance. This option correctly defines and separates the two terms.",
+        "section": "Addiction Concepts"
+    },
+    {
+        "questionText": "A nurse is working with a client who has a severe 'shopping addiction'. Although not in the DSM-5, the nurse recognizes this process addiction can lead to significant dysfunction. The nurse's interventions would focus on what underlying psychological factor?",
+        "options": {
+            "A": "Managing withdrawal symptoms like tremors and sweating.",
+            "B": "Addressing impulse control and finding alternative coping mechanisms.",
+            "C": "Administering naltrexone to block the 'shopping high'.",
+            "D": "Screening for hallucinogen use."
+        },
+        "correctAnswer": "B",
+        "rationale": "Process addictions like shopping or gambling are driven by poor impulse control and the use of the behavior to cope with negative feelings. The core of treatment is behavioral, focusing on helping the client recognize triggers, manage impulses, and develop healthier ways to cope with stress, anxiety, or depression. There are no physical withdrawal symptoms like tremors.",
+        "section": "Clinical Picture – Non-Substance"
+    },
+    {
+        "questionText": "A client is prescribed lorazepam 2 mg IV for severe agitation associated with alcohol withdrawal. Which nursing action is essential before administering this medication?",
+        "options": {
+            "A": "Ask the client about their last bowel movement.",
+            "B": "Check the client's blood glucose level.",
+            "C": "Assess the client's respiratory rate and level of consciousness.",
+            "D": "Inquire about the client's caffeine intake for the day."
+        },
+        "correctAnswer": "C",
+        "rationale": "Lorazepam is a potent CNS depressant that can cause respiratory depression. Before administering an IV dose, especially for agitation, the nurse must establish a baseline respiratory rate and level of consciousness to ensure it is safe to give the medication and to be able to accurately assess the client's response to it.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "The family of a client with a severe alcohol use disorder is distraught and blames themselves. The nurse suggests they attend Al-Anon meetings. What is the primary purpose of this recommendation?",
+        "options": {
+            "A": "To teach the family how to force the client into treatment.",
+            "B": "To provide the family with peer support and effective coping strategies.",
+            "C": "To allow the family a place to report the client's relapses.",
+            "D": "To train the family to conduct interventions on other alcoholics."
+        },
+        "correctAnswer": "B",
+        "rationale": "Al-Anon is a support group for families. Its purpose is to help family members understand they did not cause the addiction, cannot control it, and cannot cure it. It provides a supportive environment where they can learn effective coping skills for themselves and detach with love, regardless of whether the person with the addiction is sober.",
+        "section": "Resources"
+    },
+    {
+        "questionText": "A client with a history of intravenous drug use is admitted with a substance use disorder. Based on the listed medical comorbidities, the nurse should assess for signs and symptoms of which infectious diseases?",
+        "options": {
+            "A": "Tuberculosis and stroke",
+            "B": "Gastritis and pancreatitis",
+            "C": "HIV and Hepatitis C",
+            "D": "Peripheral neuropathy and cardiomyopathy"
+        },
+        "correctAnswer": "C",
+        "rationale": "While the text lists TB, stroke, and GI issues, intravenous drug use (sharing needles) is a primary transmission route for blood-borne pathogens like HIV and Hepatitis C. A comprehensive nursing assessment for a client with this history must include screening for these serious infectious diseases, which are considered major medical comorbidities in this population.",
+        "section": "Comorbidity"
+    },
+    {
+        "questionText": "A nurse is caring for a client in the detoxification unit. Which of the following findings would be LEAST expected for a client experiencing withdrawal from cocaine?",
+        "options": {
+            "A": "Hypersomnia and fatigue",
+            "B": "Increased appetite",
+            "C": "Psychomotor agitation and anxiety",
+            "D": "Depression and anhedonia"
+        },
+        "correctAnswer": "C",
+        "rationale": "Withdrawal from stimulants like cocaine is characterized by a 'crash.' Symptoms are generally the opposite of the drug's effects and include fatigue, hypersomnia (sleeping a lot), increased appetite, depression, and anhedonia (inability to feel pleasure). Psychomotor agitation and anxiety are characteristic of stimulant INTOXICATION or alcohol/sedative withdrawal, not stimulant withdrawal.",
+        "section": "Clinical Picture - Stimulants"
+    },
+    {
+        "questionText": "A nursing student asks why thiamine replacement is so critical for a client with chronic alcoholism. The nurse's best explanation is that thiamine is essential for:",
+        "options": {
+            "A": "Producing clotting factors in the liver.",
+            "B": "Metabolizing carbohydrates and preventing brain damage.",
+            "C": "Maintaining a normal heart rhythm.",
+            "D": "Absorbing calcium from the gut."
+        },
+        "correctAnswer": "B",
+        "rationale": "Thiamine (Vitamin B1) is a critical coenzyme in carbohydrate metabolism. In alcoholism, thiamine deficiency is common due to poor diet and impaired absorption. This deficiency prevents the brain from metabolizing glucose correctly, leading to cell death and the devastating, permanent brain damage seen in Wernicke-Korsakoff syndrome.",
+        "section": "Alcoholism: Systemic effects"
+    },
+    {
+        "questionText": "A client states they use cannabis daily to manage their anxiety. Which nursing response is most therapeutic and aligns with the principles of SBIRT?",
+        "options": {
+            "A": "That's a bad habit; marijuana is illegal and will only make your anxiety worse in the long run.",
+            "B": "How much do you spend on cannabis each week? It must be expensive.",
+            "C": "I understand you feel it helps. Would you be open to talking about some of the potential risks and exploring other proven, safer ways to manage anxiety?",
+            "D": "You need to stop immediately and we should refer you to a detoxification center."
+        },
+        "correctAnswer": "C",
+        "rationale": "This response embodies the spirit of a Brief Intervention. It is non-judgmental, validates the client's perspective ('I understand you feel it helps'), gently introduces the idea of risk, and offers a collaborative approach to explore alternatives ('Would you be open to talking...'). It aims to increase insight and motivate change, which is the core of SBIRT.",
+        "section": "Screening Tools & Cannabis"
+    },
+    {
+        "questionText": "Which statement best defines 'relapse prevention' in the care continuum for substance abuse?",
+        "options": {
+            "A": "A one-time educational class given just before discharge from detox.",
+            "B": "A lifelong, dynamic process of identifying triggers and using coping skills to maintain sobriety.",
+            "C": "A guarantee that the client will never use the substance again after completing rehab.",
+            "D": "The exclusive use of 12-step programs like AA to prevent future use."
+        },
+        "correctAnswer": "B",
+        "rationale": "Relapse prevention is not a single event but an ongoing, active process. It involves the skills and strategies a person uses throughout their recovery to recognize high-risk situations (triggers) and implement healthy coping mechanisms to avoid returning to substance use. It acknowledges that recovery is a long-term journey.",
+        "section": "Relapse prevention"
+    },
+    {
+        "questionText": "The nurse is administering an anxiolytic medication to a client. What is the primary indication for this class of medication, as stated in the text?",
+        "options": {
+            "A": "Treatment of psychosis",
+            "B": "Management of opioid withdrawal",
+            "C": "Treatment of anxiety, generalized anxiety disorder, and panic disorder",
+            "D": "Reversal of Wernicke-Korsakoff syndrome"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text box on Anxiolytics explicitly states they are 'Indicated for treatment of anxiety, generalized anxiety disorder, panic disorder'. While some anxiolytics (benzodiazepines) are used for alcohol withdrawal, this is their primary, general indication.",
+        "section": "Medication: Anxiolytics"
+    },
+    {
+        "questionText": "A client with a severe cocaine use disorder is being discharged from an inpatient unit. The nurse understands that which factor is the most significant risk for immediate relapse?",
+        "options": {
+            "A": "The physiological symptoms of withdrawal.",
+            "B": "Intense psychological cravings triggered by environmental cues.",
+            "C": "The development of tolerance to the substance.",
+            "D": "The presence of a medical comorbidity like gastritis."
+        },
+        "correctAnswer": "B",
+        "rationale": "For stimulants like cocaine, the psychological craving is incredibly powerful and a primary driver of relapse. Returning to an environment with people, places, or objects associated with prior drug use (environmental cues) can trigger intense cravings that are very difficult to resist, often posing a greater immediate risk than the physical withdrawal symptoms, which may have subsided.",
+        "section": "Clinical Picture - Stimulants & Relapse prevention"
+    },
+    {
+        "questionText": "A client in the emergency department has a blood alcohol level of 0.35 g/dL, is difficult to arouse, and has slow, shallow respirations. Which phase of the alcohol use cycle does this represent?",
+        "options": {
+            "A": "Withdrawal",
+            "B": "Tolerance",
+            "C": "Abstinence",
+            "D": "Severe Intoxication"
+        },
+        "correctAnswer": "D",
+        "rationale": "This clinical presentation reflects severe CNS and respiratory depression caused by a very high blood alcohol level. This is a life-threatening level of acute intoxication, far beyond the initial euphoria or decreased inhibitions. Withdrawal occurs when the substance is stopped, and tolerance refers to the long-term need for more of the substance.",
+        "section": "Clinical Picture - Depressant"
+    },
+    {
+        "questionText": "When setting up a room for a client being admitted for acute alcohol withdrawal, which piece of equipment is essential to have readily available at the bedside?",
+        "options": {
+            "A": "A glucometer",
+            "B": "Suction equipment",
+            "C": "An incentive spirometer",
+            "D": "A cooling blanket"
+        },
+        "correctAnswer": "B",
+        "rationale": "Clients in alcohol withdrawal are at high risk for tonic-clonic seizures. During a seizure, the client may lose their gag reflex and have increased oral secretions, putting them at high risk for aspiration. Having functional suction equipment at the bedside is a critical safety measure to maintain a patent airway in the event of a seizure.",
+        "section": "Implementation & Safety"
+    },
+    {
+        "questionText": "A client with an opioid use disorder reports taking 80 mg of oxycodone daily. The client is being switched to methadone for medication-assisted treatment. The nurse understands that the initial dose of methadone will be calculated based on what principle?",
+        "options": {
+            "A": "Providing an equianalgesic dose to the client's current opioid use.",
+            "B": "Starting with the lowest possible dose to avoid any sedation.",
+            "C": "Giving a high initial dose to block all opioid receptors.",
+            "D": "Matching the dose to the client's CIWA score."
+        },
+        "correctAnswer": "A",
+        "rationale": "When converting a client from a short-acting opioid like oxycodone to a long-acting one like methadone, the initial dose is carefully calculated to be 'equianalgesic'—meaning it provides an equivalent level of opioid effect to prevent withdrawal, without causing intoxication. This requires careful assessment of the client's reported use and tolerance. CIWA is for alcohol withdrawal.",
+        "section": "Opioids"
+    },
+    {
+        "questionText": "A client is receiving scheduled chlordiazepoxide for alcohol withdrawal. The client's morning lab results show significantly elevated AST and ALT levels. The client's CIWA score is 9. What is the nurse's most appropriate action?",
+        "options": {
+            "A": "Administer the chlordiazepoxide as scheduled because the CIWA score indicates a need.",
+            "B": "Hold the dose and notify the provider of the liver function results before administering.",
+            "C": "Request an order for lorazepam, as it is safer for the liver.",
+            "D": "Give the client a fatty meal to help with medication absorption."
+        },
+        "correctAnswer": "B",
+        "rationale": "The medication table lists CNS depression as a key issue for chlordiazepoxide. More importantly, clients with alcoholism often have compromised liver function (alcoholic hepatitis, cirrhosis). Since chlordiazepoxide is metabolized by the liver, elevated liver enzymes are a major concern. The nurse's priority is to consult the provider with this new data before administering a potentially hepatotoxic medication, even with a CIWA score of 9.",
+        "section": "Medication: Benzodiazepines & Comorbidity"
+    },
+    {
+        "questionText": "A nurse is assessing a client with a history of methamphetamine use who appears agitated, paranoid, and is scratching their arms, stating 'I can feel them moving under my skin!' Which assessment finding would be most consistent with this specific clinical picture?",
+        "options": {
+            "A": "Pinpoint pupils and bradycardia.",
+            "B": "Linear excoriations and open sores on the skin.",
+            "C": "Ataxia and nystagmus.",
+            "D": "Slurred speech and decreased inhibitions."
+        },
+        "correctAnswer": "B",
+        "rationale": "The client is describing formication, a tactile hallucination common with stimulant use. The constant scratching in response to this sensation leads to linear skin excoriations and sores. This physical finding directly corroborates the client's report and is a hallmark of significant stimulant abuse. The other options are related to opioid, Wernicke's, or alcohol intoxication.",
+        "section": "Clinical Picture - Stimulants"
+    },
+    {
+        "questionText": "A client receiving treatment for alcohol use disorder has a standing order for thiamine 100 mg IV daily and a tray for a regular diet. The breakfast tray arrives. What is the nurse's priority action?",
+        "options": {
+            "A": "Allow the client to eat immediately to improve nutritional status.",
+            "B": "Administer the IV thiamine before the client begins eating.",
+            "C": "Hold the meal and the thiamine until the provider can clarify the orders.",
+            "D": "Ask the client if they would prefer to eat before getting their medication."
+        },
+        "correctAnswer": "B",
+        "rationale": "Thiamine is essential for carbohydrate metabolism. Administering carbohydrates (food) to a thiamine-deficient individual can deplete the remaining thiamine stores and precipitate or worsen Wernicke's encephalopathy. The cardinal rule is to give thiamine *before* glucose. Therefore, the nurse must administer the IV thiamine before allowing the client to eat their meal.",
+        "section": "Alcoholism: Systemic effects & Implementation"
+    },
+    {
+        "questionText": "A client states, 'I use heroin every day just to feel normal and not get sick. The high is gone.' This client's statement best describes a state of:",
+        "options": {
+            "A": "High tolerance and physical dependence.",
+            "B": "Acute intoxication and euphoria.",
+            "C": "Psychological craving without dependence.",
+            "D": "Post-acute withdrawal syndrome."
+        },
+        "correctAnswer": "A",
+        "rationale": "The client's need to use the substance not to get high, but simply to function and avoid withdrawal sickness, is the classic definition of physical dependence. The fact that the euphoric effect ('the high') is gone indicates the client has developed a very high tolerance to the substance.",
+        "section": "Addiction Concepts & Opioids"
+    },
+    {
+        "questionText": "Which of the following is an example of a collaborative intervention a nurse might facilitate for a client with a newly diagnosed substance use disorder?",
+        "options": {
+            "A": "Administering diazepam according to the CIWA protocol.",
+            "B": "Performing a CAGE-AID screening test during admission.",
+            "C": "Initiating a referral to the hospital's social worker for housing support.",
+            "D": "Assessing the client for suicidal ideation."
+        },
+        "correctAnswer": "C",
+        "rationale": "Collaborative interventions involve working with other members of the healthcare team. While administering meds, screening, and assessing are core nursing interventions, initiating a referral to social work to address a client's social determinants of health (like housing) is a key collaborative action that is vital for long-term recovery.",
+        "section": "Nursing and collaborative interventions"
+    },
+    {
+        "questionText": "A client in a rehabilitation program for alcohol use disorder has a co-occurring diagnosis of thrombocytopenia. Which intervention should the nurse include in the plan of care?",
+        "options": {
+            "A": "Encourage participation in high-impact group sports.",
+            "B": "Use a soft-bristled toothbrush for oral hygiene.",
+            "C": "Administer aspirin for any complaints of muscle aches.",
+            "D": "Apply a heating pad to any muscle cramps."
+        },
+        "correctAnswer": "B",
+        "rationale": "Thrombocytopenia, a low platelet count listed as a systemic effect of alcoholism, places the client at high risk for bleeding. Using a soft-bristled toothbrush minimizes the risk of gum bleeding. High-impact sports would be contraindicated due to injury risk. Aspirin would be avoided as it further impairs platelet function.",
+        "section": "Alcoholism: Systemic effects & Implementation"
+    },
+    {
+        "questionText": "A nurse is educating a community group about process addictions. Which statement by a participant indicates a correct understanding of the concept?",
+        "options": {
+            "A": "Process addictions like gambling are a behavioral issue, but they don't affect the brain like drugs do.",
+            "B": "Only gambling is considered a real process addiction by the DSM-5, but other behaviors like gaming can also become dysfunctional.",
+            "C": "Process addictions are less harmful than substance addictions because they don't cause medical comorbidities.",
+            "D": "You cannot develop tolerance or withdrawal from a process addiction."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text explicitly states that Gambling Disorder is the 'Only non-substance–related addiction included in the DSM-5' but also mentions that other behaviors like gaming, sex, and shopping addictions 'can lead to dysfunction.' This statement accurately captures that nuance.",
+        "section": "Clinical Picture – Non-Substance"
+    },
+    {
+        "questionText": "A client who has been receiving lorazepam for 3 days for alcohol withdrawal suddenly develops increased salivation and complains of lightheadedness when standing up. What is the nurse's interpretation of these findings?",
+        "options": {
+            "A": "These are signs of worsening alcohol withdrawal, requiring a higher dose.",
+            "B": "These are known adverse effects of the lorazepam treatment.",
+            "C": "The client is likely developing Wernicke-Korsakoff syndrome.",
+            "D": "The client is experiencing an allergic reaction to the medication."
+        },
+        "correctAnswer": "B",
+        "rationale": "The medication table for lorazepam specifically lists 'Increased salivation' and 'Orthostatic ↓BP' (which causes lightheadedness upon standing) as adverse effects. The nurse should recognize these are side effects of the medication itself, not a worsening of the underlying withdrawal.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "A nurse is caring for a client with a dual diagnosis of severe opioid use disorder and major depressive disorder. When planning care, the nurse should recognize that this client is at highest risk for which of the following? Select all that apply.",
+        "options": {
+            "A": "Non-adherence to the treatment plan.",
+            "B": "Suicide attempts.",
+            "C": "Relapse related to negative mood states.",
+            "D": "Rapid and sustained recovery.",
+            "E": "Developing a stimulant use disorder."
+        },
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "The presence of psychiatric comorbidity, especially depression, complicates SUD treatment significantly. It increases the risk of suicide, leads to poor adherence due to lack of motivation and hopelessness, and makes the client more likely to relapse as a way to cope with their depressive symptoms. Rapid recovery is unlikely.",
+        "section": "Comorbidity"
+    },
+    {
+        "questionText": "A client is admitted to detox from a sedative-hypnotic substance. Which of the following substances fall into this category?",
+        "options": {
+            "A": "Heroin and Fentanyl",
+            "B": "Cocaine and Methamphetamine",
+            "C": "LSD and Psilocybin",
+            "D": "Benzodiazepines and Barbiturates"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text lists 'Sedative-hypnotic' as a substance category and specifically names benzodiazepines and barbiturates (phenobarbital) as examples within this class. The other options represent opioids, stimulants, and hallucinogens, respectively.",
+        "section": "Substances That Lead to Use Disorders"
+    },
+    {
+        "questionText": "A nurse manager is addressing a staff concern about a colleague suspected of diverting opioids for personal use. According to the principles listed in the text, what is the manager's primary responsibility?",
+        "options": {
+            "A": "To immediately report the colleague to law enforcement.",
+            "B": "To confront the colleague directly in front of the concerned staff.",
+            "C": "To ensure patient safety and follow the facility's protocol for impaired providers.",
+            "D": "To increase the workload of the suspected colleague to see if they make a mistake."
+        },
+        "correctAnswer": "C",
+        "rationale": "The principles of 'Safety,' 'Legal/Ethical,' and 'Chain of Command' apply here. The manager's absolute priority is patient safety. This involves removing the colleague from patient care duties and following the established, confidential facility and state board procedures for addressing professional impairment. This ensures both patient safety and due process for the colleague.",
+        "section": "Resources & Legal/Ethical"
+    },
+    {
+        "questionText": "What is the key difference between using SBIRT in a primary care clinic versus using the CIWA scale on an inpatient unit?",
+        "options": {
+            "A": "SBIRT is a screening and intervention process for at-risk use, while CIWA is a tool to measure the severity of active withdrawal.",
+            "B": "SBIRT is used only for alcohol, while CIWA is used for all substances.",
+            "C": "SBIRT can only be performed by a physician, while CIWA can be used by a nurse.",
+            "D": "SBIRT determines the need for detox, while CIWA determines the need for rehab."
+        },
+        "correctAnswer": "A",
+        "rationale": "This question tests the application of these two tools. SBIRT is a broad process used in various settings to *identify* risky substance use and motivate change. The CIWA scale has a very specific purpose: to *quantify* the severity of alcohol withdrawal symptoms that are already occurring, in order to guide medication administration in a detox setting.",
+        "section": "Screening Tools & CIWA scale"
+    },
+    {
+        "questionText": "A client with a history of alcohol-induced gastritis is in the rehabilitation phase. Which meal choice, offered at the facility, should the nurse guide the client to avoid?",
+        "options": {
+            "A": "Baked chicken with steamed rice",
+            "B": "A turkey sandwich on whole wheat bread",
+            "C": "Spicy chili with jalapenos",
+            "D": "Scrambled eggs with toast"
+        },
+        "correctAnswer": "C",
+        "rationale": "Gastritis, an inflammation of the stomach lining, is a listed comorbidity. It is exacerbated by irritants. Spicy foods, like chili with jalapenos, are significant gastric irritants that can cause pain and worsen the inflammation. The other options are bland and generally well-tolerated.",
+        "section": "Alcoholism: Systemic effects & Implementation"
+    },
+    {
+        "questionText": "The nurse is preparing a presentation on the epidemiology of substance use. According to the provided NAMI statistics, which statement is most accurate?",
+        "options": {
+            "A": "Alcohol dependence is more prevalent than all other substance abuse disorders combined.",
+            "B": "The percentage of people with any substance abuse issue is approximately 1 in 10.",
+            "C": "Opioid abuse is the most common substance use disorder.",
+            "D": "Fewer than 5% of the population struggles with any form of substance abuse."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text states that 9.4% of the population has 'Any substance abuse.' This figure is approximately 1 in 10, making it a very common issue. While alcohol dependence is significant at 6.3%, it is not more prevalent than all others combined (9.4% > 6.3%).",
+        "section": "Epidemiology"
+    },
+    {
+        "questionText": "A client is prescribed methadone for opioid use disorder. Which statement indicates the client understands the goal of this therapy?",
+        "options": {
+            "A": "This pill will block the effects of heroin so I can't get high.",
+            "B": "I have to take this so I don't get sick, and it will help me get my life stable.",
+            "C": "I can stop taking this as soon as my withdrawal symptoms are gone in a few days.",
+            "D": "This is a benzodiazepine that will help me with my anxiety about quitting."
+        },
+        "correctAnswer": "B",
+        "rationale": "Methadone is a long-acting opioid agonist used for maintenance therapy. Its purpose is to prevent withdrawal symptoms ('not get sick') and reduce cravings, allowing the person to disengage from the cycle of illicit drug seeking and focus on recovery and life stabilization. It is not a blocker (that's naltrexone) and it is not a short-term or anxiety medication.",
+        "section": "Opioids"
+    },
+    {
+        "questionText": "A client admitted for alcohol withdrawal has a co-morbidity of peripheral neuropathy. What is the priority nursing intervention for this specific problem?",
+        "options": {
+            "A": "Administering benzodiazepines on a fixed schedule.",
+            "B": "Ensuring the bed is in the lowest position with the call light in reach.",
+            "C": "Providing a diet high in tyramine-rich foods.",
+            "D": "Applying cold compresses to the client's extremities."
+        },
+        "correctAnswer": "B",
+        "rationale": "Peripheral neuropathy causes numbness, tingling, and altered sensation in the feet and hands, which impairs balance and gait. This places the client at an extremely high risk for falls. The priority intervention is safety: ensuring a safe environment by lowering the bed and making sure the call light is accessible addresses this immediate risk.",
+        "section": "Alcoholism: Systemic effects & Safety"
+    },
+    {
+        "questionText": "Which factor is the primary reason that tobacco/nicotine is considered one of the most widely used psychoactive substances?",
+        "options": {
+            "A": "Its legality and widespread social integration.",
+            "B": "Its ability to cause profound disturbances in reality.",
+            "C": "Its classification as a sedative-hypnotic.",
+            "D": "Its use in treating opioid addiction."
+        },
+        "correctAnswer": "A",
+        "rationale": "The text identifies nicotine/tobacco as one of the most widely used psychoactive substances. While it is addictive, its widespread use is heavily influenced by its legal status for adults and its historical and ongoing integration into social rituals and daily routines, making it more accessible and normalized than illegal substances.",
+        "section": "Clinical Picture - Stimulants"
+    },
+    {
+        "questionText": "Which client should be referred to Nar-Anon?",
+        "options": {
+            "A": "A person who is addicted to heroin and wants to stop using.",
+            "B": "A person who is addicted to gambling and has significant debt.",
+            "C": "The spouse of a person who is addicted to prescription oxycodone.",
+            "D": "The teenage son of a person with an alcohol use disorder."
+        },
+        "correctAnswer": "C",
+        "rationale": "Nar-Anon is a 12-step fellowship specifically for the friends and family members of those affected by someone else's addiction to narcotics (opioids). The spouse of a person addicted to oxycodone fits this description perfectly. The person with the addiction would go to NA (Narcotics Anonymous), the gambler to GA, and the teenager to Alateen.",
+        "section": "Resources"
+    },
+    {
+        "questionText": "A nurse is administering diazepam. The medication table lists 'ataxia' as an adverse effect. The nurse should monitor the client for what sign?",
+        "options": {
+            "A": "A sudden drop in blood pressure upon standing.",
+            "B": "An uncoordinated or staggering gait.",
+            "C": "Involuntary, rhythmic eye movements.",
+            "D": "Difficulty swallowing."
+        },
+        "correctAnswer": "B",
+        "rationale": "Ataxia is a neurological sign characterized by a lack of voluntary coordination of muscle movements, which can include a clumsy, staggering walk (gait). The nurse should be vigilant for this, as it indicates CNS effects of the medication and poses a significant fall risk.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "A client is admitted after intentionally ingesting a large quantity of chlordiazepoxide tablets. The nurse should anticipate that this client is at highest risk for which complication?",
+        "options": {
+            "A": "Hypertensive crisis",
+            "B": "Severe respiratory depression",
+            "C": "Acute pancreatitis",
+            "D": "Wernicke's encephalopathy"
+        },
+        "correctAnswer": "B",
+        "rationale": "The medication table lists 'Respiratory depression' as a key adverse effect. In an overdose situation, this effect is magnified. A large ingestion of a benzodiazepine like chlordiazepoxide can lead to profound CNS and respiratory depression, coma, and death. This is the most acute, life-threatening risk.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "After completing detoxification, a client is transferred to the rehabilitation unit. What is the primary focus of nursing care during this phase of the care continuum?",
+        "options": {
+            "A": "Monitoring vital signs every hour for signs of withdrawal.",
+            "B": "Administering symptom-triggered medication based on CIWA scores.",
+            "C": "Helping the client build coping skills and prevent relapse.",
+            "D": "Administering IV thiamine and managing seizure precautions."
+        },
+        "correctAnswer": "C",
+        "rationale": "Rehabilitation occurs *after* the acute withdrawal phase has been medically managed in detox. The focus of care shifts from acute medical stabilization to psychosocial interventions. This includes intensive individual and group therapy aimed at understanding the addiction, building coping mechanisms, and developing a solid plan for relapse prevention.",
+        "section": "Care continuum for substance abuse"
+    },
+    {
+        "questionText": "Which signs and symptoms would indicate a client is experiencing withdrawal from a benzodiazepine like alprazolam? Select all that apply.",
+        "options": {
+            "A": "Tremors",
+            "B": "Vomiting",
+            "C": "Sweating",
+            "D": "Pinpoint pupils",
+            "E": "Abdominal cramps"
+        },
+        "correctAnswer": ["A", "B", "C", "E"],
+        "rationale": "The medication table notes that withdrawal from benzodiazepines can cause vomiting, sweating, cramps, and tremors. This is because benzodiazepine withdrawal is very similar to alcohol withdrawal, characterized by CNS hyperexcitability. Pinpoint pupils are a sign of opioid intoxication, not sedative withdrawal.",
+        "section": "Medication: Benzodiazepines"
+    },
+    {
+        "questionText": "A client with a known cannabis use disorder reports that they have to smoke three times as much as they did a year ago to feel the same level of relaxation. This phenomenon is best described as:",
+        "options": {
+            "A": "Withdrawal",
+            "B": "Intoxication",
+            "C": "Tolerance",
+            "D": "Addiction"
+        },
+        "correctAnswer": "C",
+        "rationale": "Tolerance is the core concept being described. It is a state in which an organism no longer responds to a drug in the way it did initially. This requires the user to take a higher dose of the drug to achieve the same level of effect. While it is a component of addiction, the specific phenomenon described is tolerance.",
+        "section": "Addiction Concepts"
+    },
+    {
+        "questionText": "The nurse is providing education on the 'at-risk' drinking limits. For which of the following clients does their reported weekly intake exceed the recommended limit?",
+        "options": {
+            "A": "A 68-year-old male who drinks 13 standard drinks per week.",
+            "B": "A 45-year-old female who drinks 8 standard drinks per week.",
+            "C": "A 25-year-old male who drinks 14 standard drinks per week.",
+            "D": "A 30-year-old female who drinks 7 standard drinks per week."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text defines the at-risk limit for women as 'more than 7 standard drinks in any 1 week.' The 45-year-old female who drinks 8 standard drinks per week has exceeded this limit. The limit for men is 'more than 14 standard drinks in any 1 week,' so the males drinking 13 and 14 drinks are at the limit, but have not exceeded it.",
+        "section": "Etiology"
+    },
+    {
+        "questionText": "A client has been sober from alcohol for one year but is now facing a major life stressor. The client is referred to an outpatient treatment program. This level of care is primarily focused on:",
+        "options": {
+            "A": "Medical detoxification.",
+            "B": "Long-term residential housing.",
+            "C": "Reinforcing coping skills and providing support to prevent relapse.",
+            "D": "Screening for a new substance use disorder."
+        },
+        "correctAnswer": "C",
+        "rationale": "The 'Care continuum' slide lists 'Outpatient treatment' and 'Relapse prevention' as key components of ongoing recovery. For a client who is already sober but facing new stressors, outpatient care serves to reinforce the skills they have already learned, provide therapeutic support, and help them navigate the stress without returning to substance use, which is the essence of relapse prevention.",
+        "section": "Care continuum for substance abuse"
+    }
+    ];
+
+    let finalQuizData = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let confidenceRatings = {};
+    let flaggedForReview = new Set();
+    const NUM_QUESTIONS_TO_SELECT = 30;
+
+    const initialScreen = document.getElementById('initial-screen');
+    const startBtn = document.getElementById('start-btn');
+    const quizForm = document.getElementById('quiz-form');
+    const resultsArea = document.getElementById('results-area');
+
+    function prepareQuizData() {
+        const shuffledPool = [...fullQuizData].sort(() => 0.5 - Math.random());
+        const questionsNeeded = Math.min(NUM_QUESTIONS_TO_SELECT, shuffledPool.length);
+        finalQuizData = shuffledPool.slice(0, questionsNeeded);
+    }
+
+    function prepareAndStartQuiz() {
+        prepareQuizData();
+        if (finalQuizData.length === 0) {
+            alert("No questions loaded.");
+            return;
+        }
+        initialScreen.classList.add('hidden');
+        quizForm.classList.remove('hidden');
+        displayCurrentQuestion();
+    }
+
+    function displayCurrentQuestion() {
+        if (currentQuestionIndex >= finalQuizData.length) return;
+        const qData = finalQuizData[currentQuestionIndex];
+        
+        let optionsHTML = '<div class="options-container">';
+        const inputType = qData.type === 'sata' ? 'checkbox' : 'radio';
+        
+        for (const [key, text] of Object.entries(qData.options)) {
+            optionsHTML += `<label><input type="${inputType}" name="answer" value="${key}"> ${text}</label>`;
+        }
+        optionsHTML += '</div>';
+
+        quizForm.innerHTML = `
+            <div class="question-header">
+                Question <strong>${currentQuestionIndex + 1}</strong> of ${finalQuizData.length}
+            </div>
+            <p class="question-text">${qData.questionText}</p>
+            ${optionsHTML}
+            <div class="question-footer">
+                <div class="flag-container">
+                    <label><input type="checkbox" class="flag-for-review"> Flag for Review</label>
+                </div>
+                <div class="confidence-slider-container">
+                    <label>Confidence:</label>
+                    <input type="range" min="1" max="5" value="3" class="confidence-slider">
+                </div>
+                 <button type="submit" id="navigation-btn">${(currentQuestionIndex === finalQuizData.length - 1) ? "Submit Exam" : "Next Question"}</button>
+            </div>
+        `;
+    }
+    
+    function saveAnswer() {
+        const qData = finalQuizData[currentQuestionIndex];
+        if (!qData) return;
+
+        const selectedOptions = quizForm.querySelectorAll('input[name="answer"]:checked');
+        if (qData.type === 'sata') {
+            userAnswers[currentQuestionIndex] = Array.from(selectedOptions).map(cb => cb.value);
+        } else {
+            userAnswers[currentQuestionIndex] = selectedOptions.length ? selectedOptions[0].value : null;
+        }
+
+        const flagInput = quizForm.querySelector('.flag-for-review');
+        if(flagInput && flagInput.checked) {
+            flaggedForReview.add(currentQuestionIndex);
+        }
+
+        const confidenceInput = quizForm.querySelector('.confidence-slider');
+        if(confidenceInput) {
+            confidenceRatings[currentQuestionIndex] = parseInt(confidenceInput.value, 10);
+        }
+    }
+    
+    // --- FUNCTION RESTORED ---
+    function handleNavigation() {
+        saveAnswer();
+        quizForm.classList.add('is-transitioning');
+        
+        setTimeout(() => {
+            if (currentQuestionIndex < finalQuizData.length - 1) {
+                currentQuestionIndex++;
+                displayCurrentQuestion();
+                quizForm.classList.remove('is-transitioning');
+            } else {
+                submitQuiz();
+            }
+        }, 300);
+    }
+
+    function submitQuiz() {
+        quizForm.classList.add('hidden');
+        resultsArea.classList.remove('hidden');
+        displayResults();
+    }
+    
+    function checkAnswerCorrectness(qData, userAnswer) {
+        if (userAnswer === null || userAnswer === undefined) return false;
+        if (qData.type === 'sata') {
+            if (!Array.isArray(userAnswer) || typeof qData.correctAnswer !== 'string') return false;
+            const sortedUser = [...userAnswer].sort();
+            const sortedCorrect = [...(qData.correctAnswer.split(','))].sort();
+            return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+        }
+        return userAnswer === qData.correctAnswer;
+    }
+
+    function displayResults() {
+        let correctCount = 0;
+        finalQuizData.forEach((q, i) => { if (checkAnswerCorrectness(q, userAnswers[i])) correctCount++; });
+        const score = finalQuizData.length > 0 ? (correctCount / finalQuizData.length) * 100 : 0;
+
+        let resultsHTML = `
+            <div class="results-summary">
+                 <h2>Exam Complete!</h2>
+                 <div class="score-animation-container">
+                    <div class="score-animation-circle"></div>
+                    <div class="score-animation-inner">
+                        <span class="score-animation-text">${score.toFixed(0)}%</span>
+                    </div>
+                 </div>
+                 <p>You answered <strong>${correctCount}</strong> out of <strong>${finalQuizData.length}</strong> questions correctly.</p>
+            </div>
+        `;
+        
+        resultsArea.innerHTML = resultsHTML;
+        resultsArea.innerHTML += generateConfidenceAnalysis();
+        resultsArea.innerHTML += generateStudyFocus();
+        resultsArea.innerHTML += generateDetailedReview();
+
+        setTimeout(() => {
+            const scoreCircle = document.querySelector('.score-animation-circle');
+            if (scoreCircle) {
+                scoreCircle.style.background = `conic-gradient(var(--success-green) ${score}%, var(--border-light) ${score}% 100%)`;
+            }
+        }, 100);
+
+        if (score >= 80) {
+            triggerConfetti();
+        }
+    }
+
+    function generateDetailedReview() {
+        let detailsHTML = '<div id="results-details"><h2>Question Review</h2>';
+        finalQuizData.forEach((qData, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = checkAnswerCorrectness(qData, userAnswer);
+            
+            let resultBodyHTML = '<ul>';
+            for (const [key, text] of Object.entries(qData.options)) {
+                let li_class = '';
+                const isCorrectOpt = qData.type === 'sata' ? qData.correctAnswer.includes(key) : key === qData.correctAnswer;
+                const isUserSelect = Array.isArray(userAnswer) ? userAnswer.includes(key) : key === userAnswer;
+                if (isCorrectOpt) li_class = 'correct-answer-label';
+                if (isUserSelect && !isCorrectOpt) li_class = 'incorrect-answer-label';
+                if (!isUserSelect && isCorrectOpt && !isCorrect) li_class = 'missed-correct-answer-label';
+                resultBodyHTML += `<li class="${li_class}">${text}</li>`;
+            }
+            resultBodyHTML += '</ul>';
+
+            detailsHTML += `
+                <div class="result-question">
+                    <p><strong>Question ${index + 1}: ${qData.questionText}</strong></p>
+                    ${resultBodyHTML}
+                    <div class="rationale"><strong>Rationale:</strong> ${qData.rationale || 'N/A'}</div>
+                </div>`;
+        });
+        detailsHTML += '</div>';
+        return detailsHTML;
+    }
+    
+    function generateConfidenceAnalysis() {
+        let correctAndConfident = 0, correctButUnsure = 0, incorrectAndConfident = 0, incorrectButUnsure = 0;
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const confidence = confidenceRatings[index] || 3;
+            if (confidence >= 4) { if (isCorrect) correctAndConfident++; else incorrectAndConfident++; } 
+            else { if (isCorrect) correctButUnsure++; else incorrectButUnsure++; }
+        });
+        return `
+            <div id="confidence-analysis">
+                <h3>Confidence Analysis</h3>
+                <ul>
+                    <li>Correct & Confident: <strong>${correctAndConfident}</strong></li>
+                    <li>Correct but Unsure: <strong>${correctButUnsure}</strong></li>
+                    <li>Incorrect & Confident: <strong>${incorrectAndConfident}</strong></li>
+                    <li>Incorrect but Unsure: <strong>${incorrectButUnsure}</strong></li>
+                </ul>
+            </div>`;
+    }
+
+    function generateStudyFocus() {
+        const topicCounts = {};
+        finalQuizData.forEach((qData, index) => {
+            if (!checkAnswerCorrectness(qData, userAnswers[index])) {
+                const topic = qData.section || "General";
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+            }
+        });
+        const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+        let focusHTML = '<div id="study-focus"><h3>Personalized Study Focus</h3>';
+        if (sortedTopics.length > 0) {
+            focusHTML += '<p>Based on your performance, focus your review on these topics:</p><ul>';
+            sortedTopics.forEach(topic => { focusHTML += `<li><strong>${topic[0]}</strong> (${topic[1]} item${topic[1] > 1 ? 's' : ''} missed)</li>`; });
+            focusHTML += '</ul>';
+        } else {
+            focusHTML += '<p>Excellent work! No specific weak areas were identified.</p>';
+        }
+        focusHTML += '</div>';
+        return focusHTML;
+    }
+
+    function triggerConfetti() {
+        const numConfetti = 150;
+        for (let i = 0; i < numConfetti; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 90%, 60%)`;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 6000);
+        }
+    }
+
+    startBtn.addEventListener('click', prepareAndStartQuiz);
+    quizForm.addEventListener('submit', e => { 
+        e.preventDefault(); 
+        handleNavigation(); 
+    });
+</script>
+
+</body>
+</html>
