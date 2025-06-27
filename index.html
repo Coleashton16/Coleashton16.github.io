@@ -163,45 +163,6 @@
             opacity: 0.45; /* Slightly different opacity for variation */
         }
 
-        /* Redirect Overlay (remains custom for complex animation) */
-        .redirect-overlay {
-            background-color: rgba(20, 20, 25, 0.9);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            @apply fixed inset-0 flex items-center justify-center z-50 opacity-0 invisible transition-all duration-500 ease-in-out;
-        }
-
-        .redirect-overlay.visible {
-            @apply opacity-100 visible;
-        }
-        
-        .elegant-spinner {
-            width: 70px; /* Larger spinner */
-            height: 70px;
-            border-radius: 50%;
-            background: conic-gradient(from 90deg at 50% 50%, rgba(255, 255, 255, 0.1), theme('colors.vsrep-blue-medium'), theme('colors.vsrep-green'));
-            mask: radial-gradient(transparent 45%, black 46%);
-            -webkit-mask: radial-gradient(transparent 45%, black 46%);
-            animation: spin 1.5s linear infinite; /* Custom spin animation */
-        }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .redirect-text {
-            @apply text-white text-xl font-medium mt-6;
-        }
-        .redirect-dots span {
-            opacity: 0;
-            animation: blink-dots 1.5s infinite;
-        }
-        .redirect-dots span:nth-child(1) { animation-delay: 0.0s; }
-        .redirect-dots span:nth-child(2) { animation-delay: 0.3s; }
-        .redirect-dots span:nth-child(3) { animation-delay: 0.6s; }
-        @keyframes blink-dots {
-            0%, 20% { opacity: 0; }
-            50% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
         /* Custom Shimmer for Buttons/Cards */
         .button-shimmer::after {
             content: '';
@@ -253,27 +214,10 @@
 </head>
 <body class="font-inter">
 
-    <!-- Redirect Overlay -->
-    <div class="redirect-overlay" id="redirectOverlay">
-        <div class="flex flex-col items-center">
-            <div class="elegant-spinner"></div>
-            <p class="redirect-text">
-                Loading VSREP Hub<span class="redirect-dots"><span>.</span><span>.</span><span>.</span></span>
-            </p>
-        </div>
-    </div>
-
     <!-- Main Application Container -->
     <div id="main-app-container" class="min-h-screen flex flex-col">
 
         <!-- Firebase Authentication Container (Login/Signup Form) -->
-        <!-- 
-          REPAIR NOTE: 
-          - Added flex, items-center, justify-center, and flex-grow to center the login card.
-          - The parent container (#main-app-container) is a flex-col, so flex-grow makes this element expand to fill the available space.
-          - `flex items-center justify-center` then centers its direct child (the login card) within that space.
-          - Removed the corresponding @apply rule from the <style> tag to avoid duplication.
-        -->
         <div id="auth-container" class="flex flex-grow items-center justify-center p-6 relative overflow-hidden">
             <!-- Animated Blobs Background -->
             <div class="blob blob-1"></div>
@@ -551,7 +495,6 @@
         const authMessage = document.getElementById('auth-message');
         const authMessageIcon = document.getElementById('auth-message-icon');
         const authMessageText = document.getElementById('auth-message-text');
-        const redirectOverlay = document.getElementById('redirectOverlay');
         const forgotPasswordLink = document.getElementById('forgot-password-link');
         const rememberMeCheckbox = document.getElementById('remember-me-checkbox');
 
@@ -850,7 +793,7 @@
             }
         });
 
-        // --- Redirect Overlay Logic for Main App Content Links ---
+        // --- Link Handling Logic ---
         document.addEventListener('DOMContentLoaded', function () {
             // Initial setup of auth mode
             setAuthMode('login');
@@ -858,43 +801,22 @@
             // Select all links within the #app-content that are not the logout button
             const appContentLinks = document.querySelectorAll('#app-content a:not(#logout-button)');
             
-            if (appContentLinks && redirectOverlay) {
-                appContentLinks.forEach(link => {
-                    link.addEventListener('click', function (event) {
-                        const isExternal = this.hostname !== window.location.hostname;
-                        
-                        // Apply overlay only if the user is authenticated and navigating
-                        // or if it's an external link (to provide visual feedback before opening new tab)
-                        if (auth.currentUser) {
-                            event.preventDefault(); 
-                            const destinationUrl = this.href;
-                            const targetBlank = this.target === '_blank';
-
-                            redirectOverlay.classList.add('visible');
-
-                            setTimeout(function () {
-                                if (targetBlank) {
-                                    window.open(destinationUrl, '_blank');
-                                    // For new tabs, hide overlay after opening the new tab
-                                    redirectOverlay.classList.remove('visible');
-                                } else {
-                                    window.location.href = destinationUrl;
-                                }
-                            }, 1300); // Consistent delay
-                        } else {
-                            // If not authenticated, prevent default on all links within app-content, 
-                            // as they shouldn't be accessible. Re-direct to login if they try.
-                            event.preventDefault();
-                            displayAuthMessage("Please log in to access this resource.", false);
-                            // Scroll to top and show login form
-                            authContainer.classList.remove('hidden');
-                            appContent.classList.add('hidden');
-                            authContainer.scrollIntoView({ behavior: 'smooth' });
-                            setAuthMode('login'); // Ensure login form is active
-                        }
-                    });
+            appContentLinks.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    // If not authenticated, prevent default on all links within app-content, 
+                    // as they shouldn't be accessible. Re-direct to login if they try.
+                    if (!auth.currentUser) {
+                        event.preventDefault();
+                        displayAuthMessage("Please log in to access this resource.", false);
+                        // Scroll to top and show login form
+                        authContainer.classList.remove('hidden');
+                        appContent.classList.add('hidden');
+                        authContainer.scrollIntoView({ behavior: 'smooth' });
+                        setAuthMode('login'); // Ensure login form is active
+                    }
+                    // If the user IS authenticated, the link's default behavior will proceed as normal.
                 });
-            }
+            });
         });
     </script>
 </body>
