@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Pharmacology Mastery Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        .main-content {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .nav-item.active {
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            font-weight: 600;
+        }
+        /* Card flip animation */
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col">
+        <div class="p-6 border-b border-slate-200">
+            <h1 class="text-xl font-bold text-sky-800">Pharm Mastery</h1>
+            <p class="text-sm text-slate-500">Mental Health</p>
+        </div>
+        <nav id="navigation" class="flex-1 p-4 space-y-2">
+            <a href="#dashboard" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard
+            </a>
+            <a href="#drug-library" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i data-lucide="library" class="w-5 h-5 mr-3"></i> Drug Library
+            </a>
+            <a href="#flashcards" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i data-lucide="layers" class="w-5 h-5 mr-3"></i> Flashcards
+            </a>
+            <a href="#quiz-zone" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i data-lucide="swords" class="w-5 h-5 mr-3"></i> Quiz Zone
+            </a>
+            <a href="#brain-dump" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100">
+                <i data-lucide="brain-circuit" class="w-5 h-5 mr-3"></i> Brain Dump
+            </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200">
+            <button id="reset-progress-btn" class="w-full text-sm text-center text-slate-500 hover:text-red-600">
+                Reset Progress
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="flex-1 bg-slate-50 overflow-y-auto p-8">
+        <!-- Content will be injected here by JavaScript -->
+    </main>
+    
+    <!-- Modal for Brain Dump Comparison -->
+    <div id="braindump-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h2 class="text-2xl font-bold">Comparison Results</h2>
+                <button id="close-modal-btn" class="text-slate-500 hover:text-slate-800"><i data-lucide="x"></i></button>
+            </div>
+            <div id="modal-content" class="p-6"></div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- DATA STORE ---
+        // All medication data is stored here. This makes the app self-contained.
+        const drugData = [
+            // --- Alcohol Withdrawal Meds ---
+            {
+                id: 'diazepam',
+                category: 'Alcohol Withdrawal',
+                name: 'Diazepam',
+                brandNames: 'Valium',
+                class: 'Benzodiazepine',
+                moa: 'Enhances the effect of the neurotransmitter GABA at the GABAA receptor, resulting in sedative, hypnotic, anxiolytic, anticonvulsant, and muscle relaxant properties. Depresses the CNS.',
+                effects: ['Drowsiness, ataxia', 'Hypotension (↓BP)', 'Tachycardia', 'CNS & Respiratory Depression'],
+                nursingConsiderations: ['Monitor vital signs, especially respiratory rate and BP.', 'Do not mix with other IV solutions.', 'High potential for dependence ("Mother\'s little helper").', 'Withdrawal symptoms can be severe: vomiting, sweating, cramps, tremors. Taper off slowly.'],
+                mnemonic: 'A "Dia"-sy feeling of calm from this Benzodiazepine, but don\'t get too relaxed and forget to breathe!'
+            },
+            {
+                id: 'chlordiazepoxide',
+                category: 'Alcohol Withdrawal',
+                name: 'Chlordiazepoxide',
+                brandNames: 'Librium',
+                class: 'Benzodiazepine',
+                moa: 'Potentiates the effects of GABA, a major inhibitory neurotransmitter, leading to CNS depression and sedation.',
+                effects: ['Lethargy, hangover feeling', 'Respiratory depression', 'Hypotension (↓BP)'],
+                nursingConsiderations: ['Primarily used for alcohol withdrawal.', 'Highly habituating; use short-term.', 'Monitor for excessive sedation.', 'Assess for signs of dependence.'],
+                mnemonic: 'Get "rid-o-the-pox" of withdrawal with Chlordiazepoxide.'
+            },
+            {
+                id: 'lorazepam',
+                category: 'Alcohol Withdrawal',
+                name: 'Lorazepam',
+                brandNames: 'Ativan',
+                class: 'Benzodiazepine (Anxiolytic)',
+                moa: 'Binds to benzodiazepine receptors on the postsynaptic GABA neuron at several sites within the CNS, increasing GABA\'s inhibitory effects.',
+                effects: ['Lightheadedness', 'Hepatic dysfunction', 'Orthostatic hypotension (↓BP)', 'Increased salivation'],
+                nursingConsiderations: ['Avoid concurrent use with alcohol or other CNS depressants.', 'Monitor liver function tests (LFTs).', 'Do not discontinue abruptly to avoid withdrawal.', 'Good for patients with liver issues as it has a simpler metabolism.'],
+                mnemonic: '"Lora" the Explorer needs to "pam-per" her anxiety, but watches her liver on the journey.'
+            },
+            // --- Opioid Addiction Meds ---
+            {
+                id: 'methadone',
+                category: 'Opioid Addiction',
+                name: 'Methadone',
+                brandNames: 'Dolophine, Methadose',
+                class: 'Opioid Agonist',
+                moa: 'A long-acting synthetic opioid agonist that binds to mu-opioid receptors. It mitigates withdrawal symptoms and reduces cravings by maintaining a stable level of opioid in the body, without producing the same euphoric high.',
+                effects: ['QT prolongation', 'Respiratory depression', 'Constipation', 'Sedation', 'Hypotension'],
+                nursingConsiderations: ['Obtain baseline EKG to monitor for QT prolongation.', 'High risk for overdose if taken with other CNS depressants.', 'Must be dispensed through a licensed opioid treatment program.', 'Long half-life means risk of accumulation.'],
+                mnemonic: '"Metha-DONE" with heroin, now on a safer, longer-acting path.'
+            },
+            {
+                id: 'buprenorphine',
+                category: 'Opioid Addiction',
+                name: 'Buprenorphine',
+                brandNames: 'Subutex, Suboxone (with naloxone)',
+                class: 'Partial Opioid Agonist',
+                moa: 'A partial agonist at the mu-opioid receptor and an antagonist at the kappa receptor. It produces a ceiling effect, meaning its opioid effects plateau at higher doses, reducing the risk of respiratory depression and overdose.',
+                effects: ['Headache', 'Nausea/Vomiting', 'Constipation', 'Precipitated withdrawal if taken too soon after a full agonist.'],
+                nursingConsiderations: ['Educate patient to wait until they are in moderate withdrawal before taking the first dose.', 'Suboxone formulation contains naloxone to deter IV abuse.', 'Monitor liver function.', 'Can be prescribed in an office setting.'],
+                mnemonic: '"Bu-PREVENTS" the high, while keeping withdrawal at bay.'
+            },
+            {
+                id: 'naltrexone',
+                category: 'Opioid Addiction',
+                name: 'Naltrexone',
+                brandNames: 'Vivitrol (injectable), ReVia',
+                class: 'Opioid Antagonist',
+                moa: 'Blocks the euphoric and sedative effects of opioids by competitively binding to opioid receptors. It does not produce any opioid effects and is not addictive.',
+                effects: ['Nausea', 'Headache', 'Anxiety', 'Liver damage at high doses.'],
+                nursingConsiderations: ['Patient must be opioid-free for 7-10 days before starting to avoid severe, sudden withdrawal.', 'Monitor liver function tests.', 'Will block the effects of opioid pain medications if needed for surgery/injury.', 'Also used for alcohol use disorder.'],
+                mnemonic: '"NAL-TREX-ONE" blocks the opioid fun, so there is NONE.'
+            },
+            // --- ADHD Meds ---
+            {
+                id: 'methylphenidate',
+                category: 'ADHD',
+                name: 'Methylphenidate',
+                brandNames: 'Ritalin, Concerta',
+                class: 'CNS Stimulant',
+                moa: 'Blocks the reuptake of norepinephrine and dopamine into the presynaptic neuron, increasing their concentration in the synapse. This leads to improved attention and focus.',
+                effects: ['Nervousness, insomnia', 'Palpitations, tachycardia', 'Weight loss, growth suppression in children', 'May precipitate tics (Tourette\'s)'],
+                nursingConsiderations: ['Has a paradoxical calming effect in ADHD.', 'Monitor height and weight in children.', 'Monitor CBC and platelet count.', 'Avoid caffeine.', 'Administer last dose at least 6 hours before bedtime to prevent insomnia.'],
+                mnemonic: '"Methyl-PHEN-tastic" for focus, but give it in the AM or you\'ll be up with the owls!'
+            },
+            {
+                id: 'dextroamphetamine',
+                category: 'ADHD',
+                name: 'Dextroamphetamine',
+                brandNames: 'Dexedrine, Adderall (with amphetamine)',
+                class: 'CNS Stimulant',
+                moa: 'Promotes the release of dopamine and norepinephrine from presynaptic nerve terminals and blocks their reuptake.',
+                effects: ['Insomnia', 'Tachycardia, palpitations', 'Highly habituating'],
+                nursingConsiderations: ['Give in the morning.', 'Do not use with MAOIs (risk of hypertensive crisis).', 'Monitor for signs of abuse/dependence.', 'Assess cardiovascular status before starting.'],
+                mnemonic: '"DEX" helps you focus on your "TRO"phies, but it\'s a fast track you can get stuck on.'
+            },
+            {
+                id: 'clonidine',
+                category: 'ADHD',
+                name: 'Clonidine',
+                brandNames: 'Catapres, Kapvay',
+                class: 'Alpha-2 Adrenergic Agonist (Antihypertensive)',
+                moa: 'Stimulates alpha-2 adrenergic receptors in the brain, reducing sympathetic outflow from the CNS. In ADHD, it\'s thought to improve prefrontal cortex function, aiding in impulse control and attention.',
+                effects: ['Irregular heartbeat', 'Skin irregularities (with patch)', 'Anxiety', 'Sedation, dizziness'],
+                nursingConsiderations: ['Monitor pulse and blood pressure.', 'Perform skin assessment if using transdermal patch.', 'Do not stop abruptly (can cause rebound hypertension).', 'Often used as an adjunctive therapy or for children who can\'t tolerate stimulants.'],
+                mnemonic: '"CLON-idine" helps "CLONE" a sense of calm and control.'
+            },
+            {
+                id: 'atomoxetine',
+                category: 'ADHD',
+                name: 'Atomoxetine',
+                brandNames: 'Strattera',
+                class: 'Norepinephrine Reuptake Inhibitor (SNRI)',
+                moa: 'Selectively inhibits the presynaptic reuptake of norepinephrine, increasing its levels in the brain. It is not a stimulant.',
+                effects: ['GI upset', 'Insomnia', 'Dizziness', 'Increased risk of suicidal ideation in children/adolescents.'],
+                nursingConsiderations: ['Non-stimulant option for ADHD.', 'Takes 1-4 weeks for full effect.', 'Monitor for signs of suicidal thinking or behavior.', 'Monitor liver function.'],
+                mnemonic: 'This "ATOM" is not a stimulant, but it still helps "STRAT"egize and focus.'
+            },
+            // --- Antipsychotics ---
+            {
+                id: 'haloperidol',
+                category: 'Antipsychotics',
+                name: 'Haloperidol',
+                brandNames: 'Haldol',
+                class: 'First-Generation Antipsychotic (Typical)',
+                moa: 'Strongly blocks D2 (dopamine) receptors in the brain, which is effective at treating positive symptoms of schizophrenia (hallucinations, delusions).',
+                effects: ['High risk of Extrapyramidal Side Effects (EPS): dystonia, akathisia, pseudoparkinsonism.', 'Tardive Dyskinesia (long-term risk).', 'Neuroleptic Malignant Syndrome (NMS).', 'Anticholinergic effects.'],
+                nursingConsiderations: ['Primarily targets POSITIVE symptoms.', 'Monitor for EPS and administer anticholinergic meds (like benztropine) as needed.', 'Assess for signs of NMS (fever, rigidity, autonomic instability) - a medical emergency!', 'Can be given as a long-acting injectable (decanoate).'],
+                mnemonic: '"HAL"loperidol can stop the "HAL"lucinations, but watch for those shaky side effects.'
+            },
+            {
+                id: 'fluphenazine',
+                category: 'Antipsychotics',
+                name: 'Fluphenazine',
+                brandNames: 'Prolixin',
+                class: 'First-Generation Antipsychotic (Typical)',
+                moa: 'A potent D2 dopamine receptor antagonist, similar to haloperidol, which helps control positive psychotic symptoms.',
+                effects: ['High risk of EPS.', 'Anticholinergic effects.', 'Sedation', 'Photosensitivity.'],
+                nursingConsiderations: ['Like haloperidol, mainly treats POSITIVE symptoms.', 'Monitor for and manage EPS.', 'Also available as a long-acting decanoate injection for improved adherence.', 'Educate patient on using sun protection.'],
+                mnemonic: '"Flu-PHEN-azine" flies away the psychosis, but can make you feel stiff as a frozen hen.'
+            },
+            // --- Personality Disorders ---
+            {
+                id: 'clomipramine',
+                category: 'Personality Disorders',
+                name: 'Clomipramine',
+                brandNames: 'Anafranil',
+                class: 'Tricyclic Antidepressant (TCA)',
+                moa: 'Potently inhibits the reuptake of serotonin and, to a lesser extent, norepinephrine. This is particularly effective for obsessive-compulsive features.',
+                effects: ['Anticholinergic effects (dry mouth, constipation, blurry vision).', 'Sedation', 'Orthostatic hypotension.', 'High risk of fatality in overdose.'],
+                nursingConsiderations: ['Often used for Obsessive-Compulsive Personality Disorder (OCPD) traits.', 'Monitor for suicidal ideation, especially at the beginning of treatment.', 'Advise patient to rise slowly to prevent falls.', 'High overdose risk requires careful patient selection.'],
+                mnemonic: '"CLOM-ipramine" helps calm O-C-D, but it\'s an older key (TCA).'
+            },
+            {
+                id: 'fluoxetine',
+                category: 'Personality Disorders',
+                name: 'Fluoxetine',
+                brandNames: 'Prozac',
+                class: 'Selective Serotonin Reuptake Inhibitor (SSRI)',
+                moa: 'Selectively inhibits the reuptake of serotonin in the synaptic cleft, increasing its availability and improving mood and reducing anxiety/obsessions.',
+                effects: ['Anxiety, insomnia (initially).', 'Sexual dysfunction.', 'Headache, nausea.', 'Serotonin Syndrome risk.'],
+                nursingConsiderations: ['A first-line treatment for anxiety, depression, and obsessions in personality disorders.', 'Safer profile than TCAs like clomipramine.', 'Long half-life, which can be beneficial if a dose is missed.', 'Monitor for Serotonin Syndrome (agitation, hyperreflexia, fever).'],
+                mnemonic: '"FLU-oxetine" helps the serotonin "FLU-sh" through, a modern solution for mood and obsessions.'
+            }
+        ];
+
+        // --- APPLICATION STATE ---
+        // Manages the current state of the application.
+        let state = {
+            currentView: '#dashboard',
+            flashcard: {
+                deck: [],
+                currentIndex: 0,
+                mastered: [],
+                review: []
+            },
+            quiz: {
+                deck: [],
+                currentQuestion: 0,
+                score: 0,
+                isComplete: false
+            },
+            brainDump: {
+                selectedDrug: null
+            }
+        };
+
+        // --- DOM ELEMENTS ---
+        const mainContent = document.getElementById('main-content');
+        const navigation = document.getElementById('navigation');
+        const resetProgressBtn = document.getElementById('reset-progress-btn');
+        const modal = document.getElementById('braindump-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalContent = document.getElementById('modal-content');
+
+        // --- TEMPLATES ---
+        // Functions that generate HTML for different views.
+        const Templates = {
+            dashboard: () => {
+                const categories = [...new Set(drugData.map(d => d.category))];
+                const masteredCount = state.flashcard.mastered.length;
+                const totalCount = drugData.length;
+                const progress = totalCount > 0 ? Math.round((masteredCount / totalCount) * 100) : 0;
+                
+                return `
+                    <div class="fade-in">
+                        <h1 class="text-4xl font-bold mb-2">Welcome Back!</h1>
+                        <p class="text-slate-500 mb-8">Ready to master mental health pharmacology? Let's dive in.</p>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+                            <h2 class="text-xl font-bold mb-4">Overall Progress</h2>
+                            <div class="flex items-center">
+                                <div class="w-full bg-slate-200 rounded-full h-4">
+                                    <div class="bg-sky-600 h-4 rounded-full" style="width: ${progress}%"></div>
+                                </div>
+                                <span class="ml-4 font-semibold text-sky-700">${progress}%</span>
+                            </div>
+                            <p class="text-sm text-slate-500 mt-2">${masteredCount} of ${totalCount} drugs mastered.</p>
+                        </div>
+
+                        <h2 class="text-2xl font-bold mb-4">Study Modules</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${categories.map(category => {
+                                const categoryDrugs = drugData.filter(d => d.category === category);
+                                const masteredInCategory = categoryDrugs.filter(d => state.flashcard.mastered.includes(d.id)).length;
+                                const categoryProgress = Math.round((masteredInCategory / categoryDrugs.length) * 100);
+                                return `
+                                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                                    <h3 class="font-bold text-lg">${category}</h3>
+                                    <p class="text-sm text-slate-500 mb-4">${categoryDrugs.length} medications</p>
+                                    <div class="w-full bg-slate-200 rounded-full h-2.5">
+                                        <div class="bg-teal-500 h-2.5 rounded-full" style="width: ${categoryProgress}%"></div>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mt-2">${masteredInCategory} / ${categoryDrugs.length} mastered</p>
+                                </div>
+                                `
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            },
+            drugLibrary: () => `
+                <div>
+                    <h1 class="text-4xl font-bold mb-8">Drug Library</h1>
+                    <div class="space-y-4">
+                        ${drugData.map(drug => `
+                            <div class="bg-white rounded-lg shadow-sm p-6">
+                                <h2 class="text-2xl font-bold text-sky-800">${drug.name} <span class="text-lg font-normal text-slate-500">(${drug.brandNames})</span></h2>
+                                <p class="text-md font-semibold text-teal-600 mb-4">${drug.class} - <span class="italic text-slate-600">${drug.category}</span></p>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                    <div>
+                                        <h4 class="font-semibold mb-2 border-b pb-1">Mechanism of Action</h4>
+                                        <p class="text-slate-600 text-sm">${drug.moa}</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold mb-2 border-b pb-1">Adverse Effects</h4>
+                                        <ul class="list-disc list-inside text-slate-600 text-sm space-y-1">
+                                            ${drug.effects.map(e => `<li>${e}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <h4 class="font-semibold mb-2 border-b pb-1">Nursing Considerations</h4>
+                                        <ul class="list-disc list-inside text-slate-600 text-sm space-y-1">
+                                            ${drug.nursingConsiderations.map(nc => `<li>${nc}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                     <div class="md:col-span-2 bg-sky-50 p-4 rounded-lg">
+                                        <h4 class="font-semibold mb-1 text-sky-900">Memory Aid</h4>
+                                        <p class="text-sky-800 text-sm italic">"${drug.mnemonic}"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `,
+            flashcards: () => {
+                const { deck, currentIndex } = state.flashcard;
+                if (deck.length === 0) {
+                    return `
+                        <div class="text-center">
+                            <h1 class="text-4xl font-bold mb-4">Flashcards</h1>
+                            <p class="text-slate-500 mb-6">You've mastered all the drugs! Reset progress to study again.</p>
+                            <button onclick="App.startFlashcards()" class="bg-sky-600 text-white px-6 py-2 rounded-lg hover:bg-sky-700">Start Over</button>
+                        </div>
+                    `;
+                }
+                const drug = deck[currentIndex];
+                return `
+                    <div class="max-w-2xl mx-auto">
+                        <h1 class="text-4xl font-bold text-center mb-2">Flashcards</h1>
+                        <p class="text-slate-500 text-center mb-6">Card ${currentIndex + 1} of ${deck.length}</p>
+                        
+                        <div class="flashcard h-96 perspective-1000">
+                           <div class="flashcard-inner">
+                                <div class="flashcard-front">
+                                    <p class="text-slate-500 text-sm mb-2">${drug.category}</p>
+                                    <h2 class="text-4xl font-bold">${drug.name}</h2>
+                                    <button onclick="App.flipCard()" class="absolute bottom-6 text-sm text-sky-600 font-semibold">Click to Flip</button>
+                                </div>
+                                <div class="flashcard-back overflow-y-auto">
+                                    <h3 class="font-bold text-xl mb-2">${drug.class}</h3>
+                                    <p class="text-xs text-slate-500 mb-4">${drug.moa}</p>
+                                    <div class="text-left w-full px-4">
+                                        <h4 class="font-semibold mb-1">Key Considerations:</h4>
+                                        <ul class="list-disc list-inside text-slate-600 text-sm space-y-1">
+                                            ${drug.nursingConsiderations.map(nc => `<li>${nc}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    <button onclick="App.flipCard()" class="absolute bottom-6 text-sm text-sky-600 font-semibold">Click to Flip Back</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center items-center mt-8 space-x-4">
+                            <button onclick="App.handleFlashcardAnswer(false)" class="bg-red-100 text-red-700 font-semibold px-8 py-3 rounded-lg hover:bg-red-200 flex items-center"><i data-lucide="rotate-ccw" class="w-5 h-5 mr-2"></i>Review Again</button>
+                            <button onclick="App.handleFlashcardAnswer(true)" class="bg-green-100 text-green-700 font-semibold px-8 py-3 rounded-lg hover:bg-green-200 flex items-center"><i data-lucide="check-circle" class="w-5 h-5 mr-2"></i>Got It!</button>
+                        </div>
+                    </div>
+                `
+            },
+            quizZone: () => {
+                const { deck, currentQuestion, score, isComplete } = state.quiz;
+
+                if (isComplete) {
+                     return `
+                        <div class="text-center bg-white p-8 rounded-xl shadow-lg">
+                            <h1 class="text-4xl font-bold mb-2">Quiz Complete!</h1>
+                            <p class="text-2xl text-slate-600 mb-6">Your Score:</p>
+                            <p class="text-6xl font-bold text-sky-600 mb-8">${score} / ${deck.length}</p>
+                            <button onclick="App.startQuiz()" class="bg-sky-600 text-white px-6 py-3 rounded-lg hover:bg-sky-700 text-lg">Try Again</button>
+                        </div>
+                    `;
+                }
+                
+                if (deck.length === 0) {
+                     return `
+                        <div class="text-center">
+                            <h1 class="text-4xl font-bold mb-4">Quiz Zone</h1>
+                            <p class="text-slate-500 mb-6">Ready to test your knowledge? Let's begin.</p>
+                            <button onclick="App.startQuiz()" class="bg-sky-600 text-white px-8 py-4 rounded-lg hover:bg-sky-700 text-xl">Start Quiz</button>
+                        </div>
+                    `;
+                }
+
+                const question = deck[currentQuestion];
+                return `
+                    <div>
+                        <h1 class="text-4xl font-bold mb-2">Quiz Zone</h1>
+                        <p class="text-slate-500 mb-6">Question ${currentQuestion + 1} of ${deck.length} | Score: ${score}</p>
+                        
+                        <div class="bg-white p-8 rounded-xl shadow-md">
+                            <p class="text-xl font-semibold mb-6">${question.text}</p>
+                            <div id="quiz-options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${question.options.map((option, index) => `
+                                    <button data-answer="${option.correct}" class="quiz-option text-left p-4 border-2 border-slate-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition-colors">
+                                        ${option.text}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+            brainDump: () => `
+                <div>
+                    <h1 class="text-4xl font-bold mb-2">Brain Dump</h1>
+                    <p class="text-slate-500 mb-8">Select a drug, write down everything you remember, then compare your notes with the correct info. This is a powerful way to test your recall!</p>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <label for="drug-select" class="block text-sm font-medium text-slate-700">1. Select a Medication</label>
+                        <select id="drug-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm rounded-md">
+                            <option value="">-- Choose a drug --</option>
+                            ${drugData.map(d => `<option value="${d.id}">${d.name}</option>`).join('')}
+                        </select>
+
+                        <div id="braindump-fields" class="mt-6 space-y-4 hidden">
+                             <h2 class="text-xl font-bold">2. Dump Your Brain!</h2>
+                             <div>
+                                <label for="dump-moa" class="block text-sm font-medium text-slate-700">Mechanism of Action</label>
+                                <textarea id="dump-moa" rows="3" class="mt-1 shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"></textarea>
+                            </div>
+                            <div>
+                                <label for="dump-effects" class="block text-sm font-medium text-slate-700">Adverse Effects (one per line)</label>
+                                <textarea id="dump-effects" rows="4" class="mt-1 shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"></textarea>
+                            </div>
+                            <div>
+                                <label for="dump-nursing" class="block text-sm font-medium text-slate-700">Nursing Considerations (one per line)</label>
+                                <textarea id="dump-nursing" rows="4" class="mt-1 shadow-sm focus:ring-sky-500 focus:border-sky-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"></textarea>
+                            </div>
+                            <button id="compare-btn" class="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700">Compare</button>
+                        </div>
+                    </div>
+                </div>
+            `,
+            brainDumpModalContent: (userAnswers, correctAnswers) => {
+                const compareText = (user, correct) => {
+                    const userItems = user.split('\n').map(s => s.trim().toLowerCase()).filter(Boolean);
+                    const correctItems = correct.map(s => s.trim().toLowerCase());
+                    
+                    if(userItems.length === 1 && correct.length > 2) { // for MoA
+                         return userItems[0].toLowerCase().includes(correct[0].toLowerCase().substring(0, 30)) 
+                            ? `<span class="text-green-600 bg-green-100 p-1 rounded">${user} (Correct)</span>`
+                            : `<span class="text-red-600 bg-red-100 p-1 rounded">${user} (Incorrect)</span>`;
+                    }
+
+                    return userItems.map(item => {
+                        return correctItems.some(cItem => cItem.includes(item))
+                            ? `<li class="text-green-700"><i data-lucide="check" class="inline w-4 h-4 mr-1"></i>${item}</li>`
+                            : `<li class="text-red-700"><i data-lucide="x" class="inline w-4 h-4 mr-1"></i>${item}</li>`;
+                    }).join('');
+                };
+
+                return `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold mb-4">Your Answers</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <h4 class="font-semibold text-slate-800">MoA:</h4>
+                                    <p class="text-sm p-2 bg-slate-100 rounded">${userAnswers.moa || 'No answer'}</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-800">Effects:</h4>
+                                    <ul class="text-sm list-disc list-inside">${userAnswers.effects.split('\n').filter(Boolean).map(s => `<li>${s}</li>`).join('') || '<li>No answer</li>'}</ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-800">Considerations:</h4>
+                                    <ul class="text-sm list-disc list-inside">${userAnswers.nursing.split('\n').filter(Boolean).map(s => `<li>${s}</li>`).join('') || '<li>No answer</li>'}</ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 text-sky-700">Correct Information</h3>
+                             <div class="space-y-4">
+                                <div>
+                                    <h4 class="font-semibold text-slate-800">MoA:</h4>
+                                    <p class="text-sm p-2 bg-sky-50 rounded">${correctAnswers.moa}</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-800">Effects:</h4>
+                                    <ul class="text-sm list-disc list-inside">${correctAnswers.effects.map(s => `<li>${s}</li>`).join('')}</ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-800">Considerations:</h4>
+                                    <ul class="text-sm list-disc list-inside">${correctAnswers.nursingConsiderations.map(s => `<li>${s}</li>`).join('')}</ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        };
+
+        // --- APPLICATION LOGIC ---
+        const App = {
+            init() {
+                this.loadState();
+                this.router();
+                window.addEventListener('hashchange', this.router.bind(this));
+                navigation.addEventListener('click', e => {
+                    if (e.target.closest('a')) {
+                        state.currentView = e.target.closest('a').getAttribute('href');
+                        this.router();
+                    }
+                });
+                resetProgressBtn.addEventListener('click', () => {
+                   if (confirm('Are you sure you want to reset all your progress? This cannot be undone.')) {
+                       this.resetState();
+                   }
+                });
+                closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                    }
+                });
+            },
+
+            router() {
+                const path = window.location.hash || '#dashboard';
+                if (state.currentView !== path) state.currentView = path;
+                
+                // Fade out content before changing
+                mainContent.style.opacity = 0;
+                
+                setTimeout(() => {
+                    switch(state.currentView) {
+                        case '#dashboard':
+                            mainContent.innerHTML = Templates.dashboard();
+                            break;
+                        case '#drug-library':
+                            mainContent.innerHTML = Templates.drugLibrary();
+                            break;
+                        case '#flashcards':
+                            if (state.flashcard.deck.length === 0) this.startFlashcards();
+                            mainContent.innerHTML = Templates.flashcards();
+                            break;
+                        case '#quiz-zone':
+                            mainContent.innerHTML = Templates.quizZone();
+                            if(state.quiz.deck.length > 0 && !state.quiz.isComplete) this.attachQuizListeners();
+                            break;
+                        case '#brain-dump':
+                            mainContent.innerHTML = Templates.brainDump();
+                            this.attachBrainDumpListeners();
+                            break;
+                        default:
+                            window.location.hash = '#dashboard';
+                            mainContent.innerHTML = Templates.dashboard();
+                    }
+                    this.updateNav();
+                    lucide.createIcons();
+                    // Fade in new content
+                    mainContent.style.opacity = 1;
+                }, 150);
+            },
+
+            updateNav() {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    if (item.getAttribute('href') === state.currentView) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            },
+            
+            // --- Flashcard Logic ---
+            startFlashcards() {
+                // Deck includes drugs not yet mastered
+                const unmasteredDrugs = drugData.filter(d => !state.flashcard.mastered.includes(d.id));
+                // Add drugs marked for review back into the deck
+                const reviewDrugs = state.flashcard.review.map(id => drugData.find(d => d.id === id));
+                state.flashcard.deck = this.shuffle([...new Set([...unmasteredDrugs, ...reviewDrugs])]);
+                state.flashcard.review = []; // Clear review list
+                state.flashcard.currentIndex = 0;
+                if(state.currentView === "#flashcards") this.router();
+            },
+            
+            flipCard() {
+                document.querySelector('.flashcard').classList.toggle('flipped');
+            },
+            
+            handleFlashcardAnswer(isCorrect) {
+                const currentDrugId = state.flashcard.deck[state.flashcard.currentIndex].id;
+                
+                if(isCorrect) {
+                    // Move from review to mastered if it was there
+                    state.flashcard.review = state.flashcard.review.filter(id => id !== currentDrugId);
+                    if (!state.flashcard.mastered.includes(currentDrugId)) {
+                        state.flashcard.mastered.push(currentDrugId);
+                    }
+                } else {
+                    // Add to review list if not already there
+                    if (!state.flashcard.review.includes(currentDrugId)) {
+                        state.flashcard.review.push(currentDrugId);
+                    }
+                    // If mastered, move back to review
+                    if(state.flashcard.mastered.includes(currentDrugId)) {
+                       state.flashcard.mastered = state.flashcard.mastered.filter(id => id !== currentDrugId);
+                    }
+                }
+                
+                state.flashcard.currentIndex++;
+                if (state.flashcard.currentIndex >= state.flashcard.deck.length) {
+                    this.startFlashcards(); // Reshuffle and start new deck
+                }
+                
+                this.saveState();
+                this.router();
+            },
+
+            // --- Quiz Logic ---
+            startQuiz() {
+                state.quiz.deck = this.generateQuiz(10);
+                state.quiz.currentQuestion = 0;
+                state.quiz.score = 0;
+                state.quiz.isComplete = false;
+                this.router();
+            },
+
+            generateQuiz(numQuestions) {
+                let questions = [];
+                for(let i=0; i<numQuestions; i++) {
+                    const questionType = Math.random() > 0.5 ? 'class' : 'effect';
+                    let question;
+                    if(questionType === 'class') {
+                        const drug = drugData[Math.floor(Math.random() * drugData.length)];
+                        question = {
+                            text: `Which class does ${drug.name} belong to?`,
+                            options: this.generateOptions(drug.class, drugData.map(d => d.class))
+                        };
+                    } else {
+                        const drug = drugData[Math.floor(Math.random() * drugData.length)];
+                        const correctEffect = drug.effects[Math.floor(Math.random() * drug.effects.length)];
+                        const allEffects = drugData.flatMap(d => d.effects);
+                        question = {
+                            text: `Which of the following is a common adverse effect of ${drug.name}?`,
+                            options: this.generateOptions(correctEffect, allEffects)
+                        };
+                    }
+                    questions.push(question);
+                }
+                return questions;
+            },
+
+            generateOptions(correctAnswer, allAnswers) {
+                let options = [{text: correctAnswer, correct: true}];
+                let otherOptions = [...new Set(allAnswers)].filter(a => a !== correctAnswer);
+                otherOptions = this.shuffle(otherOptions);
+                for(let i=0; i < 3; i++){
+                    if(otherOptions[i]) {
+                       options.push({text: otherOptions[i], correct: false});
+                    }
+                }
+                return this.shuffle(options);
+            },
+            
+            attachQuizListeners() {
+                const optionsContainer = document.getElementById('quiz-options');
+                optionsContainer.addEventListener('click', (e) => {
+                    const button = e.target.closest('.quiz-option');
+                    if(!button) return;
+
+                    const isCorrect = button.dataset.answer === 'true';
+                    if(isCorrect) {
+                        state.quiz.score++;
+                        button.classList.add('bg-green-200', 'border-green-500');
+                    } else {
+                        button.classList.add('bg-red-200', 'border-red-500');
+                        // Highlight the correct one
+                        optionsContainer.querySelector('[data-answer="true"]').classList.add('bg-green-200', 'border-green-500');
+                    }
+                    
+                    document.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+                    
+                    setTimeout(() => {
+                        state.quiz.currentQuestion++;
+                        if(state.quiz.currentQuestion >= state.quiz.deck.length) {
+                            state.quiz.isComplete = true;
+                        }
+                        this.saveState();
+                        this.router();
+                    }, 1500);
+                });
+            },
+            
+            // --- Brain Dump Logic ---
+            attachBrainDumpListeners() {
+                const drugSelect = document.getElementById('drug-select');
+                const fields = document.getElementById('braindump-fields');
+                const compareBtn = document.getElementById('compare-btn');
+
+                drugSelect.addEventListener('change', () => {
+                    if(drugSelect.value) {
+                        fields.classList.remove('hidden');
+                        state.brainDump.selectedDrug = drugData.find(d => d.id === drugSelect.value);
+                    } else {
+                        fields.classList.add('hidden');
+                        state.brainDump.selectedDrug = null;
+                    }
+                });
+
+                compareBtn.addEventListener('click', () => {
+                    const userAnswers = {
+                        moa: document.getElementById('dump-moa').value,
+                        effects: document.getElementById('dump-effects').value,
+                        nursing: document.getElementById('dump-nursing').value,
+                    };
+                    modalContent.innerHTML = Templates.brainDumpModalContent(userAnswers, state.brainDump.selectedDrug);
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    lucide.createIcons();
+                });
+            },
+
+            // --- Utility Functions ---
+            shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            },
+
+            saveState() {
+                localStorage.setItem('pharmaMasteryState', JSON.stringify(state));
+            },
+            
+            loadState() {
+                const savedState = localStorage.getItem('pharmaMasteryState');
+                if (savedState) {
+                    state = JSON.parse(savedState);
+                } else {
+                   // Initialize if no saved state
+                   state.flashcard.mastered = [];
+                   state.flashcard.review = [];
+                }
+            },
+            
+            resetState() {
+                localStorage.removeItem('pharmaMasteryState');
+                // Re-initialize the state object to its default values
+                state = {
+                    currentView: '#dashboard',
+                    flashcard: { deck: [], currentIndex: 0, mastered: [], review: [] },
+                    quiz: { deck: [], currentQuestion: 0, score: 0, isComplete: false },
+                    brainDump: { selectedDrug: null }
+                };
+                this.router();
+            }
+        };
+        
+        // --- START THE APP ---
+        document.addEventListener('DOMContentLoaded', () => App.init());
+
+    </script>
+</body>
+</html>
