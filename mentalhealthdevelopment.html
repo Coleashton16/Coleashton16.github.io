@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Addiction SDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #3498db;
+            --primary-dark-blue: #2980b9;
+            --secondary-orange: #f39c12;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #ecf0f1;
+            --bg-white: #FFFFFF;
+            --border-light: #e0e4eb;
+            --success-green: #2ecc71;
+            --danger-red: #e74c3c;
+            --shadow-color: rgba(44, 62, 80, 0.1);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            box-sizing: border-box;
+        }
+
+        .quiz-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .quiz-header {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            padding: 0.75rem 2rem;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            position: absolute;
+            left: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
+        .animated-icon {
+            position: absolute;
+            right: 0;
+            animation: inspect 4s ease-in-out infinite;
+        }
+
+        .animated-icon svg { width: 30px; height: 30px; fill: var(--primary-blue); }
+        .quiz-header h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+        .version-info { font-size: 0.7rem; color: var(--text-light); margin-top: 0.2rem; }
+        
+        .quiz-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        #initial-screen { text-align: center; padding: 2rem; }
+        #initial-screen h2 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-dark-blue); }
+        #initial-screen p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 1rem auto 2rem auto; color: var(--text-light); }
+        #start-btn { background-color: var(--primary-blue); color: white; padding: 1rem 2.5rem; font-size: 1.1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
+        #start-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+        
+        #quiz-form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 15px 40px var(--shadow-color);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            box-sizing: border-box;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        
+        #quiz-form.is-transitioning { opacity: 0; transform: scale(0.98); }
+
+        .question-header { font-size: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; flex-shrink: 0; border-bottom: 1px dashed var(--border-light); color: var(--text-light); font-weight: 500; }
+        .question-header strong { font-weight: 700; color: var(--primary-blue); }
+        .question-text { font-size: 1.25rem; font-weight: 500; line-height: 1.6; margin-top: 0; margin-bottom: 1rem; flex-shrink: 0; }
+        
+        .options-container { 
+            flex-grow: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0.5rem 0;
+        }
+
+        .options-container label { padding: 0.8rem 1.2rem; margin-bottom: 0.75rem; font-size: 1rem; border: 2px solid var(--border-light); border-radius: 10px; display: flex; align-items: center; transition: all 0.2s ease-in-out; cursor: pointer; }
+        .options-container label:hover { background-color: var(--bg-light); border-color: var(--primary-blue); }
+        .options-container input { margin-right: 1rem; flex-shrink: 0; transform: scale(1.2); accent-color: var(--primary-blue); }
+        
+        .question-footer { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .flag-container label { cursor: pointer; font-weight: 500; color: var(--text-light); display: flex; align-items: center; }
+        .flag-container input { margin-right: 0.5rem; }
+        .confidence-slider-container { display: flex; align-items: center; gap: 1rem; }
+        .confidence-slider-container label { font-weight: 500; color: var(--text-light); }
+        .confidence-slider { max-width: 150px; }
+
+        #navigation-btn { padding: 0.8rem 2rem; font-size: 1rem; background-color: var(--primary-blue); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        #navigation-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+
+        #results-area { animation: fadeIn 0.8s ease-out; box-sizing: border-box; width: 100%; height: 100%; overflow-y: auto; padding: 2rem; }
+        .results-summary, #confidence-analysis, #study-focus, #results-details { background-color: var(--bg-white); margin: 0 auto 2rem auto; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px var(--shadow-color); max-width: 1000px; }
+        .results-summary { text-align: center; }
+
+        .score-animation-container { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--primary-blue); display: flex; justify-content: center; align-items: center; margin: 1.5rem auto; position: relative; background-color: var(--bg-white); }
+        .score-animation-circle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--success-green) 0% 0%, var(--border-light) 0% 100%); transition: background 1.5s ease-out; }
+        .score-animation-inner { position: relative; z-index: 2; background-color: var(--bg-white); width: calc(100% - 16px); height: calc(100% - 16px); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .score-animation-text { font-size: 2.5rem; font-weight: 800; color: var(--text-dark); }
+        
+        #confidence-analysis h3, #study-focus h3, #results-details h2 { margin-top: 0; border-bottom: 2px solid; padding-bottom: 1rem; font-size: 1.5rem; margin-bottom: 1.5rem; }
+        #confidence-analysis h3 { color: var(--primary-dark-blue); border-color: var(--primary-blue); }
+        #study-focus h3 { color: #c0392b; border-color: #e74c3c; }
+        #results-details h2 { color: var(--text-dark); border-color: var(--border-light); }
+        
+        .result-question { border: 1px solid var(--border-light); padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 12px; }
+        .result-question p strong { display: block; margin-bottom: 1rem; font-size: 1.1em; color: var(--text-dark); }
+        .result-question ul { list-style-type: none; padding: 0; margin: 0; }
+        .result-question li { padding: 0.8rem 1.2rem; border-radius: 8px; margin-bottom: 0.6rem; font-size: 1rem; }
+        .correct-answer-label { background-color: var(--light-green-bg); color: #27ae60; font-weight: 600; }
+        .incorrect-answer-label { background-color: var(--light-red-bg); color: var(--danger-red); text-decoration: line-through; }
+        .missed-correct-answer-label { border: 2px dashed var(--success-green); }
+        .rationale { margin-top: 1.5rem; padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--primary-blue); background-color: var(--light-blue-bg); font-size: 0.95rem; }
+
+        .hidden { display: none !important; }
+        .confetti { position: fixed; width: 10px; height: 10px; opacity: 0; animation: confetti-fall 5s linear forwards; border-radius: 50%; z-index: 9999; }
+        @keyframes confetti-fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+        @keyframes inspect { 0% { transform: rotate(-15deg); } 50% { transform: rotate(10deg); } 100% { transform: rotate(-15deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-wrapper">
+        <header class="quiz-header">
+            <div class="header-content">
+                <div class="logo">VSREP</div>
+                <div>
+                    <h1>Mental Health Development - SDE</h1>
+                    <div class="version-info">
+                        <span>Engine: V4.0</span> | <span>Test: V2.0</span>
+                    </div>
+                </div>
+                <div class="animated-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-content">
+            <div id="initial-screen">
+                <h2>Welcome to the Diagnostic Exam</h2>
+                <p>You will be presented with one question at a time. Once you answer, you cannot go back. Please read each question carefully before proceeding.</p>
+                <button id="start-btn">Start Exam</button>
+            </div>
+
+            <form id="quiz-form" class="hidden"></form>
+
+            <div id="results-area" class="hidden"></div>
+        </main>
+    </div>
+
+<script>
+    const fullQuizData = [ 
+       {
+        "questionText": "A school nurse is observing a child who has extreme difficulty reading the words in a textbook, frequently reverses letters, and struggles to sound out unfamiliar words. The child's math and verbal communication skills are age-appropriate. The nurse suspects which specific learning disorder?",
+        "options": {
+            "A": "Dysgraphia",
+            "B": "Dyscalculia",
+            "C": "Language Disorder",
+            "D": "Dyslexia"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text identifies Dyslexia as the specific learning disorder associated with reading. The child's symptoms, including letter reversal and difficulty with phonics while having adequate math and verbal skills, are classic signs of Dyslexia.",
+        "section": "Specific Learning Disorder"
+    },
+    {
+        "questionText": "A 10-year-old client with Attention Deficit Hyperactivity Disorder (ADHD) is prescribed methylphenidate. Which nursing consideration is the highest priority to include in the teaching plan for the client's parents?",
+        "options": {
+            "A": "The medication should be given at bedtime to promote sleep.",
+            "B": "Monitoring the child's height and weight regularly is crucial.",
+            "C": "The child should increase their intake of caffeine to enhance the medication's effect.",
+            "D": "A CBC and platelet count should be checked annually."
+        },
+        "correctAnswer": "B",
+        "rationale": "The medication table for methylphenidate lists 'Weight loss, growth suppression' as a key adverse effect. Therefore, the priority nursing consideration is to monitor the child's growth pattern (height and weight) to ensure the medication is not impeding normal development. Giving the med at bedtime would cause insomnia, caffeine should be avoided, and while blood counts are monitored, growth suppression is a more common and direct concern.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A child is diagnosed with Tourette's disorder. The nurse would expect to find documentation of which clinical manifestations?",
+        "options": {
+            "A": "Repetitive, purposeless hand-flapping for the past 6 weeks.",
+            "B": "Both multiple motor tics and at least one vocal tic.",
+            "C": "Impairments in motor skill coordination below developmental age.",
+            "D": "Sudden, rapid vocalizations only."
+        },
+        "correctAnswer": "B",
+        "rationale": "Tourette's disorder is the most severe tic disorder. Its defining characteristic is the presence of both motor tics (e.g., blinking, shrugging) and one or more vocal tics (e.g., sniffing, grunting, uttering words). The other options describe stereotypic movement disorder, developmental coordination disorder, or a persistent vocal tic disorder.",
+        "section": "Tic disorders"
+    },
+    {
+        "questionText": "A nurse is assessing a preschooler diagnosed with Autism Spectrum Disorder (ASD). Which findings would be consistent with this diagnosis? Select all that apply.",
+        "options": {
+            "A": "Obsessive focus on a specific spinning toy.",
+            "B": "Becomes extremely distressed when the daily schedule is altered.",
+            "C": "Makes and maintains eye contact easily with strangers.",
+            "D": "Exhibits stereotypical repetitive speech, echoing phrases.",
+            "E": "Covers ears and screams when the fire alarm is tested."
+        },
+        "correctAnswer": ["A", "B", "D", "E"],
+        "rationale": "The text lists several key features of ASD: obsessive focus on specific objects (A), over adherence to routines/rituals and extreme resistance to change (B), stereotypical repetitive speech (D), and hyper- or hypo-reactivity to sensory input (E). Making easy eye contact (C) is a deficit in social relatedness and would be inconsistent with ASD.",
+        "section": "Autism Spectrum Disorders"
+    },
+    {
+        "questionText": "A pediatric client is newly prescribed clonidine for ADHD. The nurse notes the client's pulse is 52 bpm. Which action should the nurse take first?",
+        "options": {
+            "A": "Administer the medication as ordered.",
+            "B": "Document the finding and recheck in one hour.",
+            "C": "Withhold the medication and notify the healthcare provider.",
+            "D": "Perform a thorough skin assessment."
+        },
+        "correctAnswer": "C",
+        "rationale": "Clonidine is an antihypertensive that can cause bradycardia and irregular heartbeat. A pulse of 52 bpm is significantly bradycardic for a child. The priority nursing action is to ensure client safety by withholding the dose and immediately notifying the provider of this finding. While a skin assessment is a consideration for clonidine, the cardiovascular effect is the immediate priority.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A 7-year-old child demonstrates significant difficulty in using words in context, cannot follow multi-step directions, and struggles to express their needs. This clinical picture is most indicative of which neurodevelopmental disorder?",
+        "options": {
+            "A": "Speech disorder",
+            "B": "Stereotypic movement disorder",
+            "C": "Language disorder",
+            "D": "Dyslexia"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text describes a language disorder as 'Difficulty understanding or in using words in context and appropriately,' and notes it 'May be evident by inability to follow directions.' The child's symptoms align perfectly with this definition, distinguishing it from a speech disorder which involves the physical production of sounds.",
+        "section": "Communication Disorders"
+    },
+    {
+        "questionText": "A school nurse is contributing to the plan of care for a child with developmental coordination disorder. The nurse should anticipate that this child will have the most difficulty with which activity?",
+        "options": {
+            "A": "Reading a chapter book.",
+            "B": "Making repetitive humming sounds.",
+            "C": "Tying shoelaces and catching a ball.",
+            "D": "Understanding a science lecture."
+        },
+        "correctAnswer": "C",
+        "rationale": "Developmental coordination disorder is defined by 'Impairments in motor skill development' and 'Coordination below the child’s developmental age.' Activities requiring fine and gross motor coordination, such as tying shoelaces and catching a ball, would be the most challenging for this child.",
+        "section": "Motor Disorders"
+    },
+    {
+        "questionText": "A nurse is conducting an admission assessment on a child with a known intellectual developmental disorder. According to the assessment guidelines, the nurse must prioritize assessing for which associated risk factor?",
+        "options": {
+            "A": "Potential for neglect or abuse.",
+            "B": "The child's favorite foods.",
+            "C": "The presence of a specific learning disorder.",
+            "D": "The family's financial status."
+        },
+        "correctAnswer": "A",
+        "rationale": "The 'Application of The Nursing Process' slide provides specific assessment guidelines, which include 'Assess for signs of potential neglect or abuse.' Children with developmental disorders are a vulnerable population, making this assessment a critical safety priority for the nurse.",
+        "section": "Application of The Nursing Process"
+    },
+    {
+        "questionText": "A client with ADHD is prescribed dextroamphetamine. The nurse reviewing the client's medication list notes they are also taking an MAOI for depression. Which action is most appropriate?",
+        "options": {
+            "A": "Administer both medications as prescribed.",
+            "B": "Give the dextroamphetamine in the morning and the MAOI at night.",
+            "C": "Hold the dextroamphetamine and question the prescription with the provider.",
+            "D": "Educate the client to monitor their blood pressure at home."
+        },
+        "correctAnswer": "C",
+        "rationale": "The nursing considerations for dextroamphetamine explicitly state, 'Don’t use with MAOi.' This combination can cause a life-threatening hypertensive crisis. The nurse has a responsibility to identify this contraindication, hold the medication, and immediately contact the provider to clarify the order.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "Which statement accurately describes the 'paradoxical calming effect' of methylphenidate in children with ADHD?",
+        "options": {
+            "A": "The medication causes sedation and should only be given at night.",
+            "B": "The stimulant medication helps the child's brain to better filter stimuli and improve focus.",
+            "C": "The medication lowers the child's heart rate and blood pressure.",
+            "D": "The medication only works if the child does not have hyperactivity."
+        },
+        "correctAnswer": "B",
+        "rationale": "The paradoxical effect refers to the fact that a stimulant medication leads to a calmer, more focused demeanor in a person with ADHD. This is thought to occur because the medication stimulates underactive areas of the brain responsible for executive function, attention, and impulse control, allowing the child to self-regulate more effectively.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A child is observed to have repetitive, purposeless movements, including rocking back and forth and head banging, for the past month. The movements seem to increase with stress. This is most characteristic of which disorder?",
+        "options": {
+            "A": "Tourette's disorder",
+            "B": "Provisional tic disorder",
+            "C": "Developmental coordination disorder",
+            "D": "Stereotypic movement disorder"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text defines stereotypic movement disorder as 'Repetitive, purposeless movements for 4 weeks or more.' The description of rocking and head banging fits this definition, distinguishing it from the sudden, nonrhythmic nature of tics or the clumsiness of coordination disorder.",
+        "section": "Motor Disorders"
+    },
+    {
+        "questionText": "An adolescent diagnosed with ADHD is struggling to manage frustration and maintain friendships. According to the assessment guidelines for ADHD, this represents a deficit in which area?",
+        "options": {
+            "A": "Ability to complete age-appropriate tasks (CAP).",
+            "B": "Ability to manage frustration and relationships.",
+            "C": "Inappropriate degree of inattention.",
+            "D": "Inappropriate degree of hyperactivity."
+        },
+        "correctAnswer": "B",
+        "rationale": "The assessment slide for ADHD specifically lists 'Manage frustration, relationships' as a key area to evaluate. The client's described struggles align directly with this assessment point, which falls under the broader psychosocial impact of the disorder.",
+        "section": "Attention Deficit Hyperactivity Disorder Assessment"
+    },
+    {
+        "questionText": "A school nurse is working with a student who has illegible handwriting despite adequate teaching and practice, and who struggles to put their thoughts into written sentences. This student may have which specific learning disorder?",
+        "options": {
+            "A": "Dyscalculia",
+            "B": "Dysgraphia",
+            "C": "Dyslexia",
+            "D": "Expressive language disorder"
+        },
+        "correctAnswer": "B",
+        "rationale": "Dysgraphia is the specific learning disorder associated with 'written expression.' The student's difficulties with both the physical act of writing (illegible handwriting) and the cognitive act of composing written thoughts are hallmark signs of this disorder.",
+        "section": "Specific Learning Disorder"
+    },
+    {
+        "questionText": "A nurse is developing a plan of care for a child with an Intellectual Developmental Disorder. The plan must address deficits in which key areas of functioning? Select all that apply.",
+        "options": {
+            "A": "Intellectual functioning",
+            "B": "Motor coordination",
+            "C": "Social functioning",
+            "D": "Daily functioning",
+            "E": "Sensory processing"
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "The text explicitly defines Intellectual Developmental Disorder by deficits in three specific areas: Intellectual functioning (e.g., learning, problem-solving), Social functioning (e.g., communication, friendships), and Daily functioning (e.g., self-care, practical tasks). While motor or sensory issues may be present, they are not part of the core diagnostic criteria.",
+        "section": "Intellectual Development Disorder"
+    },
+    {
+        "questionText": "A parent of a child taking methylphenidate calls the clinic and says, 'My son hasn't slept in two days and his heart is racing.' What is the nurse's best response?",
+        "options": {
+            "A": "This is a normal side effect and should improve in a few weeks.",
+            "B": "Try giving the medication later in the day to help with sleep.",
+            "C": "You should hold the next dose of the medication and we will notify the provider right away.",
+            "D": "Make sure your son is not drinking any soda or coffee."
+        },
+        "correctAnswer": "C",
+        "rationale": "Insomnia and tachycardia/palpitations are listed as adverse effects. Severe insomnia ('hasn't slept in two days') and a racing heart indicate the dose may be too high or the child is having a significant adverse reaction. The safest action is to advise the parent to hold the next dose to prevent worsening symptoms and to inform the provider for further instructions. While avoiding caffeine is correct teaching, it doesn't address the acute problem.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A child in the hospital with Autism Spectrum Disorder becomes highly agitated and begins self-harming behavior after a nurse, trying to be friendly, moved his meal tray to a different spot on the overbed table. The nurse should interpret this behavior as being a reaction to:",
+        "options": {
+            "A": "A deficit in social relatedness.",
+            "B": "Hyper-reactivity to sensory input.",
+            "C": "A desire for attention.",
+            "D": "Disruption of a ritual or routine."
+        },
+        "correctAnswer": "D",
+        "rationale": "A key feature of ASD is 'Over adherence to routines or rituals' and 'Extreme resistance to change.' The seemingly minor act of moving the tray likely violated the child's rigid routine, causing significant distress that manifested as agitation and self-harm. This is a common trigger for meltdowns in individuals with ASD.",
+        "section": "Autism Spectrum Disorders"
+    },
+    {
+        "questionText": "A child has difficulty making the 's' and 'r' sounds, leading to lisping and unclear articulation. The child can understand complex sentences and use age-appropriate grammar. This is an example of which type of disorder?",
+        "options": {
+            "A": "Language disorder",
+            "B": "Social communication disorder",
+            "C": "Speech disorder",
+            "D": "Dysgraphia"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text defines speech disorders as 'Problems in making sounds.' The child's difficulty is with the physical production (articulation) of specific sounds, not with the understanding or use of language itself. This is a classic example of a speech disorder.",
+        "section": "Communication Disorders"
+    },
+    {
+        "questionText": "Which medication used for ADHD is also an antihypertensive agent and requires the nurse to monitor the client's pulse?",
+        "options": {
+            "A": "Methylphenidate",
+            "B": "Dextroamphetamine",
+            "C": "Atomoxetine",
+            "D": "Clonidine"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text specifically notes that Clonidine is also an antihypertensive ('antiHTN, too'). The nursing considerations for clonidine include 'Monitor pulse' due to its effect on heart rate and rhythm, a direct result of its antihypertensive action.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "Which statement indicates that a parent understands the dietary restrictions necessary for a child taking methylphenidate?",
+        "options": {
+            "A": "I will make sure my child eats plenty of high-fat foods to prevent weight loss.",
+            "B": "I will switch from regular soda to diet soda to reduce sugar intake.",
+            "C": "I will eliminate sources of caffeine like chocolate, soda, and energy drinks from my child's diet.",
+            "D": "I will give my child the medication with a large glass of milk."
+        },
+        "correctAnswer": "C",
+        "rationale": "The nursing considerations for methylphenidate state to 'Avoid caffeine.' Caffeine is also a stimulant and can potentiate the adverse effects of methylphenidate, such as nervousness, insomnia, and tachycardia. This statement shows the parent correctly identifies common sources of caffeine that must be avoided.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A child diagnosed with social communication disorder would have the most difficulty in which situation?",
+        "options": {
+            "A": "Writing a short story for an English class.",
+            "B": "Pronouncing difficult words correctly.",
+            "C": "Understanding conversational turn-taking and non-verbal cues.",
+            "D": "Completing a multi-step math problem."
+        },
+        "correctAnswer": "C",
+        "rationale": "Social communication disorder involves deficits in the social use of verbal and nonverbal communication. This includes understanding social rules of conversation like taking turns, interpreting sarcasm or humor, and reading body language. The other options relate to written expression, speech articulation, or math skills.",
+        "section": "Communication Disorders"
+    },
+    {
+        "questionText": "The nurse is reviewing the chart of a child who was just diagnosed with a provisional tic disorder. The nurse understands this diagnosis implies:",
+        "options": {
+            "A": "The child has both motor and vocal tics that have lasted for over a year.",
+            "B": "The child has either motor or vocal tics, but not both, for less than a year.",
+            "C": "The child's tics are purposeful and related to a compulsion.",
+            "D": "The child requires deep brain stimulation (DBS) as an immediate intervention."
+        },
+        "correctAnswer": "B",
+        "rationale": "The tic disorders are on a spectrum of severity and duration. A provisional tic disorder is the least severe form, where tics (either motor or vocal) are present but have not yet persisted for a full year. If they persist longer, the diagnosis may change to persistent motor/vocal tic disorder or Tourette's.",
+        "section": "Tic disorders"
+    },
+    {
+        "questionText": "A child is diagnosed with ADHD. According to the Center for Quality Assessment and Improvement in Mental Health Measures, which element is a key quality indicator for the treatment of this child?",
+        "options": {
+            "A": "Ensuring the child receives antipsychotic medication.",
+            "B": "Completing a referral for post-detoxification services.",
+            "C": "Family involvement in the treatment plan.",
+            "D": "Weekly deep brain stimulation sessions."
+        },
+        "correctAnswer": "C",
+        "rationale": "The quality measures slide explicitly lists 'Family involvement in the treatment of ADHD' as a key measure. This highlights the importance of a collaborative approach, where the family is an integral part of implementing behavioral strategies and monitoring the treatment plan's effectiveness.",
+        "section": "Center for Quality Assessment and Improvement in Mental Health Measures"
+    },
+    {
+        "questionText": "A significant adverse effect of dextroamphetamine is that it can be 'habituating'. The nurse should explain to the adolescent client and parents that this means:",
+        "options": {
+            "A": "The medication has a high potential for creating dependence or addiction.",
+            "B": "The medication will cause a skin rash with long-term use.",
+            "C": "The medication works best if you take it at the same time every day.",
+            "D": "The medication is not effective for the hyperactivity component of ADHD."
+        },
+        "correctAnswer": "A",
+        "rationale": "The term 'habituating' means habit-forming. This is a critical teaching point for stimulant medications, especially amphetamines. It warns that the drug has a potential for abuse, tolerance, and dependence, and must be used exactly as prescribed and monitored closely.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A nurse is performing an initial assessment on a 4-year-old child. Which finding would be a potential indicator of a neurodevelopmental disorder?",
+        "options": {
+            "A": "The child is able to build a tower of 6 blocks.",
+            "B": "The child can follow a two-step command.",
+            "C": "The child does not make eye contact and does not respond to their own name.",
+            "D": "The child can ride a tricycle."
+        },
+        "correctAnswer": "C",
+        "rationale": "Failure to respond to one's own name and a lack of eye contact are significant red flags for a deficit in social relatedness, which is a core feature of Autism Spectrum Disorder. The other options describe age-appropriate developmental milestones for a 4-year-old.",
+        "section": "Autism Spectrum Disorders & Assessment"
+    },
+    {
+        "questionText": "What are the three cardinal features of Attention Deficit Hyperactivity Disorder?",
+        "options": {
+            "A": "Inattention, impulsiveness, and hyperactivity.",
+            "B": "Obsessions, compulsions, and anxiety.",
+            "C": "Repetitive movements, tics, and vocalizations.",
+            "D": "Deficits in social, intellectual, and daily functioning."
+        },
+        "correctAnswer": "A",
+        "rationale": "The text defines ADHD by an 'Inappropriate degree of Inattention, Impulsiveness, Hyperactivity.' These three are the core symptoms that define the disorder.",
+        "section": "Attention Deficit Hyperactivity Disorder"
+    },
+    {
+        "questionText": "A child taking methylphenidate for ADHD begins to exhibit frequent, involuntary eye blinking and throat clearing. The mother reports these behaviors are new. The nurse should be concerned that the medication may have precipitated which condition?",
+        "options": {
+            "A": "Stereotypic movement disorder",
+            "B": "A language disorder",
+            "C": "An allergic reaction",
+            "D": "Tourette's syndrome"
+        },
+        "correctAnswer": "D",
+        "rationale": "The nursing considerations for methylphenidate specifically state it 'May precipitate Tourette’s syndrome.' The new onset of both a motor tic (eye blinking) and a vocal tic (throat clearing) after starting the medication is a significant finding that requires immediate reporting to the provider.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "The implementation phase of the nursing process for a child with a neurodevelopmental disorder primarily focuses on which type of interventions?",
+        "options": {
+            "A": "Pharmacological interventions",
+            "B": "Surgical interventions",
+            "C": "Psychosocial interventions",
+            "D": "Nutritional interventions"
+        },
+        "correctAnswer": "C",
+        "rationale": "The 'Application of The Nursing Process' slide lists 'Psychosocial interventions' as the key component under 'Implementation.' This includes behavioral therapies, family therapy, and strategies to improve social skills and adaptive functioning.",
+        "section": "Application of The Nursing Process"
+    },
+    {
+        "questionText": "A child is diagnosed with a persistent motor tic disorder. Which of the following would be a primary treatment modality the nurse could educate the family about?",
+        "options": {
+            "A": "Psychoanalysis to uncover the root cause.",
+            "B": "A gluten-free diet.",
+            "C": "Behavioral techniques to manage and redirect tics.",
+            "D": "Strict punishment for ticcing behaviors."
+        },
+        "correctAnswer": "C",
+        "rationale": "The 'Treating tic disorders' slide lists 'Behavioral techniques' as a primary treatment. These techniques, such as habit reversal therapy, help the child become aware of the urge to tic and learn a competing response to suppress it. This is a first-line, non-pharmacological approach.",
+        "section": "Tic disorders"
+    },
+    {
+        "questionText": "Which assessment finding in a child is a hallmark of a language disorder rather than a speech disorder?",
+        "options": {
+            "A": "Stuttering when trying to speak.",
+            "B": "Inability to formulate a sentence to ask for juice.",
+            "C": "Mispronouncing the 'th' sound.",
+            "D": "Speaking with an unusually high pitch."
+        },
+        "correctAnswer": "B",
+        "rationale": "A language disorder involves difficulty using words to communicate. The inability to formulate a sentence is a deficit in expressive language. The other options (stuttering, mispronunciation, high pitch) are all related to the physical act of producing speech sounds, which are classified as speech disorders.",
+        "section": "Communication Disorders"
+    },
+    {
+        "questionText": "A child with a new prescription for the clonidine patch for ADHD complains of skin irritation and redness under the patch. Which nursing action is appropriate?",
+        "options": {
+            "A": "Tell the parent to apply the patch to the same spot every day.",
+            "B": "Instruct the parent to discontinue the medication immediately.",
+            "C": "Advise the parent to rotate the patch application site with each new patch.",
+            "D": "Recommend applying a hydrocortisone cream under the patch."
+        },
+        "correctAnswer": "C",
+        "rationale": "The medication table lists 'Skin irregularities' as an adverse effect of clonidine. A common cause of this is contact dermatitis from the patch adhesive. The standard nursing intervention to prevent this is to rotate the site of application, allowing the skin to recover. Applying cream under the patch can interfere with medication delivery.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A 12-year-old student is failing math class despite excelling in English and history. The student struggles to understand quantities, remember basic math facts, and follow sequential procedures in calculations. The nurse should recognize these as signs of:",
+        "options": {
+            "A": "Dyslexia",
+            "B": "Intellectual Developmental Disorder",
+            "C": "Dyscalculia",
+            "D": "Inattention secondary to ADHD"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text identifies Dyscalculia as the specific learning disorder related to math. The student's specific difficulties with understanding numbers and performing calculations, while skills in other academic areas are intact, point directly to this diagnosis.",
+        "section": "Specific Learning Disorder"
+    },
+    {
+        "questionText": "A nurse is caring for a hospitalized adolescent being treated for a substance use disorder who has just completed detoxification. To align with quality measures, what is the nurse's priority action regarding the next step in care?",
+        "options": {
+            "A": "Discharge the client home with a list of AA meetings.",
+            "B": "Ensure a referral is made to a post-detoxification treatment service.",
+            "C": "Prescribe an antipsychotic medication for maintenance.",
+            "D": "Focus only on the client's family involvement."
+        },
+        "correctAnswer": "B",
+        "rationale": "The quality measures slide lists 'Referral to post-detoxification treatment services' as a key indicator. Detox only manages the acute physical withdrawal; it does not treat the underlying addiction. A referral to ongoing treatment (like rehab, IOP, or counseling) is critical to prevent immediate relapse and is a quality standard of care.",
+        "section": "Center for Quality Assessment and Improvement in Mental Health Measures"
+    },
+    {
+        "questionText": "An adolescent is prescribed dextroamphetamine for ADHD. Which client statement indicates a need for immediate intervention by the nurse?",
+        "options": {
+            "A": "I'll take this pill first thing in the morning so I can sleep at night.",
+            "B": "My mom monitors my weight every week to make sure I'm not losing too much.",
+            "C": "I get a little nervous sometimes, but it helps me focus in school.",
+            "D": "Sometimes I take an extra one before a big party to feel more outgoing."
+        },
+        "correctAnswer": "D",
+        "rationale": "The text notes that dextroamphetamine is 'Habituating.' The client's statement that they are using the medication outside of its prescribed purpose for a desired psychoactive effect is a major red flag for misuse and diversion. This behavior indicates a developing substance use problem and requires immediate intervention and education.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "When assessing a child for delays, the nurse's initial step should be to:",
+        "options": {
+            "A": "Immediately refer the child for pharmacologic intervention.",
+            "B": "Compare the child's functioning to age-appropriate developmental milestones.",
+            "C": "Ask the parents if there is a family history of mental illness.",
+            "D": "Conduct a thorough assessment for signs of abuse."
+        },
+        "correctAnswer": "B",
+        "rationale": "The assessment slide states 'Assess for delays.' The fundamental principle of assessing for a developmental delay is to have a thorough knowledge of normal developmental milestones. The nurse must first establish if the child's functioning is actually delayed by comparing it to the expected abilities for their age.",
+        "section": "Application of The Nursing Process"
+    },
+    {
+        "questionText": "A child with ADHD is prescribed methylphenidate. The nurse should advise the parents to schedule the last dose of the day at which time to minimize a common side effect?",
+        "options": {
+            "A": "Right at bedtime.",
+            "B": "At least 6 hours before bedtime.",
+            "C": "With the evening meal.",
+            "D": "Immediately upon arriving home from school."
+        },
+        "correctAnswer": "B",
+        "rationale": "The nursing considerations for methylphenidate explicitly state, 'Give 6 hours before bedtime.' This is to prevent the common and disruptive adverse effect of insomnia. Giving the medication too late in the afternoon or evening will interfere with the child's ability to fall asleep.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A school-age child is unable to hold a pencil correctly, has difficulty using scissors, and is described by the gym teacher as 'very clumsy.' Which neurodevelopmental disorder is most likely?",
+        "options": {
+            "A": "Stereotypic movement disorder",
+            "B": "Developmental coordination disorder",
+            "C": "Persistent motor tic disorder",
+            "D": "Dyspraxia"
+        },
+        "correctAnswer": "B",
+        "rationale": "This disorder is characterized by 'Coordination below the child’s developmental age.' The child's difficulties with both fine motor skills (pencil, scissors) and gross motor skills ('clumsy') are the key indicators of developmental coordination disorder. While dyspraxia is another term for this condition, it is not the term used in the provided text.",
+        "section": "Motor Disorders"
+    },
+    {
+        "questionText": "Which is a key feature that distinguishes Autism Spectrum Disorder from Social Communication Disorder?",
+        "options": {
+            "A": "The presence of language deficits.",
+            "B": "The presence of restricted, repetitive patterns of behavior, interests, or activities.",
+            "C": "The appearance of symptoms in early childhood.",
+            "D": "The difficulty with following directions."
+        },
+        "correctAnswer": "B",
+        "rationale": "Both disorders involve deficits in social communication. However, the diagnostic criteria for ASD require the presence of both social communication deficits AND restricted, repetitive behaviors/interests (like obsessive focus, rituals, stereotypes). Social Communication Disorder is diagnosed when only the communication deficits are present.",
+        "section": "Autism Spectrum Disorders & Communication Disorders"
+    },
+    {
+        "questionText": "The nurse needs to monitor a child's CBC and platelet count when they are taking which ADHD medication?",
+        "options": {
+            "A": "Clonidine",
+            "B": "Guanfacine",
+            "C": "Atomoxetine",
+            "D": "Methylphenidate"
+        },
+        "correctAnswer": "D",
+        "rationale": "The nursing considerations in the medication table for Methylphenidate are the only ones that specify 'Monitor CBC, platelet count.' This indicates that this medication carries a risk for hematological side effects that require laboratory monitoring.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A quality improvement nurse is reviewing charts. The nurse would identify a need for improvement if a child diagnosed with major depression was:",
+        "options": {
+            "A": "Referred for family therapy.",
+            "B": "Unable to get an appointment with a child psychiatrist for over 6 months.",
+            "C": "Prescribed an SSRI medication.",
+            "D": "Provided with a school-based counselor."
+        },
+        "correctAnswer": "B",
+        "rationale": "The quality measures slide includes 'Access to child specialty care for treatment of depression.' A long wait time to see a specialist represents a significant barrier to care and would be identified as a quality measure that is not being met, indicating a need for system improvement.",
+        "section": "Center for Quality Assessment and Improvement in Mental Health Measures"
+    },
+    {
+        "questionText": "A child presents with deficits in intellectual functioning, social functioning, and daily functioning. This clinical picture aligns with which diagnosis?",
+        "options": {
+            "A": "Autism Spectrum Disorder",
+            "B": "Specific Learning Disorder",
+            "C": "Intellectual Development Disorder",
+            "D": "Communication Disorder"
+        },
+        "correctAnswer": "C",
+        "rationale": "The slide for Intellectual Development Disorder explicitly defines it by the presence of deficits in these three domains: intellectual, social, and daily functioning. This triad of impairments is the hallmark of the disorder.",
+        "section": "Intellectual Development Disorder"
+    },
+    {
+        "questionText": "Which treatments may be used for a child with a severe tic disorder? Select all that apply.",
+        "options": {
+            "A": "Behavioral techniques",
+            "B": "Antipsychotic medications",
+            "C": "Deep brain stimulation (DBS)",
+            "D": "Methylphenidate",
+            "E": "Psychoanalysis"
+        },
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "The slide on treating tic disorders explicitly lists 'Behavioral techniques,' 'Medications,' and 'Deep brain stimulation (DBS).' While the specific class of medication is not listed on that slide, antipsychotics are commonly used. Methylphenidate can precipitate tics. Psychoanalysis is not an evidence-based treatment for tics.",
+        "section": "Tic disorders"
+    },
+    {
+        "questionText": "A parent is concerned because their 8-year-old cannot complete his homework without constant supervision, frequently loses his pencils and assignments, and is described by his teacher as 'daydreaming in his own world.' This primarily describes which component of ADHD?",
+        "options": {
+            "A": "Hyperactivity",
+            "B": "Impulsiveness",
+            "C": "Inattention",
+            "D": "Developmental coordination disorder"
+        },
+        "correctAnswer": "C",
+        "rationale": "The behaviors described—difficulty sustaining focus on homework, losing things, and appearing to not listen ('daydreaming')—are classic examples of the 'inappropriate degree of inattention' that characterizes ADHD. The description lacks evidence of excessive movement or rash actions.",
+        "section": "Attention Deficit Hyperactivity Disorder"
+    },
+    {
+        "questionText": "A nurse is creating an educational pamphlet on neurodevelopmental disorders for a community clinic. Which of the following conditions would be included in this category?",
+        "options": {
+            "A": "Childhood-onset schizophrenia",
+            "B": "Separation anxiety disorder",
+            "C": "Oppositional defiant disorder",
+            "D": "Specific learning disorder"
+        },
+        "correctAnswer": "D",
+        "rationale": "The slide 'Neurodevelopmental Disorders' provides a specific list of conditions that fall under this classification. This list includes communication disorders, motor disorders, specific learning disorder, intellectual developmental disorder, ASD, and ADHD. The other options are classified differently in the DSM-5.",
+        "section": "Neurodevelopmental Disorders"
+    },
+    {
+        "questionText": "When administering dextroamphetamine, the nurse must ensure it is given in the morning primarily to prevent which adverse effect?",
+        "options": {
+            "A": "Tachycardia",
+            "B": "Dependence",
+            "C": "Hypertensive crisis",
+            "D": "Insomnia"
+        },
+        "correctAnswer": "D",
+        "rationale": "The medication table for dextroamphetamine lists 'Insomnia' as a key adverse effect and the nursing consideration 'Give in a.m.' This is a direct cause-and-effect relationship. Giving the powerful stimulant in the morning allows its effects to wear off by nighttime, preventing interference with sleep.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A key assessment for a child with suspected ADHD is to determine their ability to 'Complete age appropriate tasks (CAP).' Which observation would be an example of a deficit in this area?",
+        "options": {
+            "A": "A 10-year-old who argues with their siblings.",
+            "B": "A 7-year-old who cannot sit through a 30-minute class lesson without getting up.",
+            "C": "A 12-year-old who prefers playing video games to reading.",
+            "D": "A 9-year-old who sometimes talks back to their parents."
+        },
+        "correctAnswer": "B",
+        "rationale": "Completing an age-appropriate task for a 7-year-old includes the ability to maintain attention for the duration of a typical classroom lesson. The inability to do so, requiring constant movement, is a deficit in this area and a sign of inattention and/or hyperactivity. The other options are common childhood behaviors.",
+        "section": "Attention Deficit Hyperactivity Disorder Assessment"
+    },
+    {
+        "questionText": "A child with ASD is admitted to the pediatric unit. Which nursing action is most important to implement first to prevent distress?",
+        "options": {
+            "A": "Encourage the child to play with other children in the playroom.",
+            "B": "Ask the parents about the child's home routines and rituals.",
+            "C": "Explain the hospital rules and regulations clearly to the child.",
+            "D": "Ensure the television is on in the room to provide a distraction."
+        },
+        "correctAnswer": "B",
+        "rationale": "Individuals with ASD demonstrate 'Over adherence to routines or rituals' and 'Extreme resistance to change.' The hospital is a new, disruptive environment. The most effective proactive strategy to prevent a meltdown is to first understand the child's established home routines from the parents so the staff can try to incorporate them into the hospital stay as much as possible.",
+        "section": "Autism Spectrum Disorders"
+    },
+    {
+        "questionText": "A child's tics, which include eye blinking and shoulder shrugging, have been present for 8 months. There are no vocal tics. Which tic disorder is most likely?",
+        "options": {
+            "A": "Tourette's disorder",
+            "B": "Provisional tic disorder",
+            "C": "Persistent motor tic disorder",
+            "D": "Stereotypic movement disorder"
+        },
+        "correctAnswer": "B",
+        "rationale": "A provisional tic disorder is characterized by one or more motor or vocal tics for less than one year. Since the tics have only been present for 8 months, this is the correct diagnosis. If the motor tics persist for more than a year, the diagnosis would change to persistent motor tic disorder. It is not Tourette's because there are no vocal tics.",
+        "section": "Tic disorders"
+    },
+    {
+        "questionText": "A child is receiving psychobiological interventions for ADHD. The nurse understands this term refers to what?",
+        "options": {
+            "A": "Family therapy and behavioral modification.",
+            "B": "The administration of psychopharmacological agents.",
+            "C": "Deep brain stimulation.",
+            "D": "Assessment for co-morbid learning disorders."
+        },
+        "correctAnswer": "B",
+        "rationale": "The ADHD slide lists 'Psychobiological interventions' followed immediately by 'Psychopharmacology.' Psychobiology is the study of biology's effect on the mind. In this context, the psychobiological intervention is the use of medications (psychopharmacology) that act on the brain's biology to treat the disorder.",
+        "section": "Attention Deficit Hyperactivity Disorder"
+    },
+    {
+        "questionText": "A nurse is teaching a student about expressive language disorder. The student shows understanding by identifying which example?",
+        "options": {
+            "A": "A child who cannot understand when someone is joking.",
+            "B": "A child who has a very limited vocabulary and speaks in short, fragmented sentences.",
+            "C": "A child who cannot make the 'k' sound.",
+            "D": "A child who ignores others when they speak."
+        },
+        "correctAnswer": "B",
+        "rationale": "Expressive language disorder specifically involves difficulty with language output. Having a limited vocabulary and being unable to form grammatically correct, complete sentences to express oneself are the hallmark features of this disorder. The other options relate to social communication, speech articulation, or hearing/attention.",
+        "section": "Communication Disorders"
+    },
+    {
+        "questionText": "A 10-year-old with ADHD, managed with methylphenidate, is admitted for an appendectomy. The client's morning dose is due. In the pre-operative assessment, the mother reports the child has lost 5 lbs in the last month and 'barely eats.' What is the nurse's priority action?",
+        "options": {
+            "A": "Administer the methylphenidate to prevent ADHD symptom exacerbation post-operatively.",
+            "B": "Document the weight loss as an expected side effect of the medication.",
+            "C": "Hold the dose and discuss the significant weight loss and growth suppression concern with the surgeon and provider.",
+            "D": "Request a high-calorie breakfast for the child before the NPO deadline."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text highlights 'Weight loss, growth suppression' as a key adverse effect of methylphenidate requiring monitoring. A 5 lb loss in a 10-year-old is significant. While ADHD management is important, the physiological impact of the medication, especially in a child about to undergo the stress of surgery, is the priority. The nurse must communicate this critical finding to the team, as it may influence both the administration of the current dose and post-operative nutritional planning.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment & Critical Thinking"
+    },
+    {
+        "questionText": "A nurse is evaluating four children. Which child's clinical presentation is most consistent with a primary diagnosis of Autism Spectrum Disorder (ASD)?",
+        "options": {
+            "A": "A child who cannot pronounce the 'r' sound but has many friends and engages in imaginative play.",
+            "B": "A child who is clumsy and struggles with sports but can explain the rules of the game in detail.",
+            "C": "A child who has an extensive vocabulary but does not respond to social cues and lines up toys for hours.",
+            "D": "A child who can read fluently but is unable to complete math homework."
+        },
+        "correctAnswer": "C",
+        "rationale": "This question requires differentiating the core features of ASD from other disorders. The correct option shows a classic ASD profile: a potential splinter skill (extensive vocabulary) combined with core deficits in social relatedness (doesn't respond to social cues) and the presence of restricted, repetitive behaviors (lining up toys). The other options describe a speech disorder, developmental coordination disorder, and dyscalculia respectively.",
+        "section": "Differential Diagnosis"
+    },
+    {
+        "questionText": "A child with Tourette's disorder is prescribed behavioral therapy. The parents ask how this will help. The nurse's best explanation is that these techniques aim to:",
+        "options": {
+            "A": "Completely and permanently eliminate all tics within a few weeks.",
+            "B": "Help the child understand the unconscious reasons for their tics.",
+            "C": "Train the child to recognize the urge to tic and use a competing, less noticeable behavior.",
+            "D": "Punish the child for vocal tics while rewarding them for motor tics."
+        },
+        "correctAnswer": "C",
+        "rationale": "Behavioral techniques for tics, such as Habit Reversal Training (HRT), do not aim for a 'cure' but for management. They focus on increasing awareness of the premonitory urge that precedes a tic and then teaching the child to perform a voluntary behavior that is physically incompatible with the tic until the urge subsides. This is a core concept of this treatment modality.",
+        "section": "Tic disorders Treatment"
+    },
+    {
+        "questionText": "A 7-year-old is brought for an assessment due to concerns about ADHD. The child is inattentive at school, but the nurse learns the child's parents recently had a very hostile divorce and the child witnessed domestic violence. What is the nurse's most appropriate initial action?",
+        "options": {
+            "A": "Recommend starting methylphenidate on a trial basis.",
+            "B": "Complete a CAGE-AID questionnaire on the parents.",
+            "C": "Proceed with the ADHD assessment, focusing on the core symptoms.",
+            "D": "Assess for signs of potential abuse and consider trauma as a differential diagnosis for the inattention."
+        },
+        "correctAnswer": "D",
+        "rationale": "The assessment guidelines state to 'Assess for signs of potential neglect or abuse.' Furthermore, symptoms of trauma in children (inattention, hypervigilance, emotional dysregulation) can mimic ADHD. A thorough and responsible nurse would recognize this significant psychosocial history and prioritize a trauma-informed assessment before concluding the symptoms are from a primary neurodevelopmental disorder.",
+        "section": "Application of The Nursing Process & Critical Thinking"
+    },
+    {
+        "questionText": "A child with stereotypic movement disorder engages in head banging. Which of the following is the priority nursing intervention?",
+        "options": {
+            "A": "Applying restraints to prevent the movement.",
+            "B": "Teaching the child about the dangers of head banging.",
+            "C": "Administering a dose of clonidine.",
+            "D": "Implementing safety measures, such as providing a helmet or padding the environment."
+        },
+        "correctAnswer": "D",
+        "rationale": "The primary responsibility of the nurse is to ensure patient safety. Head banging poses a significant risk of physical injury. While behavioral techniques are the long-term goal, the immediate priority is to modify the environment to prevent harm. Restraints would be inappropriate and overly restrictive without other measures being tried first.",
+        "section": "Motor Disorders & Safety"
+    },
+    {
+        "questionText": "An adolescent client taking dextroamphetamine for ADHD reports that the medication 'doesn't seem to be working anymore.' The nurse recognizes this statement may indicate the development of what?",
+        "options": {
+            "A": "The paradoxical calming effect.",
+            "B": "An allergy to the medication.",
+            "C": "Tolerance to the medication's effects.",
+            "D": "A specific learning disorder."
+        },
+        "correctAnswer": "C",
+        "rationale": "When a medication's effects diminish over time at the same dose, it suggests the client has developed tolerance. Dextroamphetamine is listed as 'habituating,' which encompasses tolerance and dependence. The nurse should assess this further, as it may indicate a need for a dosage adjustment or a re-evaluation of the treatment plan, and also screen for misuse.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A child is diagnosed with both developmental coordination disorder and dysgraphia. The nurse would expect this child to have the most profound difficulty with which school activity?",
+        "options": {
+            "A": "Participating in a debate.",
+            "B": "Giving an oral presentation.",
+            "C": "Taking timed, handwritten notes during a lecture.",
+            "D": "Using a calculator to solve math problems."
+        },
+        "correctAnswer": "C",
+        "rationale": "This question requires synthesizing two diagnoses. Developmental coordination disorder impairs the motor skills needed to physically write quickly and legibly. Dysgraphia impairs the ability to express thoughts in writing. The combination of these two makes taking timed, handwritten notes a task of extreme difficulty, as it challenges both the physical and cognitive aspects of writing simultaneously.",
+        "section": "Motor Disorders & Specific Learning Disorder"
+    },
+    {
+        "questionText": "A child is to be started on guanfacine for ADHD. Which baseline data is essential for the nurse to obtain and document prior to the first dose?",
+        "options": {
+            "A": "Height and weight.",
+            "B": "Complete blood count and platelet count.",
+            "C": "Heart rate and blood pressure.",
+            "D": "A detailed sleep history."
+        },
+        "correctAnswer": "C",
+        "rationale": "Guanfacine, like clonidine, is an alpha-agonist antihypertensive agent. It can cause hypotension, bradycardia, and other cardiovascular effects. It is absolutely critical to have baseline vital signs, particularly heart rate and blood pressure, to monitor the client's response and ensure safety. While height/weight and sleep are important for stimulants, they are not the priority for this class of medication.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A nurse is reviewing the plan of care for a child with an Intellectual Developmental Disorder. The plan includes all the following goals. Which goal addresses the 'daily functioning' deficit?",
+        "options": {
+            "A": "Client will participate in a group game with one other peer.",
+            "B": "Client will identify all letters of the alphabet.",
+            "C": "Client will independently brush their teeth every morning and evening.",
+            "D": "Client will use three-word sentences to make requests."
+        },
+        "correctAnswer": "C",
+        "rationale": "The diagnosis requires deficits in three areas. Daily functioning refers to the practical skills of daily living. Brushing teeth is a key activity of daily living (ADL) and a measure of self-care. The other options address social functioning (A), intellectual functioning (B), and social/communication functioning (D).",
+        "section": "Intellectual Development Disorder"
+    },
+    {
+        "questionText": "A parent reports that their 5-year-old 'doesn't seem to understand when people are sad or happy and never asks for a hug.' This description points to a deficit in which core area of ASD?",
+        "options": {
+            "A": "Stereotypical repetitive speech.",
+            "B": "Obsessive focus on specific objects.",
+            "C": "Deficits in social relatedness and relationships.",
+            "D": "Hyper- or hypo-reactivity to sensory input."
+        },
+        "correctAnswer": "C",
+        "rationale": "The parent is describing a lack of social-emotional reciprocity—the back-and-forth of social interaction. The inability to recognize others' emotions or initiate social comfort (like a hug) is a primary example of a deficit in social relatedness, a hallmark of Autism Spectrum Disorder.",
+        "section": "Autism Spectrum Disorders"
+    },
+    {
+        "questionText": "A child with ADHD has an order for 'Methylphenidate 10 mg PO daily'. The pharmacy dispenses a long-acting formulation. The nurse knows this medication should be administered how?",
+        "options": {
+            "A": "Crushed in applesauce for easier swallowing.",
+            "B": "Given in the evening to last through the next school day.",
+            "C": "Swallowed whole, not crushed or chewed.",
+            "D": "Divided into two doses, one in the morning and one at noon."
+        },
+        "correctAnswer": "C",
+        "rationale": "While the provided text does not explicitly state this, it is a fundamental, unassailable nursing safety principle for administering long-acting/extended-release medications. Crushing or chewing a long-acting formulation would cause 'dose dumping,' releasing the entire day's medication at once, leading to a toxic level and severe adverse effects like tachycardia. The nurse's critical thinking must apply this core safety knowledge.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment & Safety"
+    },
+    {
+        "questionText": "Which of the following scenarios demonstrates a deficit in social communication?",
+        "options": {
+            "A": "A child who can write a creative story but cannot spell many words correctly.",
+            "B": "An adolescent who talks at length about their interests but does not notice their friend is bored and trying to leave.",
+            "C": "A child who frequently rocks back and forth when overstimulated.",
+            "D": "A child who has difficulty learning multiplication tables."
+        },
+        "correctAnswer": "B",
+        "rationale": "Social communication disorder involves the functional use of language in social contexts. This includes reading non-verbal cues (like boredom) and understanding the reciprocal nature of conversation. The adolescent's inability to 'read the room' is a classic example of this deficit. The other options describe dysgraphia, stereotypic movement, and dyscalculia.",
+        "section": "Communication Disorders"
+    },
+    {
+        "questionText": "Which nursing diagnosis would be most appropriate for a child with developmental coordination disorder?",
+        "options": {
+            "A": "Impaired social interaction.",
+            "B": "Risk for injury related to impaired motor coordination.",
+            "C": "Anxiety related to academic failure.",
+            "D": "Delayed growth and development."
+        },
+        "correctAnswer": "B",
+        "rationale": "The primary feature of developmental coordination disorder is impaired motor skills and clumsiness. This directly creates a risk for falls, trips, and other physical injuries. While other diagnoses might apply secondarily, 'Risk for injury' is the most direct and highest priority nursing diagnosis based on the definition of the disorder.",
+        "section": "Motor Disorders & Nursing Process"
+    },
+    {
+        "questionText": "A 15-year-old with ADHD is taking dextroamphetamine. The client's parents report the teen has become irritable, lost weight, and is having trouble sleeping. Which recommendation from the nurse is the most appropriate initial step?",
+        "options": {
+            "A": "Suggesting the parents double the dose to overcome these side effects.",
+            "B": "Recommending an over-the-counter sleep aid for the insomnia.",
+            "C": "Advising the parents to make an appointment with the prescribing provider to re-evaluate the dose or medication.",
+            "D": "Informing the parents that these are normal side effects and no action is needed."
+        },
+        "correctAnswer": "C",
+        "rationale": "Insomnia and weight loss are known adverse effects. The combination of multiple significant side effects requires a medical re-evaluation. The current dose may be too high, or the client may tolerate a different medication (like a non-stimulant) better. It is not within the nurse's scope to recommend dose changes or other medications; the appropriate action is to facilitate a follow-up with the provider.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A nurse is planning care for a child with severe ASD who is hyper-reactive to auditory stimuli. Which intervention is most critical to include in the plan of care?",
+        "options": {
+            "A": "Keep the television on at all times for distraction.",
+            "B": "Place the child in a room near the noisy nurses' station for close monitoring.",
+            "C": "Provide noise-cancelling headphones for the child to wear as needed.",
+            "D": "Speak in a loud, clear voice to ensure the child can hear directions."
+        },
+        "correctAnswer": "C",
+        "rationale": "Hyper-reactivity to sensory input means the child is overly sensitive to sounds. The best intervention is to give the child control over their sensory environment. Noise-cancelling headphones allow the child to block out overwhelming auditory stimuli, reducing agitation and preventing sensory overload. The other options would increase the sensory input, worsening the problem.",
+        "section": "Autism Spectrum Disorders"
+    },
+    {
+        "questionText": "An adolescent with a substance use disorder has completed detoxification. According to the quality measures listed, which action best demonstrates high-quality transitional care?",
+        "options": {
+            "A": "Providing the client with a pamphlet for a local support group.",
+            "B": "Arranging a confirmed intake appointment with an intensive outpatient program (IOP) prior to discharge.",
+            "C": "Ensuring the client has a one-week supply of antipsychotic medication.",
+            "D": "Having the client sign a contract promising not to use substances again."
+        },
+        "correctAnswer": "B",
+        "rationale": "The quality measure states 'Referral to post-detoxification treatment services.' A simple pamphlet is a passive referral. A high-quality, effective referral (often called a 'warm handoff') involves actively connecting the client with the next level of care, such as scheduling a confirmed intake appointment. This greatly increases the likelihood the client will follow through.",
+        "section": "Center for Quality Assessment and Improvement in Mental Health Measures"
+    },
+    {
+        "questionText": "A child's assessment reveals the following: inability to tie shoes at age 9, frequent dropping of objects, and illegible handwriting. The nurse would suspect which two co-occurring disorders?",
+        "options": {
+            "A": "ASD and ADHD.",
+            "B": "Developmental Coordination Disorder and Dysgraphia.",
+            "C": "Tic Disorder and Speech Disorder.",
+            "D": "Intellectual Development Disorder and Language Disorder."
+        },
+        "correctAnswer": "B",
+        "rationale": "The inability to tie shoes and dropping objects points to impaired gross and fine motor skills, characteristic of Developmental Coordination Disorder. The illegible handwriting specifically points to the written expression challenges of Dysgraphia. These two disorders often co-occur.",
+        "section": "Motor Disorders & Specific Learning Disorder"
+    },
+    {
+        "questionText": "Which statement by the parent of a child taking methylphenidate requires immediate clarification and re-education?",
+        "options": {
+            "A": "I give the last dose with a snack right after school around 3 PM.",
+            "B": "I crush the tablet and mix it in pudding because my child can't swallow pills.",
+            "C": "I make sure to schedule regular check-ups with our doctor to check his growth.",
+            "D": "If he has a tic, I'm supposed to call the doctor right away."
+        },
+        "correctAnswer": "B",
+        "rationale": "This question requires applying core medication safety principles. Methylphenidate often comes in a long-acting formulation. Crushing these formulations destroys the time-release mechanism, leading to a potentially toxic overdose. The nurse must immediately correct this dangerous practice. While the timing of the dose (A) is good, and monitoring growth (C) and tics (D) is correct, the act of crushing the pill is the most immediate safety threat.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment & Safety"
+    },
+    {
+        "questionText": "A child is diagnosed with a persistent vocal tic disorder. Which of the following is an example of a symptom of this specific disorder?",
+        "options": {
+            "A": "Repetitive blinking of the eyes.",
+            "B": "Constant hand-wringing.",
+            "C": "Frequent, involuntary throat-clearing sounds.",
+            "D": "Inability to coordinate movements to kick a ball."
+        },
+        "correctAnswer": "C",
+        "rationale": "A persistent vocal tic disorder is characterized by one or more vocalizations that are sudden and nonrhythmic. Throat-clearing is a classic simple vocal tic. Blinking is a motor tic. Hand-wringing is a stereotypic movement. Difficulty kicking a ball is a sign of a coordination disorder.",
+        "section": "Tic disorders"
+    },
+    {
+        "questionText": "The nurse is planning psychosocial interventions for a child with ADHD. The primary goal of these interventions should be to:",
+        "options": {
+            "A": "Identify the correct medication and dosage for the child.",
+            "B": "Improve the child's academic performance in all subjects.",
+            "C": "Enhance the child's coping skills and social functioning.",
+            "D": "Ensure the child never experiences frustration."
+        },
+        "correctAnswer": "C",
+        "rationale": "The text lists 'Psychosocial interventions' as a key implementation for ADHD, and the assessment section highlights deficits in managing 'frustration, relationships.' Therefore, the goal of these interventions (like behavioral therapy) is to teach the child skills to manage their emotions, impulses, and interactions with others, thereby improving their overall social functioning.",
+        "section": "Attention Deficit Hyperactivity Disorder & Implementation"
+    },
+    {
+        "questionText": "A child with Expressive Language Disorder would likely struggle most with which task?",
+        "options": {
+            "A": "Following a verbal command to 'get the red ball.'",
+            "B": "Telling a story about what they did on their summer vacation.",
+            "C": "Hearing the difference between the words 'cat' and 'hat.'",
+            "D": "Pronouncing the word 'spaghetti'."
+        },
+        "correctAnswer": "B",
+        "rationale": "Expressive language disorder involves difficulty with language output. Telling a story requires vocabulary, sentence structure (syntax), and narrative skills, all of which are components of expressive language. Following a command tests receptive language. Hearing differences tests phonological processing. Pronunciation is a speech, not language, issue.",
+        "section": "Communication Disorders"
+    },
+    {
+        "questionText": "A child is started on clonidine for ADHD. The parents report the child seems 'drowsy and out of it' during the day. What is the nurse's best initial advice?",
+        "options": {
+            "A": "This is a serious allergic reaction and you should go to the emergency room.",
+            "B": "This is an expected side effect that often improves after the first few weeks.",
+            "C": "You should give the medication in the morning instead of at night.",
+            "D": "You should add a caffeinated beverage to the child's breakfast to counteract the drowsiness."
+        },
+        "correctAnswer": "B",
+        "rationale": "Sedation is a very common and expected initial side effect of alpha-agonist medications like clonidine. The nurse should first reassure the parent that this is expected and often diminishes with time as the body adjusts. If it persists or is severe, then a call to the provider would be warranted, but initial reassurance and education is the first step.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "An adolescent is being evaluated for a specific learning disorder. The nurse knows that such a diagnosis requires what?",
+        "options": {
+            "A": "The presence of a co-occurring intellectual developmental disorder.",
+            "B": "Difficulties in learning that have persisted for at least 6 months despite targeted intervention.",
+            "C": "A score below average on a standardized IQ test.",
+            "D": "A refusal to attend school for more than 4 weeks."
+        },
+        "correctAnswer": "B",
+        "rationale": "While the provided text is brief, a core diagnostic criterion for any specific learning disorder (per DSM-5, which is the foundation of this content) is that the academic difficulties are persistent and not just a temporary slump. The criteria specify that symptoms must last for at least 6 months even when extra help has been provided. This distinguishes it from other learning challenges.",
+        "section": "Specific Learning Disorder"
+    },
+    {
+        "questionText": "A child taking methylphenidate has a platelet count of 80,000/mm³. What is the priority nursing action?",
+        "options": {
+            "A": "Inform the provider and implement bleeding precautions.",
+            "B": "Document the finding as it is within the normal range.",
+            "C": "Advise the parents to increase iron-rich foods in the child's diet.",
+            "D": "Administer the next dose of methylphenidate as scheduled."
+        },
+        "correctAnswer": "A",
+        "rationale": "A normal platelet count is 150,000-450,000/mm³. A count of 80,000 is thrombocytopenia and poses a significant risk for bleeding. The nurse must recognize this abnormal lab value (which is monitored for this drug), notify the provider immediately, and implement safety measures like bleeding precautions (e.g., soft toothbrush, monitoring for bruising).",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment & Safety"
+    },
+    {
+        "questionText": "Which neurodevelopmental disorder is defined NOT by the presence of abnormal behaviors, but by the absence or impairment of expected developmental skills?",
+        "options": {
+            "A": "Tic Disorder",
+            "B": "Stereotypic Movement Disorder",
+            "C": "Developmental Coordination Disorder",
+            "D": "ADHD"
+        },
+        "correctAnswer": "C",
+        "rationale": "This question requires critical analysis of the definitions. Tic disorder and stereotypic movement disorder are defined by the presence of abnormal movements. ADHD is defined by the presence of excessive inattention/hyperactivity. Developmental Coordination Disorder, however, is defined by a deficit—'Impairments in motor skill development' and coordination that is *below* the expected developmental age.",
+        "section": "Motor Disorders"
+    },
+    {
+        "questionText": "The nurse is reviewing the chart for a client with Tourette's disorder who has not responded to behavioral interventions or multiple medications. The nurse anticipates a consultation might be considered for which advanced treatment?",
+        "options": {
+            "A": "Psychosocial interventions.",
+            "B": "Deep brain stimulation (DBS).",
+            "C": "Methylphenidate.",
+            "D": "Long-term psychoanalysis."
+        },
+        "correctAnswer": "B",
+        "rationale": "The slide on treating tic disorders specifically lists 'Deep brain stimulation (DBS)' as a treatment option. DBS is an advanced neurosurgical procedure reserved for severe, treatment-refractory cases, such as the one described. It is the end-of-the-line treatment mentioned in the text.",
+        "section": "Tic disorders"
+    },
+    {
+        "questionText": "A nurse is assessing four adolescents. Which one requires the most immediate follow-up based on the quality measures for mental health?",
+        "options": {
+            "A": "An adolescent with ADHD whose parents are actively involved in therapy.",
+            "B": "An adolescent with psychosis who has a prescription for an antipsychotic.",
+            "C": "An adolescent with depression who has a referral to a child psychiatrist.",
+            "D": "An adolescent with a substance use disorder who was discharged from detox two days ago and has no follow-up plan."
+        },
+        "correctAnswer": "D",
+        "rationale": "One of the key quality measures listed is 'Referral to post-detoxification treatment services.' The period immediately following detox is one of extremely high risk for relapse and overdose. The lack of any follow-up plan represents a critical gap in the continuum of care and a failure to meet a quality standard, posing an immediate danger to the client.",
+        "section": "Center for Quality Assessment and Improvement in Mental Health Measures"
+    },
+    {
+        "questionText": "A child with ADHD is impulsive. Which of the following is the best example of this symptom?",
+        "options": {
+            "A": "The child cannot finish a board game.",
+            "B": "The child frequently gets up from their seat in class.",
+            "C": "The child often blurts out answers before the question is completed.",
+            "D": "The child has difficulty learning to read."
+        },
+        "correctAnswer": "C",
+        "rationale": "Impulsiveness is acting on a whim without thinking through the consequences. Blurting out answers is a classic example of verbal impulsivity, where the child cannot inhibit their response. Not finishing a game is inattention. Getting up from the seat is hyperactivity. Difficulty reading is a learning disorder.",
+        "section": "Attention Deficit Hyperactivity Disorder"
+    },
+    {
+        "questionText": "The parents of a child with ASD say, 'We don't understand. He can build incredibly complex things with his LEGOs but he can't ask for a drink of water.' The nurse's best explanation is:",
+        "options": {
+            "A": "This is a common sign of defiance and he is choosing not to speak.",
+            "B": "This contrast between a special skill and a functional deficit is a characteristic feature of Autism.",
+            "C": "The ability to build things is not related to intelligence or communication.",
+            "D": "Your child likely has a co-occurring intellectual developmental disorder."
+        },
+        "correctAnswer": "B",
+        "rationale": "This describes a 'splinter skill,' which is common in ASD. An individual may have an advanced or exceptional ability in a specific, often non-social area (like building or music) while having profound deficits in practical, social, or communication skills. Acknowledging this as a known characteristic of ASD validates the parents' confusion and provides a correct, non-judgmental explanation.",
+        "section": "Autism Spectrum Disorders"
+    },
+    {
+        "questionText": "A child who has been taking methylphenidate for 6 months is found to be on the same growth curve percentile for weight and a lower percentile for height. What is the nurse's interpretation of this data?",
+        "options": {
+            "A": "The medication is effectively managing the child's ADHD.",
+            "B": "The child's growth in height may be suppressed by the medication.",
+            "C": "This is a normal growth pattern for a child with ADHD.",
+            "D": "The child's diet needs to be assessed for excessive caffeine."
+        },
+        "correctAnswer": "B",
+        "rationale": "The nursing consideration is to 'Monitor height and weight' due to the risk of 'growth suppression.' While weight may be maintained, a drop in the height percentile (falling off their own growth curve) is a significant indicator that the medication may be suppressing linear growth. This requires reporting to the provider.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "Which disorder is NOT a neurodevelopmental disorder according to the provided list?",
+        "options": {
+            "A": "Specific learning disorder",
+            "B": "ADHD",
+            "C": "Oppositional Defiant Disorder (ODD)",
+            "D": "Motor disorders"
+        },
+        "correctAnswer": "C",
+        "rationale": "The slide 'Neurodevelopmental Disorders' provides a specific, inclusive list. Oppositional Defiant Disorder (ODD), while a common childhood diagnosis, is classified as a Disruptive, Impulse-Control, and Conduct Disorder, not a Neurodevelopmental Disorder. The other options are all explicitly listed.",
+        "section": "Neurodevelopmental Disorders"
+    },
+    {
+        "questionText": "A nurse must provide education on a new prescription for dextroamphetamine. The priority safety topic to discuss with an adolescent client is:",
+        "options": {
+            "A": "The importance of a balanced diet.",
+            "B": "The risk of misuse, dependence, and not sharing the medication.",
+            "C": "The potential for the medication to cause skin irregularities.",
+            "D": "The need to monitor blood pressure daily."
+        },
+        "correctAnswer": "B",
+        "rationale": "The text lists dextroamphetamine as 'habituating' (habit-forming). For an adolescent, who is at higher risk for experimentation and peer pressure, the most critical safety teaching is about the serious risks of misuse, addiction, and the illegality and danger of sharing a controlled substance. While diet is important, the abuse potential is a more acute safety risk.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A child presents with a new onset of repetitive, purposeless hand-waving that has persisted for 5 weeks. There are no other motor or vocal symptoms. What is the most likely diagnosis?",
+        "options": {
+            "A": "Provisional tic disorder",
+            "B": "Stereotypic movement disorder",
+            "C": "Tourette's disorder",
+            "D": "Developmental coordination disorder"
+        },
+        "correctAnswer": "B",
+        "rationale": "The key features are that the movement (hand-waving) is repetitive and purposeless, and has lasted for '4 weeks or more.' This aligns perfectly with the definition of Stereotypic Movement Disorder. It is not a tic because it is not described as sudden or nonrhythmic.",
+        "section": "Motor Disorders"
+    },
+    {
+        "questionText": "A child with ASD screams and drops to the floor every time the vacuum cleaner is turned on. The nurse should identify this as an example of what?",
+        "options": {
+            "A": "Deficits in social relatedness.",
+            "B": "Stereotypical repetitive speech.",
+            "C": "Over adherence to routines or rituals.",
+            "D": "Hyper-reactivity to sensory input."
+        },
+        "correctAnswer": "D",
+        "rationale": "The loud, high-pitched sound of a vacuum cleaner is a common auditory trigger for individuals with sensory sensitivities. The extreme reaction (screaming, dropping) is a classic example of hyper-reactivity (over-responsiveness) to a specific sensory input, a core feature of ASD.",
+        "section": "Autism Spectrum Disorders"
+    },
+    {
+        "questionText": "The nurse is performing a medication reconciliation for a child with a tic disorder. The nurse should question an order for which medication, as it may exacerbate the condition?",
+        "options": {
+            "A": "Guanfacine",
+            "B": "Clonidine",
+            "C": "An antipsychotic",
+            "D": "Methylphenidate"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text explicitly states that methylphenidate 'May precipitate Tourette’s syndrome.' Stimulant medications in general are known to have the potential to unmask or worsen tics in susceptible individuals. The other medications listed are either used to treat tics (guanfacine, clonidine, antipsychotics) or are less likely to cause them.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment & Tic disorders"
+    },
+    {
+        "questionText": "An adolescent with ADHD is successfully treated with medication. The parents state, 'We don't understand why he still needs therapy. The pills fixed the problem.' What is the nurse's best response?",
+        "options": {
+            "A": "The pills only work for inattention, not hyperactivity, so therapy is needed for that.",
+            "B": "Therapy is a required part of the quality measures for ADHD treatment.",
+            "C": "Medication helps manage core symptoms, but psychosocial interventions are crucial for learning coping skills and managing relationships.",
+            "D": "The therapy is just to monitor for side effects from the medication."
+        },
+        "correctAnswer": "C",
+        "rationale": "This response accurately explains the multimodal approach to ADHD treatment. The text lists both 'Psychopharmacology' and 'Psychosocial interventions.' Medication addresses the biological symptoms, but therapy is essential to address the behavioral and social skill deficits (managing frustration, relationships) that the pills alone do not fix.",
+        "section": "Attention Deficit Hyperactivity Disorder & Implementation"
+    },
+    {
+        "questionText": "A child is unable to follow directions like 'put your shoes in the closet' and often uses incorrect grammar when speaking. Which neurodevelopmental disorder is the most likely cause?",
+        "options": {
+            "A": "Speech disorder",
+            "B": "Dyslexia",
+            "C": "Language disorder",
+            "D": "Intellectual Development Disorder"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text states language disorders involve 'Difficulty understanding or in using words in context,' which includes the inability to follow directions (receptive language) and using incorrect grammar (expressive language). While this can be a feature of Intellectual Disability, it can also exist as a primary Language Disorder.",
+        "section": "Communication Disorders"
+    },
+    {
+        "questionText": "All of these interventions are important for a child with a neurodevelopmental disorder. Which one is a component of the 'Assessment' phase of the nursing process?",
+        "options": {
+            "A": "Implementing psychosocial interventions.",
+            "B": "Evaluating the effectiveness of psychopharmacology.",
+            "C": "Assessing for developmental delays against milestones.",
+            "D": "Referring to post-detoxification services."
+        },
+        "correctAnswer": "C",
+        "rationale": "The nursing process follows the order of Assessment, Diagnosis, Planning, Implementation, Evaluation. The text on the nursing process lists 'Assess for delays' under 'Assessment guidelines.' The other options are part of Implementation (A), Evaluation (B), or planning/implementation (D).",
+        "section": "Application of The Nursing Process"
+    },
+    {
+        "questionText": "A child with severe dyslexia is most likely to benefit from which type of intervention?",
+        "options": {
+            "A": "Physical therapy to improve coordination.",
+            "B": "A highly structured, multisensory, phonics-based reading program.",
+            "C": "Medication like methylphenidate to improve focus on words.",
+            "D": "Behavioral therapy to reduce avoidance of reading."
+        },
+        "correctAnswer": "B",
+        "rationale": "Dyslexia is a disorder of language processing, specifically decoding written words based on their sounds (phonics). The evidence-based intervention for dyslexia is intensive, explicit instruction in phonics using multiple senses (e.g., seeing, saying, and tracing letters). While behavioral therapy may help with anxiety, it doesn't address the core reading deficit.",
+        "section": "Specific Learning Disorder"
+    },
+    {
+        "questionText": "A child has an 'inappropriate degree of impulsiveness.' Which of the following nursing diagnoses would be the highest priority?",
+        "options": {
+            "A": "Impaired Social Interaction",
+            "B": "Anxiety",
+            "C": "Risk for Injury",
+            "D": "Deficient Knowledge"
+        },
+        "correctAnswer": "C",
+        "rationale": "Impulsiveness means acting without thinking about the consequences. This puts the child at a very high risk for physical injury from accidents, such as running into the street, jumping from high places, or engaging in dangerous activities without considering the outcome. Safety is always the priority.",
+        "section": "Attention Deficit Hyperactivity Disorder & Nursing Process"
+    },
+    {
+        "questionText": "Which statement about motor disorders is correct?",
+        "options": {
+            "A": "All motor disorders involve both vocal and motor symptoms.",
+            "B": "Stereotypic movements are sudden and nonrhythmic.",
+            "C": "Developmental coordination disorder is primarily a deficit in motor skills, not a presence of extra movements.",
+            "D": "Tics are always purposeful and goal-directed."
+        },
+        "correctAnswer": "C",
+        "rationale": "This question requires differentiating the types of motor disorders. The definition of developmental coordination disorder is an 'impairment' or deficit in skills. In contrast, tic disorders and stereotypic movement disorder are defined by the presence of excess, abnormal movements. Tics are nonrhythmic and purposeless, and only Tourette's requires both motor and vocal symptoms.",
+        "section": "Motor Disorders"
+    },
+    {
+        "questionText": "The nurse is providing education to the family of a child newly diagnosed with ASD. The priority initial topic should be:",
+        "options": {
+            "A": "Long-term residential placement options.",
+            "B": "The importance of structure, routine, and safety.",
+            "C": "Potential for the child to attend college.",
+            "D": "Advanced treatments like deep brain stimulation."
+        },
+        "correctAnswer": "B",
+        "rationale": "For a new diagnosis, the family needs foundational, practical information they can use immediately. The text emphasizes that individuals with ASD have an 'Over adherence to routines or rituals' and 'Extreme resistance to change.' Teaching the family about the vital importance of creating a predictable, structured, and safe environment is the most critical first step to help manage the child's behavior and reduce family stress.",
+        "section": "Autism Spectrum Disorders & Implementation"
+    },
+    {
+        "questionText": "Which client should the nurse on a child psychiatric unit assess first?",
+        "options": {
+            "A": "A child with dyscalculia who is crying because they failed a math quiz.",
+            "B": "A child with ASD who is flapping their hands while watching a video.",
+            "C": "A child who just started taking methylphenidate and is now complaining of chest 'thumping.'",
+            "D": "A child with a provisional tic disorder who just had a throat-clearing tic."
+        },
+        "correctAnswer": "C",
+        "rationale": "This is a prioritization question. Palpitations and tachycardia are listed as adverse effects of methylphenidate. Any complaint of chest 'thumping' or palpitations requires immediate assessment for a potential serious cardiac side effect. The other clients are exhibiting baseline or non-life-threatening symptoms of their respective disorders.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment & Priority"
+    },
+    {
+        "questionText": "The core deficit in all Specific Learning Disorders is that:",
+        "options": {
+            "A": "The child's overall IQ is below average.",
+            "B": "The academic difficulty is caused by a vision or hearing impairment.",
+            "C": "The child's achievement in a specific academic area is significantly below what is expected for their age and intelligence.",
+            "D": "The child has co-occurring ADHD that prevents learning."
+        },
+        "correctAnswer": "C",
+        "rationale": "This is the definition of a learning disorder. It is a discrepancy between a person's overall intellectual ability and their performance in one specific area (reading, writing, or math). The problem is not due to low IQ, sensory deficits, or another disorder, but a specific problem in processing certain types of information.",
+        "section": "Specific Learning Disorder"
+    },
+    {
+        "questionText": "A child's plan of care includes 'psychobiological interventions.' The nurse would expect to see orders for which of the following?",
+        "options": {
+            "A": "Family therapy sessions.",
+            "B": "A structured behavioral modification plan.",
+            "C": "A referral for an IEP at school.",
+            "D": "Medications such as atomoxetine or guanfacine."
+        },
+        "correctAnswer": "D",
+        "rationale": "The text on ADHD lists 'Psychobiological interventions' and 'Psychopharmacology' together, and then lists specific medications. This indicates that in this context, psychobiological interventions refer to the use of medications that affect the brain's biology to manage symptoms.",
+        "section": "Attention Deficit Hyperactivity Disorder"
+    },
+    {
+        "questionText": "Which assessment is unique to clonidine when compared to the stimulant medications listed?",
+        "options": {
+            "A": "Monitoring height and weight.",
+            "B": "Assessing for insomnia.",
+            "C": "Checking for a history of MAOI use.",
+            "D": "Performing a skin assessment for irregularities."
+        },
+        "correctAnswer": "D",
+        "rationale": "The medication table's nursing considerations for clonidine are the only ones that include 'Skin assessment' to check for 'Skin irregularities.' This is typically relevant when the medication is administered via a transdermal patch, which is a common formulation for children.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "Which of these is a 'negative' symptom (a deficit of a normal function) rather than a 'positive' symptom (a presence of an abnormal behavior)?",
+        "options": {
+            "A": "A vocal tic in Tourette's disorder.",
+            "B": "A repetitive, purposeless movement in stereotypic movement disorder.",
+            "C": "Lack of social relatedness in ASD.",
+            "D": "Hyperactivity in ADHD."
+        },
+        "correctAnswer": "C",
+        "rationale": "This question asks to differentiate between positive and negative symptoms. Tics, repetitive movements, and hyperactivity are all 'positive' symptoms—they are abnormal behaviors that are present. A 'deficit in social relatedness' is a 'negative' symptom because it represents a lack or absence of a normal, expected social capacity.",
+        "section": "Differential Diagnosis & Critical Thinking"
+    },
+    {
+        "questionText": "A child with ADHD is managing symptoms well on medication but continues to struggle with 'managing relationships'. Which intervention would be most directly targeted at this specific problem?",
+        "options": {
+            "A": "A dosage increase of methylphenidate.",
+            "B": "A referral for a vision and hearing screening.",
+            "C": "Enrollment in a social skills therapy group.",
+            "D": "A consultation for Deep Brain Stimulation."
+        },
+        "correctAnswer": "C",
+        "rationale": "Medication helps with core symptoms, but skills for managing relationships are learned behaviors. A social skills group is a specific psychosocial intervention designed to teach and allow practice of skills like turn-taking, reading social cues, and managing frustration in a peer context—directly targeting the identified problem.",
+        "section": "Attention Deficit Hyperactivity Disorder & Implementation"
+    },
+    {
+        "questionText": "The parent of a child with ASD states, 'I wish he would just look at me when I talk to him.' The nurse's most therapeutic response is:",
+        "options": {
+            "A": "You need to be firm and demand eye contact; it's the only way he will learn.",
+            "B": "Forcing eye contact can be physically painful or overwhelming for some people with Autism; his listening is more important than his looking.",
+            "C": "His refusal to make eye contact is a sign that he does not respect you.",
+            "D": "Have you had his vision checked recently?"
+        },
+        "correctAnswer": "B",
+        "rationale": "This response provides education and reframes the behavior in a non-judgmental way. It correctly identifies that for many with ASD, direct eye contact is a painful sensory overload, not a sign of defiance. It helps the parent understand the 'why' behind the behavior and prioritizes the function (listening) over the form (eye contact), which can reduce conflict and parental stress.",
+        "section": "Autism Spectrum Disorders & Implementation"
+    },
+    {
+        "questionText": "Which finding requires the nurse to hold a dose of dextroamphetamine and contact the provider?",
+        "options": {
+            "A": "The client reports a decreased appetite.",
+            "B": "The client's heart rate is 120 bpm at rest.",
+            "C": "The client had trouble falling asleep last night.",
+            "D": "The client's parents report improved focus at school."
+        },
+        "correctAnswer": "B",
+        "rationale": "Tachycardia is a listed adverse effect. A resting heart rate of 120 bpm is significantly elevated and indicates a potentially dangerous cardiovascular side effect. While decreased appetite and some trouble with sleep are known, manageable side effects, significant tachycardia requires immediate medical attention and holding the medication that is causing it.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+     {
+        "questionText": "A 9-year-old client with ADHD and a newly diagnosed persistent motor tic disorder is being seen for medication management. Which medication order would the nurse question as potentially inappropriate for this specific client?",
+        "options": {
+            "A": "Guanfacine",
+            "B": "Atomoxetine",
+            "C": "Clonidine",
+            "D": "Methylphenidate"
+        },
+        "correctAnswer": "D",
+        "rationale": "This question requires synthesizing information from two different sections. The medication table for methylphenidate explicitly states it 'May precipitate Tourette’s syndrome' and can worsen tics. For a child with a pre-existing tic disorder, prescribing a stimulant that can exacerbate tics is contraindicated. The non-stimulant options (Guanfacine, Atomoxetine, Clonidine) are safer alternatives in this context.",
+        "section": "Tic disorders & ADHD Drug Treatment"
+    },
+    {
+        "questionText": "The nurse is planning care for a non-verbal child with ASD and a known history of hypo-reactivity to sensory input related to pain. The child has just returned from surgery. What is the nurse's priority action?",
+        "options": {
+            "A": "Administer pain medication only when the child is crying or appears distressed.",
+            "B": "Assess for non-verbal pain cues and administer pain medication on a scheduled basis.",
+            "C": "Ask the parents to inform the nurse if they think the child is in pain.",
+            "D": "Assume the child is not in pain due to their hypo-reactivity."
+        },
+        "correctAnswer": "B",
+        "rationale": "Hypo-reactivity means the child has a diminished response to sensory input like pain. They may not show typical signs of distress even when experiencing significant pain. The nurse's critical thinking must lead them to understand that the absence of cues does not mean the absence of pain. Therefore, the priority is to proactively assess for subtle cues (like guarding or changes in behavior) and provide scheduled analgesia to treat the expected post-operative pain.",
+        "section": "Autism Spectrum Disorders & Critical Thinking"
+    },
+    {
+        "questionText": "Which assessment finding distinguishes a Language Disorder from an Intellectual Developmental Disorder?",
+        "options": {
+            "A": "The client has difficulty following directions.",
+            "B": "The client struggles to form friendships with peers.",
+            "C": "The client's deficits are primarily in communication, with intellectual and daily functioning skills being otherwise age-appropriate.",
+            "D": "The client's symptoms appeared in early childhood."
+        },
+        "correctAnswer": "C",
+        "rationale": "This tests the ability to differentiate between two similar disorders. An Intellectual Developmental Disorder requires deficits in all three domains: intellectual, social, AND daily functioning. A Language Disorder, however, can exist in isolation, where the primary struggle is with the use and/or understanding of language, while other cognitive and adaptive skills are relatively intact.",
+        "section": "Language Disorders & Intellectual Development Disorder"
+    },
+    {
+        "questionText": "A school nurse is reviewing Individualized Education Programs (IEPs). An IEP for a child with dyscalculia should include specific accommodations for which subject?",
+        "options": {
+            "A": "Physical Education",
+            "B": "Reading and Literature",
+            "C": "Art and Music",
+            "D": "Mathematics"
+        },
+        "correctAnswer": "D",
+        "rationale": "The text directly links dyscalculia with 'math'. Therefore, an IEP for a student with this specific learning disorder would need to focus on providing accommodations, such as extended time, use of a calculator, or modified assignments, specifically for mathematics.",
+        "section": "Specific Learning Disorder"
+    },
+    {
+        "questionText": "An adolescent client taking dextroamphetamine for ADHD for two years is requesting an early refill for the second consecutive month, stating they 'keep losing them.' What is the nurse's primary concern?",
+        "options": {
+            "A": "The client may be developing a tolerance to the medication.",
+            "B": "The client's parents may be stealing the medication.",
+            "C": "The medication may be being misused or diverted (sold/given away).",
+            "D": "The client's inattention is worsening, causing them to be forgetful."
+        },
+        "correctAnswer": "C",
+        "rationale": "Dextroamphetamine is listed as 'habituating' (habit-forming). A pattern of 'losing' prescriptions and requesting early refills is a classic red flag for drug diversion or escalating misuse. While tolerance and worsening inattention are possibilities, the immediate concern from a safety and legal standpoint is the high potential for diversion.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment & Safety"
+    },
+    {
+        "questionText": "Which scenario best exemplifies the implementation of 'psychosocial interventions' for a child with a neurodevelopmental disorder?",
+        "options": {
+            "A": "The nurse administers a dose of methylphenidate.",
+            "B": "The nurse teaches a child with ADHD a 'stop, think, then act' strategy to manage impulsivity.",
+            "C": "The nurse monitors a child's height and weight on a growth chart.",
+            "D": "The nurse checks a client's pulse before administering clonidine."
+        },
+        "correctAnswer": "B",
+        "rationale": "Psychosocial interventions are non-pharmacological therapies aimed at improving behavior, coping skills, and social functioning. Teaching a cognitive-behavioral strategy like 'stop, think, then act' is a perfect example of this type of intervention. The other options are examples of assessment or pharmacological intervention.",
+        "section": "Implementation & Psychosocial interventions"
+    },
+    {
+        "questionText": "A child is diagnosed with ASD and exhibits extreme resistance to change. The family is planning a vacation. What is the nurse's best advice to minimize distress?",
+        "options": {
+            "A": "Keep the vacation a surprise to avoid anticipatory anxiety.",
+            "B": "Create a detailed social story with pictures of the hotel and daily itineraries to review for several weeks before the trip.",
+            "C": "Explain that vacations are fun and the child should not be worried.",
+            "D": "Plan to keep the child on their home schedule, including bedtime, without any variation."
+        },
+        "correctAnswer": "B",
+        "rationale": "Given the core feature of 'Extreme resistance to change,' the best strategy is to make the new event as predictable as possible. Social stories and visual schedules are evidence-based psychosocial interventions that prepare the child for a new situation by clearly outlining what to expect, thereby reducing anxiety and the likelihood of a meltdown. A surprise would be disastrous.",
+        "section": "Autism Spectrum Disorders & Implementation"
+    },
+    {
+        "questionText": "A child's CBC results return with a low white blood cell count after three months of taking methylphenidate. Which nursing diagnosis takes priority?",
+        "options": {
+            "A": "Risk for Ineffective Coping",
+            "B": "Risk for Infection",
+            "C": "Risk for Injury",
+            "D": "Anxiety"
+        },
+        "correctAnswer": "B",
+        "rationale": "The text states to 'Monitor CBC' for clients on methylphenidate. A low white blood cell count (leukopenia) impairs the body's ability to fight off pathogens. Therefore, the priority nursing diagnosis is 'Risk for Infection,' and the nurse should implement precautions and education to prevent illness.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment & Nursing Process"
+    },
+    {
+        "questionText": "Which of the following is an example of a 'vocalization' associated with a tic disorder?",
+        "options": {
+            "A": "Head jerking",
+            "B": "Shoulder shrugging",
+            "C": "Sniffing",
+            "D": "Hand flapping"
+        },
+        "correctAnswer": "C",
+        "rationale": "The text defines tics as motor movements or vocalizations. Vocalizations are sounds produced by moving air through the nose, mouth, or throat. Sniffing is a classic simple vocal tic. The other options are examples of motor tics or stereotypic movements.",
+        "section": "Tic disorders"
+    },
+    {
+        "questionText": "The nurse is evaluating the care of an adolescent with depression at a community health clinic. Which finding represents a failure to meet a key quality measure mentioned in the text?",
+        "options": {
+            "A": "The client was referred to and is participating in family therapy.",
+            "B": "The client was not referred to a child and adolescent psychiatrist for specialty care.",
+            "C": "The client was prescribed an SSRI by their primary care provider.",
+            "D": "The client's parents are involved in the treatment plan."
+        },
+        "correctAnswer": "B",
+        "rationale": "The quality measures slide explicitly lists 'Access to child specialty care for treatment of depression.' Failure to refer an adolescent with depression to a specialist (like a child psychiatrist) for evaluation and management represents a gap in care and a failure to meet this quality standard.",
+        "section": "Center for Quality Assessment and Improvement in Mental Health Measures"
+    },
+    {
+        "questionText": "A child with Tourette's disorder experiences a significant increase in both motor and vocal tics when they have to present a project in front of the class. The nurse recognizes this as evidence that:",
+        "options": {
+            "A": "The tics are voluntary and used to avoid the presentation.",
+            "B": "The child's medication dose is too high.",
+            "C": "Tics can be exacerbated by stress and anxiety.",
+            "D": "The child is developing a co-morbid social communication disorder."
+        },
+        "correctAnswer": "C",
+        "rationale": "While not explicitly stated in the text, it is a core clinical principle of tic disorders that the frequency and intensity of tics are highly sensitive to internal states, particularly stress, anxiety, excitement, and fatigue. The nurse's critical thinking should apply this knowledge to interpret the clinical scenario correctly.",
+        "section": "Tic disorders & Critical Thinking"
+    },
+    {
+        "questionText": "The nurse is reviewing the chart of a child prescribed dextroamphetamine. Which co-morbid diagnosis would be a contraindication for this medication?",
+        "options": {
+            "A": "Dyslexia",
+            "B": "A tic disorder",
+            "C": "Hypertension being managed with an MAOI.",
+            "D": "Developmental coordination disorder"
+        },
+        "correctAnswer": "C",
+        "rationale": "This question requires recognizing the most dangerous interaction. The nursing considerations for dextroamphetamine state, 'Don’t use with MAOi.' An MAOI is an older class of antidepressant that can also be used for hypertension. This combination is absolutely contraindicated due to the risk of a hypertensive crisis.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment"
+    },
+    {
+        "questionText": "A child is observed to have difficulty modulating their voice (e.g., speaks too loudly), frequently stands too close to others, and does not understand sarcasm. This pattern is most indicative of:",
+        "options": {
+            "A": "Expressive language disorder",
+            "B": "Social communication disorder",
+            "C": "A speech disorder",
+            "D": "Hyperactivity"
+        },
+        "correctAnswer": "B",
+        "rationale": "These are all examples of deficits in the 'pragmatics' or social rules of language. Modulating volume, understanding personal space (proxemics), and interpreting non-literal language (sarcasm) are hallmark features of a Social Communication Disorder.",
+        "section": "Communication Disorders"
+    },
+    {
+        "questionText": "The nurse is providing education for a child being started on a stimulant medication for ADHD. Which statement by the parent reflects a correct understanding of the medication's therapeutic effect?",
+        "options": {
+            "A": "This medication will cure my child's ADHD over time.",
+            "B": "This medication will sedate my child so they are less active.",
+            "C": "This medication helps the brain's 'control center' work better, which should improve focus.",
+            "D": "This medication only works if my child also avoids all sugar."
+        },
+        "correctAnswer": "C",
+        "rationale": "This is the best explanation of the 'paradoxical calming effect.' The medication stimulates underactive regions of the prefrontal cortex responsible for executive functions like attention and impulse control. Explaining it as helping the 'control center' work better is an accurate and easy-to-understand analogy for a parent.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment & Implementation"
+    },
+    {
+        "questionText": "Which of the following goals is most appropriate for a child diagnosed with Dysgraphia?",
+        "options": {
+            "A": "Child will read a grade-level paragraph aloud without errors.",
+            "B": "Child will correctly solve a 10-problem math worksheet.",
+            "C": "Child will utilize speech-to-text software to compose a 5-sentence paragraph.",
+            "D": "Child will participate in a conversation with a peer for 5 minutes."
+        },
+        "correctAnswer": "C",
+        "rationale": "Dysgraphia is a disorder of written expression. A realistic and appropriate goal would involve using an assistive technology, like speech-to-text software, to bypass the physical and cognitive challenges of writing, allowing the child to express their thoughts effectively.",
+        "section": "Specific Learning Disorder & Nursing Process"
+    },
+    {
+        "questionText": "A nurse is conducting an initial assessment of a child with developmental delays and notes several bruises in various stages of healing. The parents state the child is 'clumsy.' What is the nurse's priority?",
+        "options": {
+            "A": "Document the parents' explanation in the chart.",
+            "B": "Continue with the developmental assessment.",
+            "C": "Report the findings to Child Protective Services according to facility protocol.",
+            "D": "Refer the family to a parenting class."
+        },
+        "correctAnswer": "C",
+        "rationale": "The assessment guidelines state to 'Assess for signs of potential neglect or abuse.' Bruises in various stages of healing are a classic red flag for physical abuse. While the parents may have an explanation, the nurse is a mandated reporter. The absolute priority is to ensure the child's safety by reporting the suspicious findings as required by law.",
+        "section": "Application of The Nursing Process & Safety"
+    },
+    {
+        "questionText": "A child on clonidine for ADHD reports feeling dizzy every time they stand up quickly. The nurse should instruct the child and parents to:",
+        "options": {
+            "A": "Increase salt intake to raise blood pressure.",
+            "B": "Stop the medication immediately.",
+            "C": "Change positions slowly, sitting on the edge of the bed before standing.",
+            "D": "Take the medication with a large meal."
+        },
+        "correctAnswer": "C",
+        "rationale": "Dizziness upon standing is a classic symptom of orthostatic hypotension, a known side effect of the antihypertensive clonidine. The most appropriate and immediate intervention to teach is a safety measure: to change positions gradually to allow the circulatory system time to compensate, thus preventing dizziness and falls.",
+        "section": "Attention Deficit Hyperactivity Disorder Drug Treatment & Implementation"
+    },
+    {
+        "questionText": "Which of these is a key diagnostic criterion for Stereotypic Movement Disorder?",
+        "options": {
+            "A": "The movements are sudden, rapid, and nonrhythmic.",
+            "B": "The movements are repetitive, seemingly driven, and purposeless.",
+            "C": "The movements involve both vocalizations and motor actions.",
+            "D": "The movements impair the child's coordination below their developmental age."
+        },
+        "correctAnswer": "B",
+        "rationale": "This question requires precise knowledge of the definition from the text. The key descriptors for Stereotypic Movement Disorder are that the movements are 'Repetitive' and 'purposeless.' This distinguishes them from tics (sudden, nonrhythmic) and coordination disorders (impaired skill).",
+        "section": "Motor Disorders"
+    },
+    {
+        "questionText": "The nurse is evaluating the effectiveness of a treatment plan for a child with ADHD. Which parental report would indicate the plan is successful?",
+        "options": {
+            "A": "My child's tics have completely disappeared.",
+            "B": "My child no longer needs to follow a routine.",
+            "C": "The teacher reports my child is now able to complete their classwork and has stopped interrupting others.",
+            "D": "My child has gained 10 pounds in the last two months."
+        },
+        "correctAnswer": "C",
+        "rationale": "The core symptoms of ADHD are inattention and impulsivity/hyperactivity. A successful treatment plan would result in a reduction of these symptoms. The teacher's report shows improvement in attention (completing classwork) and impulsivity (stopped interrupting), which are the desired therapeutic outcomes.",
+        "section": "Attention Deficit Hyperactivity Disorder & Evaluation"
+    },
+    {
+        "questionText": "A child with ASD has an obsessive focus on dinosaurs. A hospital procedure is scheduled. Which psychosocial intervention would be most effective in gaining the child's cooperation?",
+        "options": {
+            "A": "Prohibiting any access to dinosaur toys until the procedure is over.",
+            "B": "Incorporating dinosaurs into the explanation and reward system for the procedure.",
+            "C": "Ignoring the interest in dinosaurs as it is not relevant to the medical procedure.",
+            "D": "Explaining the procedure in complex medical terms."
+        },
+        "correctAnswer": "B",
+        "rationale": "This intervention leverages the child's restricted interest as a therapeutic tool. By incorporating the child's preferred subject (dinosaurs) into explanations, distractions, and rewards, the nurse can increase engagement and cooperation. This is a common and effective behavioral strategy for children with ASD.",
+        "section": "Autism Spectrum Disorders & Implementation"
+    }
+    ];
+
+    let finalQuizData = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let confidenceRatings = {};
+    let flaggedForReview = new Set();
+    const NUM_QUESTIONS_TO_SELECT = 30;
+
+    const initialScreen = document.getElementById('initial-screen');
+    const startBtn = document.getElementById('start-btn');
+    const quizForm = document.getElementById('quiz-form');
+    const resultsArea = document.getElementById('results-area');
+
+    function prepareQuizData() {
+        const shuffledPool = [...fullQuizData].sort(() => 0.5 - Math.random());
+        const questionsNeeded = Math.min(NUM_QUESTIONS_TO_SELECT, shuffledPool.length);
+        finalQuizData = shuffledPool.slice(0, questionsNeeded);
+    }
+
+    function prepareAndStartQuiz() {
+        prepareQuizData();
+        if (finalQuizData.length === 0) {
+            alert("No questions loaded.");
+            return;
+        }
+        initialScreen.classList.add('hidden');
+        quizForm.classList.remove('hidden');
+        displayCurrentQuestion();
+    }
+
+    function displayCurrentQuestion() {
+        if (currentQuestionIndex >= finalQuizData.length) return;
+        const qData = finalQuizData[currentQuestionIndex];
+        
+        let optionsHTML = '<div class="options-container">';
+        const inputType = qData.type === 'sata' ? 'checkbox' : 'radio';
+        
+        for (const [key, text] of Object.entries(qData.options)) {
+            optionsHTML += `<label><input type="${inputType}" name="answer" value="${key}"> ${text}</label>`;
+        }
+        optionsHTML += '</div>';
+
+        quizForm.innerHTML = `
+            <div class="question-header">
+                Question <strong>${currentQuestionIndex + 1}</strong> of ${finalQuizData.length}
+            </div>
+            <p class="question-text">${qData.questionText}</p>
+            ${optionsHTML}
+            <div class="question-footer">
+                <div class="flag-container">
+                    <label><input type="checkbox" class="flag-for-review"> Flag for Review</label>
+                </div>
+                <div class="confidence-slider-container">
+                    <label>Confidence:</label>
+                    <input type="range" min="1" max="5" value="3" class="confidence-slider">
+                </div>
+                 <button type="submit" id="navigation-btn">${(currentQuestionIndex === finalQuizData.length - 1) ? "Submit Exam" : "Next Question"}</button>
+            </div>
+        `;
+    }
+    
+    function saveAnswer() {
+        const qData = finalQuizData[currentQuestionIndex];
+        if (!qData) return;
+
+        const selectedOptions = quizForm.querySelectorAll('input[name="answer"]:checked');
+        if (qData.type === 'sata') {
+            userAnswers[currentQuestionIndex] = Array.from(selectedOptions).map(cb => cb.value);
+        } else {
+            userAnswers[currentQuestionIndex] = selectedOptions.length ? selectedOptions[0].value : null;
+        }
+
+        const flagInput = quizForm.querySelector('.flag-for-review');
+        if(flagInput && flagInput.checked) {
+            flaggedForReview.add(currentQuestionIndex);
+        }
+
+        const confidenceInput = quizForm.querySelector('.confidence-slider');
+        if(confidenceInput) {
+            confidenceRatings[currentQuestionIndex] = parseInt(confidenceInput.value, 10);
+        }
+    }
+    
+    // --- FUNCTION RESTORED ---
+    function handleNavigation() {
+        saveAnswer();
+        quizForm.classList.add('is-transitioning');
+        
+        setTimeout(() => {
+            if (currentQuestionIndex < finalQuizData.length - 1) {
+                currentQuestionIndex++;
+                displayCurrentQuestion();
+                quizForm.classList.remove('is-transitioning');
+            } else {
+                submitQuiz();
+            }
+        }, 300);
+    }
+
+    function submitQuiz() {
+        quizForm.classList.add('hidden');
+        resultsArea.classList.remove('hidden');
+        displayResults();
+    }
+    
+    function checkAnswerCorrectness(qData, userAnswer) {
+        if (userAnswer === null || userAnswer === undefined) return false;
+        if (qData.type === 'sata') {
+            if (!Array.isArray(userAnswer) || typeof qData.correctAnswer !== 'string') return false;
+            const sortedUser = [...userAnswer].sort();
+            const sortedCorrect = [...(qData.correctAnswer.split(','))].sort();
+            return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+        }
+        return userAnswer === qData.correctAnswer;
+    }
+
+    function displayResults() {
+        let correctCount = 0;
+        finalQuizData.forEach((q, i) => { if (checkAnswerCorrectness(q, userAnswers[i])) correctCount++; });
+        const score = finalQuizData.length > 0 ? (correctCount / finalQuizData.length) * 100 : 0;
+
+        let resultsHTML = `
+            <div class="results-summary">
+                 <h2>Exam Complete!</h2>
+                 <div class="score-animation-container">
+                    <div class="score-animation-circle"></div>
+                    <div class="score-animation-inner">
+                        <span class="score-animation-text">${score.toFixed(0)}%</span>
+                    </div>
+                 </div>
+                 <p>You answered <strong>${correctCount}</strong> out of <strong>${finalQuizData.length}</strong> questions correctly.</p>
+            </div>
+        `;
+        
+        resultsArea.innerHTML = resultsHTML;
+        resultsArea.innerHTML += generateConfidenceAnalysis();
+        resultsArea.innerHTML += generateStudyFocus();
+        resultsArea.innerHTML += generateDetailedReview();
+
+        setTimeout(() => {
+            const scoreCircle = document.querySelector('.score-animation-circle');
+            if (scoreCircle) {
+                scoreCircle.style.background = `conic-gradient(var(--success-green) ${score}%, var(--border-light) ${score}% 100%)`;
+            }
+        }, 100);
+
+        if (score >= 80) {
+            triggerConfetti();
+        }
+    }
+
+    function generateDetailedReview() {
+        let detailsHTML = '<div id="results-details"><h2>Question Review</h2>';
+        finalQuizData.forEach((qData, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = checkAnswerCorrectness(qData, userAnswer);
+            
+            let resultBodyHTML = '<ul>';
+            for (const [key, text] of Object.entries(qData.options)) {
+                let li_class = '';
+                const isCorrectOpt = qData.type === 'sata' ? qData.correctAnswer.includes(key) : key === qData.correctAnswer;
+                const isUserSelect = Array.isArray(userAnswer) ? userAnswer.includes(key) : key === userAnswer;
+                if (isCorrectOpt) li_class = 'correct-answer-label';
+                if (isUserSelect && !isCorrectOpt) li_class = 'incorrect-answer-label';
+                if (!isUserSelect && isCorrectOpt && !isCorrect) li_class = 'missed-correct-answer-label';
+                resultBodyHTML += `<li class="${li_class}">${text}</li>`;
+            }
+            resultBodyHTML += '</ul>';
+
+            detailsHTML += `
+                <div class="result-question">
+                    <p><strong>Question ${index + 1}: ${qData.questionText}</strong></p>
+                    ${resultBodyHTML}
+                    <div class="rationale"><strong>Rationale:</strong> ${qData.rationale || 'N/A'}</div>
+                </div>`;
+        });
+        detailsHTML += '</div>';
+        return detailsHTML;
+    }
+    
+    function generateConfidenceAnalysis() {
+        let correctAndConfident = 0, correctButUnsure = 0, incorrectAndConfident = 0, incorrectButUnsure = 0;
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const confidence = confidenceRatings[index] || 3;
+            if (confidence >= 4) { if (isCorrect) correctAndConfident++; else incorrectAndConfident++; } 
+            else { if (isCorrect) correctButUnsure++; else incorrectButUnsure++; }
+        });
+        return `
+            <div id="confidence-analysis">
+                <h3>Confidence Analysis</h3>
+                <ul>
+                    <li>Correct & Confident: <strong>${correctAndConfident}</strong></li>
+                    <li>Correct but Unsure: <strong>${correctButUnsure}</strong></li>
+                    <li>Incorrect & Confident: <strong>${incorrectAndConfident}</strong></li>
+                    <li>Incorrect but Unsure: <strong>${incorrectButUnsure}</strong></li>
+                </ul>
+            </div>`;
+    }
+
+    function generateStudyFocus() {
+        const topicCounts = {};
+        finalQuizData.forEach((qData, index) => {
+            if (!checkAnswerCorrectness(qData, userAnswers[index])) {
+                const topic = qData.section || "General";
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+            }
+        });
+        const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+        let focusHTML = '<div id="study-focus"><h3>Personalized Study Focus</h3>';
+        if (sortedTopics.length > 0) {
+            focusHTML += '<p>Based on your performance, focus your review on these topics:</p><ul>';
+            sortedTopics.forEach(topic => { focusHTML += `<li><strong>${topic[0]}</strong> (${topic[1]} item${topic[1] > 1 ? 's' : ''} missed)</li>`; });
+            focusHTML += '</ul>';
+        } else {
+            focusHTML += '<p>Excellent work! No specific weak areas were identified.</p>';
+        }
+        focusHTML += '</div>';
+        return focusHTML;
+    }
+
+    function triggerConfetti() {
+        const numConfetti = 150;
+        for (let i = 0; i < numConfetti; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 90%, 60%)`;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 6000);
+        }
+    }
+
+    startBtn.addEventListener('click', prepareAndStartQuiz);
+    quizForm.addEventListener('submit', e => { 
+        e.preventDefault(); 
+        handleNavigation(); 
+    });
+</script>
+
+</body>
+</html>
