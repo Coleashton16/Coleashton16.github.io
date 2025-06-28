@@ -15,58 +15,29 @@
             background-color: #f0f4f8;
             color: #1e293b;
         }
-        /* Custom scrollbar for better aesthetics */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #e2e8f0;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #94a3b8;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
-        .main-content {
-            transition: opacity 0.3s ease-in-out;
-        }
-        .nav-item.active {
-            background-color: #e0f2fe;
-            color: #0c4a6e;
-            font-weight: 600;
-        }
-        /* Card flip animation */
-        .flashcard-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-        }
-        .flashcard.flipped .flashcard-inner {
-            transform: rotateY(180deg);
-        }
-        .flashcard-front, .flashcard-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 2rem;
-            border-radius: 0.75rem;
-            background-color: white;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-        .flashcard-back {
-            transform: rotateY(180deg);
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .main-content { transition: opacity 0.3s ease-in-out; }
+        .nav-item.active { background-color: #e0f2fe; color: #0c4a6e; font-weight: 600; }
+        .flashcard-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 2rem; border-radius: 0.75rem; background-color: white; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .flashcard-back { transform: rotateY(180deg); }
+
+        /* --- STATIC MOA Visualizer Styles --- */
+        .synapse { position: relative; width: 150px; height: 100px; }
+        .neuron-pre { fill: #93c5fd; stroke: #3b82f6; stroke-width: 1.5; }
+        .neuron-post { fill: #a5b4fc; stroke: #4f46e5; stroke-width: 1.5; }
+        .neurotransmitter { fill: #f87171; }
+        .drug-molecule { fill: #fbbf24; }
+        .receptor { fill: #c7d2fe; }
+        .blocker { fill: #facc15; }
+        .ion { fill: #67e8f9; }
+        
+        .reveal-section { transition: all 0.5s ease-in-out; max-height: 0; overflow: hidden; opacity: 0; transform: translateY(-10px); }
+        .reveal-section.revealed { max-height: 500px; opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
@@ -74,235 +45,63 @@
     <!-- Sidebar Navigation -->
     <aside class="w-64 bg-white border-r border-slate-200 flex flex-col">
         <div class="p-6 border-b border-slate-200">
-            <h1 class="text-xl font-bold text-sky-800">Pharm Mastery</h1>
+            <h1 class="text-xl font-bold text-sky-800">Pharm Mastery <span class="text-xs align-top bg-green-100 text-green-700 p-1 rounded">v3</span></h1>
             <p class="text-sm text-slate-500">Mental Health</p>
         </div>
         <nav id="navigation" class="flex-1 p-4 space-y-2">
-            <a href="#dashboard" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100">
-                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard
-            </a>
-            <a href="#drug-library" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100">
-                <i data-lucide="library" class="w-5 h-5 mr-3"></i> Drug Library
-            </a>
-            <a href="#flashcards" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100">
-                <i data-lucide="layers" class="w-5 h-5 mr-3"></i> Flashcards
-            </a>
-            <a href="#quiz-zone" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100">
-                <i data-lucide="swords" class="w-5 h-5 mr-3"></i> Quiz Zone
-            </a>
-            <a href="#brain-dump" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100">
-                <i data-lucide="brain-circuit" class="w-5 h-5 mr-3"></i> Brain Dump
-            </a>
+            <a href="#dashboard" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard</a>
+            <a href="#drug-library" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100"><i data-lucide="library" class="w-5 h-5 mr-3"></i> Drug Library</a>
+            <a href="#drug-showdown" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100"><i data-lucide="git-compare" class="w-5 h-5 mr-3"></i> Drug Showdown</a>
+            <a href="#flashcards" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100"><i data-lucide="layers" class="w-5 h-5 mr-3"></i> Flashcards</a>
+            <a href="#quiz-zone" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100"><i data-lucide="swords" class="w-5 h-5 mr-3"></i> Quiz Zone</a>
+            <a href="#scenarios" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100"><i data-lucide="clipboard-check" class="w-5 h-5 mr-3"></i> Clinical Scenarios</a>
+            <a href="#brain-dump" class="nav-item flex items-center px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100"><i data-lucide="brain-circuit" class="w-5 h-5 mr-3"></i> Brain Dump</a>
         </nav>
         <div class="p-4 border-t border-slate-200">
-            <button id="reset-progress-btn" class="w-full text-sm text-center text-slate-500 hover:text-red-600">
-                Reset Progress
-            </button>
+            <button id="reset-progress-btn" class="w-full text-sm text-center text-slate-500 hover:text-red-600">Reset Progress</button>
         </div>
     </aside>
 
     <!-- Main Content Area -->
-    <main id="main-content" class="flex-1 bg-slate-50 overflow-y-auto p-8">
-        <!-- Content will be injected here by JavaScript -->
-    </main>
+    <main id="main-content" class="flex-1 bg-slate-50 overflow-y-auto p-8"></main>
     
-    <!-- Modal for Brain Dump Comparison -->
-    <div id="braindump-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
+    <!-- Modals -->
+    <div id="braindump-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="p-6 border-b flex justify-between items-center">
-                <h2 class="text-2xl font-bold">Comparison Results</h2>
-                <button id="close-modal-btn" class="text-slate-500 hover:text-slate-800"><i data-lucide="x"></i></button>
-            </div>
+            <div class="p-6 border-b flex justify-between items-center"><h2 class="text-2xl font-bold">Comparison Results</h2><button id="close-modal-btn" class="text-slate-500 hover:text-slate-800"><i data-lucide="x"></i></button></div>
             <div id="modal-content" class="p-6"></div>
         </div>
     </div>
 
-
     <script>
         // --- DATA STORE ---
-        // All medication data is stored here. This makes the app self-contained.
         const drugData = [
-            // --- Alcohol Withdrawal Meds ---
-            {
-                id: 'diazepam',
-                category: 'Alcohol Withdrawal',
-                name: 'Diazepam',
-                brandNames: 'Valium',
-                class: 'Benzodiazepine',
-                moa: 'Enhances the effect of the neurotransmitter GABA at the GABAA receptor, resulting in sedative, hypnotic, anxiolytic, anticonvulsant, and muscle relaxant properties. Depresses the CNS.',
-                effects: ['Drowsiness, ataxia', 'Hypotension (↓BP)', 'Tachycardia', 'CNS & Respiratory Depression'],
-                nursingConsiderations: ['Monitor vital signs, especially respiratory rate and BP.', 'Do not mix with other IV solutions.', 'High potential for dependence ("Mother\'s little helper").', 'Withdrawal symptoms can be severe: vomiting, sweating, cramps, tremors. Taper off slowly.'],
-                mnemonic: 'A "Dia"-sy feeling of calm from this Benzodiazepine, but don\'t get too relaxed and forget to breathe!'
-            },
-            {
-                id: 'chlordiazepoxide',
-                category: 'Alcohol Withdrawal',
-                name: 'Chlordiazepoxide',
-                brandNames: 'Librium',
-                class: 'Benzodiazepine',
-                moa: 'Potentiates the effects of GABA, a major inhibitory neurotransmitter, leading to CNS depression and sedation.',
-                effects: ['Lethargy, hangover feeling', 'Respiratory depression', 'Hypotension (↓BP)'],
-                nursingConsiderations: ['Primarily used for alcohol withdrawal.', 'Highly habituating; use short-term.', 'Monitor for excessive sedation.', 'Assess for signs of dependence.'],
-                mnemonic: 'Get "rid-o-the-pox" of withdrawal with Chlordiazepoxide.'
-            },
-            {
-                id: 'lorazepam',
-                category: 'Alcohol Withdrawal',
-                name: 'Lorazepam',
-                brandNames: 'Ativan',
-                class: 'Benzodiazepine (Anxiolytic)',
-                moa: 'Binds to benzodiazepine receptors on the postsynaptic GABA neuron at several sites within the CNS, increasing GABA\'s inhibitory effects.',
-                effects: ['Lightheadedness', 'Hepatic dysfunction', 'Orthostatic hypotension (↓BP)', 'Increased salivation'],
-                nursingConsiderations: ['Avoid concurrent use with alcohol or other CNS depressants.', 'Monitor liver function tests (LFTs).', 'Do not discontinue abruptly to avoid withdrawal.', 'Good for patients with liver issues as it has a simpler metabolism.'],
-                mnemonic: '"Lora" the Explorer needs to "pam-per" her anxiety, but watches her liver on the journey.'
-            },
-            // --- Opioid Addiction Meds ---
-            {
-                id: 'methadone',
-                category: 'Opioid Addiction',
-                name: 'Methadone',
-                brandNames: 'Dolophine, Methadose',
-                class: 'Opioid Agonist',
-                moa: 'A long-acting synthetic opioid agonist that binds to mu-opioid receptors. It mitigates withdrawal symptoms and reduces cravings by maintaining a stable level of opioid in the body, without producing the same euphoric high.',
-                effects: ['QT prolongation', 'Respiratory depression', 'Constipation', 'Sedation', 'Hypotension'],
-                nursingConsiderations: ['Obtain baseline EKG to monitor for QT prolongation.', 'High risk for overdose if taken with other CNS depressants.', 'Must be dispensed through a licensed opioid treatment program.', 'Long half-life means risk of accumulation.'],
-                mnemonic: '"Metha-DONE" with heroin, now on a safer, longer-acting path.'
-            },
-            {
-                id: 'buprenorphine',
-                category: 'Opioid Addiction',
-                name: 'Buprenorphine',
-                brandNames: 'Subutex, Suboxone (with naloxone)',
-                class: 'Partial Opioid Agonist',
-                moa: 'A partial agonist at the mu-opioid receptor and an antagonist at the kappa receptor. It produces a ceiling effect, meaning its opioid effects plateau at higher doses, reducing the risk of respiratory depression and overdose.',
-                effects: ['Headache', 'Nausea/Vomiting', 'Constipation', 'Precipitated withdrawal if taken too soon after a full agonist.'],
-                nursingConsiderations: ['Educate patient to wait until they are in moderate withdrawal before taking the first dose.', 'Suboxone formulation contains naloxone to deter IV abuse.', 'Monitor liver function.', 'Can be prescribed in an office setting.'],
-                mnemonic: '"Bu-PREVENTS" the high, while keeping withdrawal at bay.'
-            },
-            {
-                id: 'naltrexone',
-                category: 'Opioid Addiction',
-                name: 'Naltrexone',
-                brandNames: 'Vivitrol (injectable), ReVia',
-                class: 'Opioid Antagonist',
-                moa: 'Blocks the euphoric and sedative effects of opioids by competitively binding to opioid receptors. It does not produce any opioid effects and is not addictive.',
-                effects: ['Nausea', 'Headache', 'Anxiety', 'Liver damage at high doses.'],
-                nursingConsiderations: ['Patient must be opioid-free for 7-10 days before starting to avoid severe, sudden withdrawal.', 'Monitor liver function tests.', 'Will block the effects of opioid pain medications if needed for surgery/injury.', 'Also used for alcohol use disorder.'],
-                mnemonic: '"NAL-TREX-ONE" blocks the opioid fun, so there is NONE.'
-            },
-            // --- ADHD Meds ---
-            {
-                id: 'methylphenidate',
-                category: 'ADHD',
-                name: 'Methylphenidate',
-                brandNames: 'Ritalin, Concerta',
-                class: 'CNS Stimulant',
-                moa: 'Blocks the reuptake of norepinephrine and dopamine into the presynaptic neuron, increasing their concentration in the synapse. This leads to improved attention and focus.',
-                effects: ['Nervousness, insomnia', 'Palpitations, tachycardia', 'Weight loss, growth suppression in children', 'May precipitate tics (Tourette\'s)'],
-                nursingConsiderations: ['Has a paradoxical calming effect in ADHD.', 'Monitor height and weight in children.', 'Monitor CBC and platelet count.', 'Avoid caffeine.', 'Administer last dose at least 6 hours before bedtime to prevent insomnia.'],
-                mnemonic: '"Methyl-PHEN-tastic" for focus, but give it in the AM or you\'ll be up with the owls!'
-            },
-            {
-                id: 'dextroamphetamine',
-                category: 'ADHD',
-                name: 'Dextroamphetamine',
-                brandNames: 'Dexedrine, Adderall (with amphetamine)',
-                class: 'CNS Stimulant',
-                moa: 'Promotes the release of dopamine and norepinephrine from presynaptic nerve terminals and blocks their reuptake.',
-                effects: ['Insomnia', 'Tachycardia, palpitations', 'Highly habituating'],
-                nursingConsiderations: ['Give in the morning.', 'Do not use with MAOIs (risk of hypertensive crisis).', 'Monitor for signs of abuse/dependence.', 'Assess cardiovascular status before starting.'],
-                mnemonic: '"DEX" helps you focus on your "TRO"phies, but it\'s a fast track you can get stuck on.'
-            },
-            {
-                id: 'clonidine',
-                category: 'ADHD',
-                name: 'Clonidine',
-                brandNames: 'Catapres, Kapvay',
-                class: 'Alpha-2 Adrenergic Agonist (Antihypertensive)',
-                moa: 'Stimulates alpha-2 adrenergic receptors in the brain, reducing sympathetic outflow from the CNS. In ADHD, it\'s thought to improve prefrontal cortex function, aiding in impulse control and attention.',
-                effects: ['Irregular heartbeat', 'Skin irregularities (with patch)', 'Anxiety', 'Sedation, dizziness'],
-                nursingConsiderations: ['Monitor pulse and blood pressure.', 'Perform skin assessment if using transdermal patch.', 'Do not stop abruptly (can cause rebound hypertension).', 'Often used as an adjunctive therapy or for children who can\'t tolerate stimulants.'],
-                mnemonic: '"CLON-idine" helps "CLONE" a sense of calm and control.'
-            },
-            {
-                id: 'atomoxetine',
-                category: 'ADHD',
-                name: 'Atomoxetine',
-                brandNames: 'Strattera',
-                class: 'Norepinephrine Reuptake Inhibitor (SNRI)',
-                moa: 'Selectively inhibits the presynaptic reuptake of norepinephrine, increasing its levels in the brain. It is not a stimulant.',
-                effects: ['GI upset', 'Insomnia', 'Dizziness', 'Increased risk of suicidal ideation in children/adolescents.'],
-                nursingConsiderations: ['Non-stimulant option for ADHD.', 'Takes 1-4 weeks for full effect.', 'Monitor for signs of suicidal thinking or behavior.', 'Monitor liver function.'],
-                mnemonic: 'This "ATOM" is not a stimulant, but it still helps "STRAT"egize and focus.'
-            },
-            // --- Antipsychotics ---
-            {
-                id: 'haloperidol',
-                category: 'Antipsychotics',
-                name: 'Haloperidol',
-                brandNames: 'Haldol',
-                class: 'First-Generation Antipsychotic (Typical)',
-                moa: 'Strongly blocks D2 (dopamine) receptors in the brain, which is effective at treating positive symptoms of schizophrenia (hallucinations, delusions).',
-                effects: ['High risk of Extrapyramidal Side Effects (EPS): dystonia, akathisia, pseudoparkinsonism.', 'Tardive Dyskinesia (long-term risk).', 'Neuroleptic Malignant Syndrome (NMS).', 'Anticholinergic effects.'],
-                nursingConsiderations: ['Primarily targets POSITIVE symptoms.', 'Monitor for EPS and administer anticholinergic meds (like benztropine) as needed.', 'Assess for signs of NMS (fever, rigidity, autonomic instability) - a medical emergency!', 'Can be given as a long-acting injectable (decanoate).'],
-                mnemonic: '"HAL"loperidol can stop the "HAL"lucinations, but watch for those shaky side effects.'
-            },
-            {
-                id: 'fluphenazine',
-                category: 'Antipsychotics',
-                name: 'Fluphenazine',
-                brandNames: 'Prolixin',
-                class: 'First-Generation Antipsychotic (Typical)',
-                moa: 'A potent D2 dopamine receptor antagonist, similar to haloperidol, which helps control positive psychotic symptoms.',
-                effects: ['High risk of EPS.', 'Anticholinergic effects.', 'Sedation', 'Photosensitivity.'],
-                nursingConsiderations: ['Like haloperidol, mainly treats POSITIVE symptoms.', 'Monitor for and manage EPS.', 'Also available as a long-acting decanoate injection for improved adherence.', 'Educate patient on using sun protection.'],
-                mnemonic: '"Flu-PHEN-azine" flies away the psychosis, but can make you feel stiff as a frozen hen.'
-            },
-            // --- Personality Disorders ---
-            {
-                id: 'clomipramine',
-                category: 'Personality Disorders',
-                name: 'Clomipramine',
-                brandNames: 'Anafranil',
-                class: 'Tricyclic Antidepressant (TCA)',
-                moa: 'Potently inhibits the reuptake of serotonin and, to a lesser extent, norepinephrine. This is particularly effective for obsessive-compulsive features.',
-                effects: ['Anticholinergic effects (dry mouth, constipation, blurry vision).', 'Sedation', 'Orthostatic hypotension.', 'High risk of fatality in overdose.'],
-                nursingConsiderations: ['Often used for Obsessive-Compulsive Personality Disorder (OCPD) traits.', 'Monitor for suicidal ideation, especially at the beginning of treatment.', 'Advise patient to rise slowly to prevent falls.', 'High overdose risk requires careful patient selection.'],
-                mnemonic: '"CLOM-ipramine" helps calm O-C-D, but it\'s an older key (TCA).'
-            },
-            {
-                id: 'fluoxetine',
-                category: 'Personality Disorders',
-                name: 'Fluoxetine',
-                brandNames: 'Prozac',
-                class: 'Selective Serotonin Reuptake Inhibitor (SSRI)',
-                moa: 'Selectively inhibits the reuptake of serotonin in the synaptic cleft, increasing its availability and improving mood and reducing anxiety/obsessions.',
-                effects: ['Anxiety, insomnia (initially).', 'Sexual dysfunction.', 'Headache, nausea.', 'Serotonin Syndrome risk.'],
-                nursingConsiderations: ['A first-line treatment for anxiety, depression, and obsessions in personality disorders.', 'Safer profile than TCAs like clomipramine.', 'Long half-life, which can be beneficial if a dose is missed.', 'Monitor for Serotonin Syndrome (agitation, hyperreflexia, fever).'],
-                mnemonic: '"FLU-oxetine" helps the serotonin "FLU-sh" through, a modern solution for mood and obsessions.'
-            }
+            { id: 'diazepam', category: 'Alcohol Withdrawal', name: 'Diazepam', brandNames: 'Valium', class: 'Benzodiazepine', moa: 'Enhances the effect of GABA by binding to a separate site on the GABA-A receptor, increasing the frequency of chloride channel opening.', effects: ['Drowsiness, ataxia', 'Hypotension', 'Tachycardia', 'Respiratory Depression'], nursingConsiderations: ['Monitor vital signs closely, especially RR.', 'Do not mix with other IV solutions.', 'High potential for dependence; use short-term.', 'Taper dose to prevent severe withdrawal.'], mnemonic: 'A "Dia"-sy feeling of calm, but don\'t get too relaxed and forget to breathe!', visualizerType: 'benzo' },
+            { id: 'chlordiazepoxide', category: 'Alcohol Withdrawal', name: 'Chlordiazepoxide', brandNames: 'Librium', class: 'Benzodiazepine', moa: 'Potentiates GABA by binding to the benzodiazepine site on the GABA-A receptor, causing CNS depression.', effects: ['Lethargy, hangover feeling', 'Respiratory depression', 'Hypotension'], nursingConsiderations: ['A cornerstone of alcohol withdrawal protocols.', 'Highly habituating.', 'Monitor for over-sedation.'], mnemonic: 'Get "rid-o-the-pox" of withdrawal with Chlordiazepoxide.', visualizerType: 'benzo' },
+            { id: 'lorazepam', category: 'Alcohol Withdrawal', name: 'Lorazepam', brandNames: 'Ativan', class: 'Benzodiazepine (Anxiolytic)', moa: 'Increases GABA\'s inhibitory effects by binding to the BZD site on GABA-A receptors.', effects: ['Lightheadedness', 'Hepatic dysfunction', 'Orthostatic hypotension'], nursingConsiderations: ['Avoid other CNS depressants.', 'Monitor liver function (safer choice in liver impairment).', 'Do not discontinue abruptly.'], mnemonic: '"Lora" the Explorer needs to "pam-per" her anxiety, and it\'s safer for her liver.', visualizerType: 'benzo' },
+            { id: 'methadone', category: 'Opioid Addiction', name: 'Methadone', brandNames: 'Dolophine', class: 'Opioid Agonist', moa: 'A long-acting synthetic full agonist that binds to and activates mu-opioid receptors, preventing withdrawal and cravings.', effects: ['QT prolongation (cardiac risk)', 'Respiratory depression', 'Constipation'], nursingConsiderations: ['Obtain baseline EKG to monitor QT interval.', 'High risk for overdose.', 'Must be dispensed through licensed programs.'], mnemonic: '"Metha-DONE" with heroin, now on a safer, longer-acting path.', visualizerType: 'agonist' },
+            { id: 'buprenorphine', category: 'Opioid Addiction', name: 'Buprenorphine', brandNames: 'Subutex', class: 'Partial Opioid Agonist', moa: 'A partial agonist at the mu-opioid receptor with a ceiling effect, reducing overdose risk.', effects: ['Headache', 'Nausea/Vomiting', 'Can precipitate withdrawal if taken too soon after full agonist.'], nursingConsiderations: ['Educate patient to wait for moderate withdrawal before first dose.', 'Suboxone (with naloxone) deters IV abuse.', 'Monitor liver function.'], mnemonic: '"Bu-PREVENTS" the high, while keeping withdrawal at bay.', visualizerType: 'agonist' },
+            { id: 'naltrexone', category: 'Opioid Addiction', name: 'Naltrexone', brandNames: 'Vivitrol', class: 'Opioid Antagonist', moa: 'A competitive antagonist that blocks the effects of opioids by binding to mu-opioid receptors without activating them.', effects: ['Nausea', 'Headache', 'Anxiety', 'Risk of hepatotoxicity.'], nursingConsiderations: ['Patient must be opioid-free for 7-10 days.', 'Monitor LFTs.', 'Will block the effect of opioid pain medication.'], mnemonic: '"NAL-TREX-ONE" blocks the opioid fun, so there is NONE.', visualizerType: 'antagonist' },
+            { id: 'methylphenidate', category: 'ADHD', name: 'Methylphenidate', brandNames: 'Ritalin', class: 'CNS Stimulant', moa: 'Blocks the reuptake of norepinephrine and dopamine, increasing their concentration and availability in the synapse.', effects: ['Nervousness, insomnia', 'Tachycardia', 'Weight loss/growth suppression'], nursingConsiderations: ['Has a paradoxical calming effect in ADHD.', 'Monitor height and weight in children.', 'Avoid caffeine. Give last dose >6h before bedtime.'], mnemonic: '"Methyl-PHEN-tastic" for focus, but give it in the AM!', visualizerType: 'stimulant' },
+            { id: 'dextroamphetamine', category: 'ADHD', name: 'Dextroamphetamine', brandNames: 'Dexedrine', class: 'CNS Stimulant', moa: 'Promotes the release of dopamine and norepinephrine from presynaptic terminals and blocks their reuptake.', effects: ['Insomnia', 'Tachycardia, palpitations', 'Highly habituating.'], nursingConsiderations: ['Give in the morning.', 'Do not use with MAOIs (hypertensive crisis risk).', 'Monitor for abuse/dependence.'], mnemonic: '"DEX" helps you focus on your "TRO"phies, but it\'s a fast track.', visualizerType: 'stimulant' },
+            { id: 'clonidine', category: 'ADHD', name: 'Clonidine', brandNames: 'Catapres', class: 'Alpha-2 Adrenergic Agonist', moa: 'Stimulates alpha-2 adrenergic receptors in the brain, reducing sympathetic outflow from the CNS.', effects: ['Hypotension, bradycardia', 'Sedation, dizziness', 'Dry mouth'], nursingConsiderations: ['Monitor pulse and BP.', 'Do not stop abruptly (rebound hypertension).', 'Often used as an adjunctive or for stimulant-intolerant patients.'], mnemonic: '"CLON-idine" helps "CLONE" a sense of calm and control.', visualizerType: 'agonist' },
+            { id: 'atomoxetine', category: 'ADHD', name: 'Atomoxetine', brandNames: 'Strattera', class: 'SNRI', moa: 'Selectively inhibits the presynaptic reuptake of norepinephrine. NOT a stimulant.', effects: ['GI upset', 'Insomnia', 'Dizziness', 'Increased risk of suicidal ideation in children.'], nursingConsiderations: ['Non-stimulant option for ADHD.', 'Takes 1-4 weeks for full effect.', 'Monitor for suicidal thinking and liver injury.'], mnemonic: 'This "ATOM" is not a stimulant, but still helps "STRAT"egize.', visualizerType: 'ssri' },
+            { id: 'haloperidol', category: 'Antipsychotics', name: 'Haloperidol', brandNames: 'Haldol', class: 'First-Gen Antipsychotic', moa: 'Strongly blocks D2 (dopamine) receptors without activating them, which is effective for positive symptoms.', effects: ['High risk of Extrapyramidal Side Effects (EPS)', 'Tardive Dyskinesia (TD)', 'Neuroleptic Malignant Syndrome (NMS)'], nursingConsiderations: ['Primarily targets POSITIVE symptoms.', 'Monitor for EPS, TD, and NMS.', 'Can be given as a long-acting injectable.'], mnemonic: '"HAL"loperidol can stop the "HAL"lucinations, but watch for the shakes.', visualizerType: 'antagonist' },
+            { id: 'fluphenazine', category: 'Antipsychotics', name: 'Fluphenazine', brandNames: 'Prolixin', class: 'First-Gen Antipsychotic', moa: 'A potent D2 dopamine receptor antagonist that blocks the receptor site.', effects: ['High risk of EPS', 'Anticholinergic effects', 'Sedation', 'Photosensitivity'], nursingConsiderations: ['Treats POSITIVE symptoms.', 'Monitor and manage EPS.', 'Available as long-acting injectable.'], mnemonic: '"Flu-PHEN-azine" flies away psychosis but can make you stiff as a hen.', visualizerType: 'antagonist' },
+            { id: 'clomipramine', category: 'Personality Disorders', name: 'Clomipramine', brandNames: 'Anafranil', class: 'Tricyclic Antidepressant (TCA)', moa: 'Potently inhibits the reuptake of serotonin from the synapse, increasing its availability.', effects: ['Strong Anticholinergic effects', 'Sedation', 'Orthostatic hypotension', 'High overdose fatality risk.'], nursingConsiderations: ['For Obsessive-Compulsive traits.', 'Monitor for suicide risk.', 'Advise patient to rise slowly.'], mnemonic: '"CLOM-ipramine" helps calm O-C-D, but it\'s an older, riskier key (TCA).', visualizerType: 'ssri' },
+            { id: 'fluoxetine', category: 'Personality Disorders', name: 'Fluoxetine', brandNames: 'Prozac', class: 'SSRI', moa: 'Selectively inhibits serotonin reuptake, leaving more serotonin available in the synaptic cleft.', effects: ['Anxiety, insomnia (initially)', 'Sexual dysfunction', 'Headache', 'Serotonin Syndrome risk'], nursingConsiderations: ['First-line treatment for many mood/anxiety features.', 'Safer profile than TCAs.', 'Long half-life is forgiving for missed doses.'], mnemonic: '"FLU-oxetine" helps serotonin "FLU-sh" through, a modern solution.', visualizerType: 'ssri' }
+        ];
+
+        const scenarioData = [
+            { id: 1, patient: '28-year-old patient', chiefComplaint: 'Admitted for severe alcohol withdrawal.', assessment: { vitals: 'HR: 120, BP: 150/95, RR: 22', findings: 'Agitated, diaphoretic, and tremulous. CIWA score is 18.' }, question: 'Which medication is the most appropriate first-line treatment?', options: [{ text: 'Haloperidol' }, { text: 'Lorazepam', correct: true }, { text: 'Naltrexone' }, { text: 'Methadone' }], rationale: { correct: 'Lorazepam (Ativan) is a benzodiazepine, the gold standard for safely managing alcohol withdrawal by preventing seizures and reducing symptoms.', incorrect: { Haloperidol: 'Can lower the seizure threshold, making it risky in withdrawal.', Naltrexone: 'Is for relapse prevention after detox is complete.', Methadone: 'Is for opioid use disorder, not alcohol withdrawal.' } } },
+            { id: 2, patient: '10-year-old child', chiefComplaint: 'Follow-up for ADHD management.', assessment: { vitals: 'WNL', findings: 'Patient reports trouble sleeping and has lost 5 lbs in one month since starting a new medication.' }, question: 'Which medication is most likely causing these side effects?', options: [{ text: 'Atomoxetine' }, { text: 'Clonidine' }, { text: 'Methylphenidate', correct: true }, { text: 'Guanfacine' }], rationale: { correct: 'Methylphenidate (Ritalin) is a CNS stimulant, and its most common side effects are insomnia and appetite suppression leading to weight loss.', incorrect: { Atomoxetine: 'Is a non-stimulant; while it can cause insomnia, significant weight loss is less common.', Clonidine: 'Typically causes sedation, not insomnia.' } } },
+            { id: 3, patient: '65-year-old patient with schizophrenia', chiefComplaint: 'Reports "new, weird mouth movements."', assessment: { vitals: 'WNL', findings: 'Patient displays uncontrollable lip-smacking, tongue protrusion, and grimacing. Has been taking Fluphenazine for two years.' }, question: 'These new symptoms are most indicative of what condition?', options: [{ text: 'Acute Dystonia' }, { text: 'Akathisia' }, { text: 'Tardive Dyskinesia', correct: true }, { text: 'Neuroleptic Malignant Syndrome' }], rationale: { correct: 'Tardive Dyskinesia (TD) is a serious side effect of long-term first-generation antipsychotic use, characterized by involuntary facial movements.', incorrect: { 'Acute Dystonia': 'Is a painful muscle spasm that occurs early in treatment.', Akathisia: 'Is a feeling of inner restlessness.', NMS: 'Is a medical emergency with fever and rigidity.' } } },
+            { id: 4, patient: '34-year-old client', chiefComplaint: 'Wants help quitting heroin.', assessment: { vitals: 'WNL', findings: 'Client states they used heroin this morning and now wants "the shot that blocks it so I can\'t get high."' }, question: 'Which medication is strictly contraindicated at this time?', options: [{ text: 'Buprenorphine' }, { text: 'Methadone' }, { text: 'Naltrexone', correct: true }, { text: 'Clonidine' }], rationale: { correct: 'Naltrexone (Vivitrol) is an opioid antagonist. Giving it to a patient with active opioids in their system will trigger severe, precipitated withdrawal.', incorrect: { Buprenorphine: 'A partial agonist used to manage withdrawal, but must be started carefully.', Methadone: 'A full agonist used for detox and maintenance.' } } },
+            { id: 5, patient: '42-year-old patient', chiefComplaint: 'Feeling "really sick and weird."', assessment: { vitals: 'HR: 130, BP: 160/100, Temp: 38.5°C', findings: 'Patient is agitated, confused, and has noticeable muscle twitching. They take Fluoxetine daily.' }, question: 'Which condition are these findings most consistent with?', options: [{ text: 'Agranulocytosis' }, { text: 'Serotonin Syndrome', correct: true }, { text: 'Hypertensive Crisis' }, { text: 'Anticholinergic Toxicity' }], rationale: { correct: 'The combination of autonomic instability (tachycardia, fever), altered mental status, and neuromuscular hyperactivity (twitching) are classic signs of Serotonin Syndrome.', incorrect: { Agranulocytosis: 'Is a drop in white blood cells and presents with signs of infection.', 'Hypertensive Crisis': 'Is severe high blood pressure, often linked to MAOIs, not SSRIs alone.', 'Anticholinergic Toxicity': 'Presents with "dry as a bone, blind as a bat, red as a beet, mad as a hatter."' } } }
         ];
 
         // --- APPLICATION STATE ---
-        // Manages the current state of the application.
-        let state = {
-            currentView: '#dashboard',
-            flashcard: {
-                deck: [],
-                currentIndex: 0,
-                mastered: [],
-                review: []
-            },
-            quiz: {
-                deck: [],
-                currentQuestion: 0,
-                score: 0,
-                isComplete: false
-            },
-            brainDump: {
-                selectedDrug: null
-            }
-        };
+        let state = { currentView: '#dashboard', flashcard: { deck: [], currentIndex: 0, mastered: [], review: [] }, quiz: { deck: [], currentQuestion: 0, score: 0, isComplete: false }, scenarios: { deck: [], currentIndex: 0, isComplete: false, stage: 'initial' }, brainDump: { selectedDrug: null } };
 
         // --- DOM ELEMENTS ---
         const mainContent = document.getElementById('main-content');
@@ -313,7 +112,6 @@
         const modalContent = document.getElementById('modal-content');
 
         // --- TEMPLATES ---
-        // Functions that generate HTML for different views.
         const Templates = {
             dashboard: () => {
                 const categories = [...new Set(drugData.map(d => d.category))];
@@ -364,13 +162,21 @@
                     <div class="space-y-4">
                         ${drugData.map(drug => `
                             <div class="bg-white rounded-lg shadow-sm p-6">
-                                <h2 class="text-2xl font-bold text-sky-800">${drug.name} <span class="text-lg font-normal text-slate-500">(${drug.brandNames})</span></h2>
-                                <p class="text-md font-semibold text-teal-600 mb-4">${drug.class} - <span class="italic text-slate-600">${drug.category}</span></p>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <div class="flex justify-between items-start">
                                     <div>
+                                        <h2 class="text-2xl font-bold text-sky-800">${drug.name} <span class="text-lg font-normal text-slate-500">(${drug.brandNames})</span></h2>
+                                        <p class="text-md font-semibold text-teal-600 mb-4">${drug.class} - <span class="italic text-slate-600">${drug.category}</span></p>
+                                    </div>
+                                    <button onclick="App.speak('${drug.name}')" class="text-slate-500 hover:text-sky-600 p-2"><i data-lucide="volume-2"></i></button>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                                    <div class="md:col-span-2">
                                         <h4 class="font-semibold mb-2 border-b pb-1">Mechanism of Action</h4>
                                         <p class="text-slate-600 text-sm">${drug.moa}</p>
+                                    </div>
+                                    <div class="flex flex-col items-center justify-center bg-slate-50 rounded-lg p-2">
+                                        ${Templates.moaVisualizer(drug.visualizerType)}
                                     </div>
                                     <div>
                                         <h4 class="font-semibold mb-2 border-b pb-1">Adverse Effects</h4>
@@ -384,7 +190,7 @@
                                             ${drug.nursingConsiderations.map(nc => `<li>${nc}</li>`).join('')}
                                         </ul>
                                     </div>
-                                     <div class="md:col-span-2 bg-sky-50 p-4 rounded-lg">
+                                     <div class="md:col-span-3 bg-sky-50 p-4 rounded-lg">
                                         <h4 class="font-semibold mb-1 text-sky-900">Memory Aid</h4>
                                         <p class="text-sky-800 text-sm italic">"${drug.mnemonic}"</p>
                                     </div>
@@ -394,9 +200,26 @@
                     </div>
                 </div>
             `,
+            drugShowdown: () => `
+                <div>
+                    <h1 class="text-4xl font-bold mb-2">Drug Showdown</h1>
+                    <p class="text-slate-500 mb-8">Select two or three drugs to compare their properties side-by-side.</p>
+                    <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+                        <div id="showdown-selectors" class="flex flex-wrap gap-4">
+                            ${[1, 2].map(i => `
+                                <select id="showdown-select-${i}" class="showdown-select mt-1 block w-full md:w-auto flex-1 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm rounded-md">
+                                    <option value="">-- Select Drug ${i} --</option>
+                                    ${drugData.map(d => `<option value="${d.id}">${d.name}</option>`).join('')}
+                                </select>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div id="showdown-table-container" class="overflow-x-auto"></div>
+                </div>
+            `,
             flashcards: () => {
                 const { deck, currentIndex } = state.flashcard;
-                if (deck.length === 0) {
+                if (!deck || deck.length === 0) {
                     return `
                         <div class="text-center">
                             <h1 class="text-4xl font-bold mb-4">Flashcards</h1>
@@ -453,7 +276,7 @@
                     `;
                 }
                 
-                if (deck.length === 0) {
+                if (!deck || deck.length === 0) {
                      return `
                         <div class="text-center">
                             <h1 class="text-4xl font-bold mb-4">Quiz Zone</h1>
@@ -513,63 +336,67 @@
                     </div>
                 </div>
             `,
-            brainDumpModalContent: (userAnswers, correctAnswers) => {
-                const compareText = (user, correct) => {
-                    const userItems = user.split('\n').map(s => s.trim().toLowerCase()).filter(Boolean);
-                    const correctItems = correct.map(s => s.trim().toLowerCase());
-                    
-                    if(userItems.length === 1 && correct.length > 2) { // for MoA
-                         return userItems[0].toLowerCase().includes(correct[0].toLowerCase().substring(0, 30)) 
-                            ? `<span class="text-green-600 bg-green-100 p-1 rounded">${user} (Correct)</span>`
-                            : `<span class="text-red-600 bg-red-100 p-1 rounded">${user} (Incorrect)</span>`;
-                    }
-
-                    return userItems.map(item => {
-                        return correctItems.some(cItem => cItem.includes(item))
-                            ? `<li class="text-green-700"><i data-lucide="check" class="inline w-4 h-4 mr-1"></i>${item}</li>`
-                            : `<li class="text-red-700"><i data-lucide="x" class="inline w-4 h-4 mr-1"></i>${item}</li>`;
-                    }).join('');
-                };
-
+            brainDumpModalContent: (userAnswers, correctAnswers) => `...`,
+            moaVisualizer: (type) => {
+                switch(type) {
+                    case 'ssri': return `<div class="synapse viz-ssri" title="Reuptake inhibitor"><svg viewBox="0 0 50 50"><path class="neuron-pre" d="M5,5 Q25,-5 45,5 V25 H5 Z"></path><path d="M5 20 L2 20 L2 15 L5 15" class="neuron-pre reuptake-pump"></path><rect class="blocker" x="2" y="15" width="3" height="5"></rect><path class="neuron-post" d="M5,50 H45 V35 H5 Z"></path><rect x="23" y="35" width="4" height="2" class="receptor"></rect><g class="neurotransmitter" transform="translate(0, 5)"><circle cx="25" cy="10" r="2"></circle></g></svg><p class="text-xs text-center text-slate-500 mt-1">Reuptake Inhibitor</p></div>`;
+                    case 'stimulant': return `<div class="synapse viz-stimulant" title="Release agent"><svg viewBox="0 0 50 50"><path class="neuron-pre" d="M5,5 Q25,-5 45,5 V25 H5 Z"></path><path class="neuron-post" d="M5,50 H45 V35 H5 Z"></path><rect x="15" y="35" width="4" height="2" class="receptor"></rect><rect x="30" y="35" width="4" height="2" class="receptor"></rect><g class="neurotransmitter" transform="translate(0, 20)"><circle cx="17" cy="0" r="2"></circle><circle cx="25" cy="0" r="2"></circle><circle cx="33" cy="0" r="2"></circle></g></svg><p class="text-xs text-center text-slate-500 mt-1">Release Agent</p></div>`;
+                    case 'agonist': return `<div class="synapse viz-agonist" title="Agonist"><svg viewBox="0 0 50 50"><path class="neuron-pre" d="M5,5 Q25,-5 45,5 V25 H5 Z"></path><path class="neuron-post" d="M5,50 H45 V35 H5 Z"></path><rect x="23" y="35" width="4" height="2" class="receptor"></rect><g class="drug-molecule" transform="translate(25, 36)"><circle cx="0" cy="0" r="2.5"></circle></g></svg><p class="text-xs text-center text-slate-500 mt-1">Agonist</p></div>`;
+                    case 'antagonist': return `<div class="synapse viz-antagonist" title="Antagonist"><svg viewBox="0 0 50 50"><path class="neuron-pre" d="M5,5 Q25,-5 45,5 V25 H5 Z"></path><path class="neuron-post" d="M5,50 H45 V35 H5 Z"></path><rect x="23" y="35" width="4" height="2" class="receptor"></rect><g class="neurotransmitter" transform="translate(25, 10)"><circle cx="0" cy="0" r="2"></circle></g><g transform="translate(23, 34)"><path class="drug-molecule" d="M -3 -1 L 3 -1 L 3 1 L -3 1 Z"></path></g></svg><p class="text-xs text-center text-slate-500 mt-1">Antagonist</p></div>`;
+                    case 'benzo': return `<div class="synapse viz-benzo" title="GABA Potentiator (hover me)"><svg viewBox="0 0 50 60"><path d="M5,5 H45 V55 H5 Z" class="neuron-post"></path><rect class="gaba-channel-gate" x="15" y="25" width="20" height="5" fill="#818cf8"></rect><rect class="benzo-site" x="40" y="15" width="5" height="5" rx="1" fill="#a78bfa" stroke="#4f46e5" stroke-width="1"></rect><g class="ion"><circle cx="25" cy="10" r="2" ></circle></g><text x="25" y="15" font-size="6" text-anchor="middle">GABA</text><text x="30" y="24" font-size="6" text-anchor="middle" transform="rotate(-90 30 24)">BZD</text></svg><p class="text-xs text-center text-slate-500 mt-1">GABA Potentiator</p></div>`;
+                    default: return `<div class="text-xs text-slate-400">No visual available</div>`;
+                }
+            },
+            clinicalScenarios: () => {
+                const { deck, currentIndex, isComplete, stage } = state.scenarios;
+                if(isComplete || !deck || deck.length === 0) {
+                     return `<div class="text-center bg-white p-8 rounded-xl shadow-lg"><h1 class="text-4xl font-bold mb-2">Scenarios Complete!</h1><p class="text-2xl text-slate-600 mb-8">You've completed all clinical scenarios. Great job!</p><button onclick="App.startScenarios()" class="bg-sky-600 text-white px-6 py-3 rounded-lg hover:bg-sky-700 text-lg">Practice Again</button></div>`;
+                }
+                const scenario = deck[currentIndex];
                 return `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-xl font-bold mb-4">Your Answers</h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <h4 class="font-semibold text-slate-800">MoA:</h4>
-                                    <p class="text-sm p-2 bg-slate-100 rounded">${userAnswers.moa || 'No answer'}</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-slate-800">Effects:</h4>
-                                    <ul class="text-sm list-disc list-inside">${userAnswers.effects.split('\n').filter(Boolean).map(s => `<li>${s}</li>`).join('') || '<li>No answer</li>'}</ul>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-slate-800">Considerations:</h4>
-                                    <ul class="text-sm list-disc list-inside">${userAnswers.nursing.split('\n').filter(Boolean).map(s => `<li>${s}</li>`).join('') || '<li>No answer</li>'}</ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold mb-4 text-sky-700">Correct Information</h3>
-                             <div class="space-y-4">
-                                <div>
-                                    <h4 class="font-semibold text-slate-800">MoA:</h4>
-                                    <p class="text-sm p-2 bg-sky-50 rounded">${correctAnswers.moa}</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-slate-800">Effects:</h4>
-                                    <ul class="text-sm list-disc list-inside">${correctAnswers.effects.map(s => `<li>${s}</li>`).join('')}</ul>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-slate-800">Considerations:</h4>
-                                    <ul class="text-sm list-disc list-inside">${correctAnswers.nursingConsiderations.map(s => `<li>${s}</li>`).join('')}</ul>
+                    <div>
+                        <h1 class="text-4xl font-bold mb-2">Clinical Scenario Simulator</h1>
+                        <p class="text-slate-500 mb-6">Scenario ${currentIndex + 1} of ${deck.length}</p>
+                        
+                        <div class="bg-white p-6 md:p-8 rounded-xl shadow-md">
+                            <!-- Patient Chart -->
+                            <div class="border border-slate-300 rounded-lg">
+                                <div class="bg-slate-700 text-white px-4 py-2 rounded-t-lg flex items-center"><i data-lucide="clipboard" class="w-5 h-5 mr-2"></i>PATIENT CHART</div>
+                                <div class="p-4 space-y-4">
+                                    <div><span class="font-semibold w-32 inline-block">PATIENT:</span><span>${scenario.patient}</span></div>
+                                    <div><span class="font-semibold w-32 inline-block">CHIEF COMPLAINT:</span><span>${scenario.chiefComplaint}</span></div>
+                                    
+                                    <!-- Unfolding Section -->
+                                    <div id="assessment-section" class="reveal-section ${stage === 'assessed' || stage === 'answered' ? 'revealed' : ''}">
+                                        <div class="border-t border-slate-200 pt-4 mt-4 space-y-4">
+                                            <div><span class="font-semibold w-32 inline-block">VITALS:</span><span class="text-red-600">${scenario.assessment.vitals}</span></div>
+                                            <div><span class="font-semibold w-32 inline-block">FINDINGS:</span><span>${scenario.assessment.findings}</span></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Action Button -->
+                                    ${stage === 'initial' ? `<button id="assess-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center mx-auto mt-4"><i data-lucide="stethoscope" class="w-5 h-5 mr-2"></i>Assess Patient</button>`: ''}
                                 </div>
                             </div>
+                            
+                            <!-- Question and Options Section -->
+                            <div id="decision-section" class="reveal-section mt-6 ${stage === 'assessed' || stage === 'answered' ? 'revealed' : ''}">
+                                <p class="text-lg font-semibold mb-4 text-sky-800">${scenario.question}</p>
+                                <div id="scenario-options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    ${scenario.options.map(option => `
+                                        <button data-text="${option.text}" data-correct="${!!option.correct}" class="scenario-option text-left p-4 border-2 border-slate-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition-colors disabled:opacity-75 disabled:cursor-not-allowed">
+                                            ${option.text}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Rationale Section -->
+                            <div id="scenario-rationale" class="mt-6"></div>
                         </div>
                     </div>
                 `;
-            }
+            },
         };
 
         // --- APPLICATION LOGIC ---
@@ -579,9 +406,10 @@
                 this.router();
                 window.addEventListener('hashchange', this.router.bind(this));
                 navigation.addEventListener('click', e => {
-                    if (e.target.closest('a')) {
-                        state.currentView = e.target.closest('a').getAttribute('href');
-                        this.router();
+                    const link = e.target.closest('a');
+                    if (link) {
+                        e.preventDefault();
+                        window.location.hash = link.getAttribute('href');
                     }
                 });
                 resetProgressBtn.addEventListener('click', () => {
@@ -590,37 +418,34 @@
                    }
                 });
                 closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.classList.add('hidden');
-                    }
-                });
+                modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
             },
-
             router() {
                 const path = window.location.hash || '#dashboard';
-                if (state.currentView !== path) state.currentView = path;
+                state.currentView = path;
                 
-                // Fade out content before changing
                 mainContent.style.opacity = 0;
                 
                 setTimeout(() => {
                     switch(state.currentView) {
-                        case '#dashboard':
-                            mainContent.innerHTML = Templates.dashboard();
-                            break;
-                        case '#drug-library':
-                            mainContent.innerHTML = Templates.drugLibrary();
-                            break;
-                        case '#flashcards':
-                            if (state.flashcard.deck.length === 0) this.startFlashcards();
+                        case '#dashboard': mainContent.innerHTML = Templates.dashboard(); break;
+                        case '#drug-library': mainContent.innerHTML = Templates.drugLibrary(); break;
+                        case '#drug-showdown': mainContent.innerHTML = Templates.drugShowdown(); this.attachShowdownListeners(); break;
+                        case '#flashcards': 
+                            if (!state.flashcard.deck || state.flashcard.deck.length === 0) this.startFlashcards();
                             mainContent.innerHTML = Templates.flashcards();
                             break;
-                        case '#quiz-zone':
+                        case '#quiz-zone': 
+                            if (!state.quiz.deck || state.quiz.deck.length === 0) this.startQuiz();
                             mainContent.innerHTML = Templates.quizZone();
-                            if(state.quiz.deck.length > 0 && !state.quiz.isComplete) this.attachQuizListeners();
+                            if(state.quiz.deck && state.quiz.deck.length > 0 && !state.quiz.isComplete) this.attachQuizListeners();
                             break;
-                        case '#brain-dump':
+                        case '#scenarios': 
+                            if(!state.scenarios.deck || state.scenarios.deck.length === 0) this.startScenarios();
+                            mainContent.innerHTML = Templates.clinicalScenarios();
+                            this.attachScenarioListeners();
+                            break;
+                        case '#brain-dump': 
                             mainContent.innerHTML = Templates.brainDump();
                             this.attachBrainDumpListeners();
                             break;
@@ -630,67 +455,183 @@
                     }
                     this.updateNav();
                     lucide.createIcons();
-                    // Fade in new content
                     mainContent.style.opacity = 1;
                 }, 150);
             },
-
             updateNav() {
                 document.querySelectorAll('.nav-item').forEach(item => {
-                    if (item.getAttribute('href') === state.currentView) {
-                        item.classList.add('active');
-                    } else {
-                        item.classList.remove('active');
-                    }
+                    if (item.getAttribute('href') === state.currentView) item.classList.add('active');
+                    else item.classList.remove('active');
                 });
             },
+            speak(text) {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'en-US';
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    alert('Sorry, your browser does not support text-to-speech.');
+                }
+            },
+            shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            },
+            saveState() { localStorage.setItem('pharmaMasteryStateV3', JSON.stringify(state)); },
+            loadState() {
+                const savedState = localStorage.getItem('pharmaMasteryStateV3');
+                if (savedState) {
+                    state = JSON.parse(savedState);
+                    if(!state.scenarios || typeof state.scenarios.stage === 'undefined') {
+                       this.resetState(false);
+                    }
+                } else { this.resetState(false); }
+            },
+            resetState(doRoute = true) {
+                localStorage.removeItem('pharmaMasteryStateV3');
+                state = { currentView: '#dashboard', flashcard: { deck: [], currentIndex: 0, mastered: [], review: [] }, quiz: { deck: [], currentQuestion: 0, score: 0, isComplete: false }, scenarios: { deck: [], currentIndex: 0, isComplete: false, stage: 'initial' }, brainDump: { selectedDrug: null } };
+                if(doRoute) this.router();
+            },
             
-            // --- Flashcard Logic ---
+            // --- Scenario Logic ---
+            startScenarios() {
+                state.scenarios = { deck: this.shuffle([...scenarioData]), currentIndex: 0, isComplete: false, stage: 'initial' };
+                if(state.currentView === "#scenarios") this.router();
+            },
+
+            attachScenarioListeners() {
+                if (state.scenarios.isComplete) return;
+
+                const assessBtn = document.getElementById('assess-btn');
+                if (assessBtn) {
+                    assessBtn.addEventListener('click', () => {
+                        state.scenarios.stage = 'assessed';
+                        this.saveState();
+                        this.router(); 
+                    });
+                }
+                
+                if (state.scenarios.stage === 'assessed') {
+                     const optionsContainer = document.getElementById('scenario-options');
+                     optionsContainer.addEventListener('click', e => {
+                        const button = e.target.closest('.scenario-option');
+                        if (!button || state.scenarios.stage === 'answered') return;
+
+                        state.scenarios.stage = 'answered';
+                        const isCorrect = button.dataset.correct === 'true';
+                        const currentScenario = state.scenarios.deck[state.scenarios.currentIndex];
+                        
+                        // Show feedback
+                        const rationaleDiv = document.getElementById('scenario-rationale');
+                        let rationaleHTML = '';
+                        if(isCorrect) {
+                            button.classList.add('bg-green-200', 'border-green-500');
+                            rationaleHTML = `<div class="p-4 bg-green-50 border border-green-200 rounded-lg"><h4 class="font-bold text-green-800 flex items-center"><i data-lucide="check-circle" class="w-5 h-5 mr-2"></i>Correct!</h4><p class="text-green-700 mt-2">${currentScenario.rationale.correct}</p></div>`;
+                        } else {
+                            button.classList.add('bg-red-200', 'border-red-500');
+                            const correctButton = optionsContainer.querySelector('[data-correct="true"]');
+                            correctButton.classList.add('bg-green-200', 'border-green-500');
+                            const incorrectRationale = currentScenario.rationale.incorrect[button.dataset.text] || "This was not the best choice in this situation.";
+
+                            rationaleHTML = `<div class="p-4 bg-red-50 border border-red-200 rounded-lg space-y-3">
+                                <div><h4 class="font-bold text-red-800 flex items-center"><i data-lucide="x-circle" class="w-5 h-5 mr-2"></i>Incorrect.</h4><p class="text-red-700 mt-1">${incorrectRationale}</p></div>
+                                <div class="border-t pt-2"><p class="font-semibold text-slate-700">The correct answer is ${correctButton.dataset.text} because: ${currentScenario.rationale.correct}</p></div>
+                            </div>`;
+                        }
+                        rationaleDiv.innerHTML = rationaleHTML;
+                        
+                        // Disable all buttons
+                        document.querySelectorAll('.scenario-option').forEach(b => b.disabled = true);
+                        
+                        const nextButton = document.createElement('button');
+                        nextButton.innerHTML = `Next Scenario <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>`;
+                        nextButton.className = 'bg-sky-600 text-white px-6 py-2 rounded-lg hover:bg-sky-700 mt-4 flex items-center';
+                        rationaleDiv.appendChild(nextButton);
+                        lucide.createIcons();
+                        
+                        nextButton.addEventListener('click', () => {
+                            state.scenarios.currentIndex++;
+                            if (state.scenarios.currentIndex >= state.scenarios.deck.length) {
+                                state.scenarios.isComplete = true;
+                            } else {
+                                state.scenarios.stage = 'initial';
+                            }
+                            this.saveState();
+                            this.router();
+                        });
+                     });
+                }
+            },
+            
+            // --- Other Feature Logic ---
+            attachShowdownListeners() {
+                document.querySelectorAll('.showdown-select').forEach(sel => {
+                    sel.addEventListener('change', () => this.renderShowdownTable());
+                });
+            },
+            renderShowdownTable() {
+                const selectedIds = Array.from(document.querySelectorAll('.showdown-select')).map(sel => sel.value).filter(Boolean);
+                if (selectedIds.length < 2) {
+                    document.getElementById('showdown-table-container').innerHTML = '';
+                    return;
+                }
+                const selectedDrugs = selectedIds.map(id => drugData.find(d => d.id === id));
+                const properties = ['Class', 'Mechanism of Action', 'Common Effects', 'Key Nursing Considerations', 'Mnemonic'];
+                const keys = ['class', 'moa', 'effects', 'nursingConsiderations', 'mnemonic'];
+                
+                let tableHTML = `<table class="w-full text-sm text-left text-slate-500">`;
+                tableHTML += `<thead class="text-xs text-slate-700 uppercase bg-slate-100"><tr><th scope="col" class="px-6 py-3 rounded-l-lg">Property</th>`;
+                selectedDrugs.forEach(drug => {
+                    tableHTML += `<th scope="col" class="px-6 py-3">${drug.name}</th>`;
+                });
+                tableHTML += `<th class="rounded-r-lg"></th></tr></thead><tbody>`;
+
+                properties.forEach((prop, index) => {
+                    const key = keys[index];
+                    tableHTML += `<tr class="bg-white border-b"><th scope="row" class="px-6 py-4 font-medium text-slate-900">${prop}</th>`;
+                    selectedDrugs.forEach(drug => {
+                        let value = drug[key];
+                        if(Array.isArray(value)) value = `<ul>${value.map(v => `<li class="list-disc ml-4">${v}</li>`).join('')}</ul>`;
+                        tableHTML += `<td class="px-6 py-4">${value}</td>`;
+                    });
+                    tableHTML += `</tr>`;
+                });
+
+                tableHTML += `</tbody></table>`;
+                document.getElementById('showdown-table-container').innerHTML = tableHTML;
+            },
             startFlashcards() {
-                // Deck includes drugs not yet mastered
                 const unmasteredDrugs = drugData.filter(d => !state.flashcard.mastered.includes(d.id));
-                // Add drugs marked for review back into the deck
                 const reviewDrugs = state.flashcard.review.map(id => drugData.find(d => d.id === id));
                 state.flashcard.deck = this.shuffle([...new Set([...unmasteredDrugs, ...reviewDrugs])]);
-                state.flashcard.review = []; // Clear review list
+                state.flashcard.review = [];
                 state.flashcard.currentIndex = 0;
                 if(state.currentView === "#flashcards") this.router();
             },
-            
-            flipCard() {
-                document.querySelector('.flashcard').classList.toggle('flipped');
-            },
-            
+            flipCard() { document.querySelector('.flashcard').classList.toggle('flipped'); },
             handleFlashcardAnswer(isCorrect) {
+                if(!state.flashcard.deck || state.flashcard.deck.length === 0) return;
                 const currentDrugId = state.flashcard.deck[state.flashcard.currentIndex].id;
                 
                 if(isCorrect) {
-                    // Move from review to mastered if it was there
                     state.flashcard.review = state.flashcard.review.filter(id => id !== currentDrugId);
-                    if (!state.flashcard.mastered.includes(currentDrugId)) {
-                        state.flashcard.mastered.push(currentDrugId);
-                    }
+                    if (!state.flashcard.mastered.includes(currentDrugId)) state.flashcard.mastered.push(currentDrugId);
                 } else {
-                    // Add to review list if not already there
-                    if (!state.flashcard.review.includes(currentDrugId)) {
-                        state.flashcard.review.push(currentDrugId);
-                    }
-                    // If mastered, move back to review
-                    if(state.flashcard.mastered.includes(currentDrugId)) {
-                       state.flashcard.mastered = state.flashcard.mastered.filter(id => id !== currentDrugId);
-                    }
+                    if (!state.flashcard.review.includes(currentDrugId)) state.flashcard.review.push(currentDrugId);
+                    if(state.flashcard.mastered.includes(currentDrugId)) state.flashcard.mastered = state.flashcard.mastered.filter(id => id !== currentDrugId);
                 }
                 
                 state.flashcard.currentIndex++;
                 if (state.flashcard.currentIndex >= state.flashcard.deck.length) {
-                    this.startFlashcards(); // Reshuffle and start new deck
+                    this.startFlashcards();
+                } else {
+                    this.saveState();
+                    this.router();
                 }
-                
-                this.saveState();
-                this.router();
             },
-
-            // --- Quiz Logic ---
             startQuiz() {
                 state.quiz.deck = this.generateQuiz(10);
                 state.quiz.currentQuestion = 0;
@@ -698,7 +639,6 @@
                 state.quiz.isComplete = false;
                 this.router();
             },
-
             generateQuiz(numQuestions) {
                 let questions = [];
                 for(let i=0; i<numQuestions; i++) {
@@ -706,66 +646,48 @@
                     let question;
                     if(questionType === 'class') {
                         const drug = drugData[Math.floor(Math.random() * drugData.length)];
-                        question = {
-                            text: `Which class does ${drug.name} belong to?`,
-                            options: this.generateOptions(drug.class, drugData.map(d => d.class))
-                        };
+                        question = { text: `Which class does ${drug.name} belong to?`, options: this.generateOptions(drug.class, drugData.map(d => d.class)) };
                     } else {
                         const drug = drugData[Math.floor(Math.random() * drugData.length)];
                         const correctEffect = drug.effects[Math.floor(Math.random() * drug.effects.length)];
-                        const allEffects = drugData.flatMap(d => d.effects);
-                        question = {
-                            text: `Which of the following is a common adverse effect of ${drug.name}?`,
-                            options: this.generateOptions(correctEffect, allEffects)
-                        };
+                        question = { text: `Which of the following is a common adverse effect of ${drug.name}?`, options: this.generateOptions(correctEffect, drugData.flatMap(d => d.effects)) };
                     }
                     questions.push(question);
                 }
                 return questions;
             },
-
             generateOptions(correctAnswer, allAnswers) {
                 let options = [{text: correctAnswer, correct: true}];
                 let otherOptions = [...new Set(allAnswers)].filter(a => a !== correctAnswer);
                 otherOptions = this.shuffle(otherOptions);
-                for(let i=0; i < 3; i++){
-                    if(otherOptions[i]) {
-                       options.push({text: otherOptions[i], correct: false});
-                    }
-                }
+                for(let i=0; i < 3; i++) { if(otherOptions[i]) options.push({text: otherOptions[i], correct: false}); }
                 return this.shuffle(options);
             },
-            
             attachQuizListeners() {
                 const optionsContainer = document.getElementById('quiz-options');
+                if(!optionsContainer) return;
                 optionsContainer.addEventListener('click', (e) => {
                     const button = e.target.closest('.quiz-option');
-                    if(!button) return;
-
+                    if(!button || button.disabled) return;
+                    document.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+                    
                     const isCorrect = button.dataset.answer === 'true';
                     if(isCorrect) {
                         state.quiz.score++;
                         button.classList.add('bg-green-200', 'border-green-500');
                     } else {
                         button.classList.add('bg-red-200', 'border-red-500');
-                        // Highlight the correct one
                         optionsContainer.querySelector('[data-answer="true"]').classList.add('bg-green-200', 'border-green-500');
                     }
                     
-                    document.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
-                    
                     setTimeout(() => {
                         state.quiz.currentQuestion++;
-                        if(state.quiz.currentQuestion >= state.quiz.deck.length) {
-                            state.quiz.isComplete = true;
-                        }
+                        if(state.quiz.currentQuestion >= state.quiz.deck.length) state.quiz.isComplete = true;
                         this.saveState();
                         this.router();
                     }, 1500);
                 });
             },
-            
-            // --- Brain Dump Logic ---
             attachBrainDumpListeners() {
                 const drugSelect = document.getElementById('drug-select');
                 const fields = document.getElementById('braindump-fields');
@@ -782,56 +704,15 @@
                 });
 
                 compareBtn.addEventListener('click', () => {
-                    const userAnswers = {
-                        moa: document.getElementById('dump-moa').value,
-                        effects: document.getElementById('dump-effects').value,
-                        nursing: document.getElementById('dump-nursing').value,
-                    };
+                    const userAnswers = { moa: document.getElementById('dump-moa').value, effects: document.getElementById('dump-effects').value, nursing: document.getElementById('dump-nursing').value, };
                     modalContent.innerHTML = Templates.brainDumpModalContent(userAnswers, state.brainDump.selectedDrug);
                     modal.classList.remove('hidden');
                     modal.classList.add('flex');
                     lucide.createIcons();
                 });
-            },
-
-            // --- Utility Functions ---
-            shuffle(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                return array;
-            },
-
-            saveState() {
-                localStorage.setItem('pharmaMasteryState', JSON.stringify(state));
-            },
-            
-            loadState() {
-                const savedState = localStorage.getItem('pharmaMasteryState');
-                if (savedState) {
-                    state = JSON.parse(savedState);
-                } else {
-                   // Initialize if no saved state
-                   state.flashcard.mastered = [];
-                   state.flashcard.review = [];
-                }
-            },
-            
-            resetState() {
-                localStorage.removeItem('pharmaMasteryState');
-                // Re-initialize the state object to its default values
-                state = {
-                    currentView: '#dashboard',
-                    flashcard: { deck: [], currentIndex: 0, mastered: [], review: [] },
-                    quiz: { deck: [], currentQuestion: 0, score: 0, isComplete: false },
-                    brainDump: { selectedDrug: null }
-                };
-                this.router();
             }
         };
         
-        // --- START THE APP ---
         document.addEventListener('DOMContentLoaded', () => App.init());
 
     </script>
