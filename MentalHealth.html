@@ -3,531 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mental Health</title>
+    <title>Mental Health: Academic Support Resources</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --color-primary-dark: #2F4858;
-            --color-primary-medium: #4B6B80;
-            --color-text-main: #333333;
-            --color-text-light: #607D8B;
-            --color-background: #F4F7F6;
-            --color-card-background: #FFFFFF;
-            --color-border: #E0E6EC;
-            --color-white: #FFFFFF;
-
-            --color-accent: #DAA520;
-            --color-accent-light: #FFE082;
-
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
-
-            --spacing-unit: 1rem;
-            --padding-section: 2.5rem;
-            --padding-inner: 1.5rem;
-            --radius-default: 6px;
-            --radius-large: 12px;
-
-            --page-horizontal-padding: max(20px, 5vw);
-
-            /* Re-purposing module and exam button colors for mental health themes */
-            --module-button-base: #2A9D8F; /* Greenish-teal */
-            --module-button-hover: #217C74;
-            --module-shadow-tint: rgba(42, 157, 143, 0.15);
-
-            --exam-button-base: #DAA520; /* Accent gold for important links like Addiction */
-            --exam-button-hover: #B8860B;
-            --exam-shadow-tint: rgba(218, 165, 32, 0.15);
-
-            --color-topic-group-bg: #EDF2F7;
-        }
-
-        html {
-            font-size: 96.25%;
-            scroll-behavior: smooth;
-        }
-
+        /* Custom styles to extend Tailwind */
         body {
-            font-family: 'Open Sans', sans-serif;
-            background-color: var(--color-background);
-            color: var(--color-text-main);
-            margin: 0;
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            box-sizing: border-box;
-            font-weight: 400;
+            background-color: #f8fafc;
+            background-image: radial-gradient(circle at 1px 1px, #d1d5db 1px, transparent 0);
+            background-size: 2rem 2rem;
         }
 
-        *, *::before, *::after {
-            box-sizing: inherit;
-        }
-
-        .top-nav {
-            background-color: var(--color-primary-dark);
-            padding: 0.8rem 0;
-            box-shadow: var(--shadow-md);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .top-nav-container {
-            width: 100%;
-            padding: 0 var(--page-horizontal-padding);
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .top-nav-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .top-nav-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            gap: 2.5rem;
-            white-space: nowrap;
-        }
-
-        .top-nav-item a {
-            color: rgba(255, 255, 255, 0.85);
-            text-decoration: none;
-            font-family: 'Roboto', sans-serif;
-            font-weight: 500;
-            font-size: 1.0rem;
-            padding: 0.6rem 0;
-            transition: all 0.3s ease;
-            position: relative;
-            display: block;
-            letter-spacing: 0.02em;
-        }
-
-        .top-nav-item a::after {
-            content: '';
-            position: absolute;
-            bottom: -0.25rem;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--color-accent);
-            transform: scaleX(0);
-            transform-origin: center;
-            transition: transform 0.3s ease;
-        }
-
-        .top-nav-item a:hover {
-            color: var(--color-accent);
-            transform: translateY(-2px);
-        }
-        .top-nav-item a:hover::after {
-            transform: scaleX(1);
-        }
-
-        .page-container {
-            width: 100%;
-            padding: var(--padding-section) var(--page-horizontal-padding) 4rem;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            width: 100%;
-            padding: 4rem var(--padding-section);
-            background: var(--color-card-background);
-            border-radius: var(--radius-large);
-            margin-bottom: var(--padding-section);
-            box-shadow: var(--shadow-md);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid var(--color-border);
-        }
-
-        .header-content {
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header h1 {
-            font-family: 'Roboto', sans-serif;
-            font-size: 3.2rem;
-            font-weight: 700;
-            color: var(--color-primary-dark);
-            margin: 0 0 1rem 0;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-        }
-
-        .header p {
-            font-size: 1.15rem;
-            color: var(--color-text-light);
-            margin: 0 auto;
-            font-weight: 300;
-            line-height: 1.6;
-            max-width: 700px;
-        }
-
-        .content-section {
-            background-color: var(--color-card-background);
-            padding: var(--padding-section);
-            border-radius: var(--radius-large);
-            margin-bottom: var(--padding-section);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--color-border);
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-
-        .content-section:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-4px);
-        }
-
-        .collapsible-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'Roboto', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--color-primary-medium);
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.2rem;
-            border-bottom: 1px solid var(--color-border);
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.3s ease;
-            line-height: 1.2;
-        }
-
-        .collapsible-header:hover {
-            color: var(--color-accent);
-            border-color: var(--color-accent-light);
-        }
-
-        .collapsible-header .collapse-icon {
-            font-size: 1.2rem;
-            margin-left: 1.2rem;
-            transition: transform 0.3s ease;
-            color: var(--color-text-light);
-        }
-
-        .collapsible-header:hover .collapse-icon {
-            color: var(--color-accent);
-        }
-
-        .collapsible-header .collapse-icon.rotated {
-            transform: rotate(180deg);
-        }
-
-        .collapsible-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.7s ease-out, padding 0.7s ease-out;
-            padding-top: 0;
-        }
-
-        .collapsible-content.expanded {
-            max-height: 4000px; /* Sufficiently large to accommodate content */
-            transition: max-height 1s ease-in, padding 1s ease-in;
-            padding-top: var(--padding-inner);
-        }
-
-        .topic-group {
-            background-color: var(--color-topic-group-bg);
-            border-radius: var(--radius-default);
-            padding: var(--padding-inner);
-            margin-bottom: var(--padding-inner);
-            border: 1px solid var(--color-border);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .topic-group h3 {
-            font-family: 'Roboto', sans-serif;
-            font-size: 1.3rem;
-            color: var(--color-primary-medium);
-            margin-top: 0;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--color-border);
-            padding-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            font-weight: 500;
-        }
-
-        .button-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            justify-content: center;
-            align-items: stretch;
-            width: 100%;
-        }
-
-        .resource-button {
-            background-color: var(--color-card-background);
-            border: 1px solid var(--color-border);
-            color: var(--color-text-main);
-            padding: 1.2rem 1rem;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 1.05rem;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: var(--radius-default);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            min-height: 6rem;
-            box-shadow: var(--shadow-sm);
-            cursor: pointer;
-        }
-
-        .resource-button:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-            color: var(--color-primary-dark);
-            border-color: var(--color-accent);
-        }
-
-        .resource-button .icon {
-            font-size: 2.2rem;
-            line-height: 1;
-            transition: transform 0.3s ease;
-            color: var(--color-primary-medium);
-        }
-
-        .resource-button:hover .icon {
-            transform: scale(1.1);
-            color: var(--color-accent);
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .resource-button.module-button {
-            color: var(--module-button-base);
-        }
-        .resource-button.module-button .icon {
-            color: var(--module-button-base);
-        }
-        .resource-button.module-button:hover {
-            background-color: var(--module-button-hover);
-            color: var(--color-white);
-            border-color: var(--module-button-hover);
-            box-shadow: 0 5px 15px var(--module-shadow-tint);
-        }
-        .resource-button.module-button:hover .icon {
-            color: var(--color-white);
+        .accordion-content {
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .resource-button.exam-button {
-            color: var(--exam-button-base);
+        /* Keyframes for the slow, floating animation in the header */
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-10px, 10px); }
+            100% { transform: translate(0, 0); }
         }
-        .resource-button.exam-button .icon {
-            color: var(--exam-button-base);
-        }
-        .resource-button.exam-button:hover {
-            background-color: var(--exam-button-hover);
-            color: var(--color-white);
-            border-color: var(--exam-button-hover);
-            box-shadow: 0 5px 15px var(--exam-shadow-tint);
-        }
-        .resource-button.exam-button:hover .icon {
-            color: var(--color-white);
+        @keyframes float-reverse {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(10px, -10px); }
+            100% { transform: translate(0, 0); }
         }
 
-        .button-grid p {
-            color: var(--color-text-light);
-            font-size: 0.95rem;
-            padding: 0.8rem 0;
+        .float-anim {
+            animation: float 12s infinite ease-in-out;
         }
-
-        .footer {
-            text-align: center;
-            padding: var(--padding-inner);
-            font-size: 0.9rem;
-            color: var(--color-text-light);
-            margin-top: 3rem;
-            border-top: 1px solid var(--color-border);
-            background-color: var(--color-card-background);
-            border-radius: var(--radius-large);
-            box-shadow: var(--shadow-sm);
-            width: 100%;
+        .float-anim-reverse {
+            animation: float-reverse 12s infinite ease-in-out;
         }
-
-        @media (max-width: 1200px) {
-            :root { --padding-section: 2rem; }
-            .header h1 { font-size: 2.8rem; }
-            .header p { font-size: 1.1rem; }
-            .collapsible-header { font-size: 1.6rem; }
-            .resource-button { font-size: 1rem; padding: 1rem 0.8rem; min-height: 5.5rem; }
-            .resource-button .icon { font-size: 2rem; }
-            .topic-group h3 { font-size: 1.2rem; }
-        }
-
-        @media (max-width: 992px) {
-            :root { --padding-section: 1.8rem; --padding-inner: 1.2rem; }
-            .header h1 { font-size: 2.4rem; }
-            .header p { font-size: 1.05rem; }
-            .collapsible-header { font-size: 1.4rem; }
-            .resource-button { font-size: 0.95rem; padding: 0.9rem 0.7rem; min-height: 5rem; }
-            .resource-button .icon { font-size: 1.8rem; }
-            .top-nav-list { gap: 2rem; }
-            .top-nav-item a { font-size: 0.95rem; }
-            .topic-group h3 { font-size: 1.1rem; }
-        }
-
-        @media (max-width: 768px) {
-            :root { --page-horizontal-padding: max(15px, 4vw); }
-            html { font-size: 90%; }
-            .header { padding: 3rem var(--padding-section); }
-            .header h1 { font-size: 2rem; }
-            .header p { font-size: 0.95rem; }
-            .content-section { padding: var(--padding-section); }
-            .collapsible-header { font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.8rem; }
-            .collapsible-header .collapse-icon { font-size: 1rem; }
-            .button-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; }
-            .resource-button { min-height: 4.5rem; gap: 0.6rem; }
-            .resource-button .icon { font-size: 1.6rem; }
-            .topic-group { padding: 1rem; margin-bottom: 1rem; }
-            .topic-group h3 { font-size: 1rem; padding-bottom: 0.5rem; }
-        }
-
-        @media (max-width: 576px) {
-            :root { --page-horizontal-padding: 15px; }
-            html { font-size: 85%; }
-            .top-nav-list { gap: 1.5rem; }
-            .top-nav-item a { font-size: 0.9rem; }
-            .header { padding: 2.5rem var(--padding-section); }
-            .header h1 { font-size: 1.7rem; }
-            .header p { font-size: 0.85rem; }
-            .collapsible-header { flex-direction: column; text-align: center; gap: 0.5rem; padding-bottom: 0.8rem; }
-            .collapsible-header .collapse-icon { margin-left: 0; margin-top: 0.3rem; }
-            .button-grid { grid-template-columns: 1fr; gap: 1rem; }
-            .resource-button { min-height: 4rem; padding: 1rem; }
-            .resource-button .icon { font-size: 1.4rem; }
-            .footer { padding: 1rem; font-size: 0.8rem; }
+        .emoji-icon {
+            font-size: 1.75rem; /* Consistent emoji size */
+            line-height: 1;
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800">
 
-    <header class="top-nav">
-        <div class="top-nav-container">
-            <ul class="top-nav-list">
-                <li class="top-nav-item"><a href="index.html">Home</a></li>
-                <li class="top-nav-item"><a href="AcademicSupportResourcesConsentAndTOS.html">Learning Support</a></li>
-                <li class="top-nav-item"><a href="Calendar.html">Calendar</a></li>
-                <li class="top-nav-item"><a href="https://www.vsrep.org/anonymous-reporting-form" target="_blank" rel="noopener noreferrer">Complaints</a></li>
-            </ul>
+    <!-- Sticky Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="index.html" class="flex items-center gap-2 text-xl font-bold text-slate-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-sky-600"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        <span>MH Resources</span>
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="index.html" class="text-slate-600 hover:bg-sky-100 hover:text-sky-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
+                        <a href="AcademicSupportResourcesConsentAndTOS.html" class="text-slate-600 hover:bg-sky-100 hover:text-sky-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Learning Support</a>
+                        <a href="Calendar.html" class="text-slate-600 hover:bg-sky-100 hover:text-sky-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Calendar</a>
+                        <a href="https://www.vsrep.org/anonymous-reporting-form" target="_blank" rel="noopener noreferrer" class="text-slate-600 hover:bg-sky-100 hover:text-sky-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Complaints</a>
+                    </div>
+                </div>
+                 <div class="-mr-2 flex md:hidden"></div>
+            </div>
+             <div class="md:hidden overflow-x-auto no-scrollbar pb-3">
+                 <div class="flex items-baseline space-x-4">
+                     <a href="index.html" class="text-slate-600 hover:bg-sky-100 hover:text-sky-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
+                     <a href="AcademicSupportResourcesConsentAndTOS.html" class="text-slate-600 hover:bg-sky-100 hover:text-sky-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Learning Support</a>
+                     <a href="Calendar.html" class="text-slate-600 hover:bg-sky-100 hover:text-sky-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Calendar</a>
+                     <a href="https://www.vsrep.org/anonymous-reporting-form" target="_blank" rel="noopener noreferrer" class="text-slate-600 hover:bg-sky-100 hover:text-sky-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Complaints</a>
+                 </div>
+             </div>
         </div>
-    </header>
+    </nav>
 
-    <div class="page-container">
-        <header class="header">
-            <div class="header-content">
-                <h1>Mental Health</h1>
-                <p>Access professionally curated study materials, comprehensive practice exams, and specialized learning modules designed to support your academic success in Nursing Mental Health.</p>
+    <!-- Main Page Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <!-- Header Section -->
+        <header class="text-center bg-white p-8 md:p-12 rounded-2xl shadow-lg border border-slate-200 mb-8 md:mb-12 relative overflow-hidden">
+            <div class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-sky-100/50 rounded-full float-anim"></div>
+            <div class="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 w-64 h-64 bg-teal-100/50 rounded-full float-anim-reverse"></div>
+            
+            <div class="relative z-10">
+                <h1 class="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight">Mental Health</h1>
+                <p class="mt-4 max-w-3xl mx-auto text-base md:text-lg text-slate-600">Access professionally curated study materials, comprehensive practice exams, and specialized learning modules designed to support your academic success in Nursing Mental Health.</p>
             </div>
         </header>
 
-        <main>
-            <section class="content-section">
-                <h2 class="collapsible-header">
-                    Unit 1: Foundational Concepts (Placeholder)
-                    <i class="fas fa-chevron-down collapse-icon"></i>
-                </h2>
-                <div class="collapsible-content">
-                    <!-- This unit is intentionally left blank for you to fill -->
-                    <p style="text-align: center; color: var(--color-text-light); font-size: 1.1rem; padding: 2rem;">
-                        This space is ready for new content. Consider adding resources on basic mental health principles, self-care, or emotional regulation.
-                    </p>
-                </div>
-            </section>
+        <!-- Main Content Area with Accordions -->
+        <main class="space-y-6">
 
-            <section class="content-section">
-                <h2 class="collapsible-header">
-                    Unit 2: Addiction, Cognition, and Development
-                    <i class="fas fa-chevron-down collapse-icon"></i>
-                </h2>
-                <div class="collapsible-content">
-                    <div class="topic-group">
-                        <h3><i class="fas fa-child"></i> Development</h3>
-                        <div class="button-grid">
-                            <a href="mentalhealthdevelopment.html" class="resource-button module-button" target="_blank" rel="noopener noreferrer">
-                                <span class="icon"><i class="fas fa-baby"></i></span> <strong>Development SDE</strong>
-                            </a>
-                        </div>
+            <!-- Accordion Item: Unit One -->
+            <div class="accordion-item bg-white border border-slate-200 rounded-2xl shadow-md transition-all duration-300 hover:shadow-xl overflow-hidden">
+                <button class="accordion-header w-full flex justify-between items-center p-5 md:p-6 text-left">
+                    <h2 class="text-xl md:text-2xl font-semibold text-slate-800">Unit 1: Foundational Concepts <span class="hidden sm:inline-block text-base font-normal text-slate-500 ml-2">(Placeholder)</span></h2>
+                    <svg class="accordion-icon w-6 h-6 text-slate-500 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="accordion-content overflow-hidden max-h-0">
+                    <div class="p-6 pt-0">
+                       <div class="border-t border-slate-200 pt-6">
+                           <p class="text-center text-slate-500 italic py-4">This space is ready for new content. Consider adding resources on basic mental health principles, self-care, or emotional regulation.</p>
+                       </div>
                     </div>
-                    <div class="topic-group">
-                        <h3><i class="fas fa-lightbulb"></i> Cognition</h3>
-                        <div class="button-grid">
-                            <a href="mentalhealthcognitionsde.html" class="resource-button module-button" target="_blank" rel="noopener noreferrer">
-                                <span class="icon"><i class="fas fa-brain"></i></span> <strong>Cognition SDE</strong>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="topic-group">
-                        <h3><i class="fas fa-heart"></i> Addiction</h3>
-                        <div class="button-grid">
-                            <a href="mentalhealthaddictionsde.html" class="resource-button exam-button" target="_blank" rel="noopener noreferrer">
-                                <span class="icon"><i class="fas fa-hand-holding-heart"></i></span> <strong>Addiction SDE</strong>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- NEW BUTTON MOVED HERE TO BE FOR THE ENTIRE UNIT 2 -->
-                    <div class="topic-group">
-                        <h3><i class="fas fa-pills"></i> Drug Mastery Module (Unit 2)</h3>
-                        <div class="button-grid">
-                            <a href="mentalhealthunit2drugmodule.html" class="resource-button exam-button" target="_blank" rel="noopener noreferrer">
-                                <span class="icon"><i class="fas fa-flask"></i></span> <strong>Start Drug Mastery Module</strong>
-                            </a>
+                </div>
+            </div>
+
+            <!-- Accordion Item: Unit Two -->
+            <div class="accordion-item bg-white border border-slate-200 rounded-2xl shadow-md transition-all duration-300 hover:shadow-xl overflow-hidden">
+                <button class="accordion-header w-full flex justify-between items-center p-5 md:p-6 text-left">
+                    <h2 class="text-xl md:text-2xl font-semibold text-slate-800">Unit 2: Addiction, Cognition, and Development</h2>
+                    <svg class="accordion-icon w-6 h-6 text-slate-500 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="accordion-content overflow-hidden max-h-0">
+                    <div class="p-6 pt-0 space-y-6">
+                        <div class="border-t border-slate-200 pt-6 space-y-6">
+                            
+                            <!-- Subsection: Development -->
+                            <div class="p-5 bg-slate-50/70 rounded-xl border border-slate-200">
+                                <h3 class="text-lg font-semibold text-slate-700 mb-4">Development</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <a href="mentalhealthdevelopment.html" target="_blank" rel="noopener noreferrer" class="resource-button-learn">
+                                        <span class="emoji-icon">👶</span>
+                                        <span>Development SDE</span>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Subsection: Cognition -->
+                            <div class="p-5 bg-slate-50/70 rounded-xl border border-slate-200">
+                                <h3 class="text-lg font-semibold text-slate-700 mb-4">Cognition</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <a href="mentalhealthcognitionsde.html" target="_blank" rel="noopener noreferrer" class="resource-button-learn">
+                                        <span class="emoji-icon">🧠</span>
+                                        <span>Cognition SDE</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Subsection: Addiction -->
+                            <div class="p-5 bg-slate-50/70 rounded-xl border border-slate-200">
+                                <h3 class="text-lg font-semibold text-slate-700 mb-4">Addiction</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <a href="mentalhealthaddictionsde.html" target="_blank" rel="noopener noreferrer" class="resource-button-exam">
+                                         <span class="emoji-icon">🧘</span>
+                                        <span>Addiction SDE</span>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                             <!-- Subsection: Drug Mastery -->
+                            <div class="p-5 bg-slate-50/70 rounded-xl border border-slate-200">
+                                <h3 class="text-lg font-semibold text-slate-700 mb-4">Drug Mastery Module (Unit 2)</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <a href="mentalhealthunit2drugmodule.html" target="_blank" rel="noopener noreferrer" class="resource-button-exam">
+                                         <span class="emoji-icon">💊</span>
+                                        <span>Start Drug Mastery Module</span>
+                                    </a>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
         </main>
 
-        <footer class="footer">
-            <p>&copy; 2025 Cole Ashton VSREP. All rights reserved.</p>
+        <!-- Footer -->
+        <footer class="text-center mt-12 py-6 border-t border-slate-200">
+            <p class="text-sm text-slate-500">&copy; 2025 Cole Ashton VSREP. All rights reserved.</p>
         </footer>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
+        // Setup button styles and accordion functionality
+        const setupButtonClasses = () => {
+            const baseClasses = `group flex flex-col items-center justify-center gap-3 text-center p-4 rounded-xl border-2 shadow-sm transition-all duration-300 transform-gpu hover:shadow-lg hover:-translate-y-1 font-semibold`;
+            
+            // Exam/Special Button styles (gold/yellow accent)
+            document.querySelectorAll('.resource-button-exam').forEach(button => {
+                button.className = `${baseClasses} bg-white border-amber-200 text-amber-700 hover:bg-amber-50 hover:border-amber-400`;
+            });
 
-            collapsibleHeaders.forEach(header => {
-                const content = header.nextElementSibling;
-                const icon = header.querySelector('.collapse-icon');
+            // Learning Module Button styles (teal accent)
+            document.querySelectorAll('.resource-button-learn').forEach(button => {
+                button.className = `${baseClasses} bg-white border-sky-200 text-sky-700 hover:bg-sky-50 hover:border-sky-400`;
+            });
+        };
+        
+        const setupAccordion = () => {
+            const accordionItems = document.querySelectorAll('.accordion-item');
 
-                // Initially ensure content is collapsed and icon is correct
-                content.classList.remove('expanded');
-                icon.classList.remove('rotated');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const icon = item.querySelector('.accordion-icon');
+
+                content.style.maxHeight = '0px';
 
                 header.addEventListener('click', () => {
-                    content.classList.toggle('expanded');
-                    icon.classList.toggle('rotated');
+                    const isExpanded = content.style.maxHeight !== '0px';
+
+                    if (isExpanded) {
+                        content.style.maxHeight = '0px';
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.classList.add('rotate-180');
+                    }
+                });
+                
+                window.addEventListener('resize', () => {
+                    if (content.style.maxHeight !== '0px') {
+                         content.style.maxHeight = content.scrollHeight + 'px';
+                    }
                 });
             });
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupButtonClasses();
+            setupAccordion();
         });
     </script>
 
