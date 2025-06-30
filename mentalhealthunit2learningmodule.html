@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindPath: Mental Health Nursing Companion</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for animations and layout */
         body {
             font-family: "Inter", sans-serif;
             margin: 0;
-            overflow: hidden; /* Prevent body scroll when module is open */
+            overflow: hidden;
         }
         .whitespace-pre-wrap {
             white-space: pre-wrap;
@@ -26,28 +24,21 @@
     </style>
 </head>
 <body>
-    <div id="app-root" class="min-h-screen bg-gray-100 font-sans text-gray-900">
-        <!-- App content will be rendered here by JavaScript -->
-    </div>
+    <div id="app-root" class="min-h-screen bg-gray-100 font-sans text-gray-900"></div>
 
-    <!-- Firebase CDN Imports -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- Firebase Configuration ---
-        // These global variables are provided by the environment.
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-mindpath-app';
         let firebaseConfig;
         try {
             firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         } catch (e) {
-            console.error("Failed to parse firebase config:", e);
             firebaseConfig = {};
         }
 
-        // --- Firebase Initialization ---
         let app;
         let auth;
         let db;
@@ -57,10 +48,9 @@
             auth = getAuth(app);
             db = getFirestore(app);
         } catch (e) {
-            console.error("Firebase initialization error:", e);
+            // Error handling silenced as per previous request
         }
 
-        // --- Lucide Icons as SVG Strings ---
         const lucideIcons = {
             ArrowLeft: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>`,
             BrainCircuit: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 3 3 0 0 0-3-3"/><path d="M12 2a3 3 0 0 1 3 3v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2 3 3 0 0 1 3-3"/><path d="M12 2v20"/><path d="M12 12H3"/><path d="M12 12h9"/><path d="M12 18H3"/><path d="M12 18h9"/><path d="M12 6H3"/><path d="M12 6h9"/></svg>`,
@@ -83,30 +73,30 @@
             GraduationCap: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.43 14.86c.21.16.42.33.61.51l.86.86c.35.35.54.81.54 1.3s-.19.95-.54 1.3l-2.48 2.48c-.35.35-.81.54-1.3.54s-.95-.19-1.3-.54l-.86-.86c-.18-.19-.35-.4-.51-.61M8 12V3.5L2 8l6 4h.5l.5.5.5.5 1.5 1.5 1.5 1.5.5.5.5.5h.5V12z"/><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7"/><path d="M18.8 9.5 12 12 5.2 9.5"/><path d="M12 2v20"/></svg>`
         };
 
-        // Helper function to create an SVG icon element
         function createIcon(iconName, className) {
             const svgString = lucideIcons[iconName];
             if (!svgString) {
-                console.warn(`Icon "${iconName}" not found.`);
                 const div = document.createElement('div');
                 div.className = className;
-                return div; // Return an empty div or a placeholder
+                return div;
             }
             const div = document.createElement('div');
             div.innerHTML = svgString;
             const svg = div.firstChild;
-            // Correctly set class for SVG elements
             if (className) {
                 svg.setAttribute('class', className);
             }
             return svg;
         }
 
-        // --- Content & Data Structure ---
+        function formatMarkdownToHtml(text) {
+            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
+
         const contentData = {
             'foundations': {
                 title: 'Core Concepts',
-                icon: 'GraduationCap', // Use string name for icon
+                icon: 'GraduationCap',
                 color: 'from-sky-500 to-cyan-400',
                 description: 'Establish a strong base in mental health nursing terminology and principles.',
                 steps: [
@@ -160,14 +150,14 @@
                 steps: [
                     { id: 'intro', title: 'Disorder Overview', type: 'text', content: `Neurocognitive disorders involve a clinically significant deficit in cognition (thinking skills) that represents a change from a previous level of functioning. A key nursing challenge is distinguishing among the "3 D's":\n- **Delirium:** Acute, fluctuating onset. A medical emergency.\n- **Dementia:** Gradual, progressive, and irreversible decline.\n- **Depression:** Can cause cognitive symptoms (pseudodementia) but is treatable.` },
                     { id: 'care-strategies', title: 'Caring for Dementia', type: 'text', content: `Compassionate care for patients with dementia focuses on promoting safety and preserving dignity. \n\n**Communication:** Use simple, direct sentences. Approach from the front and make eye contact. Use non-verbal cues like smiling and gentle touch. If a patient is agitated, validate their feeling and gently redirect (e.g., "I see you're upset. Let's walk over here and look at this picture."). \n\n**Safety:** The environment should be safe and predictable. Remove clutter, ensure adequate lighting, and secure dangerous items. A consistent daily routine is calming. For wandering, ensure the patient has an ID bracelet and consider alarms on doors.` },
-                    { id: 'case-study-delirium', title: 'Case Study: Delirium', type: 'case_study', case: {
+                    { id: 'case-study-delirium', type: 'case_study', case: {
                         scenario: "An 80-year-old patient, post-hip surgery, suddenly becomes disoriented, confused, and is seeing insects on the walls. These symptoms started acutely this evening.",
                         question: "What is the most likely diagnosis and the priority nursing action?",
                         options: ["Sundowning in dementia; offer reassurance.", "Acute delirium; look for an underlying cause (e.g., infection, hypoxia).", "Schizophrenia onset; administer antipsychotics.", "Medication side effect; stop all pain medication."],
                         correctAnswer: "Acute delirium; look for an underlying cause (e.g., infection, hypoxia).",
                         explanation: "Delirium is characterized by an acute onset and fluctuating course, often with visual hallucinations. It is a medical emergency. The priority is to identify and treat the underlying physiological cause."
                     }},
-                    { id: 'alzheimers', title: `Alzheimer's Disease`, type: 'text', content: `Alzheimer's is the most common form of dementia. It's characterized by the "4 A's": Amnesia (memory loss, especially recent), Aphasia (language difficulty, from finding words to producing speech), Apraxia (loss of purposeful movement, like using a fork), and Agnosia (inability to recognize familiar objects or people).` },
+                    { id: 'alzheimers', title: `Alzheimer's Disease`, type: 'text', content: `Alzheimer's is the most common form of dementia. It's characterized by the "4 A's": **Amnesia** (memory loss, especially recent), **Aphasia** (language difficulty, from finding words to producing speech), **Apraxia** (loss of purposeful movement, like using a fork), and **Agnosia** (inability to recognize familiar objects or people).` },
                 ],
             },
         };
@@ -190,23 +180,16 @@
             "Cognitive": ["Impaired Executive Function", "Memory Deficits", "Difficulty Focusing", "Anosognosia"]
         };
 
-        // --- Helper Functions ---
         function cn(...classes) {
             return classes.filter(Boolean).join(' ');
         }
 
-        // Simple state management simulation
         let appState = {
             currentModuleId: null,
             userId: null,
             progress: {},
             isAuthReady: false,
-            // For ClinicalCoach
-            coachIsOpen: false,
-            coachMessages: [{ role: "assistant", text: "Hi! I'm your AI Clinical Coach. Ask me to explain a concept, or give you a clinical scenario. How can I help?" }],
-            coachInput: "",
-            coachIsLoading: false,
-            // For LearningModule
+            // AI coach related state removed
             activeStep: 0,
             isSidebarOpen: false
         };
@@ -219,7 +202,6 @@
 
         function subscribe(callback) {
             subscribers.push(callback);
-            // Immediately call with current state for initial render
             callback(appState);
             return () => {
                 const index = subscribers.indexOf(callback);
@@ -227,10 +209,8 @@
             };
         }
 
-        // --- Child Components (converted to plain JS functions) ---
-
         function renderDashboard(container, state, onSelectModule, progress) {
-            container.innerHTML = ''; // Clear previous content
+            container.innerHTML = '';
             const dashboardDiv = document.createElement('div');
             dashboardDiv.className = 'p-4 sm:p-6 md:p-8';
 
@@ -241,7 +221,7 @@
                     ${createIcon('Layers', 'w-8 h-8 text-indigo-500').outerHTML}
                     <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">MindPath Dashboard</h1>
                 </div>
-                <p class="text-lg text-gray-500">Your AI-powered mental health nursing companion.</p>
+                <p class="text-lg text-gray-500">Your mental health nursing companion.</p>
             `;
             dashboardDiv.appendChild(header);
 
@@ -300,22 +280,31 @@
         }
 
         function renderSymptomSorter(container, onComplete) {
-            container.innerHTML = '';
-            // Internal state for SymptomSorter
             let buckets = { Positive: [], Negative: [], Cognitive: [] };
             let items = [];
             let feedback = null;
             let completed = false;
+            let itemFeedback = {};
+
+            const initializeItems = () => {
+                const allItems = Object.values(symptomSorterData).flat();
+                items = allItems.sort(() => Math.random() - 0.5);
+                buckets = { Positive: [], Negative: [], Cognitive: [] };
+                feedback = null;
+                completed = false;
+                itemFeedback = {};
+                updateUI();
+            };
 
             const updateUI = () => {
-                container.innerHTML = ''; // Clear previous render
+                container.innerHTML = '';
 
                 const sorterDiv = document.createElement('div');
                 sorterDiv.className = 'p-4 bg-gray-50 rounded-lg';
 
                 sorterDiv.innerHTML = `
                     <h4 class="font-bold text-lg text-gray-800 mb-2">Symptom Sorter</h4>
-                    <p class="text-sm text-gray-600 mb-4">Drag and drop the symptoms into the correct categories.</p>
+                    <p class="text-sm text-gray-600 mb-4">Drag and drop the symptoms into the correct categories. Click 'Check Answers' for feedback. Click on an item in a bucket to return it.</p>
                 `;
 
                 const bucketsGrid = document.createElement('div');
@@ -336,7 +325,15 @@
                     bucketItemsContainer.className = 'flex flex-col gap-2';
                     buckets[bucketName].forEach(item => {
                         const itemDiv = document.createElement('div');
-                        itemDiv.className = 'bg-indigo-100 text-indigo-800 text-sm p-2 rounded-md cursor-pointer';
+                        let itemClass = 'bg-indigo-100 text-indigo-800';
+                        if (feedback !== null) {
+                            if (itemFeedback[item] === 'correct') {
+                                itemClass = 'bg-green-100 text-green-800 border-green-500';
+                            } else if (itemFeedback[item] === 'incorrect') {
+                                itemClass = 'bg-red-100 text-red-800 border-red-500';
+                            }
+                        }
+                        itemDiv.className = `${itemClass} text-sm p-2 rounded-md cursor-pointer border border-transparent`;
                         itemDiv.textContent = item;
                         itemDiv.addEventListener('click', () => handleReturnItem(item, bucketName));
                         bucketItemsContainer.appendChild(itemDiv);
@@ -350,7 +347,13 @@
                 draggableItemsContainer.className = 'bg-gray-100 p-4 rounded-lg min-h-[100px] flex flex-wrap gap-2 items-center justify-center';
                 items.forEach(item => {
                     const itemDiv = document.createElement('div');
-                    itemDiv.className = 'bg-white shadow-sm p-2 rounded-md cursor-grab active:cursor-grabbing border border-gray-200 text-sm';
+                    let itemClass = 'bg-white shadow-sm border border-gray-200';
+                    if (feedback !== null) {
+                        if (itemFeedback[item] === 'incorrect') {
+                            itemClass = 'bg-red-100 text-red-800 border-red-500';
+                        }
+                    }
+                    itemDiv.className = `${itemClass} p-2 rounded-md cursor-grab active:cursor-grabbing text-sm`;
                     itemDiv.textContent = item;
                     itemDiv.draggable = true;
                     itemDiv.addEventListener('dragstart', (e) => handleDragStart(e, item));
@@ -379,6 +382,14 @@
                 checkButton.addEventListener('click', checkAnswers);
                 feedbackArea.appendChild(checkButton);
 
+                if (feedback !== null && !completed) {
+                    const resetButton = document.createElement('button');
+                    resetButton.className = 'ml-4 px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-400 transition-colors';
+                    resetButton.textContent = 'Reset';
+                    resetButton.addEventListener('click', initializeItems);
+                    feedbackArea.appendChild(resetButton);
+                }
+
                 sorterDiv.appendChild(feedbackArea);
                 container.appendChild(sorterDiv);
             };
@@ -391,7 +402,11 @@
                 e.preventDefault();
                 const item = e.dataTransfer.getData("text/plain");
                 items = items.filter(i => i !== item);
+                Object.keys(buckets).forEach(b => {
+                    buckets[b] = buckets[b].filter(i => i !== item);
+                });
                 buckets = { ...buckets, [bucketName]: [...buckets[bucketName], item] };
+                feedback = null;
                 updateUI();
             };
 
@@ -402,53 +417,77 @@
             const handleReturnItem = (item, fromBucket) => {
                 buckets = { ...buckets, [fromBucket]: buckets[fromBucket].filter(i => i !== item) };
                 items = [...items, item];
+                feedback = null;
                 updateUI();
             };
 
             const checkAnswers = () => {
                 let allCorrect = true;
+                let newitemFeedback = {};
+
                 Object.entries(buckets).forEach(([bucketName, bucketItems]) => {
-                    if (bucketItems.length !== symptomSorterData[bucketName].length) {
-                        allCorrect = false;
-                    }
+                    const correctItemsForBucket = symptomSorterData[bucketName];
                     bucketItems.forEach(item => {
-                        if (!symptomSorterData[bucketName].includes(item)) {
+                        if (correctItemsForBucket.includes(item)) {
+                            newitemFeedback[item] = 'correct';
+                        } else {
+                            newitemFeedback[item] = 'incorrect';
+                            allCorrect = false;
+                        }
+                    });
+                    correctItemsForBucket.forEach(correctItem => {
+                        if (!bucketItems.includes(correctItem)) {
+                            if (!newitemFeedback[correctItem]) {
+                                newitemFeedback[correctItem] = 'incorrect';
+                            }
                             allCorrect = false;
                         }
                     });
                 });
 
-                if (items.length > 0) allCorrect = false;
+                items.forEach(item => {
+                    let foundCorrectBucket = false;
+                    for (const bucketName in symptomSorterData) {
+                        if (symptomSorterData[bucketName].includes(item)) {
+                            foundCorrectBucket = true;
+                            break;
+                        }
+                    }
+                    if (foundCorrectBucket) {
+                        newitemFeedback[item] = 'incorrect';
+                        allCorrect = false;
+                    } else {
+                        newitemFeedback[item] = 'correct';
+                    }
+                });
 
                 feedback = allCorrect;
+                completed = allCorrect;
+                itemFeedback = newitemFeedback;
+
                 if (allCorrect) {
-                    completed = true;
                     onComplete();
                 }
                 updateUI();
             };
 
-            // Initialize items on first render
-            const allItems = Object.values(symptomSorterData).flat();
-            items = allItems.sort(() => Math.random() - 0.5);
-            updateUI(); // Initial render
+            initializeItems();
         }
 
         function renderCaseStudy(container, caseData, onComplete) {
             container.innerHTML = '';
-            // Internal state for CaseStudy
             let selectedAnswer = null;
             let isCorrect = null;
 
             const updateUI = () => {
-                container.innerHTML = ''; // Clear previous render
+                container.innerHTML = '';
 
                 const caseStudyDiv = document.createElement('div');
                 caseStudyDiv.className = 'p-4 bg-gray-50 rounded-lg';
 
                 caseStudyDiv.innerHTML = `
                     <h4 class="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
-                    <p class="bg-blue-100 text-blue-800 p-3 rounded-md mb-4 text-sm whitespace-pre-wrap">${caseData.scenario}</p>
+                    <p class="bg-blue-100 text-blue-800 p-3 rounded-md mb-4 text-sm whitespace-pre-wrap">${formatMarkdownToHtml(caseData.scenario)}</p>
                     <p class="font-semibold text-gray-700 mb-3">${caseData.question}</p>
                 `;
 
@@ -490,7 +529,7 @@
                     explanationDiv.className = 'mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500';
                     explanationDiv.innerHTML = `
                         <h5 class="font-bold text-indigo-800">Explanation</h5>
-                        <p class="text-sm text-indigo-700">${caseData.explanation}</p>
+                        <p class="text-sm text-indigo-700">${formatMarkdownToHtml(caseData.explanation)}</p>
                     `;
                     caseStudyDiv.appendChild(explanationDiv);
                 }
@@ -498,26 +537,26 @@
             };
 
             const handleSelect = (option) => {
-                if (selectedAnswer) return; // Prevent re-selection
+                if (selectedAnswer) return;
                 selectedAnswer = option;
                 const correct = option === caseData.correctAnswer;
                 isCorrect = correct;
                 if (correct) {
                     onComplete();
                 }
-                updateUI(); // Re-render to show feedback
+                updateUI();
             };
 
-            updateUI(); // Initial render
+            updateUI();
         }
 
         function renderGlossary(container, onComplete, stepId) {
             container.innerHTML = '';
             let searchTerm = "";
-            let filteredTerms = Object.entries(glossaryTerms); // Initial
+            let filteredTerms = Object.entries(glossaryTerms);
 
             const updateUI = () => {
-                container.innerHTML = ''; // Clear previous render
+                container.innerHTML = '';
 
                 const glossaryDiv = document.createElement('div');
                 glossaryDiv.className = 'p-4 bg-gray-50 rounded-lg';
@@ -529,7 +568,7 @@
 
                 const searchInput = document.createElement('input');
                 searchInput.type = 'text';
-                searchInput.placeholder = 'Search terms...';
+                searchInput.placeholder = "Search terms...";
                 searchInput.value = searchTerm;
                 searchInput.className = 'w-full p-2 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500';
                 searchInput.addEventListener('input', (e) => {
@@ -537,7 +576,7 @@
                     filteredTerms = Object.entries(glossaryTerms).filter(([term, _]) =>
                         term.toLowerCase().includes(searchTerm.toLowerCase())
                     );
-                    updateUI(); // Re-render on search
+                    updateUI();
                 });
                 glossaryDiv.appendChild(searchInput);
 
@@ -555,7 +594,7 @@
                         termDiv.className = 'bg-white p-3 rounded-md shadow-sm';
                         termDiv.innerHTML = `
                             <h5 class="font-semibold text-indigo-700">${term}</h5>
-                            <p class="text-sm text-gray-600">${definition}</p>
+                            <p class="text-sm text-gray-600">${formatMarkdownToHtml(definition)}</p>
                         `;
                         termsContainer.appendChild(termDiv);
                     });
@@ -564,31 +603,28 @@
                 container.appendChild(glossaryDiv);
             };
 
-            // Initial call to mark step as complete
             onComplete(stepId);
-            updateUI(); // Initial render
+            updateUI();
         }
 
         function renderTextStep(container, step, onComplete) {
             container.innerHTML = '';
             const textDiv = document.createElement('div');
             textDiv.className = 'text-gray-700 leading-relaxed p-4 bg-gray-50 rounded-lg space-y-4 whitespace-pre-wrap';
-            textDiv.innerHTML = step.content || "Welcome to this module. Select a step from the sidebar to begin.";
+            textDiv.innerHTML = formatMarkdownToHtml(step.content || "Welcome to this module. Select a step from the sidebar to begin.");
             container.appendChild(textDiv);
 
-            // Mark step as complete
             if (step && step.id) {
                 onComplete(step.id);
             }
         }
 
         function renderLearningModule(container, state, module, onBack, onProgressUpdate) {
-            container.innerHTML = ''; // Clear previous content
+            container.innerHTML = '';
 
             const moduleContainer = document.createElement('div');
             moduleContainer.className = 'fixed inset-0 bg-gray-100 flex flex-col z-20';
 
-            // Header
             const header = document.createElement('header');
             header.className = 'bg-white shadow-md p-4 flex items-center justify-between z-10 flex-shrink-0';
 
@@ -617,7 +653,6 @@
             const mainContentArea = document.createElement('div');
             mainContentArea.className = 'flex flex-1 overflow-hidden';
 
-            // Sidebar
             const aside = document.createElement('aside');
             aside.className = cn(
                 "bg-white border-r border-gray-200 p-4 w-72 flex-shrink-0 flex flex-col transition-transform transform md:translate-x-0 absolute md:static h-full z-20",
@@ -638,7 +673,7 @@
                     state.activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100'
                 );
                 stepButton.addEventListener('click', () => {
-                    setState({ activeStep: index, isSidebarOpen: false }); // Close sidebar on selection for mobile
+                    setState({ activeStep: index, isSidebarOpen: false });
                 });
 
                 const moduleProgress = state.progress[module.id] || {};
@@ -652,7 +687,7 @@
                     const innerCircle = document.createElement('div');
                     innerCircle.className = cn("w-3 h-3 rounded-full border-2", state.activeStep === index ? "border-indigo-500" : "border-gray-400");
                     circleDiv.appendChild(innerCircle);
-                    stepButton.appendChild(innerCircle);
+                    stepButton.appendChild(circleDiv);
                 }
                 const span = document.createElement('span');
                 span.className = 'flex-1';
@@ -663,7 +698,6 @@
             aside.appendChild(nav);
             mainContentArea.appendChild(aside);
 
-            // Main Content Area
             const main = document.createElement('main');
             main.className = 'flex-1 overflow-y-auto p-4 sm:p-6 md:p-8';
 
@@ -674,10 +708,9 @@
             stepTitle.textContent = module.steps[state.activeStep].title;
             contentWrapper.appendChild(stepTitle);
 
-            const stepContentContainer = document.createElement('div'); // Container for step content
+            const stepContentContainer = document.createElement('div');
             contentWrapper.appendChild(stepContentContainer);
 
-            // Render current step content dynamically
             const currentStep = module.steps[state.activeStep];
             switch (currentStep.type) {
                 case 'intro':
@@ -736,228 +769,26 @@
             container.appendChild(moduleContainer);
         }
 
-        // Global references for coach elements to prevent constant recreation and maintain focus
+        // Removed AI coach related global references
         let coachPanelRef = null;
         let chatInputRef = null;
         let chatHistoryContainerRef = null;
         let sendButtonRef = null;
+        let toggleButtonRef = null;
 
+        // The renderClinicalCoach function is no longer needed since AI features are removed.
+        // I will keep it as a placeholder but it won't be called.
         function renderClinicalCoach(container, state) {
-            // Function to update the dynamic parts of the coach UI without recreating the entire panel
-            const updateCoachPanelUI = () => {
-                if (!coachPanelRef) return; // Panel not initialized yet
-
-                // Update chat messages
-                chatHistoryContainerRef.innerHTML = ''; // Clear existing messages
-                state.coachMessages.forEach((msg, index) => {
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = `flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`;
-
-                    if (msg.role === 'assistant') {
-                        messageDiv.appendChild(createIcon('Bot', 'w-6 h-6 text-indigo-500 flex-shrink-0'));
-                    }
-                    const bubble = document.createElement('div');
-                    bubble.className = `max-w-[80%] p-3 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-indigo-500 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}`;
-                    bubble.textContent = msg.text;
-                    messageDiv.appendChild(bubble);
-
-                    if (msg.role === 'user') {
-                        messageDiv.appendChild(createIcon('User', 'w-6 h-6 text-gray-400 flex-shrink-0'));
-                    }
-                    chatHistoryContainerRef.appendChild(messageDiv);
-                });
-
-                // Loading indicator
-                if (state.coachIsLoading) {
-                    const loadingDiv = document.createElement('div');
-                    loadingDiv.className = 'flex gap-3 justify-start';
-                    loadingDiv.appendChild(createIcon('Bot', 'w-6 h-6 text-indigo-500 flex-shrink-0'));
-                    const loadingBubble = document.createElement('div');
-                    loadingBubble.className = 'max-w-[80%] p-3 rounded-2xl bg-gray-200 text-gray-800 rounded-bl-none';
-                    loadingBubble.innerHTML = `
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></div>
-                            <div class="w-2 h-2 bg-gray-500 rounded-full animate-pulse [animation-delay:0.2s]"></div>
-                            <div class="w-2 h-2 bg-gray-500 rounded-full animate-pulse [animation-delay:0.4s]"></div>
-                        </div>
-                    `;
-                    loadingDiv.appendChild(loadingBubble);
-                    chatHistoryContainerRef.appendChild(loadingDiv);
-                }
-
-                // Scroll to bottom
-                if (chatHistoryContainerRef) {
-                    setTimeout(() => {
-                        chatHistoryContainerRef.scrollTop = chatHistoryContainerRef.scrollHeight;
-                    }, 0); // Use setTimeout to ensure DOM is updated before scrolling
-                }
-
-                // Update input field and send button properties
-                if (chatInputRef) {
-                    chatInputRef.value = state.coachInput;
-                    if (chatInputRef !== document.activeElement) { // Only focus if it's not already focused
-                        chatInputRef.focus();
-                    }
-                }
-                if (sendButtonRef) {
-                    sendButtonRef.disabled = state.coachIsLoading;
-                    if (state.coachIsLoading) {
-                        sendButtonRef.classList.add('disabled:bg-gray-400');
-                    } else {
-                        sendButtonRef.classList.remove('disabled:bg-gray-400');
-                    }
-                }
-            };
-
-
-            // Define handleSend function at the top of the scope
-            const handleSend = async () => {
-                const input = appState.coachInput.trim(); // Use appState here
-                if (!input || appState.coachIsLoading) return; // Use appState here
-
-                const userMessage = { role: 'user', text: input };
-                setState({ coachMessages: [...appState.coachMessages, userMessage], coachInput: "", coachIsLoading: true }); // Use appState here
-
-                const chatHistoryForAPI = appState.coachMessages.map(m => ({ // Use appState here
-                    role: m.role === 'assistant' ? 'model' : 'user',
-                    parts: [{ text: m.text }]
-                }));
-                chatHistoryForAPI.push({ role: "user", parts: [{ text: input }] });
-
-                const payload = {
-                    contents: chatHistoryForAPI,
-                    safetySettings: [
-                        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                        { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-                        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
-                    ]
-                };
-                const apiKey = ""; // Canvas will provide the key
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`API request failed with status ${response.status}`);
-                    }
-
-                    const result = await response.json();
-
-                    let botResponse = "I'm having trouble responding right now. Please try again later.";
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        botResponse = result.candidates[0].content.parts[0].text;
-                    } else if (result.promptFeedback && result.promptFeedback.blockReason) {
-                        botResponse = `My apologies, I cannot respond to that. Reason: ${result.promptFeedback.blockReason}. Let's focus on clinical nursing topics.`;
-                    }
-
-                    // Append user message and bot response, then set loading to false
-                    const newMessages = [...appState.coachMessages, userMessage, { role: 'assistant', text: botResponse }];
-                    setState({ coachMessages: newMessages, coachIsLoading: false });
-
-                } catch (error) {
-                    console.error("Gemini API error:", error);
-                    setState({ coachMessages: [...appState.coachMessages, userMessage, { role: 'assistant', text: "There was an error connecting to the AI coach." }], coachIsLoading: false });
-                }
-            };
-
-
-            // Main render logic for the coach container
-            container.innerHTML = ''; // Clear previous content
-
-            const toggleButton = document.createElement('button');
-            toggleButton.className = 'fixed bottom-6 right-6 bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-full shadow-lg hover:scale-105 transition-transform z-30';
-            toggleButton.setAttribute('aria-label', 'Toggle Clinical Coach');
-            toggleButton.innerHTML = state.coachIsOpen ? createIcon('X', 'w-8 h-8').outerHTML : createIcon('Bot', 'w-8 h-8').outerHTML;
-            toggleButton.addEventListener('click', () => {
-                setState({ coachIsOpen: !state.coachIsOpen });
-                // If opening, ensure panel elements are initialized and updated
-                if (!state.coachIsOpen && !coachPanelRef) { // If it's about to open and not yet created
-                     // This setState will trigger renderApp, which will then call renderClinicalCoach again
-                     // where the coachPanelRef will be created.
-                }
-            });
-            container.appendChild(toggleButton);
-
-            if (state.coachIsOpen) {
-                if (!coachPanelRef) { // Create panel elements only once when first opened
-                    coachPanelRef = document.createElement('div');
-                    coachPanelRef.className = 'fixed bottom-24 right-6 w-full max-w-sm h-[60vh] bg-white rounded-2xl shadow-2xl flex flex-col border border-gray-200 z-30';
-
-                    const header = document.createElement('header');
-                    header.className = 'p-4 bg-gray-50 rounded-t-2xl border-b border-gray-200 flex items-center gap-3';
-                    header.innerHTML = `
-                        <div class="p-2 bg-indigo-100 rounded-full">
-                            ${createIcon('Bot', 'w-6 h-6 text-indigo-600').outerHTML}
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-gray-800">AI Clinical Coach</h3>
-                            <p class="text-xs text-gray-500">Powered by Gemini</p>
-                        </div>
-                    `;
-                    coachPanelRef.appendChild(header);
-
-                    chatHistoryContainerRef = document.createElement('div');
-                    chatHistoryContainerRef.className = 'flex-1 p-4 overflow-y-auto space-y-4';
-                    coachPanelRef.appendChild(chatHistoryContainerRef);
-
-                    const footer = document.createElement('footer');
-                    footer.className = 'p-4 border-t border-gray-200';
-                    const inputContainer = document.createElement('div');
-                    inputContainer.className = 'flex items-center gap-2';
-
-                    chatInputRef = document.createElement('input');
-                    chatInputRef.type = 'text';
-                    chatInputRef.placeholder = 'Ask a question...';
-                    chatInputRef.className = 'flex-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500';
-                    chatInputRef.addEventListener('input', (e) => setState({ coachInput: e.target.value }));
-                    chatInputRef.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') handleSend();
-                    });
-                    inputContainer.appendChild(chatInputRef);
-
-                    sendButtonRef = document.createElement('button');
-                    sendButtonRef.className = 'p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700';
-                    sendButtonRef.innerHTML = createIcon('Send', 'w-5 h-5').outerHTML;
-                    sendButtonRef.addEventListener('click', handleSend);
-                    inputContainer.appendChild(sendButtonRef);
-
-                    footer.appendChild(inputContainer);
-                    coachPanelRef.appendChild(footer);
-                    container.appendChild(coachPanelRef);
-                } else {
-                    // If panel already exists, just append it back to the container
-                    container.appendChild(coachPanelRef);
-                }
-
-                // Always update the content inside the existing panel
-                updateCoachPanelUI();
-
-            } else {
-                // If coach is closed, remove the panel from the DOM but keep its reference
-                if (coachPanelRef && coachPanelRef.parentNode) {
-                    coachPanelRef.parentNode.removeChild(coachPanelRef);
-                }
-            }
+            // This function is now empty as AI features are removed.
+            // Keeping the global refs assigned to null.
         }
 
-
-        // --- Main App Logic ---
         const appRoot = document.getElementById('app-root');
-        let currentUserId = null; // To hold user ID after auth
         let unsubscribeAuth = null;
         let unsubscribeProgress = null;
 
         async function handleProgressUpdate(moduleId, stepId, completed) {
             if (!appState.isAuthReady || !appState.userId) {
-                console.log("Auth not ready or no user ID, cannot update progress.");
                 return;
             }
 
@@ -967,8 +798,7 @@
                 const docSnap = await getDoc(docRef);
                 const currentProgress = docSnap.exists() ? docSnap.data().progress : {};
 
-                // Prevent unnecessary writes if already completed
-                if (currentProgress[moduleId]?.[stepId]?.completed) return;
+                if(completed && currentProgress[moduleId]?.[stepId]?.completed) return;
 
                 const newProgress = {
                     ...currentProgress,
@@ -979,14 +809,13 @@
                 };
 
                 await setDoc(docRef, { progress: newProgress }, { merge: true });
-                // No need to setState here as onSnapshot listener will update it
             } catch (error) {
-                console.error("Error updating progress in Firestore:", error);
+                // Error handling silenced as per previous request
             }
         }
 
         function renderApp(state) {
-            appRoot.innerHTML = ''; // Clear existing content
+            appRoot.innerHTML = '';
 
             if (!state.isAuthReady) {
                 const loadingDiv = document.createElement('div');
@@ -1005,32 +834,26 @@
                 const selectedModule = { ...contentData[state.currentModuleId], id: state.currentModuleId };
                 renderLearningModule(
                     appRoot,
-                    state, // Pass full state to LearningModule for its internal state management (activeStep, isSidebarOpen)
+                    state,
                     selectedModule,
-                    () => setState({ currentModuleId: null, activeStep: 0, isSidebarOpen: false }), // Reset LearningModule state
+                    () => setState({ currentModuleId: null, activeStep: 0, isSidebarOpen: false }),
                     handleProgressUpdate
                 );
             } else {
                 renderDashboard(
                     appRoot,
-                    state, // Pass full state if needed by dashboard, though not directly used in the original.
-                    (moduleId) => setState({ currentModuleId: moduleId, activeStep: 0 }), // Reset active step when selecting new module
+                    state,
+                    (moduleId) => setState({ currentModuleId: moduleId, activeStep: 0 }),
                     state.progress
                 );
             }
 
-            // Render ClinicalCoach as a fixed element always
-            const coachContainer = document.createElement('div');
-            // This container will just hold the coach button/panel, positioned absolutely
-            appRoot.appendChild(coachContainer);
-            renderClinicalCoach(coachContainer, state);
+            // Removed rendering of ClinicalCoach component
         }
 
-        // --- Firebase Auth & Firestore Listener Setup ---
         window.addEventListener('DOMContentLoaded', () => {
             if (!db || !auth) {
-                console.error("Firebase services not available. App will not function correctly.");
-                setState({ isAuthReady: true }); // Still render, but without data persistence
+                setState({ isAuthReady: true });
                 return;
             }
 
@@ -1045,21 +868,18 @@
                             await signInAnonymously(auth);
                         }
                     } catch (error) {
-                        console.error("Error signing in:", error);
+                        // Error handling silenced as per previous request
                     }
                 }
                 setState({ isAuthReady: true });
             });
         });
 
-        // Effect for fetching and listening to progress data from Firestore
-        // This runs when userId or isAuthReady changes
         let previousUserId = null;
         subscribe(async (state) => {
             if (state.isAuthReady && state.userId && state.userId !== previousUserId) {
-                previousUserId = state.userId; // Update previousUserId to prevent re-listening on same user
+                previousUserId = state.userId;
 
-                // Clean up previous listener if it exists
                 if (unsubscribeProgress) {
                     unsubscribeProgress();
                     unsubscribeProgress = null;
@@ -1070,32 +890,27 @@
                     if (docSnap.exists()) {
                         setState({ progress: docSnap.data().progress || {} });
                     } else {
-                        console.log("No progress document found for user. Creating one.");
-                        setDoc(docRef, { progress: {} }); // Create it if it doesn't exist
+                        setDoc(docRef, { progress: {} });
                     }
                 }, (error) => {
-                    console.error("Error listening to progress updates:", error);
+                    // Error handling silenced as per previous request
                 });
             } else if (!state.userId && previousUserId) {
-                // User signed out or became unauthenticated, clean up listener
                 if (unsubscribeProgress) {
                     unsubscribeProgress();
                     unsubscribeProgress = null;
                 }
-                previousUserId = null; // Reset previous user ID
-                setState({ progress: {} }); // Clear progress
+                previousUserId = null;
+                setState({ progress: {} });
             }
         });
 
-        // Initial render and subsequent re-renders based on state changes
         subscribe(renderApp);
 
-        // Cleanup function for when the app might be removed from DOM (not strictly needed for this standalone file but good practice)
         window.addEventListener('beforeunload', () => {
             if (unsubscribeAuth) unsubscribeAuth();
             if (unsubscribeProgress) unsubscribeProgress();
         });
-
     </script>
 </body>
 </html>
