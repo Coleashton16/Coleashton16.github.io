@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfusion Learning Module</title>
+
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS for styling: Provides utility classes for modern responsive design. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind CSS configuration to use the Inter font.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out forwards',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- React Libraries: Core React for building UI components. -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel to translate JSX: Required for in-browser JSX compilation. Must be loaded after React. -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 bg-gray-100">
+    <!-- The root div where our React application will be mounted. -->
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- React and Library Setup ---
+        // Destructure necessary hooks from the global React object.
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        // --- Mock Authentication Setup for Standalone Demo ---
+        // This mock object simulates basic user authentication to allow progress tracking via localStorage.
+        // In a real application, this would be replaced with actual Firebase authentication.
+        const mockAuth = {
+            onAuthStateChanged: (callback) => {
+                // Simulate an asynchronous authentication check, providing a unique user ID.
+                setTimeout(() => callback({ uid: 'standalone-perfusion-user' }), 100);
+                return () => {}; // Returns an empty function as a cleanup/unsubscribe placeholder.
+            },
+            signInAnonymously: () => Promise.resolve({ user: { uid: 'standalone-perfusion-user' } }), // Mock anonymous sign-in.
+        };
+
+        // --- Content & Data Structure for the Perfusion Learning Module ---
+        // The main content is now broken down into smaller, focused modules.
+        const contentData = {
+            'perfusion-foundations': {
+                title: 'Perfusion Foundations',
+                color: 'from-sky-500 to-cyan-400',
+                description: 'Basic definitions, normal physiological processes, and core concepts of perfusion.',
+                steps: [
+                    { id: 'definition-scope', title: 'Definition & Scope', type: 'text', content: `<strong>Definition:</strong> Perfusion refers to the flow of blood through arteries and capillaries delivering nutrients and oxygen to cells. It requires the heart to generate sufficient cardiac output and patent blood vessels for distribution throughout the body. Thus, maintaining cardiovascular health is essential.<br><br><strong>Scope:</strong> Perfusion ranges from <strong>optimal perfusion</strong> to <strong>no perfusion</strong> (leading to necrosis). Variations are seen across the lifespan with multiple causes and effects. Changes can be temporary, long term, or permanent. Disorders include acute conditions (myocardial infarction, stroke, shock), chronic disorders (hypertension, heart failure), and acute exacerbations. Impaired perfusion is closely associated with neurologic, pulmonary, and cardiovascular conditions.` },
+                    { id: 'normal-physio', title: 'Normal Physiologic Process', type: 'text', content: `The cardiovascular system (heart, arteries, capillaries, veins) is responsible for blood perfusion. It interacts with the respiratory system for gas exchange in the lungs, where oxygen attaches to hemoglobin and is transported to cells.<br><br>Perfusion can be categorized into:<br>- <strong>Central Perfusion:</strong> Action of the heart and large vessels to deliver oxygenated blood to organs and tissues, driven by cardiac output.<br>- <strong>Tissue Perfusion:</strong> Blood flow through arteries and capillaries to specific target tissues.` },
+                    { id: 'central-perfusion-detail', title: 'Central Perfusion: Detail', type: 'text', content: `The heart, a four-chambered pump with four valves, receives deoxygenated blood in the right atrium, pumps it to the lungs from the right ventricle, receives oxygenated blood in the left atrium, and pumps it to the body from the left ventricle. Key principles include:<br><br><strong>Conduction:</strong> The heart generates its own electrical impulses, originating in the sinoatrial (SA) node, traveling to the atrioventricular (AV) node, and then through bundle branches and Purkinje fibers to trigger ventricular contraction.<br><br><strong>Cardiac Cycle:</strong> The electrical and mechanical actions with each heartbeat.<br>- <strong>Systole:</strong> Ventricles contract, closing mitral/tricuspid valves and opening aortic/pulmonic valves, ejecting blood into the aorta and pulmonary arteries.<br>- <strong>Diastole:</strong> Ventricles relax and fill with blood as atrial pressure opens mitral/tricuspid valves.` },
+                    { id: 'cardiac-output', title: 'Cardiac Output', type: 'text', content: `<strong>Cardiac Output (CO):</strong> Amount of blood pumped by the heart each minute. Normal is <strong>4 to 6 L/min</strong> in an adult. Calculated as <strong>Stroke Volume (SV) × Heart Rate (HR)</strong>.<br><br><strong>Stroke Volume (SV):</strong> Amount of blood ejected from each ventricle during contraction, affected by:<br>- <strong>Preload:</strong> Force stretching heart muscle before contraction (blood volume in ventricles at end of diastole).<br>- <strong>Contractility:</strong> Strength of myocardial contraction, increased by greater preload.<br>- <strong>Afterload:</strong> Force ventricles exert to open semilunar valves, influenced by systemic vascular resistance (SVR). Smaller/constricted vessels increase afterload, increasing heart's workload.<br><br><strong>Heart Rate (HR):</strong> Number of cardiac contractions per minute, influenced by age, fitness, and autonomic nervous system (sympathetic increases, parasympathetic decreases).`},
+                    { id: 'tissue-perfusion-detail', title: 'Tissue Perfusion: Detail', type: 'text', content: `Tissue perfusion is blood flow through arteries and capillaries to target tissues. Arterial blood pressure is determined by cardiac output and SVR. Arteries and arterioles withstand high pressure, maintaining blood pressure by constricting or dilating. Veins and venules return blood to the heart; they are less sturdy but more expansible and have one-way valves.` },
+                    { id: 'foundations-quiz', title: 'Foundations Quiz', type: 'quiz',
+                      questions: [
+                        { question: "What is the normal range for cardiac output in an adult?", options: ["2-3 L/min", "4-6 L/min", "7-9 L/min", "10-12 L/min"], correctAnswer: "4-6 L/min" },
+                        { question: "The phase of the cardiac cycle when ventricles contract is called:", options: ["Diastole", "Preload", "Systole", "Afterload"], correctAnswer: "Systole" },
+                        { question: "Which factor is NOT directly affecting stroke volume?", options: ["Preload", "Contractility", "Heart Rate", "Afterload"], correctAnswer: "Heart Rate" }
+                      ]
+                    },
+                ]
+            },
+            'perfusion-lifespan': {
+                title: 'Perfusion Across Lifespan',
+                color: 'from-green-500 to-teal-400',
+                description: 'Understand age-related differences in perfusion from infancy to older adulthood.',
+                steps: [
+                  { id: 'age-related-differences', title: 'Age-Related Differences', type: 'text', content: `<strong>Infants and Adolescents:</strong> Heart is larger relative to body size in infancy. Systolic BP is low at birth, rising sharply in the first 6 weeks. Throughout childhood, heart rate declines, and blood pressure rises. During adolescence, heart size increases, with increased BP and decreased HR, reaching adult systolic levels after puberty. Cardiac output increases, peaking during adolescence due to rapid growth and activity.<br><br><strong>Older Adults:</strong> Most relevant changes are stiffening/thickening of myocardial tissue and decreased arterial wall elasticity. Heart valves calcify and become fibrotic. These lead to reduced cardiac efficiency (decreased SV, CO) during increased oxygen demand. Arterial stiffening increases BP. Orthostatic hypotension may cause falls. Less efficient venous valves contribute to lower extremity edema.` },
+                  { id: 'lifespan-quiz', title: 'Lifespan Quiz', type: 'quiz',
+                    questions: [
+                      { question: "In older adults, what happens to arterial walls?", options: ["They become more elastic", "They become less elastic", "They remain unchanged", "They decrease in size"], correctAnswer: "They become less elastic" },
+                      { question: "During infancy, when does systolic blood pressure rise sharply?", options: ["First 24 hours", "First 6 weeks", "After 6 months", "During adolescence"], correctAnswer: "First 6 weeks" }
+                    ]
+                  }
+                ]
+            },
+            'perfusion-impairment': {
+                title: 'Impaired Perfusion: Variations & Consequences',
+                color: 'from-purple-500 to-indigo-500',
+                description: 'Explore conditions leading to impaired central and tissue perfusion and their physiological consequences.',
+                steps: [
+                    { id: 'variations-impaired-central', title: 'Variations: Impaired Central Perfusion', type: 'text', content: `Impaired central perfusion leads to decreased cardiac output if compensatory mechanisms fail. Conditions fall into five groups, often occurring simultaneously:<br><br>- <strong>Altered Conduction:</strong> Abnormal electrical impulses (dysrhythmias) reduce cardiac output (e.g., ventricular fibrillation causing sudden death).<br>- <strong>Reduced Myocardial Contraction:</strong> Weakened heart contraction from defects, ischemia/infarction, inflammation, or structural abnormalities.<br>- <strong>Ineffective Heart Valves:</strong> Malfunctioning valves (regurgitation, stenosis, congenital defects) reduce cardiac output by increasing chamber pressure and reducing pumping efficiency.<br>- <strong>Intravascular Volume:</strong> Hypovolemia (low volume) leads to low CO (e.g., hypovolemic shock). Hypervolemia (excess fluid) can overwhelm the heart, reducing CO (e.g., in heart, renal, or liver failure).<br>- <strong>Systemic Vascular Resistance (SVR):</strong> Sustained increase (vasoconstriction, atherosclerosis, arterial stenosis, increased blood viscosity) or decrease (vasodilation, hemorrhage) affects cardiac output.` },
+                    { id: 'variations-impaired-tissue', title: 'Variations: Impaired Local/Tissue Perfusion', type: 'text', content: `Interference with tissue perfusion reduces oxygen, fluid, and nutrient delivery to cells. Inadequate tissue perfusion can be widespread (due to reduced central perfusion) or localized.<br><br><strong>Localized impairment</strong> often results from arterial occlusion or constriction (e.g., cerebral artery blockage leading to stroke; coronary artery narrowing leading to angina/MI). It can also result from mechanisms within the tissue (e.g., excessive edema interfering with oxygen exchange, venous thrombus impairing blood return leading to edema).` },
+                    { id: 'physio-consequences', title: 'Physiologic Consequences', type: 'text', content: `Regardless of cause, impaired perfusion leads to cellular oxygen/nutrient deprivation.<br><br>- <strong>Hypoxia:</strong> Lowered oxygenation to cells (reversible cellular injury).<br>- <strong>Anoxia:</strong> Absence of oxygenation to cells (from prolonged ischemia).<br>- <strong>Ischemia:</strong> Reversible injury where oxygen demand exceeds supply due to reduced blood flow.<br>- <strong>Necrosis:</strong> Irreversible cellular injury and tissue death from prolonged anoxia.<br><br>The extent of harm depends on cause and duration. Localized consequences can have systemic effects (e.g., MI leading to heart failure). Extensive central perfusion impairment affects multiple organs and can be fatal.` },
+                    { id: 'impairment-quiz', title: 'Impairment Quiz', type: 'quiz',
+                      questions: [
+                        { question: "What is the term for absence of oxygenation to cells?", options: ["Hypoxia", "Ischemia", "Necrosis", "Anoxia"], correctAnswer: "Anoxia" },
+                        { question: "Which of the following is NOT a general group for conditions leading to reduced cardiac output?", options: ["Altered Conduction", "Reduced Myocardial Contraction", "Increased Blood Volume", "Ineffective Heart Valves"], correctAnswer: "Increased Blood Volume" }
+                      ]
+                    }
+                ]
+            },
+            'perfusion-risk-factors': {
+                title: 'Perfusion Risk Factors',
+                color: 'from-orange-500 to-red-400',
+                description: 'Identify modifiable and unmodifiable risk factors for impaired perfusion.',
+                steps: [
+                    { id: 'risk-factors', title: 'Risk Factors', type: 'text', content: `All individuals are at risk, but some factors are modifiable, others are not.<br><br><strong>Populations at Risk:</strong><br>- <strong>Older Adults:</strong> Highest risk due to decreased coronary artery blood flow, stroke volume, cardiac output; stiffening/thickening heart tissues; decreased arterial elasticity; less efficient venous valves (contributing to peripheral edema and DVT).<br>- <strong>Social and Environmental Factors:</strong> Low family income and low education level are contributing factors to adverse cardiovascular disease outcomes. Access to health care, medical compliance, eating habits, depression, and stress also play a role.<br><br><strong>Individual Risk Factors (Common Modifiable & Unmodifiable):</strong><br>| Modifiable Risk Factors | Unmodifiable Risk Factors |<br>| :---------------------- | :------------------------ |<br>| Smoking (nicotine vasoconstricts) | Age (increases with age) |<br>| Elevated serum lipids (contribute to atherosclerosis) | Gender (men > women) |<br>| Sedentary lifestyle (contributes to obesity) | Genetics (family history) |<br>| Obesity (increases risk for type 2 diabetes and atherosclerosis) | |<br>| Diabetes (increases risk of atherosclerosis) | |<br>| Hypertension (increases work of myocardium) | |<br><br><strong>Genetics:</strong> Genetic risk factors predispose individuals to cardiovascular disease. The risk is greater when combined with unhealthy lifestyle habits.<br>- <strong>Hypertension:</strong> African American individuals develop hypertension more often, often more severely, and some medications are less effective. (Source: American Heart Association)<br>- <strong>Familial Hypercholesterolemia:</strong> A defect preventing body from removing LDLs, leading to atherosclerosis.<br>- <strong>Hemoglobinopathies:</strong> (e.g., sickle cell disease) Abnormal hemoglobin occludes blood vessels during hypoxia, dehydration, or acidosis.<br><br><strong>Lifestyle:</strong> Smoking, inactivity, unhealthy diet, and obesity increase risk of hypertension, obesity, heart disease, and type 2 diabetes.<br><br><strong>Immobility:</strong> Risk for impaired tissue perfusion due to prolonged pressure (leading to pressure ulcers, anoxia, necrosis) and slowed venous return (contributing to venous thrombi). Examples include paralyzed individuals, unconscious patients, bed rest, or prolonged sitting (e.g., long airplane flights).` },
+                    { id: 'risk-factors-quiz', title: 'Risk Factors Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which of the following is a modifiable risk factor for impaired perfusion?", options: ["Age", "Genetics", "Smoking", "Gender"], correctAnswer: "Smoking" },
+                        { question: "What is a common risk for individuals who are immobile for prolonged periods?", options: ["Increased cardiac output", "Improved venous return", "Pressure ulcers", "Enhanced tissue perfusion"], correctAnswer: "Pressure ulcers" }
+                      ]
+                    }
+                ]
+            },
+            'perfusion-assessment': {
+                title: 'Perfusion Assessment',
+                color: 'from-blue-400 to-indigo-600',
+                description: 'Learn how to assess a patient for signs of impaired perfusion, including history, examination, and vitals.',
+                steps: [
+                    { id: 'assessment-history', title: 'Assessment: History', type: 'text', content: `Nurses collect subjective data on present health status, past health history, family history, and personal/psychosocial history.<br><br><strong>Baseline History:</strong><br>- <strong>Present Health:</strong> Chronic diseases (diabetes, renal failure, hypertension, hemophilia), medications (prescription, OTC, recreational drugs like cocaine).<br>- <strong>Past Health/Family History:</strong> Heart disease, defects, rheumatic fever, sickle cell disease; family history of cardiovascular/clotting disorders.<br>- <strong>Personal/Psychosocial:</strong> Diet (high fat/carbs contributes to atherosclerosis/obesity), exercise (increases blood flow), smoking (nicotine vasoconstricts, damages endothelium), alcohol consumption (excessive intake associated with dysrhythmias).<br>- <strong>Infants:</strong> Feeding problems, poor weight gain, fatigue, rapid breathing, sweating with feeding (heart disease symptoms). Respiratory infections, skin tone changes (cyanosis).<br>- <strong>Older Children/Adolescents:</strong> Exercise tolerance, edema, respiratory problems, chest pain, palpitations, fainting, headaches.<br><br><strong>Problem-Based History (Symptoms and Analysis):</strong><br>- <strong>Pain (Ischemic Pain):</strong> Inadequate oxygen perfusion.<br>- <strong>Chest Pain:</strong> Myocardial ischemia (angina). Stable angina (exertion, cold, stress; relieved by rest/nitroglycerin) vs. Acute Coronary Syndrome (severe, not relieved, with SOB, radiating pain to jaw/arms, nausea, vomiting, dizziness, diaphoresis). Women may have MI without chest pain, reporting SOB, dizziness, neck/jaw/shoulder/back/abdominal discomfort. Pulmonary embolism causes pleuritic chest pain (worse on deep breathing/coughing), with cyanosis, fever, irregular HR, dizziness.<br>- <strong>Leg Pain:</strong> Peripheral arterial disease (intermittent claudication: pain on walking, relieved by rest; "rest pain" with severe occlusion). Deep vein thrombosis (DVT): soreness/cramping, usually in legs, from blood clot occluding vein.<br>- <strong>Syncope (Fainting):</strong> Transient loss of consciousness from inadequate cerebral perfusion. Assess pre-syncopal symptoms (headache, numbness, confusion, slow pulse, ringing in ears).<br>- <strong>Dizziness:</strong> Lightheadedness. Orthostatic hypotension (20-30 mmHg drop in SBP upon standing). Inquire about duration, aggravating/alleviating factors. Dizziness unrelated to position changes could be inadequate brain blood flow (low intravascular volume, hypotension, heart pump issue, carotid obstruction).<br>- <strong>Dyspnea (Shortness of Breath):</strong> Inadequate circulation during activity (e.g., heart failure leading to pulmonary edema, tachypnea, orthopnea). Infants: stopping sucking to catch breath, perioral cyanosis during feeding. Older children: exercise intolerance.<br>- <strong>Edema:</strong> Excessive fluid in interstitial spaces (socks leaving indentations, swollen feet/ankles, weight gain). Bilateral edema (fluid overload from heart failure, renal/liver failure, right-sided heart failure). Unilateral edema (lymphedema, venous insufficiency, DVT).<br>- <strong>Fatigue:</strong> More tired than usual, lack of energy. Onset (gradual/sudden), time of day, duration. Occurs when heart cannot pump enough blood to meet needs (heart failure, acute blood loss, anemia). Anemia-related fatigue lasts all day.` },
+                    { id: 'assessment-exam', title: 'Assessment: Examination Findings', type: 'text', content: `<strong>Vital Signs:</strong> Monitor for hypotension/hypertension, bradycardia/tachycardia (e.g., severe bleeding causes hypotension and tachycardia). Irregular pulse rhythm suggests conduction problems. Orthostatic hypotension check (BP in lying, sitting, standing positions). Peripheral pulses should be equal bilaterally. Increased respiratory rate/labored breathing/low O2 saturation indicates inadequate perfusion. Infants with congenital heart disease may have elevated HR/RR during feeding.<br><br><strong>Inspection:</strong><br>- <strong>Skin Tone:</strong> Pallor (anemia), cold and clammy skin (poor perfusion), skin discoloration.<br>- <strong>Chest/Neck:</strong> Retraction near apical space (pericardial disease, RV hypertrophy). Fluttering/prominent jugular vein pulsations (right-sided heart failure).<br>- <strong>Extremities:</strong> Symmetry, skin integrity, color. Unilateral enlargement (lymphedema, venous thrombi with redness/increased circumference). Skin ulcerations (arterial/venous abnormalities). Pallor and lack of hair on legs (arterial occlusion).<br><br><strong>Palpation:</strong><br>- <strong>Chest Palpation:</strong> Apical pulse at 5th intercostal space, midclavicular line (point of maximal impulse - PMI). Shifted PMI (enlarged heart). Lifts (slight thrust) or heaves (prominent thrust) over precordium (ventricular hypertrophy from increased workload). Thrill (vibration from turbulent blood flow, often with murmur).<br>- <strong>Extremities Palpation:</strong> Skin turgor (elasticity; tenting indicates fluid deficit). Temperature (warm; cool/poikilothermia indicates impaired arterial perfusion). Capillary refill (<2 seconds normal; >2 seconds indicates poor perfusion). Peripheral pulses (brachial, radial, posterior tibial, dorsalis pedis):<br>   - <strong>Strength (Amplitude):</strong> 0 (absent), 1+ (diminished/barely palpable – poor perfusion/fluid loss), 2+ (normal), 3+ (full/strong – fluid excess), 4+ (bounding – fluid overload).<br>   - <strong>Rhythm:</strong> Regular, regular irregularity (e.g., PACs), irregular irregularity (e.g., atrial fibrillation).<br>   - <strong>Pulse Deficit:</strong> Apical rate - Radial rate; should be 0. Occurs with dysrhythmias.<br>- <strong>Lower Extremity:</strong> Pain, paresthesia, weak/absent dorsalis pedis/posterior tibial pulses (arterial occlusion). Ankle-Brachial Index (ABI) <1.0 indicates PAD. Leg pain with redness/edema (venous occlusion).` },
+                    { id: 'assessment-auscultation', title: 'Assessment: Auscultation', type: 'text', content: `<strong>Heart Sounds:</strong> S1 and S2 expected. Abnormal sounds include:<br>- <strong>S3 sound:</strong> Early diastole, indicates left ventricular failure, volume overload, or mitral/aortic/tricuspid valve regurgitation.<br>- <strong>S4 sound:</strong> Late diastole, indicates resistance to ventricular filling from hypertension, ventricular hypertrophy, aortic stenosis, or coronary artery disease.<br>- <strong>Murmurs:</strong> Blowing sound, indicates turbulent blood flow through heart valves.<br>- <strong>Bruits:</strong> Auscultate carotid artery for bruits (abnormal sounds) if atherosclerosis history or dizziness.<br><br><strong>Infants and Children:</strong> Use pediatric stethoscope. Venous hum heard over the jugular vein is a normal variation in children. Characteristic heart murmurs are heard in infants with congenital heart disorders (ASD, VSD, PDA). Coarctation of aorta: high BP/bounding pulses in upper extremities, lower BP/weak-absent pulses/cool lower extremities.` },
+                    { id: 'vitals-check', title: 'Vitals Check', type: 'interactive_vitals' },
+                    { id: 'assessment-quiz', title: 'Assessment Quiz', type: 'quiz',
+                      questions: [
+                        { question: "What is the term for a significant drop in blood pressure upon standing?", options: ["Hypertension", "Tachycardia", "Orthostatic Hypotension", "Bradycardia"], correctAnswer: "Orthostatic Hypotension" },
+                        { question: "A pulse strength of 1+ indicates:", options: ["Normal perfusion", "Fluid excess", "Diminished perfusion", "Fluid overload"], correctAnswer: "Diminished perfusion" }
+                      ]
+                    }
+                ]
+            },
+            'perfusion-diagnostics': {
+                title: 'Perfusion Diagnostics',
+                color: 'from-teal-500 to-emerald-500',
+                description: 'Understand common laboratory and radiographic tests used to diagnose perfusion issues.',
+                steps: [
+                    { id: 'diagnostic-tests-lab', title: 'Diagnostic Tests: Laboratory', type: 'text', content: `<strong>Cardiac Enzymes/Markers:</strong> Enzymes released from damaged cells circulate in the blood and can be measured to confirm cardiovascular conditions.<br>- <strong>Creatine Kinase (CK-MB):</strong> Elevated 3 to 6 hours after a myocardial infarction.<br>- <strong>Cardiac Troponins:</strong> Myocardial muscle proteins released after myocardial injury. High specificity for cardiac damage, elevate sooner and stay longer than CK-MB, predict future cardiac events.<br>- <strong>Myoglobin:</strong> Oxygen-binding protein found in cardiac and skeletal muscles. Increased levels indicating cardiac injury or death occur about 3 hours after infarction.<br>- <strong>Homocysteine (Hcy):</strong> An amino acid. Elevated levels may be an independent risk factor for ischemic heart disease, cerebrovascular disease, peripheral arterial disease, and venous thrombosis.<br>- <strong>C-reactive protein (CRP):</strong> Produced by the liver during acute inflammation. Correlates with CK-MB peaks, but 1 to 3 days earlier. Failure to normalize may indicate ongoing heart damage.<br><br><strong>Serum Lipids:</strong> Measured to detect hyperlipidemia and include cholesterol lipoproteins (low-density lipoproteins [LDLs], high-density lipoproteins [HDLs], very low-density lipoproteins [VLDLs]), and triglycerides.<br>- <strong>High LDLs:</strong> Adhere to the endothelium, obstructing blood flow.<br>- <strong>HDLs:</strong> Function to remove lipids from the endothelium to provide a protective effect against heart disease.<br><br><strong>Complete Blood Count (CBC):</strong> Provides information regarding the oxygen-carrying capacity of the blood and the risk of clotting.<br>- <strong>RBCs, Hemoglobin, Hematocrit:</strong> Used to diagnose polycythemia (elevated levels of erythrocytes/RBCs, increasing clotting risk) and anemia (low RBC, hemoglobin, and hematocrit values due to blood loss or impaired nutritional intake/renal disease).<br><br><strong>B-type Natriuretic Peptide (BNP):</strong> A hormone produced by the heart, released from ventricles during volume and pressure overload. Helps differentiate between cardiac and pulmonary origins of dyspnea.` },
+                    { id: 'diagnostic-tests-cardiac', title: 'Diagnostic Tests: Cardiac Stress & Radiographic', type: 'text', content: `<strong>Electrocardiogram (ECG):</strong> Performed by placing 12 leads on the chest and extremities to record electrical impulses through the heart. Detects cardiac dysrhythmias and myocardial ischemia or infarction (e.g., ST segment elevation). Can be used to identify electrical abnormalities. Continuous cardiac monitoring uses one or more leads.<br><br><strong>Cardiac Stress Test:</strong> Used to detect issues with cardiac perfusion in the presence of a stressor (for symptoms or significant risk factors).<br>- <strong>Exercise Cardiac Stress Test:</strong> Patient exercises on treadmill/bike, with continuous ECG, HR, BP, RR monitoring. Changes may indicate coronary artery disease.<br>- <strong>Pharmacologic Stress Test:</strong> Administers drugs (dobutamine, adenosine) to simulate exercise effects for patients unable to exercise. ECG (or radionuclide imaging) monitors for conduction, heart rate, or strength of contractions.<br><br><strong>Radiographic Studies:</strong><br>- <strong>Chest X-ray:</strong> Allows visualization of heart size and lung fields.<br>- <strong>Ultrasound:</strong><br>   - <strong>Echocardiography:</strong> Noninvasive, evaluates heart structure and function (e.g., ventricular hypertrophy, endocarditis, septal defects, valvular disorders).<br>   - <strong>Vascular Ultrasound (Doppler):</strong> Uses a probe to indicate blood flow in the artery and identify occlusion or thrombosis of veins and arteries of an extremity.<br>- <strong>Arteriogram:</strong> Allows visualization of arteries by injecting radiopaque contrast. <strong>Cardiac catheterization</strong> is one type of arteriogram for coronary arteries and heart chambers.<br>- <strong>Venogram:</strong> Allows visualization of lower extremity veins to assess blood flow, size, and condition, and to identify blockages or thrombi.` },
+                    { id: 'diagnostics-quiz', title: 'Diagnostics Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which cardiac marker has high specificity for cardiac damage and remains elevated longer than CK-MB?", options: ["Myoglobin", "Homocysteine", "Cardiac Troponins", "C-reactive protein"], correctAnswer: "Cardiac Troponins" },
+                        { question: "What diagnostic test uses a catheter to visualize coronary arteries and heart chambers?", options: ["Chest X-ray", "Echocardiography", "Venogram", "Cardiac Catheterization"], correctAnswer: "Cardiac Catheterization" }
+                      ]
+                    }
+                ]
+            },
+            'perfusion-management': {
+                title: 'Perfusion Management & Skills',
+                color: 'from-yellow-500 to-orange-500',
+                description: 'Learn about primary/secondary prevention, collaborative interventions, and essential nursing skills.',
+                steps: [
+                    { id: 'clinical-management-prevention', title: 'Clinical Management: Prevention', type: 'text', content: `<strong>Primary Prevention:</strong> Measures to promote health and prevent disease related to perfusion.<br>- <strong>Modifiable Risk Factor Control:</strong> Eating a healthy diet (low sodium, saturated/trans fats; plenty of fruits, vegetables, whole grains, lean proteins, low-fat dairy; limited sugary drinks), regular exercise, and no smoking.<br>- <strong>Statin Use:</strong> USPSTF recommends for adults <strong>40-75 years</strong> with one or more cardiovascular disease risk factors and an estimated <strong>10-year risk of a cardiovascular event of 10% or greater</strong>.<br>- <strong>Preventing Clotting:</strong> Minimizing risks for blood stasis, increased blood viscosity, and vessel injury. Encourage leg exercises, regular walking, or wearing compression stockings.<br><br><strong>Secondary Prevention (Screening):</strong> Early diagnosis and prompt treatment of existing health problems.<br>- <strong>Blood Pressure Screening:</strong> Recommended across the lifespan.<br>   - <strong>Infants/Children:</strong> Every well-child visit, at least annually.<br>   - <strong>Adults 18-39 years:</strong> Every <strong>3-5 years</strong>.<br>   - <strong>Adults ≥40 years or Increased Risk (elevated BP, overweight/obese, African Americans):</strong> Annually.<br>- <strong>Blood Pressure Guidelines for Adults:</strong><br>   - <strong>Normal:</strong> SBP <120 AND DBP <80 mm Hg<br>   - <strong>Elevated Blood Pressure:</strong> SBP 120–129 AND DBP <80 mm Hg<br>   - <strong>Stage 1 Hypertension:</strong> SBP 130–139 OR DBP 80–89 mm Hg<br>   - <strong>Stage 2 Hypertension:</strong> SBP ≥140 OR DBP ≥90 mm Hg<br>   - <strong>Hypertensive Crisis:</strong> SBP >160 AND/OR DBP >120 mm Hg<br>- <strong>Lipid Screening (Cholesterol):</strong> For early detection of hyperlipidemia/atherosclerosis.<br>   - <strong>Low Risk Adults ≥20 years:</strong> Every <strong>5 years</strong>.<br>   - <strong>High Risk:</strong> More frequently.` },
+                    { id: 'collaborative-interventions', title: 'Clinical Management: Collaborative Interventions', type: 'text', content: `Management is highly dependent on the specific condition. These interventions serve both preventative and therapeutic purposes:<br><br><strong>Nutrition Therapy:</strong> Heart-healthy diet to lower lipids, achieve/maintain optimal weight (tertiary prevention).<br><strong>Smoking Cessation:</strong> Crucial for disease management.<br><strong>Activity and Exercise:</strong> For weight loss, increasing HDL, cardiac rehabilitation, progressive activity for PAD.<br><br><strong>Pharmacotherapy (General Classifications):</strong><br>- <strong>Positive Inotropes:</strong> Increase myocardial contraction strength (e.g., dopamine, dobutamine, milrinone, digoxin) for severe heart failure.<br>- <strong>Vasodilators:</strong> Increase blood vessel diameter, treat hypertension and angina (e.g., captopril, lisinopril, losartan, nitrates like nitroglycerine, hydralazine).<br>- <strong>Vasopressors:</strong> Decrease or vasoconstrict blood vessels, treat hypotension (e.g., epinephrine, norepinephrine, dobutamine).<br>- <strong>Diuretics:</strong> Promote urine formation/excretion by preventing sodium reabsorption, reduce blood volume, treat hypertension (e.g., loop: furosemide; thiazide: hydrochlorothiazide; potassium-sparing: spironolactone; osmotic: mannitol).<br>- <strong>Antidysrhythmics:</strong> Correct erratic electrical impulses for regular cardiac rhythms, treat PVCs, tachycardia, hypertension, atrial fibrillation (e.g., amiodarone, diltiazem, atenolol).<br>- <strong>Cardioglycosides:</strong> Positive inotropic effect with lowered heart rate to increase cardiac output (e.g., digoxin) for heart failure, atrial fibrillation, cardiogenic shock.<br>- <strong>Anticoagulants:</strong> Prevent blood clotting by affecting clotting cascade, most effective in preventing venous thrombosis (e.g., heparin, warfarin, enoxaparin, dabigatran, rivaroxaban).<br>- <strong>Antiplatelet Agents:</strong> Prevent platelets from aggregating to form clots, most effective in preventing arterial thrombosis (e.g., aspirin, clopidogrel).<br>- <strong>Thrombolytics:</strong> Disrupt blood clots by lysing fibrin (e.g., tissue plasminogen activator, alteplase, urokinase).<br>- <strong>Antilipidemics:</strong> Decrease levels of lipids that contribute to atherosclerosis by reducing cholesterol synthesis (primary group: statins like atorvastatin).<br><br><strong>Procedures and Surgical Interventions:</strong> Used to improve central and tissue perfusion.<br>- <strong>Defibrillation and Cardioversion:</strong> Change abnormal cardiac rhythms with electric shock. Defibrillation for emergency cardiac arrest (VT/VFib). Synchronized cardioversion for nonemergent rhythms (e.g., VT with pulse, AFib).<br>- <strong>Pacemaker:</strong> Electronic device to maintain minimum heart rate by electrically stimulating the myocardium for persistent bradycardia or certain heart blocks.<br>- <strong>Ventricular Assist Device:</strong> Helps inefficient ventricles pump blood for severe heart failure.<br>- <strong>Heart Valve Replacement:</strong> For stenotic or insufficient valves; repaired or replaced with prosthetic (mechanical or biologic) valves.<br>- <strong>Arterial Bypass Graft:</strong> Surgically implants patent blood vessels to bypass obstruction (e.g., Coronary Artery Bypass Graft (CABG) for coronary arteries; Peripheral Artery Revascularization for peripheral arteries).<br>- <strong>Angioplasty with Stent Placement:</strong> Catheter with inflatable balloon dilates obstructed artery, often with an intracoronary stent inserted to maintain patency.<br>- <strong>Endarterectomy:</strong> Surgical procedure removing obstructing plaque/blockage from artery lining (e.g., carotid artery to prevent ischemic stroke).<br>- <strong>Thrombectomy:</strong> Removes thrombus from a vessel percutaneously or via open surgical procedure.<br>- <strong>Cardiac Transplant:</strong> Replacement of diseased heart with healthy donor heart for terminal heart conditions. <strong>3817</strong> individuals underwent this procedure in <strong>2021</strong>.` },
+                    { id: 'nursing-skills', title: 'Clinical Nursing Skills', type: 'text', content: `Nurses integrate evidence-based knowledge, perform person-centered assessments, collaborate with interprofessional teams, implement and evaluate care plans, and educate individuals/families on self-care related to perfusion.<br><br><strong>Key Skills:</strong><br>- <strong>Assessment:</strong> Measure vital signs (including oxygen saturation), general inspection (skin color, respiratory effort, distress), inspect thorax, palpate precordium, auscultate heart and vascular sounds, inspect extremities for skin color, palpate extremities for edema, palpate peripheral pulses, assess capillary refill, and when indicated, calculate the ankle-brachial index, measure leg circumferences, calculate pulse deficit.<br>- <strong>Monitoring:</strong> Cardiac monitoring, hemodynamic monitoring (continuous arterial blood pressure monitoring, pulmonary artery pressure monitoring).<br>- <strong>Medication Administration:</strong> Oral medications, intravenous fluids and medications.<br>- <strong>Supportive Devices:</strong> Sequential compression devices and elastic stockings.<br>- <strong>Physical Interventions:</strong> Ambulation, positioning.<br>- <strong>Patient Teaching:</strong> Health promotion, illness prevention, and illness management related to perfusion.` },
+                    { id: 'management-quiz', title: 'Management & Skills Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which of these is a primary prevention measure for perfusion?", options: ["Regular blood pressure screening", "Smoking cessation", "Cardiac catheterization", "Pharmacologic stress test"], correctAnswer: "Smoking cessation" },
+                        { question: "What is the surgical procedure that removes obstructing plaque from the lining of an artery?", options: ["Angioplasty", "Thrombectomy", "Endarterectomy", "Arterial Bypass Graft"], correctAnswer: "Endarterectomy" }
+                      ]
+                    }
+                ]
+            },
+            'perfusion-interrelated': {
+                title: 'Interrelated Concepts & Exemplars',
+                color: 'from-gray-500 to-slate-400',
+                description: 'Understand how perfusion relates to other concepts and explore common clinical examples.',
+                steps: [
+                    { id: 'interrelated-concepts', title: 'Interrelated Concepts', type: 'text', content: `Perfusion is central to body function and interrelates with many concepts:<br><br>- <strong>Pain:</strong> Impaired perfusion (blood clots or narrowed arteries) causes ischemic pain (e.g., chest pain, leg pain). Ischemia creates lactic acid contributing to pain.<br>- <strong>Clotting:</strong> Blood clots impair perfusion.<br>- <strong>Mobility:</strong> Impaired tissue perfusion (e.g., PAD causing leg pain) reduces mobility.<br>- <strong>Nutrition:</strong> Important for heart and vessel health; gastrointestinal perfusion is necessary for digestion and metabolism of nutrients.<br>- <strong>Inflammation:</strong> Linked to ischemia; inflammation after endothelial damage initiates atherosclerosis.<br>- <strong>Gas Exchange:</strong> Perfusion carries oxygen from alveoli to cells and carbon dioxide away from cells to alveoli for exhalation.<br>- <strong>Elimination:</strong> Kidney elimination is an indirect indicator of cardiac output, as blood flows from the heart to renal arteries and through nephrons to produce urine.<br>- <strong>Stress & Coping:</strong> Stress creates sympathetic responses that increase heart rate and blood pressure, affecting blood flow. Implementing adaptive coping behaviors can reduce or eliminate the cardiovascular effects of stress.<br>- <strong>Intracranial Regulation & Cognition:</strong> The brain is highly dependent on steady perfusion of oxygenated blood. Interruption of cerebral blood flow (blood clots or hemorrhage) can lead to brain tissue injury or death and altered cognition.<br>- <strong>Patient Education:</strong> Central to the prevention and management of cardiovascular disease.` },
+                    { id: 'clinical-exemplars', title: 'Clinical Exemplars', type: 'text', content: `Multiple conditions contribute to impaired perfusion. Featured examples:<br><br>- <strong>Atrial Fibrillation:</strong> Cardiac dysrhythmia with disorganized electrical activity in atria (350-600 bpm), leading to ineffective atrial contraction and reduced cardiac output. Irregularly irregular pulse. Common, clinically significant dysrhythmia; <strong>~2%</strong> of people <strong>younger than age 65 years</strong> and <strong>~9%</strong> of people <strong>older than age 65 years</strong> have atrial fibrillation. Clots may form in the atria from blood stasis, which can become emboli that flow to the brain causing strokes. Atrial fibrillation accounts for as many as <strong>20%</strong> of all ischemic strokes.<br>- <strong>Acute Myocardial Infarction (AMI):</strong> Sustained ischemia from impaired coronary artery perfusion causes irreversible myocardial cell death (necrosis). Most AMIs are caused by a thrombus or occlusion. Risk factors: medical conditions (coronary artery disease, hypertension, hyperlipidemia, diabetes) and lifestyle choices (smoking, excessive alcohol use, physical inactivity, unhealthy diet). Symptoms: chest pain; pain or discomfort in one or both arms, the jaw, back, or stomach; shortness of breath; lightheadedness; and nausea. Women may present with less typical symptoms.<br>- <strong>Heart Failure:</strong> Develops when either ventricle fails to pump efficiently due to a weak myocardium or excessive afterload. Causes pressure to back up, reducing perfusion and causing fluid overload. Associated with hypertension, coronary artery disease, diabetes, and obesity. <strong>Left-sided failure:</strong> Blood backs up into the left atrium and pulmonary veins, producing dyspnea; coughing up pink, foamy mucus; and irregular heartbeat (S3 heart sound). <strong>Right-sided failure:</strong> Blood backs up into the right atrium and venous circulation, producing edema of legs, feet, and ankles, and weight gain. Many individuals who start with left-sided heart failure develop right-sided heart failure.<br>- <strong>Hyperlipidemia:</strong> Elevated blood levels of cholesterol and triglycerides. Causes: diets high in cholesterol and genetic inheritance. Has no symptoms, but thickens arterial walls in coronary or cerebral vessels, leading to myocardial infarction or stroke.<br>- <strong>Hypertension:</strong> Excessive pressure or force of blood flowing through arteries. Nearly <strong>half of American adults</strong> have hypertension; risk increases with age. Increases workload of the heart and damages endothelium, contributing to atherosclerosis. Usually has no symptoms, so routine BP measurement is crucial.<br>- <strong>Peripheral Artery Disease (PAD):</strong> Gradual thickening of arterial walls reduces perfusion in upper and lower extremities. Risk factors: tobacco use, hyperlipidemia, uncontrolled hypertension, and diabetes mellitus. Risk increases with age (typically appears in the <strong>sixth to eighth decades</strong>). Manifestations: decreased to absent peripheral pulses; cool skin temperature; loss of hair and thin, taut, shiny skin on affected extremities; and ischemic pain during exercise (intermittent claudication), or "rest pain" with advanced occlusion.`},
+                    { id: 'interrelated-quiz', title: 'Interrelated Concepts Quiz', type: 'quiz',
+                      questions: [
+                        { question: "What is the primary symptom of Peripheral Artery Disease (PAD) during exercise?", options: ["Chest pain", "Intermittent claudication", "Syncope", "Edema"], correctAnswer: "Intermittent Claudication" },
+                        { question: "Atrial Fibrillation accounts for as many as what percentage of all ischemic strokes?", options: ["5%", "10%", "15%", "20%"], correctAnswer: "20%" }
+                      ]
+                    }
+                ]
+            },
+            'perfusion-case-studies': {
+                title: 'Perfusion Case Studies',
+                color: 'from-pink-500 to-red-500',
+                description: 'Apply your knowledge with clinical case studies.',
+                steps: [
+                    { id: 'george-jones-case-study', title: 'Case Study: George Jones', type: 'case_study', case: {
+                      scenario: `George Jones, a 59-year-old male, arrived at the emergency department with chest pain that he had experienced for 30 minutes, and it was not relieved after taking four nitroglycerin tablets 5 minutes apart. He reports the pain feels “like an elephant is sitting on my chest.” He is diaphoretic and appears anxious. His vital signs are as follows: temperature, 99°F; blood pressure, 100/68 mm Hg; heart rate, 110 beats/min; and respiratory rate, 24 breaths per minute. Mr. Jones is overweight and has type 2 diabetes, hyperlipidemia, and hypertension. He quit smoking last year after a 40-year history of smoking one pack of cigarettes a day. His troponin level is elevated, and his ECG shows ST segment elevation. The nurse administers oxygen and draws blood for arterial blood gas analysis. Mr. Jones is told he will undergo cardiac catheterization to locate the blockage, determine its severity, and evaluate left ventricular function.`,
+                      question: "Based on Mr. Jones's presentation and history, what is the most likely primary diagnosis related to his impaired perfusion?",
+                      options: ["Pulmonary Embolism", "Hypovolemic Shock", "Acute Myocardial Infarction", "Hypertensive Crisis"],
+                      correctAnswer: "Acute Myocardial Infarction",
+                      explanation: "Mr. Jones's symptoms (crushing chest pain not relieved by nitroglycerin, diaphoresis, anxiety), risk factors (age, overweight, type 2 diabetes, hyperlipidemia, hypertension, history of smoking), and vital signs, along with elevated troponin and ST segment elevation on ECG, are classic indicators of an acute myocardial infarction (heart attack). This represents severe impaired central and localized tissue perfusion to the heart muscle. Pulmonary embolism might cause chest pain but typically with pleurisy and different vitals. Hypovolemic shock would have signs of fluid loss. A hypertensive crisis would show significantly elevated blood pressure."
+                    }},
+                    { id: 'george-jones-questions', title: 'Case Study: Analysis Questions', type: 'text', content: `<strong>1. What risk factors does Mr. Jones have for impaired perfusion?</strong><br>Mr. Jones has several significant risk factors for impaired perfusion, both modifiable and unmodifiable:<br>- <strong>Age:</strong> 59 years old (risk increases with age).<br>- <strong>Gender:</strong> Male (men > women for heart disease risk).<br>- <strong>Overweight:</strong> Contributes to obesity, increasing risk for diabetes and atherosclerosis.<br>- <strong>Type 2 Diabetes:</strong> Increases risk of atherosclerosis.<br>- <strong>Hyperlipidemia:</strong> Contributes to atherosclerosis by plaque buildup.<br>- <strong>Hypertension:</strong> Increases workload of myocardium and damages endothelium.<br>- <strong>History of Smoking:</strong> Quit smoking last year after 40 years, indicating significant past exposure to a major vasoconstrictor and endothelial toxin, increasing atherosclerosis risk.<br><br><strong>2. Does this case exemplify an impairment of local perfusion, central perfusion, or both?</strong><br>This case exemplifies an impairment of <strong>both local and central perfusion</strong>.<br>- <strong>Local Perfusion Impairment:</strong> The 90% blockage in a coronary artery directly impairs blood flow to a specific area of the myocardium, leading to myocardial ischemia and ultimately irreversible cell death (necrosis) in that localized tissue (Acute Myocardial Infarction).<br>- <strong>Central Perfusion Impairment:</strong> An acute myocardial infarction, especially one with significant damage, directly affects the heart's ability to pump efficiently. Mr. Jones's vital signs (BP 100/68 mm Hg, HR 110 beats/min) suggest that his heart is struggling to maintain adequate cardiac output, leading to impaired central perfusion. If severe, this can lead to large-scale, systemic impairment affecting multiple organs and potentially cardiovascular collapse.`},
+                ]
+            },
+        };
+
+        // --- Helper Functions ---
+        // Utility for conditionally joining Tailwind CSS classes.
+        const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+
+        // --- Child Components ---
+
+        /**
+         * Quiz component for interactive multiple-choice questions.
+         * Users answer questions and receive immediate feedback.
+         */
+        const Quiz = ({ questions, onComplete }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState(null);
+            const [feedback, setFeedback] = useState(null); // 'correct', 'incorrect', or null
+            const [quizScores, setQuizScores] = useState(Array(questions.length).fill(0)); // To store scores for each question
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            const handleOptionSelect = (option) => {
+                if (feedback) return; // Prevent changing answer after feedback is shown
+                setSelectedOption(option);
+            };
+
+            const handleSubmitAnswer = () => {
+                if (selectedOption === null) return; // Don't submit if no option is selected
+
+                // Case-insensitive comparison
+                const isCorrect = selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                setFeedback(isCorrect ? 'correct' : 'incorrect');
+
+                // Update score for the current question
+                setQuizScores(prevScores => {
+                    const newScores = [...prevScores];
+                    newScores[currentQuestionIndex] = isCorrect ? 1 : 0;
+                    return newScores;
+                });
+            };
+
+            const handleNextQuestion = () => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption(null);
+                    setFeedback(null);
+                } else {
+                    // Quiz finished. Calculate final score and pass to onComplete.
+                    const finalScore = quizScores.reduce((sum, score) => sum + score, 0);
+                    onComplete({ score: finalScore, total: questions.length });
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Quiz: {currentQuestionIndex + 1} of {questions.length}</h4>
+                    <p className="font-semibold text-gray-700 mb-3">{currentQuestion.question}</p>
+                    <div className="space-y-2">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = selectedOption === option;
+                            const isCorrectOption = option.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+
+                            if (feedback) { // If feedback is active
+                                if (isCorrectOption) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green
+                                } else if (isSelected && !isCorrectOption) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission
+                            }
+
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handleOptionSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {feedback && (isCorrectOption || (isSelected && feedback === 'incorrect')) && (
+                                            isCorrectOption ? <span className="text-green-600 mr-2">✓</span> : <span className="text-red-600 mr-2">✗</span>
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-4 text-center">
+                        {!feedback ? (
+                            <button
+                                onClick={handleSubmitAnswer}
+                                disabled={selectedOption === null}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                Submit Answer
+                            </button>
+                        ) : (
+                            <>
+                                <div className={`p-3 rounded-lg text-white font-semibold mb-4 ${feedback === 'correct' ? 'bg-green-500' : 'bg-red-500'}`}>
+                                    {feedback === 'correct' ? 'Correct! Well done.' : 'Incorrect. The correct answer is highlighted.'}
+                                </div>
+                                <button
+                                    onClick={handleNextQuestion}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Quiz'}
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        /**
+         * Dashboard component to display the various learning modules.
+         * It allows users to select a module to start learning.
+         * Shows progress for each module using a circular progress bar and status.
+         */
+        const Dashboard = ({ onSelectModule, progress, onResetProgress }) => {
+            let totalCompletedSteps = 0;
+            let totalPossibleSteps = 0;
+            let totalQuizCorrect = 0;
+            let totalQuizQuestions = 0;
+
+            // Calculate overall progress and gather quiz scores
+            Object.entries(contentData).forEach(([moduleId, module]) => {
+                totalPossibleSteps += module.steps.length;
+                const moduleProgress = progress[moduleId] || {};
+                
+                Object.values(moduleProgress).forEach(stepProgress => {
+                    if (stepProgress.completed) {
+                        totalCompletedSteps++;
+                    }
+                    if (stepProgress.score !== undefined) {
+                        totalQuizCorrect += stepProgress.score;
+                    }
+                });
+
+                module.steps.forEach(step => {
+                    if (step.type === 'quiz') {
+                        totalQuizQuestions += step.questions.length;
+                    }
+                });
+            });
+
+
+            const overallPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+
+            return (
+                <div className="p-4 sm:p-6 md:p-8 min-h-screen w-full flex flex-col">
+                    <div className="w-full">
+                        <header className="mb-8 text-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                {/* Text placeholder for the main application identifier */}
+                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">PLM</span>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Perfusion Learning Module</h1>
+                            </div>
+                            <p className="text-lg text-gray-500 max-w-2xl mx-auto">Explore key concepts of perfusion through interactive modules designed for comprehensive understanding.</p>
+                        </header>
+
+                        {/* Overall Progress Bar & Reset Button */}
+                        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
+                           <div className="flex justify-between items-center mb-3">
+                             <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                             <button 
+                                onClick={onResetProgress}
+                                className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                             >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" clipRule="evenodd" />
+                                </svg>
+                                Reset Progress
+                             </button>
+                           </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div
+                                    className="bg-indigo-600 h-4 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-left text-sm text-gray-600 mt-2">
+                                    {totalQuizQuestions > 0 && `Quiz Performance: ${totalQuizCorrect} / ${totalQuizQuestions} correct`}
+                                </p>
+                                <p className="text-right text-sm text-gray-600 mt-2">{Math.round(overallPercentage)}% Completed</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                            {/* Iterate over all modules defined in contentData */}
+                            {Object.entries(contentData).map(([id, module]) => {
+                                const moduleProgress = progress[id] || {};
+                                // Calculate completion count for steps within the module.
+                                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                                const totalSteps = module.steps.length;
+                                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
+                                let statusText = "Not Started";
+                                let statusColor = "text-gray-500";
+                                if (completedCount === totalSteps) {
+                                    statusText = "Completed";
+                                    statusColor = "text-green-600";
+                                } else if (completedCount > 0) {
+                                    statusText = "In Progress";
+                                    statusColor = "text-yellow-600";
+                                }
+
+                                // Get quiz score for this module if available
+                                const quizStep = module.steps.find(step => step.type === 'quiz');
+                                const quizProgress = quizStep ? moduleProgress[quizStep.id] : null;
+
+                                return (
+                                    <div
+                                        key={id}
+                                        onClick={() => onSelectModule(id)}
+                                        // Styling for module cards, including hover effects.
+                                        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col"
+                                    >
+                                        <div className="flex justify-between items-start mb-4">
+                                            {/* Placeholder for module icon: Displays the first letter of the module title. */}
+                                            <div className={cn("p-3 rounded-full bg-gradient-to-br", module.color, "w-10 h-10 flex items-center justify-center text-white text-lg font-bold shadow-md flex-shrink-0")}>
+                                                {module.title.split(' ').map(word => word.charAt(0)).join('')}
+                                            </div>
+                                            {/* Progress Circle */}
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <svg className="w-full h-full" viewBox="0 0 36 36">
+                                                    {/* Background circle for the progress bar. */}
+                                                    <path
+                                                        className="text-gray-200"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                    />
+                                                    {/* Foreground arc representing the completion percentage. */}
+                                                    <path
+                                                        className="text-indigo-500"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${percentage}, 100`}
+                                                        strokeLinecap="round"
+                                                        transform="rotate(-90 18 18)"
+                                                    />
+                                                </svg>
+                                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h3>
+                                        <p className="text-gray-500 text-sm mb-2 h-10">{module.description}</p>
+                                        <div className="mt-auto">
+                                            <p className={cn("text-sm font-semibold", statusColor)}>{statusText}</p>
+                                            {quizProgress && quizProgress.score !== undefined && (
+                                                <p className="text-sm text-gray-600 mt-1">Quiz Score: {quizProgress.score} / {quizStep.questions.length}</p>
+                                            )}
+                                            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700 mt-2">
+                                                Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        /**
+         * CaseStudy component for a multiple-choice case study challenge.
+         * Presents a scenario and a question with multiple options.
+         */
+        const CaseStudy = ({ caseData, onComplete }) => {
+            // State to store the user's selected answer.
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+            // Handles the selection of an answer option.
+            const handleSelect = (option) => {
+                if (selectedAnswer) return; // Prevents changing the answer once selected.
+                setSelectedAnswer(option);
+                // Case-insensitive comparison
+                if (option.toLowerCase() === caseData.correctAnswer.toLowerCase()) {
+                    onComplete(); // Marks the step as complete if the correct answer is chosen.
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
+                    {/* Scenario description, using dangerouslySetInnerHTML to render HTML bold tags */}
+                    <p className="bg-blue-100 text-blue-800 p-3 rounded-md mb-4 text-sm" dangerouslySetInnerHTML={{ __html: caseData.scenario }}></p>
+                    <p className="font-semibold text-gray-700 mb-3">{caseData.question}</p>
+                    <div className="space-y-2">
+                        {caseData.options.map(option => {
+                            const isSelected = selectedAnswer === option;
+                            // Case-insensitive comparison for correct answer highlight
+                            const isCorrect = option.toLowerCase() === caseData.correctAnswer.toLowerCase();
+                            const showFeedback = selectedAnswer !== null; // Show feedback once any answer is selected
+
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200'; // Default styling for options.
+                            if (showFeedback) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown
+                                } else if (isSelected && !isCorrect) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission
+                            }
+
+                            return (
+                                <div
+                                    key={option}
+                                    onClick={() => handleSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {showFeedback && ( // Display a checkmark or cross icon if feedback is active
+                                            isCorrect ? <span className="text-green-600 mr-2">✓</span> : (isSelected && <span className="text-red-600 mr-2">✗</span>)
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {selectedAnswer && ( // Display the explanation after an answer has been selected.
+                        <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                            <h5 className="font-bold text-indigo-800">Explanation</h5>
+                            <p className="text-sm text-indigo-700" dangerouslySetInnerHTML={{ __html: caseData.explanation }}></p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        /**
+         * VitalsCheck component for an interactive question about vital signs.
+         * Users identify the most concerning vital sign from a given set.
+         */
+        const VitalsCheck = ({ onComplete }) => {
+            // State to store the user's selected vital sign.
+            const [selectedVital, setSelectedVital] = useState(null);
+            const vitals = { "BP": "100/68 mmHg", "HR": "110 bpm", "RR": "24/min", "Temp": "99°F" };
+            const mostConcerning = "HR"; // The correct answer.
+            const explanation = "A heart rate of 110 bpm (tachycardia) is a significant sign of distress. It indicates the heart is working hard to compensate for poor perfusion, which is common during an acute myocardial infarction.";
+
+            // Handles the selection of a vital sign option.
+            const handleSelect = (vital) => {
+                if(selectedVital) return; // Prevents changing the selection once made.
+                setSelectedVital(vital);
+                // Case-insensitive comparison (though keys are already consistent)
+                if (vital.toLowerCase() === mostConcerning.toLowerCase()) {
+                    onComplete(); // Mark step as complete if correct answer is chosen
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Vitals Check</h4>
+                    <p className="text-sm text-gray-600 mb-4">A patient presents with chest pain. Based on these vital signs, which one is the MOST concerning indicator of impaired central perfusion?</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        {Object.entries(vitals).map(([key, value]) => {
+                            const isSelected = selectedVital === key;
+                            // Case-insensitive comparison for correct answer highlight
+                            const isCorrect = key.toLowerCase() === mostConcerning.toLowerCase();
+                            const showFeedback = selectedVital !== null; // Show feedback once any vital is selected
+
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200'; // Default styling.
+                            if (showFeedback) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown
+                                } else if (isSelected && !isCorrect) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission
+                            }
+                            return (
+                                <div key={key} onClick={() => handleSelect(key)} className={cn('p-4 rounded-lg border-2 cursor-pointer text-center', optionClass)}>
+                                    <div className="text-sm font-bold text-gray-500">{key}</div>
+                                    <div className="text-xl font-semibold text-gray-800">{value}</div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                   {selectedVital && ( // Display the rationale after a selection is made.
+                        <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                            <h5 className="font-bold text-indigo-800">Rationale</h5>
+                            <p className="text-sm text-indigo-700" dangerouslySetInnerHTML={{ __html: explanation }}></p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        /**
+         * StaticContentStep component for displaying basic text content.
+         * Marks itself as complete immediately on render.
+         */
+        const StaticContentStep = ({ step, onComplete }) => {
+            // For 'text' type steps, mark them as complete immediately upon rendering.
+            useEffect(() => {
+                onComplete();
+            }, [onComplete]);
+
+            // Using dangerouslySetInnerHTML to render HTML content (e.g., <strong> tags).
+            return (
+                <div className="prose max-w-none text-gray-700 leading-relaxed p-4 bg-gray-50 rounded-lg shadow-inner space-y-4" dangerouslySetInnerHTML={{ __html: step.content }}>
+                </div>
+            );
+        };
+
+        /**
+         * CompletionModal component displayed when a module is completed.
+         */
+        const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
+                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm"
+                            >
+                                Back to Dashboard
+                            </button>
+                            {hasNextModule && (
+                                <button
+                                    onClick={onNextModule}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Continue to Next Module
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        /**
+         * LearningModule component to manage steps within the selected module.
+         * Provides navigation between steps and renders the appropriate content for each.
+         */
+        const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
+            const [activeStep, setActiveStep] = useState(0); // Manages the index of the currently active step.
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Controls the visibility of the sidebar on mobile.
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false); // State for completion modal
+
+            // Callback function to update the completion status of a specific step.
+            const handleStepComplete = useCallback((stepId, data = {}) => {
+                onProgressUpdate(module.id, stepId, { completed: true, ...data });
+            }, [onProgressUpdate, module.id]);
+
+            const moduleProgress = progress[module.id] || {};
+            
+            // Check if all steps in the current module are completed
+            const allStepsCompletedInModule = module.steps.every(step =>
+                moduleProgress[step.id] && moduleProgress[step.id].completed
+            );
+
+            // Navigates to the next step, if available.
+            const handleNextStep = () => {
+                // If it's the last step and all steps in the module are completed, open the modal
+                if (activeStep === module.steps.length - 1 && allStepsCompletedInModule) {
+                    setIsCompletionModalOpen(true);
+                } else if (activeStep < module.steps.length - 1) {
+                    setActiveStep(activeStep + 1);
+                }
+            };
+
+            // Navigates to the previous step, if available.
+            const handlePrevStep = () => {
+                if (activeStep > 0) {
+                    setActiveStep(activeStep - 1);
+                }
+            };
+            
+            // Ensure module and its steps are defined before accessing properties
+            if (!module || !module.steps) {
+                console.error("LearningModule received invalid module prop:", module);
+                return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
+            }
+
+            const currentStep = module.steps[activeStep];
+            
+            // Renders the appropriate content component based on the current step's type.
+            // This function acts as a router for different interactive and static content types.
+            const renderStepContent = (step) => {
+                if (!step) return <p>Please select a step.</p>;
+
+                const onCompleteForStep = (data) => handleStepComplete(step.id, data);
+
+                switch (step.type) {
+                    case 'text':
+                        return <StaticContentStep key={step.id} step={step} onComplete={onCompleteForStep} />;
+                    case 'interactive_vitals':
+                        return <VitalsCheck key={step.id} onComplete={onCompleteForStep} />;
+                    case 'case_study':
+                        return <CaseStudy key={step.id} caseData={step.case} onComplete={onCompleteForStep} />;
+                    case 'quiz':
+                        return <Quiz key={step.id} questions={step.questions} onComplete={onCompleteForStep} />;
+                    default:
+                        // Fallback for unrecognized step types, ensuring robust error handling.
+                        return <p key={step.id} className="text-red-600">Error: Content for this step type is not available.</p>;
+                }
+            };
+
+            const handleModalClose = () => {
+                setIsCompletionModalOpen(false);
+                onBack(); // Go back to dashboard when modal is closed
+            };
+
+            const handleModalNextModule = () => {
+                setIsCompletionModalOpen(false);
+                onNextModule(); // Proceed to next module
+            };
+
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
+                    {/* Header for the learning module, including back button and module title. */}
+                    <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
+                        <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            <span className="hidden sm:inline">Dashboard</span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                        </div>
+                        {/* Mobile sidebar toggle button using text/emoji placeholders. */}
+                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                    </header>
+                    {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
+                    <div className="flex flex-1 overflow-hidden">
+                        {/* Sidebar for navigation steps within the module. */}
+                        <aside className={cn(
+                            "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
+                            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        )}>
+                            <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
+                            <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
+                                {module.steps.map((step, index) => (
+                                    <button
+                                        key={step.id}
+                                        onClick={() => {
+                                            setActiveStep(index);
+                                            setIsSidebarOpen(false); // Close sidebar on mobile after a step is selected.
+                                        }}
+                                        className={cn(
+                                            'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
+                                            activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700'
+                                        )}
+                                    >
+                                        {/* Step completion indicator */}
+                                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                            {moduleProgress[step.id]?.completed ? (
+                                                <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                            ) : (
+                                                <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                            )}
+                                        </div>
+                                        <span className="flex-1 text-sm">{step.title}</span>
+                                    </button>
+                                ))}
+                            </nav>
+                        </aside>
+
+                        {/* Main content area for the current step. */}
+                        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                            <div className="max-w-5xl mx-auto">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
+                                {renderStepContent(currentStep)}
+
+                                {/* Navigation buttons for moving between steps. */}
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={handlePrevStep}
+                                        disabled={activeStep === 0}
+                                        className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <button
+                                        onClick={handleNextStep}
+                                        disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
+                                    >
+                                        {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
+                                    </button>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                    <CompletionModal
+                        isOpen={isCompletionModalOpen}
+                        onClose={handleModalClose}
+                        onNextModule={handleModalNextModule}
+                        hasNextModule={hasNextModule}
+                    />
+                </div>
+            );
+        };
+        
+        // --- Main App Component ---
+        /**
+         * The root component of the Perfusion Learning Module application.
+         * Manages overall application state, including module selection, user ID, and progress.
+         */
+        function App() {
+            // State for the currently selected learning module's ID. Null means Dashboard is active.
+            const [currentModuleId, setCurrentModuleId] = useState(null);
+            // State for the authenticated user's ID, used for local storage progress tracking.
+            const [userId, setUserId] = useState(null);
+            // State for storing the user's progress across all modules and steps.
+            const [progress, setProgress] = useState({});
+            // State to indicate if authentication is complete and user ID is available.
+            const [isAuthReady, setIsAuthReady] = useState(false);
+
+            // Effect hook for handling initial authentication and setting the user ID.
+            useEffect(() => {
+                const unsubscribe = mockAuth.onAuthStateChanged((user) => {
+                    if (user) setUserId(user.uid);
+                    setIsAuthReady(true); // Mark authentication as ready once user is determined.
+                });
+                return () => unsubscribe(); // Cleanup the auth state listener on component unmount.
+            }, []); // Empty dependency array ensures this runs only once on mount.
+
+            // Effect hook for loading user progress from localStorage after authentication is ready.
+            useEffect(() => {
+                if (!isAuthReady || !userId) return; // Only proceed if auth is ready and userId is available.
+                const storedProgress = localStorage.getItem(`perfusion-learning-module-progress-${userId}`);
+                if (storedProgress) {
+                    try {
+                        setProgress(JSON.parse(storedProgress)); // Attempt to parse and set stored progress.
+                    } catch (e) {
+                        console.error("Failed to parse stored progress, resetting.", e);
+                        setProgress({}); // Reset progress if parsing fails (e.g., corrupted data).
+                    }
+                }
+            }, [isAuthReady, userId]); // Reruns when auth status or userId changes.
+
+            // Callback function to update and persist the user's progress for a specific step.
+            // Now accepts a data object for quizzes to store scores.
+            const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
+                if (!isAuthReady || !userId) return; // Ensure auth is ready before updating progress.
+
+                setProgress(currentProgress => {
+                    // Create a new progress object with the updated step status.
+                    const newProgress = {
+                        ...currentProgress,
+                        [moduleId]: {
+                            ...(currentProgress[moduleId] || {}), // Preserve existing module progress.
+                            [stepId]: { ...currentProgress[moduleId]?.[stepId], ...data } // Update the specific step's completion status and any additional data.
+                        }
+                    };
+
+                    // Persist the updated progress to localStorage.
+                    localStorage.setItem(`perfusion-learning-module-progress-${userId}`, JSON.stringify(newProgress));
+                    return newProgress; // Return the new state to React.
+                });
+            }, [isAuthReady, userId]); // Dependencies for useCallback.
+            
+            // Callback to reset all progress
+            const handleResetProgress = useCallback(() => {
+                if (!isAuthReady || !userId) return;
+                // Clear from state
+                setProgress({});
+                // Clear from localStorage
+                localStorage.removeItem(`perfusion-learning-module-progress-${userId}`);
+            }, [isAuthReady, userId]);
+
+            // Function to navigate to the next module
+            const handleNextModule = useCallback(() => {
+                const moduleIds = Object.keys(contentData);
+                const currentIndex = moduleIds.indexOf(currentModuleId);
+                if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
+                    setCurrentModuleId(moduleIds[currentIndex + 1]);
+                } else {
+                    // If it's the last module, go back to the dashboard.
+                    setCurrentModuleId(null);
+                }
+            }, [currentModuleId]);
+
+            // Determine which module is currently selected based on `currentModuleId`.
+            const selectedModule = currentModuleId && contentData[currentModuleId]
+                                    ? { ...contentData[currentModuleId], id: currentModuleId }
+                                    : null;
+
+            const moduleIds = Object.keys(contentData);
+            const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
+            const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
+
+
+            return (
+                <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+                    {selectedModule ? (
+                        // If a module is selected, render the LearningModule component.
+                        // BUG FIX: Added a `key` prop. When the key (the module ID) changes,
+                        // React will unmount the old component and mount a new one, resetting its internal state (like activeStep).
+                        <LearningModule
+                            key={selectedModule.id}
+                            module={selectedModule}
+                            onBack={() => setCurrentModuleId(null)} // Callback to return to dashboard.
+                            progress={progress} // Pass current progress to the module.
+                            onProgressUpdate={handleProgressUpdate} // Pass callback for updating progress.
+                            onNextModule={handleNextModule} // Pass callback for next module navigation.
+                            hasNextModule={hasNextModule}
+                        />
+                    ) : (
+                        // Otherwise, render the Dashboard component to display module choices.
+                        <Dashboard 
+                            onSelectModule={setCurrentModuleId} 
+                            progress={progress} 
+                            onResetProgress={handleResetProgress}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        // --- Render the App into the DOM ---
+        // Get the DOM element where the React application will be mounted.
+        const container = document.getElementById('root');
+        // Create a React root, which is the entry point for React 18+ applications.
+        const root = ReactDOM.createRoot(container);
+        // Render the main App component into the root.
+        root.render(<App />);
+    </script>
+</body>
+</html>
