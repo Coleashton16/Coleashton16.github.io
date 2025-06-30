@@ -1,320 +1,461 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
-import { ArrowLeft, BrainCircuit, Bot, User, CheckCircle, XCircle, ChevronRight, Menu, X, HelpCircle, BookOpen, ClipboardList, Lightbulb, Shield, Send, Users, Activity, Layers, GraduationCap } from 'lucide-react';
-
-// --- Firebase Configuration ---
-// These global variables are provided by the environment.
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-mindpath-app';
-let firebaseConfig;
-try {
-    firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-} catch (e) {
-    console.error("Failed to parse firebase config:", e);
-    firebaseConfig = {};
-}
-
-// --- Firebase Initialization ---
-let app;
-let auth;
-let db;
-
-try {
-    app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    db = getFirestore(app);
-} catch (e) {
-    console.error("Firebase initialization error:", e);
-}
-
-
-// --- Content & Data Structure ---
-const contentData = {
-  'foundations': {
-    title: 'Core Concepts',
-    icon: GraduationCap,
-    color: 'from-sky-500 to-cyan-400',
-    description: 'Establish a strong base in mental health nursing terminology and principles.',
-    steps: [
-      { id: 'intro', title: 'Welcome to MindPath', type: 'intro' },
-      { id: 'mse', title: 'The Mental Status Exam', type: 'text', content: `The Mental Status Exam (MSE) is the cornerstone of psychiatric assessment, like a physical exam for the mind. It's a structured way to observe and describe a patient's psychological functioning at a specific point in time. Key components include: \n\n- **Appearance:** Dress, grooming, hygiene. \n- **Behavior:** Posture, facial expressions, motor activity. \n- **Speech:** Rate, rhythm, volume, and content. \n- **Mood & Affect:** The patient's stated mood versus their observed emotional expression. \n- **Thought Process:** How thoughts are connected (e.g., logical, circumstantial, tangential). \n- **Thought Content:** What the patient is thinking about (e.g., delusions, obsessions, suicidal ideation). \n- **Perception:** Presence of hallucinations or illusions. \n- **Cognition:** Level of consciousness, orientation, memory, attention, and insight/judgment.` },
-      { id: 'glossary', title: 'Interactive Glossary', type: 'glossary' },
-    ],
-  },
-  'schizophrenia': {
-    title: 'Schizophrenia Spectrum',
-    icon: BrainCircuit,
-    color: 'from-purple-500 to-indigo-500',
-    description: 'Explore psychosis, symptoms, and interventions for schizophrenia.',
-    steps: [
-      { id: 'intro', title: 'Disorder Overview', type: 'text', content: `Schizophrenia is a brain disorder that affects how a person thinks, feels, and perceives reality. It is NOT split personality. It is characterized by periods of **psychosis**, where the individual has difficulty distinguishing what is real from what is not. Core symptoms are grouped into three categories: Positive (things that are added, like hallucinations), Negative (things that are taken away, like motivation), and Cognitive (deficits in thinking and memory).` },
-      { id: 'symptom-sorter', title: 'Symptom Sorter', type: 'interactive_sorter' },
-      { id: 'medications', title: 'Antipsychotics Deep Dive', type: 'text', content: `Antipsychotics are the primary medication for schizophrenia, mainly working on the **dopamine** neurotransmitter system. \n\n**First-Generation (Typicals) like Haloperidol:** These are strong dopamine blockers. While effective for positive symptoms, this strong blockade can cause motor side effects known as **Extrapyramidal Side Effects (EPS)**. This includes acute dystonia (sudden, painful muscle spasms), akathisia (severe inner restlessness), and symptoms resembling Parkinson's disease. \n\n**Second-Generation (Atypicals) like Risperidone & Olanzapine:** These block dopamine more selectively and also act on serotonin. This makes them effective for both positive and negative symptoms with a lower risk of EPS. However, they are known for causing **Metabolic Syndrome**: significant weight gain, high blood sugar, and high cholesterol. Nurses must monitor weight, waist circumference, blood pressure, and order labs (glucose, lipid panel) regularly. \n\n**Tardive Dyskinesia (TD):** A serious, potentially irreversible side effect from long-term antipsychotic use, causing involuntary movements (e.g., lip smacking, writhing). Nurses should perform regular AIMS (Abnormal Involuntary Movement Scale) assessments to screen for TD.`},
-      { id: 'interventions', title: 'Interventions for Psychosis', type: 'text', content: `When a patient is experiencing psychosis, the nursing priority is safety and building trust. \n\n**For Hallucinations:** Ask directly what they are hearing/seeing. Do not argue with the perception, but state your own reality ("I know the voices are real to you, but I do not hear them."). This validates their experience without validating the hallucination. Reduce environmental stimuli and engage them in a reality-based activity. \n\n**For Delusions:** Do not challenge the false belief, as this can increase agitation. Instead, focus on the underlying feeling or theme ("It sounds like you feel frightened."). Gently redirect the conversation to reality-based topics.`},
-      { id: 'case-study', title: 'Case Study Challenge', type: 'case_study', case: {
-        scenario: "A 22-year-old male is admitted. He reports hearing voices telling him he's a prophet. His speech is disorganized, and he shows little emotional expression. He has been socially withdrawn for 6 months.",
-        question: "Based on these signs, what is the most prominent category of symptoms he is displaying?",
-        options: ["Negative Symptoms", "Positive Symptoms", "Cognitive Symptoms", "Affective Symptoms"],
-        correctAnswer: "Positive Symptoms",
-        explanation: "Hallucinations (hearing voices) and disorganized speech are hallmark positive symptoms of schizophrenia. While he also shows negative symptoms (flat affect, withdrawal), the primary reason for admission is the active psychosis."
-      }},
-    ],
-  },
-  'personality-disorders': {
-    title: 'Personality Disorders',
-    icon: Users,
-    color: 'from-teal-500 to-emerald-500',
-    description: 'Understand the clusters, traits, and therapeutic approaches for personality disorders.',
-    steps: [
-       { id: 'intro', title: 'Disorder Overview', type: 'text', content: `A personality disorder is not an illness in the typical sense; it's a deeply ingrained, inflexible, and unhealthy pattern of thinking, feeling, and behaving that deviates from cultural norms. These patterns are pervasive across many situations and lead to significant distress or impairment. They are grouped into three clusters:\n- **Cluster A (Odd/Eccentric):** Characterized by social awkwardness and withdrawal.\n- **Cluster B (Dramatic/Emotional):** Characterized by problems with impulse control and emotional regulation.\n- **Cluster C (Anxious/Fearful):** Characterized by high levels of anxiety.` },
-       { id: 'cluster-b', title: 'Cluster B Deep Dive', type: 'text', content: `**Antisocial (ASPD):** Pervasive disregard for and violation of the rights of others. Deceitful, manipulative, and impulsive with a lack of remorse. Nursing requires firm, consistent limit-setting.\n\n**Borderline (BPD):** Pervasive instability in relationships, self-image, and emotions. Marked impulsivity, fear of abandonment, and chronic feelings of emptiness. Prone to using defense mechanisms like **splitting**. Nursing care requires a united team approach to manage boundaries.\n\n**Narcissistic (NPD):** Pervasive pattern of grandiosity, need for admiration, and lack of empathy. They may seem confident but have very fragile self-esteem.`},
-       { id: 'dbt', title: 'Therapeutic Approaches: DBT', type: 'text', content: `**Dialectical Behavior Therapy (DBT)** is the most effective treatment for BPD. It combines cognitive-behavioral techniques with mindfulness. DBT focuses on teaching four key skill sets:\n\n1.  **Mindfulness:** Learning to be present in the moment without judgment.\n2.  **Distress Tolerance:** Learning to cope with and survive crises without making things worse.\n3.  **Emotion Regulation:** Learning to understand and reduce vulnerability to negative emotions.\n4.  **Interpersonal Effectiveness:** Learning to get needs met, maintain self-respect, and strengthen relationships.` },
-       { id: 'case-study-bpd', title: 'Case Study: BPD', type: 'case_study', case: {
-          scenario: "A client with Borderline Personality Disorder tells you, 'You're the only nurse who has ever understood me. The night nurse is completely useless.'",
-          question: "This behavior is a classic example of which defense mechanism?",
-          options: ["Projection", "Splitting", "Sublimation", "Reaction Formation"],
-          correctAnswer: "Splitting",
-          explanation: "Splitting is a common defense mechanism in BPD where individuals are unable to integrate the positive and negative qualities of self or others, viewing them as 'all good' or 'all bad'. This creates instability in relationships and requires a consistent, united approach from the care team."
-       }},
-    ],
-  },
-    'neurocognitive-disorders': {
-    title: 'Neurocognitive Disorders',
-    icon: Activity,
-    color: 'from-amber-500 to-orange-500',
-    description: 'Differentiate between delirium and dementia, and learn key nursing interventions.',
-    steps: [
-       { id: 'intro', title: 'Disorder Overview', type: 'text', content: `Neurocognitive disorders involve a clinically significant deficit in cognition (thinking skills) that represents a change from a previous level of functioning. A key nursing challenge is distinguishing among the "3 D's":\n- **Delirium:** Acute, fluctuating onset. A medical emergency.\n- **Dementia:** Gradual, progressive, and irreversible decline.\n- **Depression:** Can cause cognitive symptoms (pseudodementia) but is treatable.` },
-       { id: 'care-strategies', title: 'Caring for Dementia', type: 'text', content: `Compassionate care for patients with dementia focuses on promoting safety and preserving dignity. \n\n**Communication:** Use simple, direct sentences. Approach from the front and make eye contact. Use non-verbal cues like smiling and gentle touch. If a patient is agitated, validate their feeling and gently redirect (e.g., "I see you're upset. Let's walk over here and look at this picture."). \n\n**Safety:** The environment should be safe and predictable. Remove clutter, ensure adequate lighting, and secure dangerous items. A consistent daily routine is calming. For wandering, ensure the patient has an ID bracelet and consider alarms on doors.` },
-       { id: 'case-study-delirium', title: 'Case Study: Delirium', type: 'case_study', case: {
-          scenario: "An 80-year-old patient, post-hip surgery, suddenly becomes disoriented, confused, and is seeing insects on the walls. These symptoms started acutely this evening.",
-          question: "What is the most likely diagnosis and the priority nursing action?",
-          options: ["Sundowning in dementia; offer reassurance.", "Acute delirium; look for an underlying cause (e.g., infection, hypoxia).", "Schizophrenia onset; administer antipsychotics.", "Medication side effect; stop all pain medication."],
-          correctAnswer: "Acute delirium; look for an underlying cause (e.g., infection, hypoxia).",
-          explanation: "Delirium is characterized by an acute onset and fluctuating course, often with visual hallucinations. It is a medical emergency. The priority is to identify and treat the underlying physiological cause."
-       }},
-       { id: 'alzheimers', title: `Alzheimer's Disease`, type: 'text', content: `Alzheimer's is the most common form of dementia. It's characterized by the "4 A's": Amnesia (memory loss, especially recent), Aphasia (language difficulty, from finding words to producing speech), Apraxia (loss of purposeful movement, like using a fork), and Agnosia (inability to recognize familiar objects or people).` },
-    ],
-  },
-};
-
-const glossaryTerms = {
-  "Akathisia": "An intense subjective feeling of inner restlessness and a compelling need to move; inability to sit still.",
-  "Anosognosia": "The inability to realize one's own illness or symptoms, caused by neurological deficits.",
-  "Avolition": "Loss of motivation; difficulty beginning and sustaining goal-directed activities.",
-  "Delirium": "An acute, fluctuating disturbance in attention, consciousness, and cognition. It's a medical emergency often caused by an underlying condition.",
-  "Dementia": "A progressive decline in cognitive function that interferes with daily life. Alzheimer's is the most common type.",
-  "EPS (Extrapyramidal Side Effects)": "A group of motor symptoms caused by antipsychotic medications, including acute dystonia, pseudoparkinsonism, and akathisia.",
-  "NMS (Neuroleptic Malignant Syndrome)": "A rare but life-threatening reaction to antipsychotics, characterized by high fever, severe muscle rigidity, and altered mental status.",
-  "Splitting": "A defense mechanism, common in BPD, of viewing people or situations as 'all good' or 'all bad'.",
-  "Tardive Dyskinesia (TD)": "Involuntary, repetitive movements (e.g., facial grimacing, lip smacking) that can occur with long-term antipsychotic use."
-};
-
-const symptomSorterData = {
-    "Positive": ["Hallucinations", "Delusions", "Disorganized Speech", "Bizarre Behavior"],
-    "Negative": ["Alogia (Poverty of Speech)", "Avolition (Lack of Motivation)", "Anhedonia (Inability to feel pleasure)", "Flat Affect"],
-    "Cognitive": ["Impaired Executive Function", "Memory Deficits", "Difficulty Focusing", "Anosognosia"]
-};
-
-
-// --- Helper Functions ---
-const cn = (...classes) => classes.filter(Boolean).join(' ');
-
-
-// --- Child Components ---
-
-const Dashboard = ({ onSelectModule, progress }) => (
-  <div className="p-4 sm:p-6 md:p-8">
-    <header className="mb-8">
-      <div className="flex items-center gap-3 mb-2">
-        <Layers className="w-8 h-8 text-indigo-500" />
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">MindPath Dashboard</h1>
-      </div>
-      <p className="text-lg text-gray-500">Your AI-powered mental health nursing companion.</p>
-    </header>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {Object.entries(contentData).map(([id, module]) => {
-        const moduleProgress = progress[id] || {};
-        const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
-        const totalSteps = module.steps.length;
-        const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
-
-        return (
-          <div
-            key={id}
-            onClick={() => onSelectModule(id)}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <div className={cn("p-3 rounded-full bg-gradient-to-br", module.color)}>
-                <module.icon className="w-6 h-6 text-white" />
-              </div>
-              <div className="relative w-12 h-12">
-                  <svg className="w-full h-full" viewBox="0 0 36 36">
-                      <path
-                          className="text-gray-200"
-                          d="M18 2.0845
-                            a 15.9155 15.9155 0 0 1 0 31.831
-                            a 15.9155 15.9155 0 0 1 0 -31.831"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                      />
-                      <path
-                          className="text-indigo-500"
-                          d="M18 2.0845
-                            a 15.9155 15.9155 0 0 1 0 31.831
-                            a 15.9155 15.9155 0 0 1 0 -31.831"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          strokeDasharray={`${percentage}, 100`}
-                          strokeLinecap="round"
-                          transform="rotate(-90 18 18)"
-                      />
-                  </svg>
-                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
-              </div>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h3>
-            <p className="text-gray-500 text-sm mb-4">{module.description}</p>
-            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
-              Start Learning <ChevronRight className="w-4 h-4 ml-1" />
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  </div>
-);
-
-const SymptomSorter = ({ onComplete }) => {
-    const [buckets, setBuckets] = useState({ Positive: [], Negative: [], Cognitive: [] });
-    const [items, setItems] = useState([]);
-    const [feedback, setFeedback] = useState(null);
-    const [completed, setCompleted] = useState(false);
-
-    useEffect(() => {
-        const allItems = Object.values(symptomSorterData).flat();
-        setItems(allItems.sort(() => Math.random() - 0.5));
-    }, []);
-
-    const handleDragStart = (e, item) => {
-        e.dataTransfer.setData("text/plain", item);
-    };
-
-    const handleDrop = (e, bucketName) => {
-        e.preventDefault();
-        const item = e.dataTransfer.getData("text/plain");
-        setItems(prev => prev.filter(i => i !== item));
-        setBuckets(prev => ({ ...prev, [bucketName]: [...prev[bucketName], item] }));
-    };
-
-    const handleDragOver = (e) => {
-        e.preventDefault();
-    };
-    
-    const handleReturnItem = (item, fromBucket) => {
-        setBuckets(prev => ({ ...prev, [fromBucket]: prev[fromBucket].filter(i => i !== item)}));
-        setItems(prev => [...prev, item]);
-    };
-
-    const checkAnswers = () => {
-        let allCorrect = true;
-        Object.entries(buckets).forEach(([bucketName, items]) => {
-            if (items.length !== symptomSorterData[bucketName].length) {
-                allCorrect = false;
-            }
-            items.forEach(item => {
-                if (!symptomSorterData[bucketName].includes(item)) {
-                    allCorrect = false;
-                }
-            });
-        });
-        
-        if (items.length > 0) allCorrect = false;
-        
-        setFeedback(allCorrect);
-        if(allCorrect) {
-            setCompleted(true);
-            onComplete();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindPath: Mental Health Nursing Companion</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for animations and layout */
+        body {
+            font-family: "Inter", sans-serif;
+            margin: 0;
+            overflow: hidden; /* Prevent body scroll when module is open */
         }
-    };
+        .whitespace-pre-wrap {
+            white-space: pre-wrap;
+        }
+        .animate-pulse-fast {
+            animation: pulse-fast 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-fast {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-root" class="min-h-screen bg-gray-100 font-sans text-gray-900">
+        <!-- App content will be rendered here by JavaScript -->
+    </div>
 
-    return (
-        <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-bold text-lg text-gray-800 mb-2">Symptom Sorter</h4>
-            <p className="text-sm text-gray-600 mb-4">Drag and drop the symptoms into the correct categories.</p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                {Object.keys(buckets).map(bucketName => (
-                    <div
-                        key={bucketName}
-                        onDrop={(e) => handleDrop(e, bucketName)}
-                        onDragOver={handleDragOver}
-                        className="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300 min-h-[150px]"
-                    >
-                        <h5 className="font-semibold text-center text-gray-700 mb-2">{bucketName}</h5>
-                        <div className="flex flex-col gap-2">
-                            {buckets[bucketName].map(item => (
-                                <div key={item} onClick={() => handleReturnItem(item, bucketName)} className="bg-indigo-100 text-indigo-800 text-sm p-2 rounded-md cursor-pointer">
-                                    {item}
-                                </div>
-                            ))}
+    <!-- Firebase CDN Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Firebase Configuration ---
+        // These global variables are provided by the environment.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-mindpath-app';
+        let firebaseConfig;
+        try {
+            firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        } catch (e) {
+            console.error("Failed to parse firebase config:", e);
+            firebaseConfig = {};
+        }
+
+        // --- Firebase Initialization ---
+        let app;
+        let auth;
+        let db;
+
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } catch (e) {
+            console.error("Firebase initialization error:", e);
+        }
+
+        // --- Lucide Icons as SVG Strings ---
+        const lucideIcons = {
+            ArrowLeft: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>`,
+            BrainCircuit: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 3 3 0 0 0-3-3"/><path d="M12 2a3 3 0 0 1 3 3v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2 3 3 0 0 1 3-3"/><path d="M12 2v20"/><path d="M12 12H3"/><path d="M12 12h9"/><path d="M12 18H3"/><path d="M12 18h9"/><path d="M12 6H3"/><path d="M12 6h9"/></svg>`,
+            Bot: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><path d="M12 10v4"/><path d="M12 14h4"/><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2v2"/><path d="M17 7l5-5"/><path d="m2 2 5 5"/></svg>`,
+            User: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+            CheckCircle: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>`,
+            XCircle: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`,
+            ChevronRight: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>`,
+            Menu: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>`,
+            X: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`,
+            HelpCircle: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>`,
+            BookOpen: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+            ClipboardList: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>`,
+            Lightbulb: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 6c0 1.8.7 3.3 1.5 4.5.8.8 1.3 1.5 1.5 2.5"/><path d="M10.4 14.1c.2.1.6.2 1.2.2 1.9 0 3-1.6 3-2.9 0-1.1-.9-2.1-2-2.9"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>`,
+            Shield: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+            Send: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M15 15 22 2"/></svg>`,
+            Users: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+            Activity: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`,
+            Layers: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18-.74.37A2 2 0 0 0 12 4.14v15.72a2 2 0 0 0 .83 1.96l.74.37a2 2 0 0 0 2.21-.37l6.86-6.19a2 2 0 0 0 0-3.23L15.04 2.55a2 2 0 0 0-2.21-.37Z"/><path d="M11.17 2.18.31 8.36a2 2 0 0 0 0 3.23l6.86 6.19a2 2 0 0 0 2.21.37l.74-.37a2 2 0 0 0 .83-1.96V4.14a2 2 0 0 0-.83-1.96Z"/></svg>`,
+            GraduationCap: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.43 14.86c.21.16.42.33.61.51l.86.86c.35.35.54.81.54 1.3s-.19.95-.54 1.3l-2.48 2.48c-.35.35-.81.54-1.3.54s-.95-.19-1.3-.54l-.86-.86c-.18-.19-.35-.4-.51-.61M8 12V3.5L2 8l6 4h.5l.5.5.5.5 1.5 1.5 1.5 1.5.5.5.5.5h.5V12z"/><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7"/><path d="M18.8 9.5 12 12 5.2 9.5"/><path d="M12 2v20"/></svg>`
+        };
+
+        // Helper function to create an SVG icon element
+        function createIcon(iconName, className) {
+            const svgString = lucideIcons[iconName];
+            if (!svgString) {
+                console.warn(`Icon "${iconName}" not found.`);
+                const div = document.createElement('div');
+                div.className = className;
+                return div; // Return an empty div or a placeholder
+            }
+            const div = document.createElement('div');
+            div.innerHTML = svgString;
+            const svg = div.firstChild;
+            // Correctly set class for SVG elements
+            if (className) {
+                svg.setAttribute('class', className);
+            }
+            return svg;
+        }
+
+        // --- Content & Data Structure ---
+        const contentData = {
+            'foundations': {
+                title: 'Core Concepts',
+                icon: 'GraduationCap', // Use string name for icon
+                color: 'from-sky-500 to-cyan-400',
+                description: 'Establish a strong base in mental health nursing terminology and principles.',
+                steps: [
+                    { id: 'intro', title: 'Welcome to MindPath', type: 'intro' },
+                    { id: 'mse', title: 'The Mental Status Exam', type: 'text', content: `The Mental Status Exam (MSE) is the cornerstone of psychiatric assessment, like a physical exam for the mind. It's a structured way to observe and describe a patient's psychological functioning at a specific point in time. Key components include: \n\n- **Appearance:** Dress, grooming, hygiene. \n- **Behavior:** Posture, facial expressions, motor activity. \n- **Speech:** Rate, rhythm, volume, and content. \n- **Mood & Affect:** The patient's stated mood versus their observed emotional expression. \n- **Thought Process:** How thoughts are connected (e.g., logical, circumstantial, tangential). \n- **Thought Content:** What the patient is thinking about (e.g., delusions, obsessions, suicidal ideation). \n- **Perception:** Presence of hallucinations or illusions. \n- **Cognition:** Level of consciousness, orientation, memory, attention, and insight/judgment.` },
+                    { id: 'glossary', title: 'Interactive Glossary', type: 'glossary' },
+                ],
+            },
+            'schizophrenia': {
+                title: 'Schizophrenia Spectrum',
+                icon: 'BrainCircuit',
+                color: 'from-purple-500 to-indigo-500',
+                description: 'Explore psychosis, symptoms, and interventions for schizophrenia.',
+                steps: [
+                    { id: 'intro', title: 'Disorder Overview', type: 'text', content: `Schizophrenia is a brain disorder that affects how a person thinks, feels, and perceives reality. It is NOT split personality. It is characterized by periods of **psychosis**, where the individual has difficulty distinguishing what is real from what is not. Core symptoms are grouped into three categories: Positive (things that are added, like hallucinations), Negative (things that are taken away, like motivation), and Cognitive (deficits in thinking and memory).` },
+                    { id: 'symptom-sorter', title: 'Symptom Sorter', type: 'interactive_sorter' },
+                    { id: 'medications', title: 'Antipsychotics Deep Dive', type: 'text', content: `Antipsychotics are the primary medication for schizophrenia, mainly working on the **dopamine** neurotransmitter system. \n\n**First-Generation (Typicals) like Haloperidol:** These are strong dopamine blockers. While effective for positive symptoms, this strong blockade can cause motor side effects known as **Extrapyramidal Side Effects (EPS)**. This includes acute dystonia (sudden, painful muscle spasms), akathisia (severe inner restlessness), and symptoms resembling Parkinson's disease. \n\n**Second-Generation (Atypicals) like Risperidone & Olanzapine:** These block dopamine more selectively and also act on serotonin. This makes them effective for both positive and negative symptoms with a lower risk of EPS. However, they are known for causing **Metabolic Syndrome**: significant weight gain, high blood sugar, and high cholesterol. Nurses must monitor weight, waist circumference, blood pressure, and order labs (glucose, lipid panel) regularly. \n\n**Tardive Dyskinesia (TD):** A serious, potentially irreversible side effect from long-term antipsychotic use, causing involuntary movements (e.g., lip smacking, writhing). Nurses should perform regular AIMS (Abnormal Involuntary Movement Scale) assessments to screen for TD.`},
+                    { id: 'interventions', title: 'Interventions for Psychosis', type: 'text', content: `When a patient is experiencing psychosis, the nursing priority is safety and building trust. \n\n**For Hallucinations:** Ask directly what they are hearing/seeing. Do not argue with the perception, but state your own reality ("I know the voices are real to you, but I do not hear them."). This validates their experience without validating the hallucination. Reduce environmental stimuli and engage them in a reality-based activity. \n\n**For Delusions:** Do not challenge the false belief, as this can increase agitation. Instead, focus on the underlying feeling or theme ("It sounds like you feel frightened."). Gently redirect the conversation to reality-based topics.`},
+                    { id: 'case-study', title: 'Case Study Challenge', type: 'case_study', case: {
+                        scenario: "A 22-year-old male is admitted. He reports hearing voices telling him he's a prophet. His speech is disorganized, and he shows little emotional expression. He has been socially withdrawn for 6 months.",
+                        question: "Based on these signs, what is the most prominent category of symptoms he is displaying?",
+                        options: ["Negative Symptoms", "Positive Symptoms", "Cognitive Symptoms", "Affective Symptoms"],
+                        correctAnswer: "Positive Symptoms",
+                        explanation: "Hallucinations (hearing voices) and disorganized speech are hallmark positive symptoms of schizophrenia. While he also shows negative symptoms (flat affect, withdrawal), the primary reason for admission is the active psychosis."
+                    }},
+                ],
+            },
+            'personality-disorders': {
+                title: 'Personality Disorders',
+                icon: 'Users',
+                color: 'from-teal-500 to-emerald-500',
+                description: 'Understand the clusters, traits, and therapeutic approaches for personality disorders.',
+                steps: [
+                    { id: 'intro', title: 'Disorder Overview', type: 'text', content: `A personality disorder is not an illness in the typical sense; it's a deeply ingrained, inflexible, and unhealthy pattern of thinking, feeling, and behaving that deviates from cultural norms. These patterns are pervasive across many situations and lead to significant distress or impairment. They are grouped into three clusters:\n- **Cluster A (Odd/Eccentric):** Characterized by social awkwardness and withdrawal.\n- **Cluster B (Dramatic/Emotional):** Characterized by problems with impulse control and emotional regulation.\n- **Cluster C (Anxious/Fearful):** Characterized by high levels of anxiety.` },
+                    { id: 'cluster-b', title: 'Cluster B Deep Dive', type: 'text', content: `**Antisocial (ASPD):** Pervasive disregard for and violation of the rights of others. Deceitful, manipulative, and impulsive with a lack of remorse. Nursing requires firm, consistent limit-setting.\n\n**Borderline (BPD):** Pervasive instability in relationships, self-image, and emotions. Marked impulsivity, fear of abandonment, and chronic feelings of emptiness. Prone to using defense mechanisms like **splitting**. Nursing care requires a united team approach to manage boundaries.\n\n**Narcissistic (NPD):** Pervasive pattern of grandiosity, need for admiration, and lack of empathy. They may seem confident but have very fragile self-esteem.`},
+                    { id: 'dbt', title: 'Therapeutic Approaches: DBT', type: 'text', content: `**Dialectical Behavior Therapy (DBT)** is the most effective treatment for BPD. It combines cognitive-behavioral techniques with mindfulness. DBT focuses on teaching four key skill sets:\n\n1.  **Mindfulness:** Learning to be present in the moment without judgment.\n2.  **Distress Tolerance:** Learning to cope with and survive crises without making things worse.\n3.  **Emotion Regulation:** Learning to understand and reduce vulnerability to negative emotions.\n4.  **Interpersonal Effectiveness:** Learning to get needs met, maintain self-respect, and strengthen relationships.` },
+                    { id: 'case-study-bpd', title: 'Case Study: BPD', type: 'case_study', case: {
+                        scenario: "A client with Borderline Personality Disorder tells you, 'You're the only nurse who has ever understood me. The night nurse is completely useless.'",
+                        question: "This behavior is a classic example of which defense mechanism?",
+                        options: ["Projection", "Splitting", "Sublimation", "Reaction Formation"],
+                        correctAnswer: "Splitting",
+                        explanation: "Splitting is a common defense mechanism in BPD where individuals are unable to integrate the positive and negative qualities of self or others, viewing them as 'all good' or 'all bad'. This creates instability in relationships and requires a consistent, united approach from the care team."
+                    }},
+                ],
+            },
+            'neurocognitive-disorders': {
+                title: 'Neurocognitive Disorders',
+                icon: 'Activity',
+                color: 'from-amber-500 to-orange-500',
+                description: 'Differentiate between delirium and dementia, and learn key nursing interventions.',
+                steps: [
+                    { id: 'intro', title: 'Disorder Overview', type: 'text', content: `Neurocognitive disorders involve a clinically significant deficit in cognition (thinking skills) that represents a change from a previous level of functioning. A key nursing challenge is distinguishing among the "3 D's":\n- **Delirium:** Acute, fluctuating onset. A medical emergency.\n- **Dementia:** Gradual, progressive, and irreversible decline.\n- **Depression:** Can cause cognitive symptoms (pseudodementia) but is treatable.` },
+                    { id: 'care-strategies', title: 'Caring for Dementia', type: 'text', content: `Compassionate care for patients with dementia focuses on promoting safety and preserving dignity. \n\n**Communication:** Use simple, direct sentences. Approach from the front and make eye contact. Use non-verbal cues like smiling and gentle touch. If a patient is agitated, validate their feeling and gently redirect (e.g., "I see you're upset. Let's walk over here and look at this picture."). \n\n**Safety:** The environment should be safe and predictable. Remove clutter, ensure adequate lighting, and secure dangerous items. A consistent daily routine is calming. For wandering, ensure the patient has an ID bracelet and consider alarms on doors.` },
+                    { id: 'case-study-delirium', title: 'Case Study: Delirium', type: 'case_study', case: {
+                        scenario: "An 80-year-old patient, post-hip surgery, suddenly becomes disoriented, confused, and is seeing insects on the walls. These symptoms started acutely this evening.",
+                        question: "What is the most likely diagnosis and the priority nursing action?",
+                        options: ["Sundowning in dementia; offer reassurance.", "Acute delirium; look for an underlying cause (e.g., infection, hypoxia).", "Schizophrenia onset; administer antipsychotics.", "Medication side effect; stop all pain medication."],
+                        correctAnswer: "Acute delirium; look for an underlying cause (e.g., infection, hypoxia).",
+                        explanation: "Delirium is characterized by an acute onset and fluctuating course, often with visual hallucinations. It is a medical emergency. The priority is to identify and treat the underlying physiological cause."
+                    }},
+                    { id: 'alzheimers', title: `Alzheimer's Disease`, type: 'text', content: `Alzheimer's is the most common form of dementia. It's characterized by the "4 A's": Amnesia (memory loss, especially recent), Aphasia (language difficulty, from finding words to producing speech), Apraxia (loss of purposeful movement, like using a fork), and Agnosia (inability to recognize familiar objects or people).` },
+                ],
+            },
+        };
+
+        const glossaryTerms = {
+            "Akathisia": "An intense subjective feeling of inner restlessness and a compelling need to move; inability to sit still.",
+            "Anosognosia": "The inability to realize one's own illness or symptoms, caused by neurological deficits.",
+            "Avolition": "Loss of motivation; difficulty beginning and sustaining goal-directed activities.",
+            "Delirium": "An acute, fluctuating disturbance in attention, consciousness, and cognition. It's a medical emergency often caused by an underlying condition.",
+            "Dementia": "A progressive decline in cognitive function that interferes with daily life. Alzheimer's is the most common type.",
+            "EPS (Extrapyramidal Side Effects)": "A group of motor symptoms caused by antipsychotic medications, including acute dystonia, pseudoparkinsonism, and akathisia.",
+            "NMS (Neuroleptic Malignant Syndrome)": "A rare but life-threatening reaction to antipsychotics, characterized by high fever, severe muscle rigidity, and altered mental status.",
+            "Splitting": "A defense mechanism, common in BPD, of viewing people or situations as 'all good' or 'all bad'.",
+            "Tardive Dyskinesia (TD)": "Involuntary, repetitive movements (e.g., facial grimacing, lip smacking) that can occur with long-term antipsychotic use."
+        };
+
+        const symptomSorterData = {
+            "Positive": ["Hallucinations", "Delusions", "Disorganized Speech", "Bizarre Behavior"],
+            "Negative": ["Alogia (Poverty of Speech)", "Avolition (Lack of Motivation)", "Anhedonia (Inability to feel pleasure)", "Flat Affect"],
+            "Cognitive": ["Impaired Executive Function", "Memory Deficits", "Difficulty Focusing", "Anosognosia"]
+        };
+
+        // --- Helper Functions ---
+        function cn(...classes) {
+            return classes.filter(Boolean).join(' ');
+        }
+
+        // Simple state management simulation
+        let appState = {
+            currentModuleId: null,
+            userId: null,
+            progress: {},
+            isAuthReady: false,
+            // For ClinicalCoach
+            coachIsOpen: false,
+            coachMessages: [{ role: "assistant", text: "Hi! I'm your AI Clinical Coach. Ask me to explain a concept, or give you a clinical scenario. How can I help?" }],
+            coachInput: "",
+            coachIsLoading: false,
+            // For LearningModule
+            activeStep: 0,
+            isSidebarOpen: false
+        };
+
+        const subscribers = [];
+        function setState(newState) {
+            appState = { ...appState, ...newState };
+            subscribers.forEach(callback => callback(appState));
+        }
+
+        function subscribe(callback) {
+            subscribers.push(callback);
+            // Immediately call with current state for initial render
+            callback(appState);
+            return () => {
+                const index = subscribers.indexOf(callback);
+                if (index > -1) subscribers.splice(index, 1);
+            };
+        }
+
+        // --- Child Components (converted to plain JS functions) ---
+
+        function renderDashboard(container, state, onSelectModule, progress) {
+            container.innerHTML = ''; // Clear previous content
+            const dashboardDiv = document.createElement('div');
+            dashboardDiv.className = 'p-4 sm:p-6 md:p-8';
+
+            const header = document.createElement('header');
+            header.className = 'mb-8';
+            header.innerHTML = `
+                <div class="flex items-center gap-3 mb-2">
+                    ${createIcon('Layers', 'w-8 h-8 text-indigo-500').outerHTML}
+                    <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">MindPath Dashboard</h1>
+                </div>
+                <p class="text-lg text-gray-500">Your AI-powered mental health nursing companion.</p>
+            `;
+            dashboardDiv.appendChild(header);
+
+            const modulesGrid = document.createElement('div');
+            modulesGrid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
+
+            Object.entries(contentData).forEach(([id, module]) => {
+                const moduleProgress = progress[id] || {};
+                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                const totalSteps = module.steps.length;
+                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
+                const moduleCard = document.createElement('div');
+                moduleCard.className = 'bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group';
+                moduleCard.addEventListener('click', () => onSelectModule(id));
+
+                moduleCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="${cn("p-3 rounded-full bg-gradient-to-br", module.color)}">
+                            ${createIcon(module.icon, 'w-6 h-6 text-white').outerHTML}
+                        </div>
+                        <div class="relative w-12 h-12">
+                            <svg class="w-full h-full" viewBox="0 0 36 36">
+                                <path
+                                    class="text-gray-200"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                />
+                                <path
+                                    class="text-indigo-500"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                    stroke-dasharray="${percentage}, 100"
+                                    stroke-linecap="round"
+                                    transform="rotate(-90 18 18)"
+                                />
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">${Math.round(percentage)}%</span>
                         </div>
                     </div>
-                ))}
-            </div>
-
-            <div className="bg-gray-100 p-4 rounded-lg min-h-[100px] flex flex-wrap gap-2 items-center justify-center">
-                {items.map(item => (
-                    <div
-                        key={item}
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, item)}
-                        className="bg-white shadow-sm p-2 rounded-md cursor-grab active:cursor-grabbing border border-gray-200 text-sm"
-                    >
-                        {item}
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">${module.title}</h3>
+                    <p class="text-gray-500 text-sm mb-4">${module.description}</p>
+                    <div class="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
+                        Start Learning ${createIcon('ChevronRight', 'w-4 h-4 ml-1').outerHTML}
                     </div>
-                ))}
-            </div>
-            
-            <div className="mt-4 text-center">
-                {feedback !== null && (
-                    <div className={`p-3 rounded-lg text-white font-semibold mb-4 ${feedback ? 'bg-green-500' : 'bg-red-500'}`}>
-                        {feedback ? 'All correct! Great job!' : 'Not quite right. Please try again.'}
-                    </div>
-                )}
-                <button onClick={checkAnswers} disabled={completed} className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
-                    Check Answers
-                </button>
-            </div>
-        </div>
-    );
-};
+                `;
+                modulesGrid.appendChild(moduleCard);
+            });
 
-const CaseStudy = ({ caseData, onComplete }) => {
-    const [selectedAnswer, setSelectedAnswer] = useState(null);
-    const [isCorrect, setIsCorrect] = useState(null);
-
-    const handleSelect = (option) => {
-        if (selectedAnswer) return;
-        setSelectedAnswer(option);
-        const correct = option === caseData.correctAnswer;
-        setIsCorrect(correct);
-        if (correct) {
-            onComplete();
+            dashboardDiv.appendChild(modulesGrid);
+            container.appendChild(dashboardDiv);
         }
-    };
 
-    return (
-        <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
-            <p className="bg-blue-100 text-blue-800 p-3 rounded-md mb-4 text-sm whitespace-pre-wrap">{caseData.scenario}</p>
-            <p className="font-semibold text-gray-700 mb-3">{caseData.question}</p>
-            <div className="space-y-2">
-                {caseData.options.map(option => {
+        function renderSymptomSorter(container, onComplete) {
+            container.innerHTML = '';
+            // Internal state for SymptomSorter
+            let buckets = { Positive: [], Negative: [], Cognitive: [] };
+            let items = [];
+            let feedback = null;
+            let completed = false;
+
+            const updateUI = () => {
+                container.innerHTML = ''; // Clear previous render
+
+                const sorterDiv = document.createElement('div');
+                sorterDiv.className = 'p-4 bg-gray-50 rounded-lg';
+
+                sorterDiv.innerHTML = `
+                    <h4 class="font-bold text-lg text-gray-800 mb-2">Symptom Sorter</h4>
+                    <p class="text-sm text-gray-600 mb-4">Drag and drop the symptoms into the correct categories.</p>
+                `;
+
+                const bucketsGrid = document.createElement('div');
+                bucketsGrid.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-6';
+
+                Object.keys(buckets).forEach(bucketName => {
+                    const bucketDiv = document.createElement('div');
+                    bucketDiv.className = 'bg-white p-4 rounded-lg border-2 border-dashed border-gray-300 min-h-[150px]';
+                    bucketDiv.addEventListener('drop', (e) => handleDrop(e, bucketName));
+                    bucketDiv.addEventListener('dragover', handleDragOver);
+
+                    const bucketHeader = document.createElement('h5');
+                    bucketHeader.className = 'font-semibold text-center text-gray-700 mb-2';
+                    bucketHeader.textContent = bucketName;
+                    bucketDiv.appendChild(bucketHeader);
+
+                    const bucketItemsContainer = document.createElement('div');
+                    bucketItemsContainer.className = 'flex flex-col gap-2';
+                    buckets[bucketName].forEach(item => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'bg-indigo-100 text-indigo-800 text-sm p-2 rounded-md cursor-pointer';
+                        itemDiv.textContent = item;
+                        itemDiv.addEventListener('click', () => handleReturnItem(item, bucketName));
+                        bucketItemsContainer.appendChild(itemDiv);
+                    });
+                    bucketDiv.appendChild(bucketItemsContainer);
+                    bucketsGrid.appendChild(bucketDiv);
+                });
+                sorterDiv.appendChild(bucketsGrid);
+
+                const draggableItemsContainer = document.createElement('div');
+                draggableItemsContainer.className = 'bg-gray-100 p-4 rounded-lg min-h-[100px] flex flex-wrap gap-2 items-center justify-center';
+                items.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'bg-white shadow-sm p-2 rounded-md cursor-grab active:cursor-grabbing border border-gray-200 text-sm';
+                    itemDiv.textContent = item;
+                    itemDiv.draggable = true;
+                    itemDiv.addEventListener('dragstart', (e) => handleDragStart(e, item));
+                    draggableItemsContainer.appendChild(itemDiv);
+                });
+                sorterDiv.appendChild(draggableItemsContainer);
+
+                const feedbackArea = document.createElement('div');
+                feedbackArea.className = 'mt-4 text-center';
+                if (feedback !== null) {
+                    const feedbackDiv = document.createElement('div');
+                    feedbackDiv.className = `p-3 rounded-lg text-white font-semibold mb-4 ${feedback ? 'bg-green-500' : 'bg-red-500'}`;
+                    feedbackDiv.textContent = feedback ? 'All correct! Great job!' : 'Not quite right. Please try again.';
+                    feedbackArea.appendChild(feedbackDiv);
+                }
+
+                const checkButton = document.createElement('button');
+                checkButton.className = 'px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors';
+                checkButton.textContent = 'Check Answers';
+                if (completed) {
+                    checkButton.disabled = true;
+                    checkButton.classList.add('disabled:bg-gray-400', 'disabled:cursor-not-allowed');
+                } else {
+                    checkButton.classList.remove('disabled:bg-gray-400', 'disabled:cursor-not-allowed');
+                }
+                checkButton.addEventListener('click', checkAnswers);
+                feedbackArea.appendChild(checkButton);
+
+                sorterDiv.appendChild(feedbackArea);
+                container.appendChild(sorterDiv);
+            };
+
+            const handleDragStart = (e, item) => {
+                e.dataTransfer.setData("text/plain", item);
+            };
+
+            const handleDrop = (e, bucketName) => {
+                e.preventDefault();
+                const item = e.dataTransfer.getData("text/plain");
+                items = items.filter(i => i !== item);
+                buckets = { ...buckets, [bucketName]: [...buckets[bucketName], item] };
+                updateUI();
+            };
+
+            const handleDragOver = (e) => {
+                e.preventDefault();
+            };
+
+            const handleReturnItem = (item, fromBucket) => {
+                buckets = { ...buckets, [fromBucket]: buckets[fromBucket].filter(i => i !== item) };
+                items = [...items, item];
+                updateUI();
+            };
+
+            const checkAnswers = () => {
+                let allCorrect = true;
+                Object.entries(buckets).forEach(([bucketName, bucketItems]) => {
+                    if (bucketItems.length !== symptomSorterData[bucketName].length) {
+                        allCorrect = false;
+                    }
+                    bucketItems.forEach(item => {
+                        if (!symptomSorterData[bucketName].includes(item)) {
+                            allCorrect = false;
+                        }
+                    });
+                });
+
+                if (items.length > 0) allCorrect = false;
+
+                feedback = allCorrect;
+                if (allCorrect) {
+                    completed = true;
+                    onComplete();
+                }
+                updateUI();
+            };
+
+            // Initialize items on first render
+            const allItems = Object.values(symptomSorterData).flat();
+            items = allItems.sort(() => Math.random() - 0.5);
+            updateUI(); // Initial render
+        }
+
+        function renderCaseStudy(container, caseData, onComplete) {
+            container.innerHTML = '';
+            // Internal state for CaseStudy
+            let selectedAnswer = null;
+            let isCorrect = null;
+
+            const updateUI = () => {
+                container.innerHTML = ''; // Clear previous render
+
+                const caseStudyDiv = document.createElement('div');
+                caseStudyDiv.className = 'p-4 bg-gray-50 rounded-lg';
+
+                caseStudyDiv.innerHTML = `
+                    <h4 class="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
+                    <p class="bg-blue-100 text-blue-800 p-3 rounded-md mb-4 text-sm whitespace-pre-wrap">${caseData.scenario}</p>
+                    <p class="font-semibold text-gray-700 mb-3">${caseData.question}</p>
+                `;
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'space-y-2';
+
+                caseData.options.forEach(option => {
                     const isSelected = selectedAnswer === option;
                     let optionClass = 'bg-white hover:bg-gray-100';
                     if (isSelected) {
@@ -323,446 +464,638 @@ const CaseStudy = ({ caseData, onComplete }) => {
                         optionClass = 'bg-green-100 border-green-500';
                     }
 
-                    return (
-                        <div
-                            key={option}
-                            onClick={() => handleSelect(option)}
-                            className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
-                        >
-                            <div className="flex items-center">
-                                {isSelected && (
-                                    isCorrect ? <CheckCircle className="w-5 h-5 text-green-600 mr-2" /> : <XCircle className="w-5 h-5 text-red-600 mr-2" />
-                                )}
-                                <span className="flex-1">{option}</span>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-            {selectedAnswer && (
-                <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
-                    <h5 className="font-bold text-indigo-800">Explanation</h5>
-                    <p className="text-sm text-indigo-700">{caseData.explanation}</p>
-                </div>
-            )}
-        </div>
-    );
-};
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass);
+                    optionDiv.addEventListener('click', () => handleSelect(option));
 
-const Glossary = ({ onComplete, stepId }) => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const filteredTerms = useMemo(() =>
-        Object.entries(glossaryTerms).filter(([term, _]) =>
-            term.toLowerCase().includes(searchTerm.toLowerCase())
-        ), [searchTerm]
-    );
-    
-    useEffect(() => {
-        onComplete(stepId);
-    }, [onComplete, stepId]);
+                    const flexContainer = document.createElement('div');
+                    flexContainer.className = 'flex items-center';
 
-    return (
-        <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-bold text-lg text-gray-800 mb-4">Glossary of Terms</h4>
-            <input
-                type="text"
-                placeholder="Search terms..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-2 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
-                {filteredTerms.map(([term, definition]) => (
-                    <div key={term} className="bg-white p-3 rounded-md shadow-sm">
-                        <h5 className="font-semibold text-indigo-700">{term}</h5>
-                        <p className="text-sm text-gray-600">{definition}</p>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
+                    if (isSelected) {
+                        const icon = isCorrect ? createIcon('CheckCircle', 'w-5 h-5 text-green-600 mr-2') : createIcon('XCircle', 'w-5 h-5 text-red-600 mr-2');
+                        flexContainer.appendChild(icon);
+                    }
+                    const span = document.createElement('span');
+                    span.className = 'flex-1';
+                    span.textContent = option;
+                    flexContainer.appendChild(span);
 
-const TextStep = ({ step, onComplete }) => {
-    useEffect(() => {
-        if (step && step.id) {
-            onComplete(step.id);
-        }
-    }, [step.id, onComplete]);
+                    optionDiv.appendChild(flexContainer);
+                    optionsDiv.appendChild(optionDiv);
+                });
+                caseStudyDiv.appendChild(optionsDiv);
 
-    return (
-        <div className="text-gray-700 leading-relaxed p-4 bg-gray-50 rounded-lg space-y-4 whitespace-pre-wrap">
-            {step.content || "Welcome to this module. Select a step from the sidebar to begin."}
-        </div>
-    );
-};
-
-const LearningModule = ({ module, onBack, progress, onProgressUpdate }) => {
-    const [activeStep, setActiveStep] = useState(0);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    
-    const handleStepComplete = useCallback((stepId) => {
-        onProgressUpdate(module.id, stepId, true);
-    }, [onProgressUpdate, module.id]);
-    
-    const handleNextStep = () => {
-        if (activeStep < module.steps.length - 1) {
-            setActiveStep(activeStep + 1);
-        }
-    };
-    
-    const handlePrevStep = () => {
-        if (activeStep > 0) {
-            setActiveStep(activeStep - 1);
-        }
-    };
-
-    const currentStep = module.steps[activeStep];
-    const moduleProgress = progress[module.id] || {};
-
-    const renderStepContent = (step) => {
-        if (!step) return <p>Please select a step.</p>;
-        switch (step.type) {
-            case 'intro':
-                const introStepContent = "Welcome! This module provides a high-level overview. Navigate through the steps to learn more.";
-                return <TextStep step={{...step, content: introStepContent }} onComplete={handleStepComplete} />;
-            case 'text':
-                return <TextStep step={step} onComplete={handleStepComplete} />;
-            case 'interactive_sorter':
-                return <SymptomSorter onComplete={() => handleStepComplete(step.id)} />;
-            case 'case_study':
-                return <CaseStudy caseData={step.case} onComplete={() => handleStepComplete(step.id)} />;
-            case 'glossary':
-                return <Glossary onComplete={handleStepComplete} stepId={step.id} />;
-            default:
-                return <p>Content not available.</p>;
-        }
-    };
-
-    return (
-        <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
-            {/* Header */}
-            <header className="bg-white shadow-md p-4 flex items-center justify-between z-10 flex-shrink-0">
-                <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800">
-                    <ArrowLeft className="w-5 h-5" />
-                    Back to Dashboard
-                </button>
-                <div className="flex items-center gap-2">
-                    <module.icon className="w-6 h-6 text-gray-600 hidden sm:block" />
-                    <h2 className="text-xl font-bold text-gray-800">{module.title}</h2>
-                </div>
-                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2">
-                    {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </button>
-            </header>
-
-            <div className="flex flex-1 overflow-hidden">
-                {/* Sidebar */}
-                <aside className={cn(
-                    "bg-white border-r border-gray-200 p-4 w-72 flex-shrink-0 flex flex-col transition-transform transform md:translate-x-0 absolute md:static h-full z-20",
-                    isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                )}>
-                    <h3 className="text-lg font-semibold mb-4 text-gray-700">Module Steps</h3>
-                    <nav className="space-y-2">
-                        {module.steps.map((step, index) => (
-                            <button
-                                key={step.id}
-                                onClick={() => {
-                                    setActiveStep(index);
-                                    setIsSidebarOpen(false); // Close sidebar on selection for mobile
-                                }}
-                                className={cn(
-                                    'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
-                                    activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100'
-                                )}
-                            >
-                                {moduleProgress[step.id]?.completed ? (
-                                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                                ) : (
-                                    <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
-                                       <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500" : "border-gray-400")}></div>
-                                    </div>
-                                )}
-                                <span className="flex-1">{step.title}</span>
-                            </button>
-                        ))}
-                    </nav>
-                </aside>
-
-                {/* Main Content */}
-                <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-                    <div className="max-w-4xl mx-auto">
-                        <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
-                        {renderStepContent(currentStep)}
-
-                        <div className="flex justify-between mt-8">
-                            <button
-                                onClick={handlePrevStep}
-                                disabled={activeStep === 0}
-                                className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                Previous
-                            </button>
-                            <button
-                                onClick={handleNextStep}
-                                disabled={activeStep === module.steps.length - 1}
-                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                Next
-                            </button>
-                        </div>
-                    </div>
-                </main>
-            </div>
-        </div>
-    );
-};
-
-const ClinicalCoach = ({ userId }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([
-        { role: "assistant", text: "Hi! I'm your AI Clinical Coach. Ask me to explain a concept, or give you a clinical scenario. How can I help?" }
-    ]);
-    const [input, setInput] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const chatHistoryRef = React.useRef(null);
-
-    useEffect(() => {
-        if (chatHistoryRef.current) {
-            chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
-        }
-    }, [messages]);
-
-    const handleSend = async () => {
-        if (!input.trim() || isLoading) return;
-
-        const userMessage = { role: 'user', text: input };
-        setMessages(prev => [...prev, userMessage]);
-        setInput("");
-        setIsLoading(true);
-
-        const chatHistoryForAPI = messages.map(m => ({
-            role: m.role === 'assistant' ? 'model' : 'user',
-            parts: [{ text: m.text }]
-        }));
-        chatHistoryForAPI.push({ role: "user", parts: [{ text: input }] });
-        
-        const payload = { 
-            contents: chatHistoryForAPI,
-            safetySettings: [
-                { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-                { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
-            ]
-        };
-        const apiKey = ""; // Canvas will provide the key
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            
-            if (!response.ok) {
-                throw new Error(`API request failed with status ${response.status}`);
-            }
-
-            const result = await response.json();
-            
-            let botResponse = "I'm having trouble responding right now. Please try again later.";
-            if (result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
-                botResponse = result.candidates[0].content.parts[0].text;
-            } else if (result.promptFeedback && result.promptFeedback.blockReason) {
-                botResponse = `My apologies, I cannot respond to that. Reason: ${result.promptFeedback.blockReason}. Let's focus on clinical nursing topics.`;
-            }
-
-            setMessages(prev => [...prev, { role: 'assistant', text: botResponse }]);
-        } catch (error) {
-            console.error("Gemini API error:", error);
-            setMessages(prev => [...prev, { role: 'assistant', text: "There was an error connecting to the AI coach." }]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <>
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="fixed bottom-6 right-6 bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-full shadow-lg hover:scale-105 transition-transform z-30"
-                aria-label="Toggle Clinical Coach"
-            >
-                {isOpen ? <X className="w-8 h-8" /> : <Bot className="w-8 h-8" />}
-            </button>
-            {isOpen && (
-                <div className="fixed bottom-24 right-6 w-full max-w-sm h-[60vh] bg-white rounded-2xl shadow-2xl flex flex-col border border-gray-200 z-30">
-                    <header className="p-4 bg-gray-50 rounded-t-2xl border-b border-gray-200 flex items-center gap-3">
-                       <div className="p-2 bg-indigo-100 rounded-full">
-                         <Bot className="w-6 h-6 text-indigo-600" />
-                       </div>
-                       <div>
-                         <h3 className="font-bold text-gray-800">AI Clinical Coach</h3>
-                         <p className="text-xs text-gray-500">Powered by Gemini</p>
-                       </div>
-                    </header>
-                    <div ref={chatHistoryRef} className="flex-1 p-4 overflow-y-auto space-y-4">
-                        {messages.map((msg, index) => (
-                            <div key={index} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                {msg.role === 'assistant' && <Bot className="w-6 h-6 text-indigo-500 flex-shrink-0" />}
-                                <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-indigo-500 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}`}>
-                                    {msg.text}
-                                </div>
-                                {msg.role === 'user' && <User className="w-6 h-6 text-gray-400 flex-shrink-0" />}
-                            </div>
-                        ))}
-                        {isLoading && (
-                             <div className="flex gap-3 justify-start">
-                                <Bot className="w-6 h-6 text-indigo-500 flex-shrink-0" />
-                                <div className="max-w-[80%] p-3 rounded-2xl bg-gray-200 text-gray-800 rounded-bl-none">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></div>
-                                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse [animation-delay:0.2s]"></div>
-                                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse [animation-delay:0.4s]"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                    <footer className="p-4 border-t border-gray-200">
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="text"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                                placeholder="Ask a question..."
-                                className="flex-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                            />
-                            <button onClick={handleSend} disabled={isLoading} className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400">
-                                <Send className="w-5 h-5" />
-                            </button>
-                        </div>
-                    </footer>
-                </div>
-            )}
-        </>
-    );
-};
-
-
-// --- Main App Component ---
-export default function App() {
-    const [currentModuleId, setCurrentModuleId] = useState(null);
-    const [userId, setUserId] = useState(null);
-    const [progress, setProgress] = useState({});
-    const [isAuthReady, setIsAuthReady] = useState(false);
-
-    // One-time Firebase initialization and Auth listening
-    useEffect(() => {
-        if (!db || !auth) {
-            console.error("Firebase services not available.");
-            return;
-        }
-
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                setUserId(user.uid);
-            } else {
-                try {
-                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                     } else {
-                        await signInAnonymously(auth);
-                     }
-                } catch (error) {
-                    console.error("Error signing in:", error);
+                if (selectedAnswer) {
+                    const explanationDiv = document.createElement('div');
+                    explanationDiv.className = 'mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500';
+                    explanationDiv.innerHTML = `
+                        <h5 class="font-bold text-indigo-800">Explanation</h5>
+                        <p class="text-sm text-indigo-700">${caseData.explanation}</p>
+                    `;
+                    caseStudyDiv.appendChild(explanationDiv);
                 }
-            }
-            setIsAuthReady(true);
-        });
-        return () => unsubscribe();
-    }, []);
+                container.appendChild(caseStudyDiv);
+            };
 
-    // Effect for fetching and listening to progress data from Firestore
-    useEffect(() => {
-        if (!isAuthReady || !userId) return;
+            const handleSelect = (option) => {
+                if (selectedAnswer) return; // Prevent re-selection
+                selectedAnswer = option;
+                const correct = option === caseData.correctAnswer;
+                isCorrect = correct;
+                if (correct) {
+                    onComplete();
+                }
+                updateUI(); // Re-render to show feedback
+            };
 
-        const docRef = doc(db, 'artifacts', appId, 'users', userId);
-        const unsubscribe = onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-                setProgress(docSnap.data().progress || {});
-            } else {
-                console.log("No progress document found for user. Creating one.");
-                setDoc(docRef, { progress: {} });
-            }
-        }, (error) => {
-            console.error("Error listening to progress updates:", error);
-        });
-
-        return () => unsubscribe();
-    }, [isAuthReady, userId]);
-
-    const handleProgressUpdate = useCallback(async (moduleId, stepId, completed) => {
-        if (!isAuthReady || !userId) {
-            console.log("Auth not ready or no user ID, cannot update progress.");
-            return;
+            updateUI(); // Initial render
         }
-        
-        const docRef = doc(db, 'artifacts', appId, 'users', userId);
-        
-        try {
-            const docSnap = await getDoc(docRef);
-            const currentProgress = docSnap.exists() ? docSnap.data().progress : {};
-            
-            // Prevent unnecessary writes if already completed
-            if(currentProgress[moduleId]?.[stepId]?.completed) return;
 
-            const newProgress = {
-                ...currentProgress,
-                [moduleId]: {
-                    ...(currentProgress[moduleId] || {}),
-                    [stepId]: { completed: completed }
+        function renderGlossary(container, onComplete, stepId) {
+            container.innerHTML = '';
+            let searchTerm = "";
+            let filteredTerms = Object.entries(glossaryTerms); // Initial
+
+            const updateUI = () => {
+                container.innerHTML = ''; // Clear previous render
+
+                const glossaryDiv = document.createElement('div');
+                glossaryDiv.className = 'p-4 bg-gray-50 rounded-lg';
+
+                const title = document.createElement('h4');
+                title.className = 'font-bold text-lg text-gray-800 mb-4';
+                title.textContent = 'Glossary of Terms';
+                glossaryDiv.appendChild(title);
+
+                const searchInput = document.createElement('input');
+                searchInput.type = 'text';
+                searchInput.placeholder = 'Search terms...';
+                searchInput.value = searchTerm;
+                searchInput.className = 'w-full p-2 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500';
+                searchInput.addEventListener('input', (e) => {
+                    searchTerm = e.target.value;
+                    filteredTerms = Object.entries(glossaryTerms).filter(([term, _]) =>
+                        term.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                    updateUI(); // Re-render on search
+                });
+                glossaryDiv.appendChild(searchInput);
+
+                const termsContainer = document.createElement('div');
+                termsContainer.className = 'space-y-3 max-h-96 overflow-y-auto pr-2';
+
+                if (filteredTerms.length === 0) {
+                    const noResults = document.createElement('p');
+                    noResults.className = 'text-gray-500 text-center';
+                    noResults.textContent = 'No terms found.';
+                    termsContainer.appendChild(noResults);
+                } else {
+                    filteredTerms.forEach(([term, definition]) => {
+                        const termDiv = document.createElement('div');
+                        termDiv.className = 'bg-white p-3 rounded-md shadow-sm';
+                        termDiv.innerHTML = `
+                            <h5 class="font-semibold text-indigo-700">${term}</h5>
+                            <p class="text-sm text-gray-600">${definition}</p>
+                        `;
+                        termsContainer.appendChild(termDiv);
+                    });
+                }
+                glossaryDiv.appendChild(termsContainer);
+                container.appendChild(glossaryDiv);
+            };
+
+            // Initial call to mark step as complete
+            onComplete(stepId);
+            updateUI(); // Initial render
+        }
+
+        function renderTextStep(container, step, onComplete) {
+            container.innerHTML = '';
+            const textDiv = document.createElement('div');
+            textDiv.className = 'text-gray-700 leading-relaxed p-4 bg-gray-50 rounded-lg space-y-4 whitespace-pre-wrap';
+            textDiv.innerHTML = step.content || "Welcome to this module. Select a step from the sidebar to begin.";
+            container.appendChild(textDiv);
+
+            // Mark step as complete
+            if (step && step.id) {
+                onComplete(step.id);
+            }
+        }
+
+        function renderLearningModule(container, state, module, onBack, onProgressUpdate) {
+            container.innerHTML = ''; // Clear previous content
+
+            const moduleContainer = document.createElement('div');
+            moduleContainer.className = 'fixed inset-0 bg-gray-100 flex flex-col z-20';
+
+            // Header
+            const header = document.createElement('header');
+            header.className = 'bg-white shadow-md p-4 flex items-center justify-between z-10 flex-shrink-0';
+
+            const backButton = document.createElement('button');
+            backButton.className = 'flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800';
+            backButton.innerHTML = `${createIcon('ArrowLeft', 'w-5 h-5').outerHTML} Back to Dashboard`;
+            backButton.addEventListener('click', onBack);
+            header.appendChild(backButton);
+
+            const titleContainer = document.createElement('div');
+            titleContainer.className = 'flex items-center gap-2';
+            titleContainer.appendChild(createIcon(module.icon, 'w-6 h-6 text-gray-600 hidden sm:block'));
+            const h2 = document.createElement('h2');
+            h2.className = 'text-xl font-bold text-gray-800';
+            h2.textContent = module.title;
+            titleContainer.appendChild(h2);
+            header.appendChild(titleContainer);
+
+            const menuButton = document.createElement('button');
+            menuButton.className = 'md:hidden p-2';
+            menuButton.addEventListener('click', () => setState({ isSidebarOpen: !state.isSidebarOpen }));
+            menuButton.innerHTML = state.isSidebarOpen ? createIcon('X', 'w-6 h-6').outerHTML : createIcon('Menu', 'w-6 h-6').outerHTML;
+            header.appendChild(menuButton);
+            moduleContainer.appendChild(header);
+
+            const mainContentArea = document.createElement('div');
+            mainContentArea.className = 'flex flex-1 overflow-hidden';
+
+            // Sidebar
+            const aside = document.createElement('aside');
+            aside.className = cn(
+                "bg-white border-r border-gray-200 p-4 w-72 flex-shrink-0 flex flex-col transition-transform transform md:translate-x-0 absolute md:static h-full z-20",
+                state.isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            );
+            const sidebarTitle = document.createElement('h3');
+            sidebarTitle.className = 'text-lg font-semibold mb-4 text-gray-700';
+            sidebarTitle.textContent = 'Module Steps';
+            aside.appendChild(sidebarTitle);
+
+            const nav = document.createElement('nav');
+            nav.className = 'space-y-2';
+
+            module.steps.forEach((step, index) => {
+                const stepButton = document.createElement('button');
+                stepButton.className = cn(
+                    'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
+                    state.activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100'
+                );
+                stepButton.addEventListener('click', () => {
+                    setState({ activeStep: index, isSidebarOpen: false }); // Close sidebar on selection for mobile
+                });
+
+                const moduleProgress = state.progress[module.id] || {};
+                const isCompleted = moduleProgress[step.id]?.completed;
+
+                if (isCompleted) {
+                    stepButton.appendChild(createIcon('CheckCircle', 'w-5 h-5 text-green-500 flex-shrink-0'));
+                } else {
+                    const circleDiv = document.createElement('div');
+                    circleDiv.className = 'w-5 h-5 flex-shrink-0 flex items-center justify-center';
+                    const innerCircle = document.createElement('div');
+                    innerCircle.className = cn("w-3 h-3 rounded-full border-2", state.activeStep === index ? "border-indigo-500" : "border-gray-400");
+                    circleDiv.appendChild(innerCircle);
+                    stepButton.appendChild(innerCircle);
+                }
+                const span = document.createElement('span');
+                span.className = 'flex-1';
+                span.textContent = step.title;
+                stepButton.appendChild(span);
+                nav.appendChild(stepButton);
+            });
+            aside.appendChild(nav);
+            mainContentArea.appendChild(aside);
+
+            // Main Content Area
+            const main = document.createElement('main');
+            main.className = 'flex-1 overflow-y-auto p-4 sm:p-6 md:p-8';
+
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'max-w-4xl mx-auto';
+            const stepTitle = document.createElement('h3');
+            stepTitle.className = 'text-2xl font-bold text-gray-800 mb-4';
+            stepTitle.textContent = module.steps[state.activeStep].title;
+            contentWrapper.appendChild(stepTitle);
+
+            const stepContentContainer = document.createElement('div'); // Container for step content
+            contentWrapper.appendChild(stepContentContainer);
+
+            // Render current step content dynamically
+            const currentStep = module.steps[state.activeStep];
+            switch (currentStep.type) {
+                case 'intro':
+                    const introContent = "Welcome! This module provides a high-level overview. Navigate through the steps to learn more.";
+                    renderTextStep(stepContentContainer, { ...currentStep, content: introContent }, (stepId) => onProgressUpdate(module.id, stepId, true));
+                    break;
+                case 'text':
+                    renderTextStep(stepContentContainer, currentStep, (stepId) => onProgressUpdate(module.id, stepId, true));
+                    break;
+                case 'interactive_sorter':
+                    renderSymptomSorter(stepContentContainer, () => onProgressUpdate(module.id, currentStep.id, true));
+                    break;
+                case 'case_study':
+                    renderCaseStudy(stepContentContainer, currentStep.case, () => onProgressUpdate(module.id, currentStep.id, true));
+                    break;
+                case 'glossary':
+                    renderGlossary(stepContentContainer, (stepId) => onProgressUpdate(module.id, stepId, true), currentStep.id);
+                    break;
+                default:
+                    const defaultP = document.createElement('p');
+                    defaultP.textContent = 'Content not available.';
+                    stepContentContainer.appendChild(defaultP);
+            }
+
+            const navButtons = document.createElement('div');
+            navButtons.className = 'flex justify-between mt-8';
+
+            const prevButton = document.createElement('button');
+            prevButton.className = 'px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400';
+            prevButton.textContent = 'Previous';
+            if (state.activeStep === 0) {
+                prevButton.disabled = true;
+                prevButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                prevButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            prevButton.addEventListener('click', () => setState({ activeStep: Math.max(0, state.activeStep - 1) }));
+            navButtons.appendChild(prevButton);
+
+            const nextButton = document.createElement('button');
+            nextButton.className = 'px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700';
+            nextButton.textContent = 'Next';
+            if (state.activeStep === module.steps.length - 1) {
+                nextButton.disabled = true;
+                nextButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            nextButton.addEventListener('click', () => setState({ activeStep: Math.min(module.steps.length - 1, state.activeStep + 1) }));
+            navButtons.appendChild(nextButton);
+
+            contentWrapper.appendChild(navButtons);
+            main.appendChild(contentWrapper);
+            mainContentArea.appendChild(main);
+            moduleContainer.appendChild(mainContentArea);
+            container.appendChild(moduleContainer);
+        }
+
+        // Global references for coach elements to prevent constant recreation and maintain focus
+        let coachPanelRef = null;
+        let chatInputRef = null;
+        let chatHistoryContainerRef = null;
+        let sendButtonRef = null;
+
+        function renderClinicalCoach(container, state) {
+            // Function to update the dynamic parts of the coach UI without recreating the entire panel
+            const updateCoachPanelUI = () => {
+                if (!coachPanelRef) return; // Panel not initialized yet
+
+                // Update chat messages
+                chatHistoryContainerRef.innerHTML = ''; // Clear existing messages
+                state.coachMessages.forEach((msg, index) => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`;
+
+                    if (msg.role === 'assistant') {
+                        messageDiv.appendChild(createIcon('Bot', 'w-6 h-6 text-indigo-500 flex-shrink-0'));
+                    }
+                    const bubble = document.createElement('div');
+                    bubble.className = `max-w-[80%] p-3 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-indigo-500 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}`;
+                    bubble.textContent = msg.text;
+                    messageDiv.appendChild(bubble);
+
+                    if (msg.role === 'user') {
+                        messageDiv.appendChild(createIcon('User', 'w-6 h-6 text-gray-400 flex-shrink-0'));
+                    }
+                    chatHistoryContainerRef.appendChild(messageDiv);
+                });
+
+                // Loading indicator
+                if (state.coachIsLoading) {
+                    const loadingDiv = document.createElement('div');
+                    loadingDiv.className = 'flex gap-3 justify-start';
+                    loadingDiv.appendChild(createIcon('Bot', 'w-6 h-6 text-indigo-500 flex-shrink-0'));
+                    const loadingBubble = document.createElement('div');
+                    loadingBubble.className = 'max-w-[80%] p-3 rounded-2xl bg-gray-200 text-gray-800 rounded-bl-none';
+                    loadingBubble.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></div>
+                            <div class="w-2 h-2 bg-gray-500 rounded-full animate-pulse [animation-delay:0.2s]"></div>
+                            <div class="w-2 h-2 bg-gray-500 rounded-full animate-pulse [animation-delay:0.4s]"></div>
+                        </div>
+                    `;
+                    loadingDiv.appendChild(loadingBubble);
+                    chatHistoryContainerRef.appendChild(loadingDiv);
+                }
+
+                // Scroll to bottom
+                if (chatHistoryContainerRef) {
+                    setTimeout(() => {
+                        chatHistoryContainerRef.scrollTop = chatHistoryContainerRef.scrollHeight;
+                    }, 0); // Use setTimeout to ensure DOM is updated before scrolling
+                }
+
+                // Update input field and send button properties
+                if (chatInputRef) {
+                    chatInputRef.value = state.coachInput;
+                    if (chatInputRef !== document.activeElement) { // Only focus if it's not already focused
+                        chatInputRef.focus();
+                    }
+                }
+                if (sendButtonRef) {
+                    sendButtonRef.disabled = state.coachIsLoading;
+                    if (state.coachIsLoading) {
+                        sendButtonRef.classList.add('disabled:bg-gray-400');
+                    } else {
+                        sendButtonRef.classList.remove('disabled:bg-gray-400');
+                    }
                 }
             };
-            
-            await setDoc(docRef, { progress: newProgress }, { merge: true });
-            
-        } catch (error) {
-            console.error("Error updating progress in Firestore:", error);
+
+
+            // Define handleSend function at the top of the scope
+            const handleSend = async () => {
+                const input = appState.coachInput.trim(); // Use appState here
+                if (!input || appState.coachIsLoading) return; // Use appState here
+
+                const userMessage = { role: 'user', text: input };
+                setState({ coachMessages: [...appState.coachMessages, userMessage], coachInput: "", coachIsLoading: true }); // Use appState here
+
+                const chatHistoryForAPI = appState.coachMessages.map(m => ({ // Use appState here
+                    role: m.role === 'assistant' ? 'model' : 'user',
+                    parts: [{ text: m.text }]
+                }));
+                chatHistoryForAPI.push({ role: "user", parts: [{ text: input }] });
+
+                const payload = {
+                    contents: chatHistoryForAPI,
+                    safetySettings: [
+                        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+                        { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+                        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+                        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+                    ]
+                };
+                const apiKey = ""; // Canvas will provide the key
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API request failed with status ${response.status}`);
+                    }
+
+                    const result = await response.json();
+
+                    let botResponse = "I'm having trouble responding right now. Please try again later.";
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        botResponse = result.candidates[0].content.parts[0].text;
+                    } else if (result.promptFeedback && result.promptFeedback.blockReason) {
+                        botResponse = `My apologies, I cannot respond to that. Reason: ${result.promptFeedback.blockReason}. Let's focus on clinical nursing topics.`;
+                    }
+
+                    // Append user message and bot response, then set loading to false
+                    const newMessages = [...appState.coachMessages, userMessage, { role: 'assistant', text: botResponse }];
+                    setState({ coachMessages: newMessages, coachIsLoading: false });
+
+                } catch (error) {
+                    console.error("Gemini API error:", error);
+                    setState({ coachMessages: [...appState.coachMessages, userMessage, { role: 'assistant', text: "There was an error connecting to the AI coach." }], coachIsLoading: false });
+                }
+            };
+
+
+            // Main render logic for the coach container
+            container.innerHTML = ''; // Clear previous content
+
+            const toggleButton = document.createElement('button');
+            toggleButton.className = 'fixed bottom-6 right-6 bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-full shadow-lg hover:scale-105 transition-transform z-30';
+            toggleButton.setAttribute('aria-label', 'Toggle Clinical Coach');
+            toggleButton.innerHTML = state.coachIsOpen ? createIcon('X', 'w-8 h-8').outerHTML : createIcon('Bot', 'w-8 h-8').outerHTML;
+            toggleButton.addEventListener('click', () => {
+                setState({ coachIsOpen: !state.coachIsOpen });
+                // If opening, ensure panel elements are initialized and updated
+                if (!state.coachIsOpen && !coachPanelRef) { // If it's about to open and not yet created
+                     // This setState will trigger renderApp, which will then call renderClinicalCoach again
+                     // where the coachPanelRef will be created.
+                }
+            });
+            container.appendChild(toggleButton);
+
+            if (state.coachIsOpen) {
+                if (!coachPanelRef) { // Create panel elements only once when first opened
+                    coachPanelRef = document.createElement('div');
+                    coachPanelRef.className = 'fixed bottom-24 right-6 w-full max-w-sm h-[60vh] bg-white rounded-2xl shadow-2xl flex flex-col border border-gray-200 z-30';
+
+                    const header = document.createElement('header');
+                    header.className = 'p-4 bg-gray-50 rounded-t-2xl border-b border-gray-200 flex items-center gap-3';
+                    header.innerHTML = `
+                        <div class="p-2 bg-indigo-100 rounded-full">
+                            ${createIcon('Bot', 'w-6 h-6 text-indigo-600').outerHTML}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-800">AI Clinical Coach</h3>
+                            <p class="text-xs text-gray-500">Powered by Gemini</p>
+                        </div>
+                    `;
+                    coachPanelRef.appendChild(header);
+
+                    chatHistoryContainerRef = document.createElement('div');
+                    chatHistoryContainerRef.className = 'flex-1 p-4 overflow-y-auto space-y-4';
+                    coachPanelRef.appendChild(chatHistoryContainerRef);
+
+                    const footer = document.createElement('footer');
+                    footer.className = 'p-4 border-t border-gray-200';
+                    const inputContainer = document.createElement('div');
+                    inputContainer.className = 'flex items-center gap-2';
+
+                    chatInputRef = document.createElement('input');
+                    chatInputRef.type = 'text';
+                    chatInputRef.placeholder = 'Ask a question...';
+                    chatInputRef.className = 'flex-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500';
+                    chatInputRef.addEventListener('input', (e) => setState({ coachInput: e.target.value }));
+                    chatInputRef.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') handleSend();
+                    });
+                    inputContainer.appendChild(chatInputRef);
+
+                    sendButtonRef = document.createElement('button');
+                    sendButtonRef.className = 'p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700';
+                    sendButtonRef.innerHTML = createIcon('Send', 'w-5 h-5').outerHTML;
+                    sendButtonRef.addEventListener('click', handleSend);
+                    inputContainer.appendChild(sendButtonRef);
+
+                    footer.appendChild(inputContainer);
+                    coachPanelRef.appendChild(footer);
+                    container.appendChild(coachPanelRef);
+                } else {
+                    // If panel already exists, just append it back to the container
+                    container.appendChild(coachPanelRef);
+                }
+
+                // Always update the content inside the existing panel
+                updateCoachPanelUI();
+
+            } else {
+                // If coach is closed, remove the panel from the DOM but keep its reference
+                if (coachPanelRef && coachPanelRef.parentNode) {
+                    coachPanelRef.parentNode.removeChild(coachPanelRef);
+                }
+            }
         }
-    }, [isAuthReady, userId]);
 
-    if (!isAuthReady) {
-        return (
-            <div className="w-full h-screen flex items-center justify-center bg-gray-100">
-                <div className="flex flex-col items-center">
-                    <Layers className="w-12 h-12 text-indigo-500 animate-pulse mb-4"/>
-                    <p className="text-gray-600">Initializing MindPath...</p>
-                </div>
-            </div>
-        );
-    }
-    
-    const selectedModule = currentModuleId ? { ...contentData[currentModuleId], id: currentModuleId } : null;
 
-    return (
-        <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
-            {selectedModule ? (
-                <LearningModule
-                    module={selectedModule}
-                    onBack={() => setCurrentModuleId(null)}
-                    progress={progress}
-                    onProgressUpdate={handleProgressUpdate}
-                />
-            ) : (
-                <Dashboard onSelectModule={setCurrentModuleId} progress={progress} />
-            )}
-            <ClinicalCoach userId={userId} />
-        </div>
-    );
-}
+        // --- Main App Logic ---
+        const appRoot = document.getElementById('app-root');
+        let currentUserId = null; // To hold user ID after auth
+        let unsubscribeAuth = null;
+        let unsubscribeProgress = null;
+
+        async function handleProgressUpdate(moduleId, stepId, completed) {
+            if (!appState.isAuthReady || !appState.userId) {
+                console.log("Auth not ready or no user ID, cannot update progress.");
+                return;
+            }
+
+            const docRef = doc(db, 'artifacts', appId, 'users', appState.userId);
+
+            try {
+                const docSnap = await getDoc(docRef);
+                const currentProgress = docSnap.exists() ? docSnap.data().progress : {};
+
+                // Prevent unnecessary writes if already completed
+                if (currentProgress[moduleId]?.[stepId]?.completed) return;
+
+                const newProgress = {
+                    ...currentProgress,
+                    [moduleId]: {
+                        ...(currentProgress[moduleId] || {}),
+                        [stepId]: { completed: completed }
+                    }
+                };
+
+                await setDoc(docRef, { progress: newProgress }, { merge: true });
+                // No need to setState here as onSnapshot listener will update it
+            } catch (error) {
+                console.error("Error updating progress in Firestore:", error);
+            }
+        }
+
+        function renderApp(state) {
+            appRoot.innerHTML = ''; // Clear existing content
+
+            if (!state.isAuthReady) {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'w-full h-screen flex items-center justify-center bg-gray-100';
+                loadingDiv.innerHTML = `
+                    <div class="flex flex-col items-center">
+                        ${createIcon('Layers', 'w-12 h-12 text-indigo-500 animate-pulse mb-4').outerHTML}
+                        <p class="text-gray-600">Initializing MindPath...</p>
+                    </div>
+                `;
+                appRoot.appendChild(loadingDiv);
+                return;
+            }
+
+            if (state.currentModuleId) {
+                const selectedModule = { ...contentData[state.currentModuleId], id: state.currentModuleId };
+                renderLearningModule(
+                    appRoot,
+                    state, // Pass full state to LearningModule for its internal state management (activeStep, isSidebarOpen)
+                    selectedModule,
+                    () => setState({ currentModuleId: null, activeStep: 0, isSidebarOpen: false }), // Reset LearningModule state
+                    handleProgressUpdate
+                );
+            } else {
+                renderDashboard(
+                    appRoot,
+                    state, // Pass full state if needed by dashboard, though not directly used in the original.
+                    (moduleId) => setState({ currentModuleId: moduleId, activeStep: 0 }), // Reset active step when selecting new module
+                    state.progress
+                );
+            }
+
+            // Render ClinicalCoach as a fixed element always
+            const coachContainer = document.createElement('div');
+            // This container will just hold the coach button/panel, positioned absolutely
+            appRoot.appendChild(coachContainer);
+            renderClinicalCoach(coachContainer, state);
+        }
+
+        // --- Firebase Auth & Firestore Listener Setup ---
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!db || !auth) {
+                console.error("Firebase services not available. App will not function correctly.");
+                setState({ isAuthReady: true }); // Still render, but without data persistence
+                return;
+            }
+
+            unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    setState({ userId: user.uid });
+                } else {
+                    try {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Error signing in:", error);
+                    }
+                }
+                setState({ isAuthReady: true });
+            });
+        });
+
+        // Effect for fetching and listening to progress data from Firestore
+        // This runs when userId or isAuthReady changes
+        let previousUserId = null;
+        subscribe(async (state) => {
+            if (state.isAuthReady && state.userId && state.userId !== previousUserId) {
+                previousUserId = state.userId; // Update previousUserId to prevent re-listening on same user
+
+                // Clean up previous listener if it exists
+                if (unsubscribeProgress) {
+                    unsubscribeProgress();
+                    unsubscribeProgress = null;
+                }
+
+                const docRef = doc(db, 'artifacts', appId, 'users', state.userId);
+                unsubscribeProgress = onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        setState({ progress: docSnap.data().progress || {} });
+                    } else {
+                        console.log("No progress document found for user. Creating one.");
+                        setDoc(docRef, { progress: {} }); // Create it if it doesn't exist
+                    }
+                }, (error) => {
+                    console.error("Error listening to progress updates:", error);
+                });
+            } else if (!state.userId && previousUserId) {
+                // User signed out or became unauthenticated, clean up listener
+                if (unsubscribeProgress) {
+                    unsubscribeProgress();
+                    unsubscribeProgress = null;
+                }
+                previousUserId = null; // Reset previous user ID
+                setState({ progress: {} }); // Clear progress
+            }
+        });
+
+        // Initial render and subsequent re-renders based on state changes
+        subscribe(renderApp);
+
+        // Cleanup function for when the app might be removed from DOM (not strictly needed for this standalone file but good practice)
+        window.addEventListener('beforeunload', () => {
+            if (unsubscribeAuth) unsubscribeAuth();
+            if (unsubscribeProgress) unsubscribeProgress();
+        });
+
+    </script>
+</body>
+</html>
