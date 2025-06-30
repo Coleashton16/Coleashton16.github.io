@@ -31,11 +31,24 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // IMPORTANT: These variables (__app_id, __firebase_config, __initial_auth_token)
+        // are automatically provided by the Canvas environment for seamless integration.
+        // If deploying this code to a static website host OUTSIDE of Canvas:
+        // 1. Replace `firebaseConfig` with your actual Firebase project's configuration object.
+        //    (e.g., const firebaseConfig = { apiKey: "...", authDomain: "...", projectId: "...", ... };)
+        // 2. The `__initial_auth_token` will not be present. The code will gracefully
+        //    fall back to `signInAnonymously()`. If you need persistent user authentication,
+        //    you'll need to implement appropriate Firebase Authentication methods (e.g., email/password, Google Sign-In)
+        //    for your deployment.
+        // 3. Ensure your Firebase project's Firestore database security rules allow reads/writes
+        //    for authenticated users (even anonymous ones if you use signInAnonymously).
+
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-mindpath-app';
         let firebaseConfig;
         try {
             firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         } catch (e) {
+            console.error("Failed to parse firebase config:", e);
             firebaseConfig = {};
         }
 
@@ -48,7 +61,7 @@
             auth = getAuth(app);
             db = getFirestore(app);
         } catch (e) {
-            // Error handling silenced as per previous request
+            console.error("Firebase initialization error:", e);
         }
 
         const lucideIcons = {
@@ -189,7 +202,6 @@
             userId: null,
             progress: {},
             isAuthReady: false,
-            // AI coach related state removed
             activeStep: 0,
             isSidebarOpen: false
         };
@@ -769,19 +781,8 @@
             container.appendChild(moduleContainer);
         }
 
-        // Removed AI coach related global references
-        let coachPanelRef = null;
-        let chatInputRef = null;
-        let chatHistoryContainerRef = null;
-        let sendButtonRef = null;
-        let toggleButtonRef = null;
-
         // The renderClinicalCoach function is no longer needed since AI features are removed.
-        // I will keep it as a placeholder but it won't be called.
-        function renderClinicalCoach(container, state) {
-            // This function is now empty as AI features are removed.
-            // Keeping the global refs assigned to null.
-        }
+        // It has been completely removed to clean up the code.
 
         const appRoot = document.getElementById('app-root');
         let unsubscribeAuth = null;
@@ -810,7 +811,7 @@
 
                 await setDoc(docRef, { progress: newProgress }, { merge: true });
             } catch (error) {
-                // Error handling silenced as per previous request
+                console.error("Error updating progress in Firestore:", error); // Re-enabled for static site debugging
             }
         }
 
@@ -847,8 +848,6 @@
                     state.progress
                 );
             }
-
-            // Removed rendering of ClinicalCoach component
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -868,7 +867,7 @@
                             await signInAnonymously(auth);
                         }
                     } catch (error) {
-                        // Error handling silenced as per previous request
+                        console.error("Error signing in anonymously:", error); // Re-enabled for static site debugging
                     }
                 }
                 setState({ isAuthReady: true });
@@ -893,7 +892,7 @@
                         setDoc(docRef, { progress: {} });
                     }
                 }, (error) => {
-                    // Error handling silenced as per previous request
+                    console.error("Error listening to progress updates:", error); // Re-enabled for static site debugging
                 });
             } else if (!state.userId && previousUserId) {
                 if (unsubscribeProgress) {
