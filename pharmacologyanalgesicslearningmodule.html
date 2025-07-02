@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analgesics Learning Module</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind CSS configuration to use the Inter font.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out forwards',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- React and Library Setup ---
+        // Destructure necessary hooks from the global React object.
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        // --- Mock Authentication Setup for Standalone Demo ---
+        // This mock object simulates basic user authentication to allow progress tracking via localStorage.
+        // In a real application, this would be replaced with actual Firebase authentication.
+        const mockAuth = {
+            onAuthStateChanged: (callback) => {
+                // Simulate an asynchronous authentication check, providing a unique user ID.
+                setTimeout(() => callback({ uid: 'standalone-analgesics-user' }), 100);
+                return () => {}; // Returns an empty function as a cleanup/unsubscribe placeholder.
+            },
+            signInAnonymously: () => Promise.resolve({ user: { uid: 'standalone-analgesics-user' } }), // Mock anonymous sign-in.
+        };
+
+        // --- Content & Data Structure for the Learning Modules ---
+        // The main content is broken down into smaller, focused modules based on concepts.
+        const contentData = {
+            'pain-fundamentals': {
+                title: 'Pain Fundamentals & Nonopioids',
+                color: 'from-sky-500 to-cyan-400',
+                description: 'Understand pain types, pathophysiology, undertreatment, and nonopioid analgesics.',
+                steps: [
+                    { id: 'pain-intro', title: 'Introduction to Pain', type: 'text', content: `Pain is an unpleasant sensory and emotional experience related to tissue injury. It's subjective, making assessment and measurement crucial for optimal management. The Joint Commission (TJC) regards pain as the "fifth vital sign," emphasizing its assessment, documentation, and management.<br><br>
+                        A person's <strong>pain threshold</strong> is the level of stimulus needed to create a painful sensation, influenced by genetics. A high number of mu (μ) opioid receptors can lead to a high pain threshold and reduced pain sensitivity.<br>
+                        <strong>Pain tolerance</strong> is the amount of pain a person can endure without it interfering with normal functioning. This psychological aspect is highly variable and influenced by age, sex, culture, ethnicity, previous experience, anxiety, and specific circumstances.` },
+                    { id: 'pain-classification', title: 'Pain Classification', type: 'text', content: `Pain can be classified by duration and origin:<br><br>
+                        <strong>By Duration:</strong><br>
+                        - <strong>Acute Pain:</strong> Sudden onset, short duration (less than 3 months), usually associated with specific tissue injury (trauma, inflammation, surgery). Responds well to treatment.<br>
+                        - <strong>Chronic Pain:</strong> Vague origin, gradual onset, prolonged duration (more than 3 months), difficult to treat or control.<br><br>
+                        <strong>By Origin:</strong><br>
+                        - <strong>Nociceptive Pain:</strong> Originates from tissue injury, activating nociceptors (sensory pain receptors) by noxious stimuli (mechanical, thermal, chemical). Includes:<br>
+                            - <strong>Somatic Pain:</strong> From structural tissues (bones, muscles, ligaments, joints).<br>
+                            - <strong>Visceral Pain:</strong> From smooth muscle and organs.<br>
+                        - <strong>Neuropathic Pain:</strong> Unusual sensory disturbance due to injury or disease of the peripheral (PNS) or central nervous system (CNS). Patients often describe burning, tingling, or electric shock sensations, sometimes triggered by light touch (e.g., diabetic neuropathy, spinal cord injury).<br>
+                        - <strong>Superficial Pain:</strong> From surface areas like skin and mucous membranes.<br>
+                        - <strong>Vascular Pain:</strong> From vascular or perivascular tissues, contributing to headaches or migraines.` },
+                    { id: 'pain-pathophysiology', title: 'Pathophysiology of Pain: Gate Theory', type: 'text', content: `The <strong>Gate Theory</strong> (Melzack & Wall, 1965) explains pain transmission:<br>
+                        Tissue injury activates nociceptors, releasing chemical mediators (Substance P, prostaglandins, bradykinin, histamine, serotonin, acetylcholine, glutamate, ATP, leukotrienes, potassium). These initiate an action potential along sensory nerve fibers and sensitize pain receptors.<br><br>
+                        Pain signals are transmitted via:<br>
+                        - <strong>A-delta (A-δ) fibers:</strong> Myelinated, transmit impulses rapidly in acute pain.<br>
+                        - <strong>C-fibers:</strong> Small, unmyelinated, transmit impulses slowly, associated with chronic, dull pain.<br><br>
+                        The body produces natural pain suppressors called <strong>endorphins</strong> (peptides). Pharmacological agents work at different levels:<br>
+                        - <strong>Opioids (e.g., morphine):</strong> Activate the same receptors as endorphins in the CNS.<br>
+                        - <strong>NSAIDs:</strong> Control pain at the peripheral level by blocking cyclooxygenase (COX), interfering with prostaglandin production.<br>
+                        - <strong>Cortisone:</strong> Decreases pain by blocking phospholipase, reducing prostaglandins and leukotrienes.<br>
+                        - <strong>Anticonvulsant drugs (for neuropathic pain):</strong> Inhibit nerve impulse transmission by stabilizing neuronal membranes and inactivating peripheral sodium channels.` },
+                    { id: 'undertreatment-of-pain', title: 'Undertreatment of Pain', type: 'text', content: `Undertreatment of pain is a significant issue; over 80% of postoperative patients in the U.S. experience inadequate pain management. This leads to:<br>
+                        - Delayed recovery, extended opioid use, impaired functional ability, reduced quality of life, higher healthcare costs, and increased morbidity.<br><br>
+                        Reasons for undertreatment include:<br>
+                        - Sociocultural factors (patient unwillingness to acknowledge pain, fear of substance use disorder).<br>
+                        - Patient inability to describe pain.<br>
+                        - Nurse's inability to measure pain, lack of regular pain assessment.<br>
+                        - Healthcare team attitudes (unwillingness to believe patient reports, inaccurate knowledge about substance use disorder/tolerance).<br>
+                        - Prescription of inadequate analgesic doses.<br><br>
+                        Unrelieved pain can cause increased respiratory/heart rates, hypertension, stress response, urinary retention, fluid overload, electrolyte imbalance, glucose intolerance, pneumonia, atelectasis, anorexia, paralytic ileus, constipation, weakness, confusion, infection, and psychological/physical suffering. Inadequate pain management contributes to over $200 billion annually in healthcare costs.` },
+                    { id: 'nonopioid-analgesics', title: 'Nonopioid Analgesics', type: 'text', content: `Nonopioid analgesics (e.g., aspirin, acetaminophen, ibuprofen, naproxen) are less potent than opioids and treat mild to moderate pain. Most are OTC, but COX-2 inhibitors require a prescription. They are effective for dull, throbbing pain (headaches, dysmenorrhea, muscular aches, mild arthritis) and have antipyretic effects. Some (like aspirin) also have anti-inflammatory and antiplatelet effects.<br><br>
+                        <strong>Nonsteroidal Antiinflammatory Drugs (NSAIDs):</strong> All NSAIDs have analgesic, antipyretic, and anti-inflammatory actions. Aspirin is the oldest nonopioid analgesic. It decreases platelet aggregation, used preventatively for TIAs, heart attacks, or thromboembolic episodes. NSAIDs inhibit prostaglandin biosynthesis by blocking COX-1 and COX-2. COX-1 inhibition reduces stomach lining protection (risk of gastric irritation/bleeding/ulceration), while COX-2 inhibition reduces pain and inflammation. Selective COX-2 inhibitors were developed to reduce GI side effects.<br>
+                        <strong>Side Effects of NSAIDs:</strong> Gastric distress (anorexia, nausea, vomiting, diarrhea) is common; take with food/fluid. Excessive bleeding can occur if taken for dysmenorrhea during the first 2 days. Salicylate toxicity symptoms include tinnitus, vertigo, hyperventilation, and metabolic acidosis. Hypersensitivity to aspirin (dyspnea, bronchospasm, urticaria) may indicate sensitivity to other NSAIDs. Aspirin is contraindicated in children/adolescents <19 years with fever/viral illnesses due to Reye syndrome risk.` },
+                    { id: 'acetaminophen', title: 'Acetaminophen', type: 'text', content: `Acetaminophen (para-aminophenol derivative) is a popular nonprescription analgesic and antipyretic for muscular aches, pains, and fever in all age groups. It is NOT an NSAID and lacks anti-inflammatory properties, so it's not for inflammatory processes. It causes little to no gastric distress and does not interfere with platelet aggregation. An IV formulation is available for pain/fever. It is NOT linked to Reye syndrome and doesn't increase bleeding risk for dysmenorrhea. Capsaicin, found in cayenne pepper, is a complementary therapy that relieves some arthritis pain topically by acting on C-fiber nociceptors.<br><br>
+                        <strong>Pharmacokinetics:</strong> Well absorbed orally; erratic rectal absorption. Short half-life (2-3 hours). Max dose 4 g/day, but frequent users should limit to 2 g/day to prevent hepatic/renal dysfunction. Over 85% metabolized by the liver.<br>
+                        <strong>Toxicity:</strong> Large/overdoses are toxic to hepatic cells, potentially causing hepatic necrosis and death (1-4 days). Symptoms: nausea, vomiting, diarrhea, abdominal pain. Concurrent alcohol ingestion increases hepatic injury risk. Antidote: <strong>acetylcysteine</strong>, which converts toxic metabolites to a nontoxic form. Therapeutic serum range: 10-20 mcg/mL. Monitor hepatic enzyme levels (AST, ALT, ALP) and serum bilirubin.<br>
+                        <strong>Pharmacodynamics:</strong> Weakly inhibits prostaglandin synthesis, reducing pain and fever. No anti-inflammatory action. Oral onset: 10-30 min, peak: 30-60 min. Keep liquid/chewable forms out of children's reach.` },
+                    { id: 'acetaminophen-nursing-process', title: 'Acetaminophen: Nursing Process', type: 'text', content: `<strong>Concept: Pain</strong><br>
+                        <strong>Recognize Cues (Assessment):</strong><br>
+                        - Obtain medical history for liver dysfunction.<br>
+                        - Ascertain pain severity to determine if stronger analgesics are needed.<br>
+                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Injury, acute pain, nausea, diarrhea, discomfort, decreased mobility.<br>
+                        <strong>Generate Solutions (Planning):</strong> Patient will report decreased pain within 1 hour after medication administration.<br>
+                        <strong>Take Action (Nursing Interventions):</strong><br>
+                        - Check hepatic enzyme tests (ALT, ALP, GGT, 5′-nucleotidase, bilirubin) for elevations, especially with high doses or overdose.<br>
+                        <strong>Patient Teaching:</strong><br>
+                        - Keep out of children's reach.<br>
+                        - Do not self-medicate for >10 days (adults) or >5 days (children) without provider approval.<br>
+                        - Call poison control immediately for large/unknown ingestion.<br>
+                        - Check OTC labels; do not exceed recommended dosage (max 4 g/day, or 2 g/day for frequent users).<br>
+                        - Avoid alcohol.<br>
+                        - Report side effects; check serum acetaminophen level if toxicity suspected (therapeutic: 10-20 mcg/mL; toxic: >200 mcg/mL 4 hours post-ingestion). Antidote: acetylcysteine.<br>
+                        <strong>Evaluate Outcomes:</strong> Assess pain relief using a consistent scale; observe/report side effects.` },
+                    { id: 'pain-nonopioids-quiz', title: 'Pain Fundamentals & Nonopioids Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A nurse is assessing a patient's pain. The patient describes a burning, tingling sensation in their lower extremities. This type of pain is best classified as:", options: ["Somatic pain", "Visceral pain", "Neuropathic pain", "Superficial pain"], correctAnswer: "Neuropathic pain" },
+                        { question: "Which of the following statements about acetaminophen is correct?", options: ["It is an NSAID with strong anti-inflammatory properties.", "It carries a risk of Reye syndrome in children with viral infections.", "It can cause significant gastrointestinal distress and bleeding.", "It is safe for patients with peptic ulcers and does not interfere with platelet aggregation."], correctAnswer: "It is safe for patients with peptic ulcers and does not interfere with platelet aggregation." },
+                        { question: "A patient is admitted to the emergency department with suspected acetaminophen overdose. The nurse anticipates administering which antidote?", options: ["Naloxone", "Protamine sulfate", "Acetylcysteine", "Vitamin K"], correctAnswer: "Acetylcysteine" },
+                        { question: "A nurse is reviewing a patient's medication list. The patient is taking aspirin daily for cardiovascular prophylaxis. The nurse understands that aspirin's antiplatelet effect is due to its inhibition of which enzyme?", options: ["Phospholipase", "COX-2 only", "COX-1 only", "Both COX-1 and COX-2"], correctAnswer: "Both COX-1 and COX-2" }
+                      ]
+                    },
+                ]
+            },
+            'opioid-agonists': {
+                title: 'Opioid Analgesics: Agonists',
+                color: 'from-red-500 to-orange-400',
+                description: 'Explore the mechanisms, types, and nursing considerations for opioid agonist medications.',
+                steps: [
+                    { id: 'opioid-intro', title: 'Introduction to Opioid Analgesics', type: 'text', content: `Opioid analgesics, also called <strong>opioid agonists</strong>, are prescribed for moderate to severe pain. Historically, the Harrison Opioid Act of 1914 regulated opium sales, and the Controlled Substances Act of 1970 classified opioids into schedules based on abuse potential. <strong>Addiction (substance use disorder)</strong> is a psychological and physical dependence beyond voluntary control, usually after prolonged use.<br><br>
+                        Opioids like morphine (from the opium poppy) and codeine, along with synthetic/semisynthetic opioids (e.g., meperidine), act primarily on the <strong>CNS</strong>. They mainly activate <strong>mu (μ) receptors</strong>, causing analgesia, respiratory depression, euphoria, and sedation. They also weakly activate <strong>kappa (κ) receptors</strong>, leading to analgesia and sedation but no respiratory depression or euphoria.` },
+                    { id: 'opioid-actions', title: 'Opioid Actions & Side Effects', type: 'text', content: `Opioids suppress pain impulses, respiration, and coughing by acting on the medulla's respiratory and cough centers. Morphine is a potent respiratory depressant. Codeine is less potent but also relieves pain and suppresses cough (antitussive). Most opioids have an antitussive effect, except meperidine. Opioid isomers: levo-isomers produce analgesia and physical dependence; dextro-isomers do not cause physical dependence but have antitussive effects.<br><br>
+                        Many opioids also have antidiarrheal effects.<br>
+                        <strong>Common Side Effects (especially with high doses):</strong> Nausea, vomiting (more common in ambulatory patients), constipation, moderate decrease in blood pressure, orthostatic hypotension, respiratory depression, urinary retention (especially in older adults), cough suppression. Opioids taken with kava, valerian, and St. John's wort may increase sedation.` },
+                    { id: 'morphine', title: 'Morphine Sulfate', type: 'text', content: `Morphine is a potent opioid analgesic (Schedule II). It's effective for acute pain (e.g., acute myocardial infarction, cancer), relieves dyspnea from pulmonary edema, and can be used preoperatively for anxiety.<br><br>
+                        <strong>Pharmacokinetics:</strong> Can be taken orally (GI absorption erratic). IV for quick relief of severe pain/anxiety/hypertension. 20-35% protein bound. Can be administered rectally and epidurally. Oral morphine undergoes first-pass hepatic metabolism. Only a small amount crosses the blood-brain barrier. Short half-life (2-4 hours); 90% excreted in urine. Crosses placenta and excreted in breast milk.<br>
+                        <strong>Pharmacodynamics:</strong> Binds to opiate receptors in the CNS. Rapid onset parenterally (IV: 5-10 min, IM/subcut: 15-30 min). Duration: 3-6 hours (IR), 8-24 hours (ER). St. John's wort may potentiate oral morphine effects and decrease oxycodone levels.<br>
+                        <strong>Antidote for overdose:</strong> Naloxone.` },
+                    { id: 'morphine-nursing-process', title: 'Morphine Sulfate: Nursing Process', type: 'text', content: `<strong>Concept: Pain</strong><br>
+                        <strong>Recognize Cues (Assessment):</strong><br>
+                        - Medical history: severe respiratory disorders, increased intracranial pressure, severe renal disease (contraindications). Morphine may cause seizures.<br>
+                        - Drug history: check for allergies and interactions (increases effects of alcohol, sedatives, hypnotics, antipsychotics, muscle relaxants; can cause respiratory depression).<br>
+                        - Assess vital signs (rate/depth of respirations, pupil size) for baseline and future comparisons; opioids commonly decrease respirations and systolic BP, and cause miosis.<br>
+                        - Monitor urinary output (morphine can cause urinary retention).<br>
+                        - Assess pain type, location, and duration before administration.<br>
+                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Decreased gas exchange, injury, acute pain, hypotension, falls, urinary retention, constipation, discomfort.<br>
+                        <strong>Generate Solutions (Planning):</strong> Patient will report decreased pain within 1 hour after medication administration.<br>
+                        <strong>Take Action (Nursing Interventions):</strong><br>
+                        - Administer before pain peaks for maximum effectiveness.<br>
+                        - Monitor vital signs frequently (respirations <10/min indicates distress).<br>
+                        - Record urine output (at least 600 mL/day).<br>
+                        - Check bowel sounds for decreased peristalsis; manage constipation (diet, laxative).<br>
+                        - Check pupil changes (pinpoint pupils indicate overdose).<br>
+                        - Have naloxone available to reverse respiratory depression from overdose.<br>
+                        - Validate dose; check older adults for alertness/orientation; use safety precautions (side rails).<br>
+                        <strong>Patient Teaching:</strong><br>
+                        - Avoid alcohol/CNS depressants (risk of respiratory depression, dizziness, falls).<br>
+                        - Suggest nonpharmacologic measures as pain subsides.<br>
+                        - Alert about substance use disorder risk with continuous use; provide resources (methadone programs).<br>
+                        - Report dizziness (orthostatic hypotension); ambulate with caution/assistance.<br>
+                        - Report difficulty breathing, blurred vision, headaches.<br>
+                        <strong>Evaluate Outcomes:</strong> Assess pain relief (increase dose/change opioid if ineffective); determine vital sign stability (report decreased respirations/BP).` },
+                    { id: 'meperidine', title: 'Meperidine', type: 'text', content: `Meperidine (Schedule II) is a synthetic opioid with a shorter duration than morphine and varying potency. It's effective for GI procedures but lacks antitussive properties. Preferred over morphine in pregnancy as it doesn't diminish uterine contractions and causes less neonatal respiratory depression. Causes less constipation and urinary retention than morphine.<br><br>
+                        <strong>Contraindications:</strong> Chronic pain, severe liver dysfunction, sickle cell disease, history of seizures, severe CAD, cardiac dysrhythmias. Not for long-term use (max 150 mg/dose for 48-72 hours) due to neurotoxicity (nervousness, tremors, agitation, irritability, seizures), especially in older adults and advanced cancer patients.<br>
+                        <strong>Pharmacokinetics/Interactions:</strong> Metabolized in liver to active metabolite (normeperidine), so decrease dose in hepatic/renal insufficiency. Excreted in urine. Avoid alcohol/sedative-hypnotics (additive CNS depression). Major side effect: decreased blood pressure.` },
+                    { id: 'hydromorphone', title: 'Hydromorphone', type: 'text', content: `Hydromorphone (Schedule II) is a semisynthetic opioid, ~6 times more potent than morphine with fewer hypnotic effects and less GI distress. Faster onset and shorter duration than morphine. Tolerance increases gradually. Administered orally, rectally, subcut, IM, IV. IV dose (2 mg or less) should be diluted with 5 mL sterile water/normal saline and given over 2-3 minutes. Readily absorbed and excreted in urine. Monitor respirations closely; ensure adequate hydration.` },
+                    { id: 'combination-drugs', title: 'Combination Drugs', type: 'text', content: `For moderate to severe pain, combination drugs containing an NSAID and an opioid (e.g., ibuprofen and hydrocodone) or acetaminophen and an opioid (e.g., acetaminophen and codeine) may be used. Benefits include smaller doses of each component (decreasing side effects) and reduced risk of drug dependency from long-term opioid use.` },
+                    { id: 'patient-controlled-analgesia', title: 'Patient-Controlled Analgesia (PCA)', type: 'text', content: `PCA is an alternative route for self-administered opioid pain relief. A loading dose (e.g., 2-10 mg morphine) is given initially. The patient controls subsequent doses by pushing a button on the PCA device, which releases a specific dose (e.g., 1 mg morphine) into the IV line. The nurse sets the pump with prescribed dose and time intervals (lockout mechanism prevents overdose). PCA maintains a near-constant analgesic level, avoiding severe pain or oversedation. It is crucial that ONLY the patient controls the PCA device. Morphine is most common, but fentanyl and hydromorphone can also be used.` },
+                    { id: 'transdermal-opioids', title: 'Transdermal Opioid Analgesics', type: 'text', content: `Transdermal opioid analgesics provide continuous, around-the-clock pain control, ideal for chronic pain (not acute/postoperative). <strong>Fentanyl</strong> is a common example, administered via transdermal patch (12.5, 25, 50, 75, 100 mcg/h). Max serum levels occur within 24 hours of application. Fentanyl is more potent than morphine. Lower doses are suggested for older adults and caution is advised for patients weighing less than 110 lbs. Fentanyl is also available for IM and IV use.` },
+                    { id: 'analgesic-titration', title: 'Analgesic Titration', type: 'text', content: `Analgesics can be titrated (increased or decreased) based on pain levels. Postoperative pain usually requires downward titration over time. Cancer-related pain often requires upward titration due to increasing pain. Titration involves changing the dose, interval, route, or drug, guided by respiratory rate and pain level assessment.` },
+                    { id: 'opioid-agonists-quiz', title: 'Opioid Agonists Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A nurse is preparing to administer IV morphine to a patient experiencing severe postoperative pain. Which of the following assessment findings would require the nurse to withhold the medication and notify the healthcare provider?", options: ["Patient reports pain level of 8/10.", "Respiratory rate of 8 breaths/min.", "Blood pressure 110/70 mmHg.", "Patient reports mild nausea."], correctAnswer: "Respiratory rate of 8 breaths/min." },
+                        { question: "A patient with chronic pain is being discharged with a fentanyl transdermal patch. Which instruction is most critical for the nurse to include in the patient's teaching plan?", options: ["'Apply a new patch every 12 hours.'", "'This patch is effective for immediate pain relief.'", "'Dispose of used patches by flushing them down the toilet.'", "'Do not apply heat to the patch application site.'"], correctAnswer: "'Do not apply heat to the patch application site.'" },
+                        { question: "A nurse is caring for a patient receiving patient-controlled analgesia (PCA) with morphine. The patient's family member is observed repeatedly pressing the PCA button. What is the nurse's priority action?", options: ["Instruct the family member that only the patient should press the button.", "Increase the lockout interval on the PCA pump.", "Administer naloxone to the patient immediately.", "Document the family's concern for the patient's pain."], correctAnswer: "Instruct the family member that only the patient should press the button." },
+                        { question: "Which statement about meperidine is true?", options: ["It is the opioid of choice for chronic pain management.", "It has strong antitussive properties.", "It is preferred over morphine during pregnancy as it causes less neonatal respiratory depression.", "It is metabolized into an inactive metabolite, making it safe in renal impairment."], correctAnswer: "It is preferred over morphine during pregnancy as it causes less neonatal respiratory depression." }
+                      ]
+                    },
+                ]
+            },
+            'opioid-special-populations-adjuvants': {
+                title: 'Opioids: Special Populations & Adjuvants',
+                color: 'from-blue-400 to-indigo-600',
+                description: 'Understand opioid use in specific patient groups and the role of adjuvant therapy.',
+                steps: [
+                    { id: 'opioid-children', title: 'Opioid Use in Children', type: 'text', content: `Pain management in children is complex due to assessment difficulties and fear of treatments. Nurses must use age-appropriate communication (e.g., "ouch scale," Wong-Baker FACES® Pain Rating Scale) and involve parents to assess pain. Medication should be given before pain becomes severe. Oral liquid medication is often preferred. Using drawings and pictures can help alleviate fear and improve compliance.` },
+                    { id: 'opioid-older-adults', title: 'Opioid Use in Older Adults', type: 'text', content: `Older adults (≥65 years) often require opioid dose adjustments due to decreased liver and renal functions, leading to reduced metabolism and excretion, and potential drug accumulation. Side effects are more pronounced. Polypharmacy increases drug interaction risk. Nurses must monitor closely for adverse reactions.<br><br>
+                        Older adults may have different beliefs (pain is inevitable, fear of addiction) and fears (not wanting to be a burden), leading to underreporting pain. Nurses should use a supportive, unhurried approach, provide accurate drug information, and rely on thorough physical assessment if cognitive/sensory impairments (dementia, hearing/visual deficits) hinder self-reporting. Meperidine and pentazocine tend to be more toxic in older adults.` },
+                    { id: 'opioid-cognitively-impaired', title: 'Opioid Use in Cognitively Impaired', type: 'text', content: `Cognitively impaired individuals may struggle to report pain. Nurses should use appropriate assessment scales and observe physical signs of pain: moans, grimacing, clenched teeth, noisy respirations, and restlessness.` },
+                    { id: 'opioid-oncology', title: 'Opioid Use in Oncology Patients', type: 'text', content: `Cancer pain is managed using the WHO "ladder" approach:<br>
+                        - <strong>Step 1 (Mild Pain):</strong> Nonopioids with/without adjuvant medication.<br>
+                        - <strong>Step 2 (Moderate Pain):</strong> Nonopioids and mild opioids with/without adjuvant medication.<br>
+                        - <strong>Step 3 (Severe Pain):</strong> Stronger opioids at higher dosage levels with/without adjuvant medication.<br>
+                        Opioids are titrated until pain relief is achieved or side effects become intolerable. There are no set dosage limits for oncology patients, as extremely high doses may be required.` },
+                    { id: 'opioid-substance-use-disorder', title: 'Opioid Use in Substance Use Disorder History', type: 'text', content: `Patients with a history of substance use disorder require thorough pain assessment to identify the cause. Opioids are effective and safe in this population, often requiring larger and more frequent doses. Studies show withholding opioids does not improve addiction recovery. However, opioid agonist-antagonists (e.g., pentazocine) should be avoided as they may precipitate withdrawal syndrome.` },
+                    { id: 'adjuvant-therapy', title: 'Adjuvant Therapy', type: 'text', content: `Adjuvant analgesics are medications developed for other purposes but found effective for pain relief, especially in neuropathy. They are typically used alongside nonopioid and opioid analgesics to potentiate pain relief and allow for lower opioid doses, reducing adverse effects. Examples include:<br>
+                        - <strong>Anticonvulsants (e.g., gabapentin):</strong> Inhibit spontaneous neuronal firing in peripheral nerves and CNS; used for neuropathic pain and migraine prevention.<br>
+                        - <strong>Tricyclic Antidepressants (TCAs, e.g., amitriptyline):</strong> Prevent serotonin and norepinephrine reuptake; lower doses treat peripheral neuropathy.<br>
+                        - <strong>Corticosteroids:</strong> Reduce nociceptive stimuli.<br>
+                        - <strong>Antidysrhythmics (e.g., mexiletine):</strong> Block sodium channels.<br>
+                        - <strong>Local Anesthetics (e.g., lidocaine patch):</strong> Interrupt pain signal transmission to the brain.` },
+                    { id: 'opioid-special-populations-adjuvants-quiz', title: 'Special Populations & Adjuvants Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A nurse is assessing pain in an older adult patient with cognitive impairment. Which of the following would be the most reliable indicator of pain in this patient?", options: ["Patient states 'I'm fine.'", "Patient is sleeping peacefully.", "Grimacing and moaning during repositioning.", "Absence of vital sign changes."], correctAnswer: "Grimacing and moaning during repositioning." },
+                        { question: "According to the WHO pain ladder, a patient with severe cancer pain (Step 3) should be managed with which of the following?", options: ["Nonopioids only", "Mild opioids with adjuvant medication", "Stronger opioids at higher dosage levels with or without adjuvant medication", "Opioid agonist-antagonists"], correctAnswer: "Stronger opioids at higher dosage levels with or without adjuvant medication" },
+                        { question: "A patient with diabetic neuropathy is prescribed gabapentin as an adjuvant analgesic. The nurse explains that this medication helps relieve pain by:", options: ["Increasing serotonin and norepinephrine levels in the brain.", "Blocking sodium channels in peripheral nerves.", "Inhibiting spontaneous neuronal firing.", "Reducing inflammation at the site of injury."], correctAnswer: "Inhibiting spontaneous neuronal firing." }
+                      ]
+                    },
+                ]
+            },
+            'opioid-agonist-antagonists-antagonists': {
+                title: 'Opioid Agonist-Antagonists & Antagonists',
+                color: 'from-purple-500 to-pink-500',
+                description: 'Differentiate between opioid agonist-antagonists and pure opioid antagonists.',
+                steps: [
+                    { id: 'opioid-agonist-antagonists', title: 'Opioid Agonist-Antagonists', type: 'text', content: `Opioid agonist-antagonists combine an opioid antagonist with an opioid agonist, potentially used to decrease substance use disorder. Examples include <strong>pentazocine</strong> (Schedule IV), <strong>butorphanol tartrate, buprenorphine</strong>, and <strong>nalbuphine hydrochloride</strong>. Pentazocine and butorphanol can cause dependence. These drugs are generally not used for cancer pain due to the risk of CNS toxicity from high required doses. They are considered safe during labor, but early pregnancy safety is not established.` },
+                    { id: 'nalbuphine-pharmacokinetics', title: 'Nalbuphine: Pharmacokinetics', type: 'text', content: `Nalbuphine can be administered orally, IM, subcut, or IV. It is rapidly absorbed parenterally. Protein binding is less than 30%. It has a short half-life of 3-6 hours. Metabolized in the liver and excreted in the urine.` },
+                    { id: 'nalbuphine-pharmacodynamics', title: 'Nalbuphine: Pharmacodynamics', type: 'text', content: `Nalbuphine effectively alleviates moderate to severe pain. Onset is rapid, with peak concentration within 30 minutes for IV administration. Duration of action is 3-4 hours for IV and 3-6 hours for IM/subcut administration.` },
+                    { id: 'nalbuphine-nursing-process', title: 'Nalbuphine: Nursing Process', type: 'text', content: `<strong>Concept: Pain</strong><br>
+                        <strong>Recognize Cues (Assessment):</strong><br>
+                        - Obtain drug history; report potential drug-drug interactions (CNS depressants + nalbuphine = respiratory depression).<br>
+                        - Note baseline vital signs.<br>
+                        - Assess pain type, duration, and location.<br>
+                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Decreased gas exchange, acute pain, discomfort, constipation.<br>
+                        <strong>Generate Solutions (Planning):</strong> Patient will report decreased pain within 1 hour after medication administration.<br>
+                        <strong>Take Action (Nursing Interventions):</strong><br>
+                        - Monitor vital signs, especially respirations.<br>
+                        - Check bowel sounds and last bowel movement for constipation; administer mild laxative if needed.<br>
+                        - Determine urine output; report if <30 mL/h or <600 mL/day.<br>
+                        - Administer IV nalbuphine undiluted; do not mix with barbiturates.<br>
+                        <strong>Patient Teaching:</strong><br>
+                        - Warn against alcohol or CNS depressants (respiratory depression risk).<br>
+                        - Suggest nonpharmacologic pain relief methods.<br>
+                        - Report side effects: dizziness, headaches, constipation, dysuria, rash, blurred vision. Report adverse reactions: hallucinations, tachycardia, respiratory depression.<br>
+                        <strong>Evaluate Outcomes:</strong> Assess pain relief effectiveness; determine vital sign stability (report abnormal changes).` },
+                    { id: 'opioid-antagonists', title: 'Opioid Antagonists', type: 'text', content: `Opioid antagonists are antidotes for natural and synthetic opioid analgesic toxicity. They have a higher affinity for opiate receptor sites, blocking and displacing opioids to inhibit their action. Indications include reversal of postoperative opioid depression and opioid overdose.<br><br>
+                        <strong>Naloxone</strong> (IM/IV/intranasal) and <strong>naltrexone hydrochloride</strong> (oral/IM) are examples. They are pharmacologic antagonists that reverse respiratory and CNS depression (sedation, hypotension) caused by opioids.<br><br>
+                        <strong>Nursing Considerations:</strong> Continuously monitor patients receiving opioid antagonists. The opioid action may outlast the antagonist's, requiring further doses. Monitor respiratory and CNS status for signs of analgesic reversal (tachycardia, nausea, vomiting, sweating) and need for more analgesia. Observe for bleeding with naloxone due to potential elevated partial thromboplastin time.` },
+                    { id: 'opioid-antagonists-quiz', title: 'Opioid Agonist-Antagonists & Antagonists Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A patient is experiencing severe respiratory depression after an opioid overdose. The nurse anticipates administering which medication to reverse this effect?", options: ["Hydromorphone", "Nalbuphine", "Naloxone", "Methadone"], correctAnswer: "Naloxone" },
+                        { question: "Which statement best describes the primary difference between an opioid agonist and an opioid agonist-antagonist?", options: ["Opioid agonists cause physical dependence, while agonist-antagonists do not.", "Opioid agonists activate opioid receptors, while agonist-antagonists activate some receptors and block others.", "Opioid agonists are used for mild pain, while agonist-antagonists are for severe pain.", "Opioid agonists have a longer duration of action than agonist-antagonists."], correctAnswer: "Opioid agonists activate opioid receptors, while agonist-antagonists activate some receptors and block others." },
+                        { question: "A nurse is monitoring a patient who received naloxone for opioid-induced respiratory depression. Which finding indicates the naloxone is having its intended effect?", options: ["Decreased heart rate", "Increased sedation", "Increased respiratory rate", "Constricted pupils"], correctAnswer: "Increased respiratory rate" }
+                      ]
+                    },
+                ]
+            },
+            'headaches-review': {
+                title: 'Headaches & Integrated Review',
+                color: 'from-rose-400 to-red-500',
+                description: 'Understand migraine and cluster headaches, their treatment, and apply integrated knowledge.',
+                steps: [
+                    { id: 'headaches-intro', title: 'Headaches: Migraine and Cluster', type: 'text', content: `<strong>Migraine Headaches:</strong> Characterized by unilateral throbbing head pain, nausea, vomiting, and photophobia, lasting 4-24 hours (sometimes several days). Two-thirds affect women in their 20s and 30s. Symptoms often decrease/are absent during pregnancy and menopause. Intensity can disrupt daily activities.<br><br>
+                        <strong>Pathophysiology:</strong> Exact etiology unknown; common theory suggests neurovascular events and neuronal hyperexcitability in the cerebral cortex. Triggers: foods (cheese, chocolate, red wine), MSG, aspartame, fatigue, stress, sleep changes, missed meals, odors, light, hormone changes, drugs, weather. Two types: migraines with aura (minutes to 1 hour before onset) and without aura.<br><br>
+                        <strong>Cluster Headaches:</strong> Severe, unilateral, nonthrobbing pain usually around the eye. Occur in clusters (one or more attacks daily for weeks). Not associated with aura, no nausea/vomiting. More common in men.` },
+                    { id: 'migraine-treatment', title: 'Treatment of Migraine Headaches', type: 'text', content: `<strong>Preventive Treatment:</strong><br>
+                        1. <strong>Beta-adrenergic blockers:</strong> propranolol, atenolol<br>
+                        2. <strong>Anticonvulsants:</strong> valproic acid, gabapentin<br>
+                        3. <strong>Tricyclic Antidepressants (TCAs):</strong> amitriptyline, imipramine<br><br>
+                        <strong>Acute Migraine Attack Treatment (depends on pain intensity):</strong><br>
+                        - <strong>Mild Attacks:</strong> Aspirin, acetaminophen, NSAIDs (ibuprofen, naproxen). Aspirin may be combined with caffeine.<br>
+                        - <strong>Occasional Opioids:</strong> Meperidine, butorphanol nasal spray.<br>
+                        - <strong>Antiemetics:</strong> To decrease nausea/vomiting.<br>
+                        - <strong>Ergot Alkaloids (e.g., dihydroergotamine):</strong> Can be given subcutaneously, intramuscularly, intravenously, nasal spray.<br>
+                        - <strong>Selective Serotonin (5-HT) Receptor Agonists (Triptans):</strong> Most recently developed (e.g., <strong>sumatriptan</strong>). More effective than ergot alkaloids for acute attacks. Sumatriptan is the prototype. Take antimigraine medication early in an attack.` },
+                    { id: 'sumatriptan-pharmacology', title: 'Sumatriptan: Pharmacology', type: 'text', content: `<strong>Drug Class:</strong> Selective serotonin receptor agonist: Antimigraine.<br>
+                        <strong>Mechanism of Action:</strong> Causes vasoconstriction of cranial arteries to relieve migraine attacks.<br>
+                        <strong>Pharmacokinetics:</strong> Rapidly absorbed after subcut injection. Protein binding: 14-21%. Half-life: 2 hours. Excreted in urine and feces.<br>
+                        - PO: Onset 60 min, Peak 2 h, Duration 24-48 h.<br>
+                        - Subcut: Onset 10 min, Peak 5-20 min, Duration 24-48 h.<br>
+                        - Intranasal: Onset 15 min, Peak 1-1.5 h, Duration 24-48 h.<br>
+                        <strong>Contraindications:</strong> Hypersensitivity, CAD, peripheral vascular disease, hypertension, cerebrovascular disease. Caution: Renal/hepatic dysfunction, dysrhythmias, intracranial bleeding, obesity, DM, smoking, seizures, older adults.<br>
+                        <strong>Drug Interactions:</strong> Risk of vasospasm/BP elevation with dihydroergotamine/other ergot alkaloids; increased levels/toxicity within 2 weeks of MAOIs; increased risk of serotonin syndrome/neuroleptic malignant syndrome with SSRIs.<br>
+                        <strong>Side Effects:</strong> Dizziness, headache, blurred vision, paresthesia, fatigue, flushing, drowsiness, dysgeusia, myalgia, hyperhidrosis, nausea, vomiting, injection site reaction, pruritus, skin irritation.<br>
+                        <strong>Adverse Reactions:</strong> Hypotension, hypertensive crisis, angina, dysrhythmias, bradycardia, tachycardia, thrombosis, seizures, hearing loss, ocular hemorrhage, GI bleeding/obstruction.<br>
+                        <strong>Life-threatening:</strong> Coronary artery vasospasm, renal failure, angioedema, hemolytic anemia, pancytopenia, thrombocytopenia, intracranial hemorrhage, stroke, MI, cardiac arrest, suicidal ideation.<br>
+                        <strong>Patient Safety:</strong> Do not confuse Sumatriptan with zolmitriptan. Do not confuse Amerge with Amaryl or Altace.` },
+                    { id: 'analgesics-case-study', title: 'Critical Thinking Case Study', type: 'case_study', case: {
+                        scenario: `A 79-year-old male client on the medical surgical unit is complaining of abdominal pain. This patient has a history of ulcerative colitis and 24 hours prior received emergent resection of the colon. During the morning assessment the nurse notes his last dose of 2 mg IV morphine was administered on the previous shift 6 hours prior. It is ordered every 4 hours. The nurse administers the patient’s prescribed dose of 2 mg IV morphine after the morning assessment and vital signs check.`,
+                        question: `Which nursing actions are required related to the client’s condition and prescribed pain medication? Choose the most likely options for the information missing from the statements below by selecting from the lists of options provided.
+The nurse will continue to monitor the patient’s ______(A)_______ and assess the depth and rate of the patient’s ______(A)______. Instruct the patient to report signs and symptoms of ________(A)________, _________(A)________, and ________(A)________. Monitor and observe for changes in the patient’s _______(B)________. The nurse will withhold pain medication for any difficulty in the patient’s _______(B)_______ and respirations below ______(B)_______. Instruct the patient to notify the nurse immediately upon return or increase of the patient’s _______(B)_______.`,
+                        options: [
+                            "Option A: tinnitus", "Option A: dizziness", "Option A: vital signs", "Option A: sore throat", "Option A: respirations", "Option A: constipation", "Option A: hypotension", "Option A: feeling of fullness",
+                            "Option B: dry skin", "Option B: breathing", "Option B: pedal edema", "Option B: mental status", "Option B: abdominal pain", "Option B: episodes of sneezing", "Option B: 12 breaths per minute", "Option B: 20 breaths per minute"
+                        ],
+                        correctAnswer: [
+                            "Option A: vital signs", "Option A: respirations", "Option A: dizziness", "Option A: constipation", "Option A: hypotension",
+                            "Option B: mental status", "Option B: breathing", "Option B: 12 breaths per minute", "Option B: abdominal pain"
+                        ],
+                        explanation: `<strong>Rationale:</strong> Morphine binds with the opiate receptors in the central nervous system, producing analgesia and sedation. The onset of action when administered parenterally is 15–20 min. Morphine injection has high risk for low respiratory rate, which can result in respiratory depression. If the patient is experiencing breathing difficulty and their respirations are below 12 breaths per minute, the nurse should withhold the medication and notify the provider because the patient may be developing respiratory distress. Also, it is known to cause sedation, hypotension, constipation, and changes in mental status. It is important to administer the morphine before pain reaches its peak to maximize the effectiveness of the drug, so instruct the patient to report any periods of increased abdominal pain.`
+                    }},
+                    { id: 'analgesics-review-quiz', title: 'Analgesics Review Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A patient requires a nonopioid medication. The nurse knows that which medication will cause the least gastrointestinal distress?", options: ["Aspirin", "Ketorolac", "Celecoxib", "Ibuprofen"], correctAnswer: "Celecoxib" },
+                        { question: "A patient states during a medical history that he takes several acetaminophen tablets throughout the day for acute pain. The nurse teaches the patient that the dosage should not exceed which amount?", options: ["1 g/day", "3 g/day", "4 g/day", "6 g/day"], correctAnswer: "4 g/day" },
+                        { question: "For the patient receiving periodic morphine via intravenous push, which of the following findings would be of utmost concern to the nurse?", options: ["Increased temperature", "Decreased bowel sounds", "Decreased respirations", "Increased red blood cell count"], correctAnswer: "Decreased respirations" },
+                        { question: "A patient is admitted to the emergency department with signs of respiratory depression after self-injection with hydromorphone. The admitting nurse knows that which drug will reverse respiratory depression caused by opioid overdose?", options: ["Fentanyl", "Naloxone", "Butorphanol", "Sufenta"], correctAnswer: "Naloxone" },
+                        { question: "Assessing a patient after intravenous morphine administration, the nurse notes cold, clammy skin; a pulse of 40 beats/min; respirations of 10 breaths/min; and constricted pupils. Which medication will the patient likely need next?", options: ["Naloxone", "Meloxicam", "Pentazocine", "Propoxyphene"], correctAnswer: "Naloxone" },
+                        { question: "For the patient taking acetaminophen, what should the nurse do? (Select all that apply.)", options: ["Monitor routine liver enzyme tests.", "Encourage the patient to check package labels of over-the-counter drugs to avoid overdosing.", "Report side effects immediately, as toxicity can cause severe hepatic damage.", "Teach the female patient that oral contraceptives can increase the effect of acetaminophen.", "Teach the patient that caffeine decreases the effects of acetaminophen."], correctAnswer: ["Monitor routine liver enzyme tests.", "Encourage the patient to check package labels of over-the-counter drugs to avoid overdosing.", "Report side effects immediately, as toxicity can cause severe hepatic damage."] },
+                        { question: "For the patient who is taking nalbuphine, what should the nurse do? (Select all that apply.)", options: ["Monitor any changes in respirations.", "Instruct the patient to report hypohidrosis.", "Administer intravenous nalbuphine undiluted.", "Explain to the patient to expect an excessive amount of urine output.", "Instruct the patient to avoid alcohol when taking nalbuphine to avoid respiratory depression."], correctAnswer: ["Monitor any changes in respirations.", "Administer intravenous nalbuphine undiluted.", "Instruct the patient to avoid alcohol when taking nalbuphine to avoid respiratory depression."] },
+                        { question: "A patient is having a migraine attack. The nurse should know that which drugs are used to treat migraine attacks?", options: ["Triptans", "Anticonvulsants", "Tricyclic antidepressants", "Beta-adrenergic blockers"], correctAnswer: "Triptans" }
+                      ]
+                    }
+                ]
+            }
+        };
+
+        // The pre-assessment quiz data now includes questions for all new modules.
+        const preAssessmentQuizData = [
+            // Questions for Module 1: Pain Fundamentals & Nonopioids
+            { moduleId: 'pain-fundamentals', question: "A nurse is assessing a patient's pain. The patient describes a burning, tingling sensation in their lower extremities. This type of pain is best classified as:", options: ["Somatic pain", "Visceral pain", "Neuropathic pain", "Superficial pain"], correctAnswer: "Neuropathic pain" },
+            { moduleId: 'pain-fundamentals', question: "Which of the following statements about acetaminophen is correct?", options: ["It is an NSAID with strong anti-inflammatory properties.", "It carries a risk of Reye syndrome in children with viral infections.", "It can cause significant gastrointestinal distress and bleeding.", "It is safe for patients with peptic ulcers and does not interfere with platelet aggregation."], correctAnswer: "It is safe for patients with peptic ulcers and does not interfere with platelet aggregation." },
+            { moduleId: 'pain-fundamentals', question: "A patient is admitted to the emergency department with suspected acetaminophen overdose. The nurse anticipates administering which antidote?", options: ["Naloxone", "Protamine sulfate", "Acetylcysteine", "Vitamin K"], correctAnswer: "Acetylcysteine" },
+            { moduleId: 'pain-fundamentals', question: "A nurse is reviewing a patient's medication list. The patient is taking aspirin daily for cardiovascular prophylaxis. The nurse understands that aspirin's antiplatelet effect is due to its inhibition of which enzyme?", options: ["Phospholipase", "COX-2 only", "COX-1 only", "Both COX-1 and COX-2"], correctAnswer: "Both COX-1 and COX-2" },
+
+            // Questions for Module 2: Opioid Analgesics: Agonists
+            { moduleId: 'opioid-agonists', question: "A nurse is preparing to administer IV morphine to a patient experiencing severe postoperative pain. Which of the following assessment findings would require the nurse to withhold the medication and notify the healthcare provider?", options: ["Patient reports pain level of 8/10.", "Respiratory rate of 8 breaths/min.", "Blood pressure 110/70 mmHg.", "Patient reports mild nausea."], correctAnswer: "Respiratory rate of 8 breaths/min." },
+            { moduleId: 'opioid-agonists', question: "A patient with chronic pain is being discharged with a fentanyl transdermal patch. Which instruction is most critical for the nurse to include in the patient's teaching plan?", options: ["'Apply a new patch every 12 hours.'", "'This patch is effective for immediate pain relief.'", "'Dispose of used patches by flushing them down the toilet.'", "'Do not apply heat to the patch application site.'"], correctAnswer: "'Do not apply heat to the patch application site.'" },
+            { moduleId: 'opioid-agonists', question: "A nurse is caring for a patient receiving patient-controlled analgesia (PCA) with morphine. The patient's family member is observed repeatedly pressing the PCA button. What is the nurse's priority action?", options: ["Instruct the family member that only the patient should press the button.", "Increase the lockout interval on the PCA pump.", "Administer naloxone to the patient immediately.", "Document the family's concern for the patient's pain."], correctAnswer: "Instruct the family member that only the patient should press the button." },
+            { moduleId: 'opioid-agonists', question: "Which statement about meperidine is true?", options: ["It is the opioid of choice for chronic pain management.", "It has strong antitussive properties.", "It is preferred over morphine during pregnancy as it causes less neonatal respiratory depression.", "It is metabolized into an inactive metabolite, making it safe in renal impairment."], correctAnswer: "It is preferred over morphine during pregnancy as it causes less neonatal respiratory depression." },
+
+            // Questions for Module 3: Opioid Use in Special Populations & Adjuvant Therapy
+            { moduleId: 'opioid-special-populations-adjuvants', question: "A nurse is assessing pain in an older adult patient with cognitive impairment. Which of the following would be the most reliable indicator of pain in this patient?", options: ["Patient states 'I'm fine.'", "Patient is sleeping peacefully.", "Grimacing and moaning during repositioning.", "Absence of vital sign changes."], correctAnswer: "Grimacing and moaning during repositioning." },
+            { moduleId: 'opioid-special-populations-adjuvants', question: "According to the WHO pain ladder, a patient with severe cancer pain (Step 3) should be managed with which of the following?", options: ["Nonopioids only", "Mild opioids with adjuvant medication", "Stronger opioids at higher dosage levels with or without adjuvant medication", "Opioid agonist-antagonists"], correctAnswer: "Stronger opioids at higher dosage levels with or without adjuvant medication" },
+            { moduleId: 'opioid-special-populations-adjuvants', question: "A patient with diabetic neuropathy is prescribed gabapentin as an adjuvant analgesic. The nurse explains that this medication helps relieve pain by:", options: ["Increasing serotonin and norepinephrine levels in the brain.", "Blocking sodium channels in peripheral nerves.", "Inhibiting spontaneous neuronal firing.", "Reducing inflammation at the site of injury."], correctAnswer: "Inhibiting spontaneous neuronal firing." },
+
+            // Questions for Module 4: Opioid Agonist-Antagonists & Antagonists
+            { moduleId: 'opioid-agonist-antagonists-antagonists', question: "A patient is experiencing severe respiratory depression after an opioid overdose. The nurse anticipates administering which medication to reverse this effect?", options: ["Hydromorphone", "Nalbuphine", "Naloxone", "Methadone"], correctAnswer: "Naloxone" },
+            { moduleId: 'opioid-agonist-antagonists-antagonists', question: "Which statement best describes the primary difference between an opioid agonist and an opioid agonist-antagonist?", options: ["Opioid agonists cause physical dependence, while agonist-antagonists do not.", "Opioid agonists activate opioid receptors, while agonist-antagonists activate some receptors and block others.", "Opioid agonists are used for mild pain, while agonist-antagonists are for severe pain.", "Opioid agonists have a longer duration of action than agonist-antagonists."], correctAnswer: "Opioid agonists activate opioid receptors, while agonist-antagonists activate some receptors and block others." },
+            { moduleId: 'opioid-agonist-antagonists-antagonists', question: "A nurse is monitoring a patient who received naloxone for opioid-induced respiratory depression. Which finding indicates the naloxone is having its intended effect?", options: ["Decreased heart rate", "Increased sedation", "Increased respiratory rate", "Constricted pupils"], correctAnswer: "Increased respiratory rate" },
+
+            // Questions for Module 5: Headaches & Integrated Review (only the NCLEX-style ones from the chapter)
+            { moduleId: 'headaches-review', question: "A patient requires a nonopioid medication. The nurse knows that which medication will cause the least gastrointestinal distress?", options: ["Aspirin", "Ketorolac", "Celecoxib", "Ibuprofen"], correctAnswer: "Celecoxib" },
+            { moduleId: 'headaches-review', question: "A patient states during a medical history that he takes several acetaminophen tablets throughout the day for acute pain. The nurse teaches the patient that the dosage should not exceed which amount?", options: ["1 g/day", "3 g/day", "4 g/day", "6 g/day"], correctAnswer: "4 g/day" },
+            { moduleId: 'headaches-review', question: "For the patient receiving periodic morphine via intravenous push, which of the following findings would be of utmost concern to the nurse?", options: ["Increased temperature", "Decreased bowel sounds", "Decreased respirations", "Increased red blood cell count"], correctAnswer: "Decreased respirations" },
+            { moduleId: 'headaches-review', question: "A patient is admitted to the emergency department with signs of respiratory depression after self-injection with hydromorphone. The admitting nurse knows that which drug will reverse respiratory depression caused by opioid overdose?", options: ["Fentanyl", "Naloxone", "Butorphanol", "Sufenta"], correctAnswer: "Naloxone" },
+            { moduleId: 'headaches-review', question: "Assessing a patient after intravenous morphine administration, the nurse notes cold, clammy skin; a pulse of 40 beats/min; respirations of 10 breaths/min; and constricted pupils. Which medication will the patient likely need next?", options: ["Naloxone", "Meloxicam", "Pentazocine", "Propoxyphene"], correctAnswer: "Naloxone" },
+            { moduleId: 'headaches-review', question: "For the patient taking acetaminophen, what should the nurse do? (Select all that apply.)", options: ["Monitor routine liver enzyme tests.", "Encourage the patient to check package labels of over-the-counter drugs to avoid overdosing.", "Report side effects immediately, as toxicity can cause severe hepatic damage.", "Teach the female patient that oral contraceptives can increase the effect of acetaminophen.", "Teach the patient that caffeine decreases the effects of acetaminophen."], correctAnswer: ["Monitor routine liver enzyme tests.", "Encourage the patient to check package labels of over-the-counter drugs to avoid overdosing.", "Report side effects immediately, as toxicity can cause severe hepatic damage."] },
+            { moduleId: 'headaches-review', question: "For the patient who is taking nalbuphine, what should the nurse do? (Select all that apply.)", options: ["Monitor any changes in respirations.", "Instruct the patient to report hypohidrosis.", "Administer intravenous nalbuphine undiluted.", "Explain to the patient to expect an excessive amount of urine output.", "Instruct the patient to avoid alcohol when taking nalbuphine to avoid respiratory depression."], correctAnswer: ["Monitor any changes in respirations.", "Administer intravenous nalbuphine undiluted.", "Instruct the patient to avoid alcohol when taking nalbuphine to avoid respiratory depression."] },
+            { moduleId: 'headaches-review', question: "A patient is having a migraine attack. The nurse should know that which drugs are used to treat migraine attacks?", options: ["Triptans", "Anticonvulsants", "Tricyclic antidepressants", "Beta-adrenergic blockers"], correctAnswer: "Triptans" }
+        ];
+
+        // --- Helper Functions ---
+        // Utility for conditionally joining Tailwind CSS classes.
+        const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+
+        // --- Child Components ---
+
+        /**
+         * Quiz component for interactive multiple-choice questions.
+         * Users answer questions and receive immediate feedback.
+         */
+        const Quiz = ({ questions, onComplete, isPreAssessment = false }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState([]); // Changed to array for multi-select
+            const [feedback, setFeedback] = useState(null);
+            const [answers, setAnswers] = useState([]);
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            // Handle option selection for both single and multiple choice
+            const handleOptionSelect = (option) => {
+                if (feedback && !isPreAssessment) return; // Prevent changing answer after feedback in regular quiz
+
+                if (Array.isArray(currentQuestion.correctAnswer)) {
+                    // Multi-select (SATA)
+                    setSelectedOption(prevSelected => {
+                        if (prevSelected.includes(option)) {
+                            return prevSelected.filter(item => item !== option);
+                        } else {
+                            return [...prevSelected, option];
+                        }
+                    });
+                } else {
+                    // Single select
+                    setSelectedOption(option);
+                }
+            };
+
+            const handlePreAssessmentNext = () => {
+                if (selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)) return;
+                
+                // Logic for checking correctness for both single and multi-select
+                const isCorrect = Array.isArray(currentQuestion.correctAnswer)
+                    ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
+                    : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                
+                const updatedAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(updatedAnswers);
+
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]); // Reset for next question
+                    setFeedback(null);
+                } else {
+                    onComplete(updatedAnswers);
+                }
+            };
+            
+            const handleRegularQuizSubmit = () => {
+                if (selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)) return;
+                
+                const isCorrect = Array.isArray(currentQuestion.correctAnswer)
+                    ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
+                    : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                
+                setFeedback(isCorrect ? 'correct' : 'incorrect');
+            };
+
+            const handleRegularQuizNext = () => {
+                // Ensure the current answer is recorded before moving to the next question
+                const isCorrect = Array.isArray(currentQuestion.correctAnswer)
+                    ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
+                    : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                const finalAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                
+                if (currentQuestionIndex < questions.length - 1) {
+                    setAnswers(finalAnswers);
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]); // Reset for next question
+                    setFeedback(null);
+                } else {
+                    const finalScore = finalAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete({ score: finalScore, total: questions.length });
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Quiz: {currentQuestionIndex + 1} of {questions.length}</h4>
+                    <p className="font-semibold text-gray-700 mb-3">{currentQuestion.question}</p>
+                    <div className="space-y-2">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = Array.isArray(selectedOption) ? selectedOption.includes(option) : selectedOption === option;
+                            const isCorrectOption = Array.isArray(currentQuestion.correctAnswer)
+                                ? currentQuestion.correctAnswer.includes(option)
+                                : option.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+
+                            if (feedback && !isPreAssessment) {
+                                if (isCorrectOption) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800';
+                                } else if (isSelected && !isCorrectOption) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800';
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800';
+                            }
+
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handleOptionSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {feedback && !isPreAssessment && (isCorrectOption || (isSelected && !isCorrectOption)) && (
+                                            isCorrectOption ? <span className="text-green-600 mr-2">✓</span> : <span className="text-red-600 mr-2">✗</span>
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-4 text-center">
+                        {isPreAssessment ? (
+                             <button
+                                onClick={handlePreAssessmentNext}
+                                disabled={selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Assessment'}
+                            </button>
+                        ) : (
+                            <>
+                            {!feedback ? (
+                                <button
+                                    onClick={handleRegularQuizSubmit}
+                                    disabled={selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    Submit Answer
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={handleRegularQuizNext}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Next Question
+                                </button>
+                            )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+        
+        /**
+         * PreAssessmentQuiz component to handle the initial diagnostic quiz.
+         * Displays quiz questions and then results, allowing users to "test out" of modules.
+         */
+        const PreAssessmentQuiz = ({ onComplete, onExit }) => {
+            const [results, setResults] = useState(null);
+
+            const handleQuizComplete = (finalAnswers) => {
+                const moduleResults = {};
+                finalAnswers.forEach(answer => {
+                    const { moduleId } = answer.question;
+                    if (!moduleResults[moduleId]) {
+                        moduleResults[moduleId] = { correct: 0, total: 0 };
+                    }
+                    if (answer.isCorrect) {
+                        moduleResults[moduleId].correct++;
+                    }
+                    moduleResults[moduleId].total++;
+                });
+
+                const completedModules = [];
+                for (const moduleId in moduleResults) {
+                    // For pre-assessment, a module is "completed" if all its questions in the pre-assessment quiz were answered correctly.
+                    if (moduleResults[moduleId].correct === moduleResults[moduleId].total) {
+                        completedModules.push(moduleId);
+                    }
+                }
+                setResults({ completedModules, total: finalAnswers.length, correct: finalAnswers.filter(a => a.isCorrect).length });
+                onComplete(completedModules);
+            };
+
+            if (results) {
+                return (
+                    <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4 animate-fade-in">
+                        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full text-center">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">Assessment Complete!</h2>
+                            <p className="text-lg text-gray-600 mb-6">
+                                You correctly answered {results.correct} out of {results.total} questions.
+                            </p>
+                            {results.completedModules.length > 0 ? (
+                                <>
+                                    <p className="text-green-600 font-semibold mb-4">You've tested out of the following modules:</p>
+                                    <ul className="list-disc list-inside text-left mb-6 bg-green-50 p-4 rounded-lg">
+                                        {results.completedModules.map(id => <li key={id}>{contentData[id].title}</li>)}
+                                    </ul>
+                                </>
+                            ) : (
+                                <p className="text-yellow-600 font-semibold mb-6">You haven't tested out of any modules. You can proceed to the main modules for learning.</p>
+                            )}
+                            <button
+                                onClick={onExit}
+                                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                            >
+                                Return to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
+                        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Diagnostic Quiz</h2>
+                        <Quiz questions={preAssessmentQuizData} onComplete={handleQuizComplete} isPreAssessment={true} />
+                    </div>
+                </div>
+            );
+        };
+
+
+        /**
+         * Dashboard component to display the available learning modules.
+         * It allows users to select a module to start learning.
+         * Shows progress for each module using a circular progress bar and status.
+         */
+        const Dashboard = ({ onSelectModule, progress, onResetProgress, onStartPreAssessment }) => {
+            let totalCompletedSteps = 0;
+            let totalPossibleSteps = 0;
+            let totalQuizCorrect = 0;
+            let totalQuizQuestions = 0;
+
+            // Calculate overall progress and gather quiz scores
+            Object.entries(contentData).forEach(([moduleId, module]) => {
+                totalPossibleSteps += module.steps.length;
+                const moduleProgress = progress[moduleId] || {};
+                
+                Object.values(moduleProgress).forEach(stepProgress => {
+                    if (stepProgress.completed) {
+                        totalCompletedSteps++;
+                    }
+                    if (stepProgress.score !== undefined) {
+                        totalQuizCorrect += stepProgress.score;
+                    }
+                });
+
+                module.steps.forEach(step => {
+                    if (step.type === 'quiz') {
+                        totalQuizQuestions += step.questions.length;
+                    }
+                });
+            });
+
+
+            const overallPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+
+            return (
+                <div className="p-4 sm:p-6 md:p-8 min-h-screen w-full flex flex-col">
+                    <div className="w-full">
+                        <header className="mb-8 text-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                {/* Text placeholder for the main application identifier */}
+                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">ALM</span>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Analgesics Learning Module</h1>
+                                <span className="bg-gray-200 text-gray-600 text-xs font-mono px-2.5 py-1 rounded-full">V:1.0</span>
+                            </div>
+                            <p className="text-lg text-gray-500 max-w-2xl mx-auto">Master the pharmacology of pain management through interactive modules and NCLEX-style assessments.</p>
+                        </header>
+
+                        {/* Skip Ahead Button */}
+                        <div className="mb-8 text-center">
+                            <button
+                                onClick={onStartPreAssessment}
+                                className="w-full max-w-md mx-auto px-6 py-4 bg-teal-500 text-white font-bold rounded-lg shadow-lg hover:bg-teal-600 transition-all duration-300 transform hover:scale-105"
+                            >
+                                <div className="text-xl">Skip Ahead: Take Diagnostic Quiz</div>
+                                <div className="text-sm font-normal">Test your knowledge and potentially skip modules.</div>
+                            </button>
+                        </div>
+
+                        {/* Overall Progress Bar & Reset Button */}
+                        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
+                           <div className="flex justify-between items-center mb-3">
+                              <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                              <button 
+                                onClick={onResetProgress}
+                                className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" clipRule="evenodd" />
+                                </svg>
+                                Reset Progress
+                              </button>
+                           </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div
+                                    className="bg-indigo-600 h-4 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-left text-sm text-gray-600 mt-2">
+                                    {totalQuizQuestions > 0 && `Quiz Performance: ${totalQuizCorrect} / ${totalQuizQuestions} correct`}
+                                </p>
+                                <p className="text-right text-sm text-gray-600 mt-2">{Math.round(overallPercentage)}% Completed</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                            {/* Iterate over all modules defined in contentData */}
+                            {Object.entries(contentData).map(([id, module]) => {
+                                const moduleProgress = progress[id] || {};
+                                // Calculate completion count for steps within the module.
+                                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                                const totalSteps = module.steps.length;
+                                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
+                                let statusText = "Not Started";
+                                let statusColor = "text-gray-500";
+                                if (completedCount === totalSteps) {
+                                    statusText = "Completed";
+                                    statusColor = "text-green-600";
+                                } else if (completedCount > 0) {
+                                    statusText = "In Progress";
+                                    statusColor = "text-yellow-600";
+                                }
+
+                                // Get quiz score for this module if available
+                                const quizStep = module.steps.find(step => step.type === 'quiz');
+                                const quizProgress = quizStep ? moduleProgress[quizStep.id] : null;
+
+                                return (
+                                    <div
+                                        key={id}
+                                        onClick={() => onSelectModule(id)}
+                                        // Styling for module cards, including hover effects.
+                                        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col"
+                                    >
+                                        <div className="flex justify-between items-start mb-4">
+                                            {/* Placeholder for module icon: Displays the first letter of the module title. */}
+                                            <div className={cn("p-3 rounded-full bg-gradient-to-br", module.color, "w-10 h-10 flex items-center justify-center text-white text-lg font-bold shadow-md flex-shrink-0")}>
+                                                {module.title.split(' ').map(word => word.charAt(0)).join('')}
+                                            </div>
+                                            {/* Progress Circle */}
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <svg className="w-full h-full" viewBox="0 0 36 36">
+                                                    {/* Background circle for the progress bar. */}
+                                                    <path
+                                                        className="text-gray-200"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                    />
+                                                    {/* Foreground arc representing the completion percentage. */}
+                                                    <path
+                                                        className="text-indigo-500"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${percentage}, 100`}
+                                                        strokeLinecap="round"
+                                                        transform="rotate(-90 18 18)"
+                                                    />
+                                                </svg>
+                                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h3>
+                                        <p className="text-gray-500 text-sm mb-2 h-10">{module.description}</p>
+                                        <div className="mt-auto">
+                                            <p className={cn("text-sm font-semibold", statusColor)}>{statusText}</p>
+                                            {quizProgress && quizProgress.score !== undefined && (
+                                                <p className="text-sm text-gray-600 mt-1">Quiz Score: {quizProgress.score} / {quizStep.questions.length}</p>
+                                            )}
+                                            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700 mt-2">
+                                                Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        /**
+         * CaseStudy component for a multiple-choice case study challenge.
+         * Presents a scenario and a question with multiple options.
+         */
+        const CaseStudy = ({ caseData, onComplete }) => {
+            // State to store the user's selected answer.
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+            // Handles the selection of an answer option.
+            const handleSelect = (option) => {
+                if (selectedAnswer) return; // Prevents changing the answer once selected.
+                setSelectedAnswer(option);
+                // Case-insensitive comparison
+                if (option.toLowerCase() === caseData.correctAnswer.toLowerCase()) {
+                    onComplete(); // Marks the step as complete if the correct answer is chosen.
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
+                    {/* Scenario description, using dangerouslySetInnerHTML to render HTML bold tags */}
+                    <p className="bg-blue-100 text-blue-800 p-3 rounded-md mb-4 text-sm" dangerouslySetInnerHTML={{ __html: caseData.scenario }}></p>
+                    <p className="font-semibold text-gray-700 mb-3">{caseData.question}</p>
+                    <div className="space-y-2">
+                        {caseData.options.map(option => {
+                            const isSelected = selectedAnswer === option;
+                            // Case-insensitive comparison for correct answer highlight
+                            const isCorrect = option.toLowerCase() === caseData.correctAnswer.toLowerCase();
+                            const showFeedback = selectedAnswer !== null; // Show feedback once any answer is selected
+
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200'; // Default styling for options.
+                            if (showFeedback) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown
+                                } else if (isSelected && !isCorrect) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission
+                            }
+
+                            return (
+                                <div
+                                    key={option}
+                                    onClick={() => handleSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {showFeedback && ( // Display a checkmark or cross icon if feedback is active
+                                            isCorrect ? <span className="text-green-600 mr-2">✓</span> : (isSelected && <span className="text-red-600 mr-2">✗</span>)
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {selectedAnswer && ( // Display the explanation after an answer has been selected.
+                        <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                            <h5 className="font-bold text-indigo-800">Explanation</h5>
+                            <p className="text-sm text-indigo-700" dangerouslySetInnerHTML={{ __html: caseData.explanation }}></p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        /**
+         * VitalsCheck component for an interactive question about vital signs.
+         * This component is not used in the Analgesics module, but kept for completeness if needed in other modules.
+         */
+        const VitalsCheck = ({ onComplete }) => {
+            // State to store the user's selected vital sign.
+            const [selectedVital, setSelectedVital] = useState(null);
+            const vitals = { "BP": "100/68 mmHg", "HR": "110 bpm", "RR": "24/min", "Temp": "99°F" };
+            const mostConcerning = "HR"; // The correct answer.
+            const explanation = "A heart rate of 110 bpm (tachycardia) is a significant sign of distress. It indicates the heart is working hard to compensate for poor perfusion, which is common during an acute myocardial infarction.";
+
+            // Handles the selection of a vital sign option.
+            const handleSelect = (vital) => {
+                if(selectedVital) return; // Prevents changing the selection once made.
+                setSelectedVital(vital);
+                // Case-insensitive comparison (though keys are already consistent)
+                if (vital.toLowerCase() === mostConcerning.toLowerCase()) {
+                    onComplete(); // Mark step as complete if correct answer is chosen
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Vitals Check</h4>
+                    <p className="text-sm text-gray-600 mb-4">A patient presents with chest pain. Based on these vital signs, which one is the MOST concerning indicator of impaired central perfusion?</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        {Object.entries(vitals).map(([key, value]) => {
+                            const isSelected = selectedVital === key;
+                            // Case-insensitive comparison for correct answer highlight
+                            const isCorrect = key.toLowerCase() === mostConcerning.toLowerCase();
+                            const showFeedback = selectedVital !== null; // Show feedback once any vital is selected
+
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200'; // Default styling.
+                            if (showFeedback) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown
+                                } else if (isSelected && !isCorrect) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission
+                            }
+                            return (
+                                <div key={key} onClick={() => handleSelect(key)} className={cn('p-4 rounded-lg border-2 cursor-pointer text-center', optionClass)}>
+                                    <div className="text-sm font-bold text-gray-500">{key}</div>
+                                    <div className="text-xl font-semibold text-gray-800">{value}</div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                   {selectedVital && ( // Display the rationale after a selection is made.
+                        <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                            <h5 className="font-bold text-indigo-800">Rationale</h5>
+                            <p className="text-sm text-indigo-700" dangerouslySetInnerHTML={{ __html: explanation }}></p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        /**
+         * StaticContentStep component for displaying basic text content.
+         * Marks itself as complete immediately on render.
+         */
+        const StaticContentStep = ({ step, onComplete }) => {
+            // For 'text' type steps, mark them as complete immediately upon rendering.
+            // The effect should only run once when the component mounts to prevent an infinite loop.
+            useEffect(() => {
+                onComplete();
+            }, []); // Empty dependency array ensures this runs only once.
+
+            // Using dangerouslySetInnerHTML to render HTML content (e.g., <strong> tags).
+            return (
+                <div className="prose max-w-none text-gray-700 leading-relaxed p-4 bg-gray-50 rounded-lg shadow-inner space-y-4" dangerouslySetInnerHTML={{ __html: step.content }}>
+                </div>
+            );
+        };
+
+        /**
+         * CompletionModal component displayed when a module is completed.
+         */
+        const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
+                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm"
+                            >
+                                Back to Dashboard
+                            </button>
+                            {hasNextModule && (
+                                <button
+                                    onClick={onNextModule}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Continue to Next Module
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        /**
+         * LearningModule component to manage steps within the selected module.
+         * Provides navigation between steps and renders the appropriate content for each.
+         */
+        const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
+            const [activeStep, setActiveStep] = useState(0); // Manages the index of the currently active step.
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Controls the visibility of the sidebar on mobile.
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false); // State for completion modal
+
+            // Callback function to update the completion status of a specific step.
+            const handleStepComplete = useCallback((stepId, data = {}) => {
+                onProgressUpdate(module.id, stepId, { completed: true, ...data });
+            }, [onProgressUpdate, module.id]);
+
+            const moduleProgress = progress[module.id] || {};
+            
+            // Check if all steps in the current module are completed
+            const allStepsCompletedInModule = module.steps.every(step =>
+                moduleProgress[step.id] && moduleProgress[step.id].completed
+            );
+
+            // Navigates to the next step, if available.
+            const handleNextStep = () => {
+                // If it's the last step and all steps in the module are completed, open the modal
+                if (activeStep === module.steps.length - 1 && allStepsCompletedInModule) {
+                    setIsCompletionModalOpen(true);
+                } else if (activeStep < module.steps.length - 1) {
+                    setActiveStep(activeStep + 1);
+                }
+            };
+
+            // Navigates to the previous step, if available.
+            const handlePrevStep = () => {
+                if (activeStep > 0) {
+                    setActiveStep(activeStep - 1);
+                }
+            };
+            
+            // Ensure module and its steps are defined before accessing properties
+            if (!module || !module.steps) {
+                console.error("LearningModule received invalid module prop:", module);
+                return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
+            }
+
+            const currentStep = module.steps[activeStep];
+            
+            // Renders the appropriate content component based on the current step's type.
+            // This function acts as a router for different interactive and static content types.
+            const renderStepContent = (step) => {
+                if (!step) return <p>Please select a step.</p>;
+
+                const onCompleteForStep = (data) => handleStepComplete(step.id, data);
+
+                switch (step.type) {
+                    case 'text':
+                        return <StaticContentStep key={step.id} step={step} onComplete={onCompleteForStep} />;
+                    case 'interactive_vitals':
+                        return <VitalsCheck key={step.id} onComplete={onCompleteForStep} />;
+                    case 'case_study':
+                        return <CaseStudy key={step.id} caseData={step.case} onComplete={onCompleteForStep} />;
+                    case 'quiz':
+                        return <Quiz key={step.id} questions={step.questions} onComplete={onCompleteForStep} />;
+                    default:
+                        // Fallback for unrecognized step types, ensuring robust error handling.
+                        return <p key={step.id} className="text-red-600">Error: Content for this step type is not available.</p>;
+                }
+            };
+
+            const handleModalClose = () => {
+                setIsCompletionModalOpen(false);
+                onBack(); // Go back to dashboard when modal is closed
+            };
+
+            const handleModalNextModule = () => {
+                setIsCompletionModalOpen(false);
+                onNextModule(); // Proceed to next module
+            };
+
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
+                    {/* Header for the learning module, including back button and module title. */}
+                    <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
+                        <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            <span className="hidden sm:inline">Dashboard</span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                        </div>
+                        {/* Mobile sidebar toggle button using text/emoji placeholders. */}
+                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                    </header>
+                    {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
+                    <div className="flex flex-1 overflow-hidden">
+                        {/* Sidebar for navigation steps within the module. */}
+                        <aside className={cn(
+                            "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
+                            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        )}>
+                            <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
+                            <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
+                                {module.steps.map((step, index) => (
+                                    <button
+                                        key={step.id}
+                                        onClick={() => {
+                                            setActiveStep(index);
+                                            setIsSidebarOpen(false); // Close sidebar on mobile after a step is selected.
+                                        }}
+                                        className={cn(
+                                            'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
+                                            activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700'
+                                        )}
+                                    >
+                                        {/* Step completion indicator */}
+                                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                            {moduleProgress[step.id]?.completed ? (
+                                                <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                            ) : (
+                                                <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                            )}
+                                        </div>
+                                        <span className="flex-1 text-sm">{step.title}</span>
+                                    </button>
+                                ))}
+                            </nav>
+                        </aside>
+
+                        {/* Main content area for the current step. */}
+                        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                            <div className="max-w-5xl mx-auto">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
+                                {renderStepContent(currentStep)}
+
+                                {/* Navigation buttons for moving between steps. */}
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={handlePrevStep}
+                                        disabled={activeStep === 0}
+                                        className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <button
+                                        onClick={handleNextStep}
+                                        disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
+                                    >
+                                        {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
+                                    </button>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                    <CompletionModal
+                        isOpen={isCompletionModalOpen}
+                        onClose={handleModalClose}
+                        onNextModule={handleModalNextModule}
+                        hasNextModule={hasNextModule}
+                    />
+                </div>
+            );
+        };
+        
+        // --- Main App Component ---
+        /**
+         * The root component of the Analgesics Learning Module application.
+         * Manages overall application state, including module selection, user ID, and progress.
+         */
+        function App() {
+            // State for the currently selected learning module's ID. Null means Dashboard is active.
+            const [currentModuleId, setCurrentModuleId] = useState(null);
+            const [isPreAssessmentActive, setIsPreAssessmentActive] = useState(false);
+            // State for the authenticated user's ID, used for local storage progress tracking.
+            const [userId, setUserId] = useState(null);
+            // State for storing the user's progress across all modules and steps.
+            const [progress, setProgress] = useState({});
+            // State to indicate if authentication is complete and user ID is available.
+            const [isAuthReady, setIsAuthReady] = useState(false);
+
+            // Effect hook for handling initial authentication and setting the user ID.
+            useEffect(() => {
+                const unsubscribe = mockAuth.onAuthStateChanged((user) => {
+                    if (user) setUserId(user.uid);
+                    setIsAuthReady(true); // Mark authentication as ready once user is determined.
+                });
+                return () => unsubscribe(); // Cleanup the auth state listener on component unmount.
+            }, []); // Empty dependency array ensures this runs only once on mount.
+
+            // Effect hook for loading user progress from localStorage after authentication is ready.
+            useEffect(() => {
+                if (!isAuthReady || !userId) return; // Only proceed if auth is ready and userId is available.
+                const storedProgress = localStorage.getItem(`analgesics-module-progress-${userId}`);
+                if (storedProgress) {
+                    try {
+                        setProgress(JSON.parse(storedProgress)); // Attempt to parse and set stored progress.
+                    } catch (e) {
+                        console.error("Failed to parse stored progress, resetting.", e);
+                        setProgress({}); // Reset progress if parsing fails (e.g., corrupted data).
+                    }
+                }
+            }, [isAuthReady, userId]); // Reruns when auth status or userId changes.
+
+            // Callback function to update and persist the user's progress for a specific step.
+            const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
+                if (!isAuthReady || !userId) return;
+
+                setProgress(currentProgress => {
+                    const currentStepProgress = currentProgress[moduleId]?.[stepId] || {};
+                    const newStepProgress = { ...currentStepProgress, ...data };
+
+                    // If the old and new step data are identical, do not update state.
+                    // This prevents the infinite re-render loop.
+                    if (JSON.stringify(currentStepProgress) === JSON.stringify(newStepProgress)) {
+                        return currentProgress;
+                    }
+
+                    // Otherwise, proceed with the update.
+                    const newProgress = {
+                        ...currentProgress,
+                        [moduleId]: {
+                            ...(currentProgress[moduleId] || {}),
+                            [stepId]: newStepProgress
+                        }
+                    };
+
+                    localStorage.setItem(`analgesics-module-progress-${userId}`, JSON.stringify(newProgress));
+                    return newProgress;
+                });
+            }, [isAuthReady, userId]);
+
+            const handlePreAssessmentComplete = (completedModuleIds) => {
+                const newProgress = { ...progress };
+                completedModuleIds.forEach(moduleId => {
+                    const module = contentData[moduleId];
+                    if (module) {
+                        newProgress[moduleId] = {};
+                        module.steps.forEach(step => {
+                            newProgress[moduleId][step.id] = { completed: true };
+                        });
+                    }
+                });
+                setProgress(newProgress);
+                localStorage.setItem(`analgesics-module-progress-${userId}`, JSON.stringify(newProgress));
+                // The results screen is now part of the PreAssessmentQuiz component.
+                // We just need to handle exiting it.
+            };
+            
+            // Callback to reset all progress
+            const handleResetProgress = useCallback(() => {
+                if (!isAuthReady || !userId) return;
+                // Clear from state
+                setProgress({});
+                // Clear from localStorage
+                localStorage.removeItem(`analgesics-module-progress-${userId}`);
+            }, [isAuthReady, userId]);
+
+            // Function to navigate to the next module in the sequence
+            const handleNextModule = useCallback(() => {
+                const moduleIds = Object.keys(contentData);
+                const currentIndex = moduleIds.indexOf(currentModuleId);
+                if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
+                    setCurrentModuleId(moduleIds[currentIndex + 1]);
+                } else {
+                    // If it's the last module, go back to the dashboard.
+                    setCurrentModuleId(null);
+                }
+            }, [currentModuleId]);
+
+            // Determine which module is currently selected based on `currentModuleId`.
+            const selectedModule = currentModuleId && contentData[currentModuleId]
+                                        ? { ...contentData[currentModuleId], id: currentModuleId }
+                                        : null;
+
+            const moduleIds = Object.keys(contentData);
+            const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
+            const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
+
+
+            return (
+                <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+                    {isPreAssessmentActive ? (
+                        <PreAssessmentQuiz 
+                            onComplete={handlePreAssessmentComplete} 
+                            onExit={() => setIsPreAssessmentActive(false)}
+                        />
+                    ) : selectedModule ? (
+                        <LearningModule
+                            key={selectedModule.id}
+                            module={selectedModule}
+                            onBack={() => setCurrentModuleId(null)}
+                            progress={progress}
+                            onProgressUpdate={handleProgressUpdate}
+                            onNextModule={handleNextModule}
+                            hasNextModule={hasNextModule}
+                        />
+                    ) : (
+                        <Dashboard 
+                            onSelectModule={setCurrentModuleId} 
+                            progress={progress} 
+                            onResetProgress={handleResetProgress}
+                            onStartPreAssessment={() => setIsPreAssessmentActive(true)}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        // --- Render the App into the DOM ---
+        // Get the DOM element where the React application will be mounted.
+        const container = document.getElementById('root');
+        // Create a React root, which is the entry point for React 18+ applications.
+        const root = ReactDOM.createRoot(container);
+        // Render the main App component into the root.
+        root.render(<App />);
+    </script>
+</body>
+</html>
