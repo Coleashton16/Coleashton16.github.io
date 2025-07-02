@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-inflammatories Learning Module</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind CSS configuration to use the Inter font.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out forwards',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- React and Library Setup ---
+        // Destructure necessary hooks from the global React object.
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        // --- Mock Authentication Setup for Standalone Demo ---
+        // This mock object simulates basic user authentication to allow progress tracking via localStorage.
+        // In a real application, this would be replaced with actual Firebase authentication.
+        const mockAuth = {
+            onAuthStateChanged: (callback) => {
+                // Simulate an asynchronous authentication check, providing a unique user ID.
+                setTimeout(() => callback({ uid: 'standalone-antiinflam-user' }), 100);
+                return () => {}; // Returns an empty function as a cleanup/unsubscribe placeholder.
+            },
+            signInAnonymously: () => Promise.resolve({ user: { uid: 'standalone-antiinflam-user' } }), // Mock anonymous sign-in.
+        };
+
+        // --- Content & Data Structure for the Learning Modules ---
+        // The main content is broken down into smaller, focused modules based on concepts.
+        const contentData = {
+            'inflammation-basics': {
+                title: 'Foundations of Inflammation',
+                color: 'from-sky-500 to-cyan-400',
+                description: 'Explore the fundamental concepts, cardinal signs, and chemical mediators of inflammation.',
+                steps: [
+                    { id: 'inflammation-intro', title: 'Introduction to Inflammation', type: 'text', content: `<strong>Introduction:</strong> Inflammation is a vital response to tissue injury, triggered by the release of chemical mediators like histamines, kinins, and prostaglandins. It's a protective mechanism where the body attempts to neutralize harmful agents and prepare for tissue repair. While related to infection, not all inflammation is caused by infection; trauma, surgery, extreme temperatures, and chemicals can also be culprits. Anti-inflammatory drugs reduce fluid migration and pain, improving mobility and comfort.` },
+                    { id: 'cardinal-signs', title: 'Cardinal Signs of Inflammation', type: 'text', content: `The five classic signs of inflammation are:<br><br>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-left">
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <h4 class="font-bold">1. Erythema (Redness)</h4>
+                                <p class="text-sm">Occurs due to increased blood accumulation from dilated arterioles caused by chemical mediators.</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <h4 class="font-bold">2. Edema (Swelling)</h4>
+                                <p class="text-sm">Plasma leaks into interstitial tissue as kinins and histamine increase capillary permeability.</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <h4 class="font-bold">3. Heat</h4>
+                                <p class="text-sm">Caused by increased blood flow and potentially pyrogens affecting the hypothalamus.</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <h4 class="font-bold">4. Pain</h4>
+                                <p class="text-sm">Results from tissue swelling and the release of chemical mediators that sensitize nerve cells.</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <h4 class="font-bold">5. Loss of Function</h4>
+                                <p class="text-sm">Due to fluid accumulation and pain, which restricts mobility in the affected area.</p>
+                        </div><br>
+                        Inflammation has two phases: a rapid <strong>vascular phase</strong> (10-15 minutes post-injury) involving vasodilation and increased capillary permeability, and a <strong>delayed phase</strong> where leukocytes infiltrate the inflamed tissue.` },
+                    { id: 'chemical-mediators', title: 'Chemical Mediators & COX Enzymes', type: 'text', content: `Various chemical mediators are released during inflammation:<br><br>
+                        - <strong>Histamine:</strong> The first mediator, causes arteriole dilation and increased capillary permeability.<br>
+                        - <strong>Kinins (e.g., Bradykinin):</strong> Increase capillary permeability and pain sensation.<br>
+                        - <strong>Prostaglandins:</strong> Cause vasodilation, smooth muscle relaxation, increased capillary permeability, and sensitize nerve cells to pain.<br><br>
+                        <strong>Cyclooxygenase (COX)</strong> is the enzyme converting arachidonic acid into prostaglandins. COX has two forms:<br>
+                        - <strong>COX-1:</strong> Protects the stomach lining and regulates blood platelets (promotes clotting).<br>
+                        - <strong>COX-2:</strong> Triggers inflammation and pain at the injury site.` },
+                    { id: 'inflammation-quiz', title: 'Inflammation Basics Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A patient presents with a swollen, red, and painful joint. The nurse understands these are classic signs of inflammation. Which chemical mediator is primarily responsible for the initial vasodilation and increased capillary permeability observed in the vascular phase?", options: ["Bradykinin", "Prostaglandin", "Histamine", "Leukotriene"], correctAnswer: "Histamine" },
+                        { question: "A nurse is educating a patient about the role of enzymes in inflammation. The nurse explains that blocking which specific COX enzyme form is most likely to cause gastrointestinal upset and bleeding?", options: ["COX-1", "COX-2", "Both COX-1 and COX-2 equally", "Neither COX-1 nor COX-2"], correctAnswer: "COX-1" }
+                      ]
+                    },
+                ]
+            },
+            'nsaids-first-gen': {
+                title: 'NSAIDs: First Generation',
+                color: 'from-red-500 to-orange-400',
+                description: 'Learn about Salicylates, Para-Chlorobenzoic Acid derivatives, and their nursing implications.',
+                steps: [
+                    { id: 'antiinflammatory-agents-overview', title: 'Anti-inflammatory Agents Overview', type: 'text', content: `Anti-inflammatory drugs, also known as prostaglandin inhibitors, reduce inflammation, relieve pain (analgesic), lower fever (antipyretic), and inhibit platelet aggregation (anticoagulant). Aspirin was the first, but many others (NSAIDs) have been developed. While NSAIDs mimic corticosteroids' effects, they are not chemically related.` },
+                    { id: 'nsaids-overview', title: 'Nonsteroidal Anti-inflammatory Drugs (NSAIDs)', type: 'text', content: `NSAIDs, including aspirin and aspirin-like drugs, inhibit the COX enzyme, thereby reducing prostaglandin synthesis. They are primarily used for inflammation and pain, especially in musculoskeletal conditions. Their antipyretic effect is less pronounced than their anti-inflammatory effect. Most NSAIDs are prescription-only, with ibuprofen and naproxen available OTC in lower doses.` },
+                    { id: 'nsaids-groups', title: 'Six Groups of NSAIDs', type: 'text', content: `NSAIDs are categorized into six groups:<br>
+                        1. Salicylates (e.g., Aspirin)<br>
+                        2. Para-chlorobenzoic acid derivatives (Indoles, e.g., Indomethacin)<br>
+                        3. Propionic acid derivatives (e.g., Ibuprofen, Naproxen)<br>
+                        4. Fenamates (e.g., Mefenamic acid)<br>
+                        5. Oxicams (e.g., Piroxicam, Meloxicam)<br>
+                        6. Selective COX-2 inhibitors (e.g., Celecoxib)<br><br>
+                        The first five are considered <strong>first-generation NSAIDs</strong>, inhibiting both COX-1 and COX-2. <strong>Second-generation NSAIDs</strong> (COX-2 inhibitors) selectively block COX-2.` },
+                    { id: 'aspirin-intro', title: 'Salicylates: Aspirin (ASA)', type: 'text', content: `Aspirin (acetylsalicylic acid, ASA) is the oldest anti-inflammatory agent. It decreases inflammation by inhibiting prostaglandin synthesis. It's also an antiplatelet drug, decreasing platelet aggregation and thus blood clotting, useful for cardiac or cerebrovascular disorders. High doses for inflammation can cause GI distress (anorexia, dyspepsia, nausea, vomiting, abdominal pain, heartburn, flatulence). Enteric-coated (EC) tablets can help reduce gastric distress but should not be crushed.` },
+                    { id: 'aspirin-cox-inhibition', title: 'Aspirin: COX-1 and COX-2 Inhibition', type: 'text', content: `Aspirin inhibits both COX-1 and COX-2. While inhibiting COX-2 reduces pain and inflammation, inhibiting COX-1 has mixed effects:<br>
+                        - <strong>Desirable COX-1 effect:</strong> Decreases platelet aggregation, which is beneficial for preventing blood clots.<br>
+                        - <strong>Undesirable COX-1 effect:</strong> Decreases protection of the stomach lining, leading to increased risk of gastric bleeding and ulcers.` },
+                    { id: 'aspirin-pharmacokinetics', title: 'Aspirin: Pharmacokinetics', type: 'text', content: `Aspirin is well absorbed from the GI tract. It has a short half-life (15-20 minutes). It should be taken with water, milk, or food to minimize GI distress. Aspirin is contraindicated in the last trimester of pregnancy due to risk of premature closure of the ductus arteriosus in the fetus. It should also be avoided in children with flu symptoms due to the risk of Reye syndrome.` },
+                    { id: 'aspirin-pharmacodynamics', title: 'Aspirin: Pharmacodynamics', type: 'text', content: `Aspirin inhibits prostaglandin synthesis by blocking COX-1 and COX-2, reducing inflammation and pain. Onset of action is 15-30 minutes, peak in 1-2 hours, and duration of 4-6 hours. Therapeutic anti-inflammatory effects may take a week or longer to become evident, especially with rectal preparations.` },
+                    { id: 'aspirin-hypersensitivity', title: 'Aspirin: Hypersensitivity & Overdose', type: 'text', content: `Symptoms of aspirin overdose or hypersensitivity include tinnitus (ringing in the ears), vertigo (dizziness), and bronchospasm, particularly in asthmatic patients. Salicylates are naturally present in some foods like prunes, raisins, licorice, curry, and paprika.` },
+                    { id: 'aspirin-nursing-process', title: 'Aspirin: Nursing Process', type: 'text', content: `<strong>Concept: Inflammation</strong><br>
+                        <strong>Recognize Cues (Assessment):</strong><br>
+                        - Assess medical history for gastric distress, bleeding, or liver disease.<br>
+                        - Obtain drug history for potential interactions (e.g., warfarin, other NSAIDs).<br>
+                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Acute pain, injury, nausea, reduced functional ability.<br>
+                        <strong>Generate Solutions (Planning):</strong> Patient will report decreased pain within 1 hour; swelling and redness will be reduced.<br>
+                        <strong>Take Action (Nursing Interventions):</strong><br>
+                        - Monitor serum salicylate levels (therapeutic range: 15-30 mcg/mL; mild toxicity >30 mcg/mL, severe >50 mcg/mL).<br>
+                        - Observe for bleeding signs (dark, tarry stools; bleeding gums; petechiae; ecchymosis; purpura).<br>
+                        <strong>Patient Teaching:</strong><br>
+                        - Avoid alcohol and highly protein-bound drugs like warfarin.<br>
+                        - Inform dentists/surgeons about aspirin use (discontinue 7 days before surgery, with provider approval).<br>
+                        - Keep out of reach of children; warn against aspirin for viral/flu symptoms in children (Reye syndrome risk).<br>
+                        - Take with food, milk, or plenty of fluids to reduce GI distress. EC tablets should not be cut or broken.<br>
+                        - Advise acetaminophen for dysmenorrhea (2 days before and first 2 days of period).<br>
+                        - Report side effects: drowsiness, tinnitus, headaches, flushing, dizziness, GI distress/bleeding, visual changes, seizures.<br>
+                        <strong>Evaluate Outcomes:</strong> Assess pain relief, reduction in swelling/redness, and presence of side effects.` },
+                    { id: 'para-chlorobenzoic-acid', title: 'Para-Chlorobenzoic Acid Derivatives', type: 'text', content: `This group includes <strong>indomethacin</strong>, a potent prostaglandin inhibitor used for RA, gouty arthritis, and osteoarthritis. It's highly protein bound (99%) and very irritating to the stomach, so it must be taken with food. It has a moderate half-life (2.6-11.2 hours).<br><br>
+                        Other drugs like <strong>sulindac</strong> and <strong>tolmetin</strong> cause less severe adverse reactions. Tolmetin is also highly protein bound with a short half-life (1-2 hours). This group can cause sodium and water retention and increased blood pressure.` },
+                    { id: 'nsaids-first-gen-quiz', title: 'First-Gen NSAIDs Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A nurse is teaching a parent about over-the-counter pain relievers for their child with a fever. Which statement by the parent indicates a need for further teaching?", options: ["'I can give my child ibuprofen for fever relief.'", "'I should avoid giving aspirin to my child if they have flu-like symptoms.'", "'Acetaminophen is a safe choice for my child's fever.'", "'Aspirin is usually preferred for children's fevers due to its rapid action.'"], correctAnswer: "'Aspirin is usually preferred for children's fevers due to its rapid action.'" },
+                        { question: "A patient on long-term aspirin therapy for arthritis reports ringing in their ears and dizziness. The nurse recognizes these symptoms as indicative of which adverse effect?", options: ["Hypoglycemia", "Reye syndrome", "Salicylism (aspirin toxicity)", "Bronchospasm"], correctAnswer: "Salicylism (aspirin toxicity)" },
+                        { question: "Which instruction is most important for the nurse to provide to a patient taking indomethacin?", options: ["'Take this medication on an empty stomach for best absorption.'", "'You may experience increased urination with this medication.'", "'Always take this medication with food to reduce stomach irritation.'", "'This medication may cause your blood pressure to decrease.'"], correctAnswer: "'Always take this medication with food to reduce stomach irritation.'" }
+                      ]
+                    },
+                ]
+            },
+            'nsaids-propionic-cox2': {
+                title: 'NSAIDs: Propionic Acids & COX-2 Inhibitors',
+                color: 'from-blue-400 to-indigo-600',
+                description: 'Explore Propionic Acid derivatives, Fenamates, Oxicams, and selective COX-2 inhibitors.',
+                steps: [
+                    { id: 'propionic-acid-intro', title: 'Propionic Acid Derivatives', type: 'text', content: `This group of NSAIDs (e.g., <strong>ibuprofen, naproxen, fenoprofen, ketoprofen, flurbiprofen, oxaprozin</strong>) are aspirin-like but generally have stronger effects and cause less GI irritation. They are highly protein bound, leading to potential drug interactions. They are generally better tolerated than aspirin or indomethacin, with severe adverse reactions like blood dyscrasias being less frequent. Ibuprofen is the most widely used and is available OTC in lower doses.` },
+                    { id: 'ibuprofen-pharmacokinetics', title: 'Ibuprofen: Pharmacokinetics', type: 'text', content: `Ibuprofen is well absorbed from the GI tract and has a short half-life (1.7-2.5 hours) but is highly protein bound (99%). Concurrent use with other highly protein-bound drugs can lead to severe side effects. It is metabolized in the liver and excreted in the urine as inactive metabolites.` },
+                    { id: 'ibuprofen-pharmacodynamics', title: 'Ibuprofen: Pharmacodynamics & Interactions', type: `text`, content: `Ibuprofen inhibits prostaglandin synthesis, effectively alleviating inflammation and pain. Its anti-inflammatory effect may take several days to become evident. It has many drug interactions:<br>
+                        - Increases effects of warfarin, sulfonamides, cephalosporins, and phenytoin.<br>
+                        - Decreased effect when taken with aspirin.<br>
+                        - May cause hypoglycemia with insulin or oral hypoglycemic drugs.<br>
+                        - High risk of toxicity with concurrent calcium channel blockers.` },
+                    { id: 'ibuprofen-nursing-process', title: 'Ibuprofen: Nursing Process', type: 'text', content: `<strong>Concept: Inflammation</strong><br>
+                        <strong>Recognize Cues (Assessment):</strong><br>
+                        - Check for NSAID allergy.<br>
+                        - Obtain drug and herbal history (e.g., phenytoin, sulfonamides, warfarin, lithium, ginkgo, feverfew).<br>
+                        - Assess for severe renal/liver disease, peptic ulcer, bleeding disorders.<br>
+                        - Assess for GI distress and peripheral edema.<br>
+                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Acute pain, injury, nausea, reduced functional ability, decreased mobility.<br>
+                        <strong>Generate Solutions (Planning):</strong> Patient will report decreased pain within 1 hour; swelling and redness will be reduced within 1 week.<br>
+                        <strong>Take Action (Nursing Interventions):</strong><br>
+                        - Observe for bleeding signs (gums, petechiae, ecchymoses, black/tarry stools).<br>
+                        - Administer with food to prevent GI upset.<br>
+                        - Monitor vital signs and peripheral edema.<br>
+                        - Provide clear medication names and dosages.<br>
+                        <strong>Patient Teaching:</strong><br>
+                        - Avoid aspirin, acetaminophen, and alcohol with NSAIDs.<br>
+                        - Alert about interactions with complementary/alternative therapies (e.g., dong quai, feverfew, garlic, ginger, ginkgo).<br>
+                        - Inform dentists/surgeons about continuous NSAID use.<br>
+                        - Advise female patients to avoid 1-2 days before menstruation (heavy flow); acetaminophen is preferred.<br>
+                        - Pregnant patients should avoid NSAIDs (congenital abnormalities, excess bleeding).<br>
+                        - Desired effects may take several weeks.<br>
+                        - Report side effects: GI distress, peripheral edema, purpura/petechiae, dizziness.<br>
+                        - Take with meals/snacks.<br>
+                        <strong>Evaluate Outcomes:</strong> Assess pain decrease, joint swelling reduction, mobility increase, and adverse reactions.` },
+                    { id: 'fenamates', title: 'Fenamates', type: 'text', content: `The fenamate group includes potent NSAIDs like <strong>meclofenamate sodium monohydrate</strong> and <strong>mefenamic acid</strong>, used for acute and chronic arthritic conditions. They decrease prostaglandin synthesis by inhibiting both COX-1 and COX-2. Common side effects include gastric irritation (avoid in patients with peptic ulcer history), edema, dizziness, tinnitus, and pruritus.` },
+                    { id: 'oxicams', title: 'Oxicams', type: 'text', content: `<strong>Piroxicam</strong> and <strong>meloxicam</strong> are oxicams indicated for long-term arthritic conditions (RA, osteoarthritis). They inhibit COX-1 and COX-2, causing gastric problems but with a lower incidence than some other NSAIDs. Their major advantage is a long half-life, allowing once-daily dosing. Full clinical response to piroxicam may take 1-2 weeks. They are highly protein bound and should not be taken with aspirin or other NSAIDs.` },
+                    { id: 'cox2-inhibitors-intro', title: 'Selective COX-2 Inhibitors', type: 'text', content: `Second-generation NSAIDs, like <strong>celecoxib</strong>, selectively inhibit COX-2, reducing inflammation and pain without significantly affecting COX-1 (which protects the stomach lining and influences clotting). This means less risk of gastric bleeding or ulcers. They are preferred for patients with severe arthritis needing high anti-inflammatory doses. However, they may not be suitable for patients taking aspirin for cardiovascular protection, as COX-1 inhibition is needed for antiplatelet effects.` },
+                    { id: 'celecoxib-pharmacokinetics', title: 'Celecoxib: Pharmacokinetics', type: 'text', content: `Celecoxib is well absorbed from the GI tract and is highly protein bound (97%). It has a half-life of 11.2 hours. It is primarily excreted in the feces.` },
+                    { id: 'celecoxib-pharmacodynamics', title: 'Celecoxib: Pharmacodynamics & Interactions', type: 'text', content: `Celecoxib selectively inhibits COX-2, which promotes prostaglandin synthesis and inflammatory response, but does not inhibit COX-1. This mechanism helps relieve pain and inflammation while preserving stomach lining protection. It can interact with other drugs: decreased effect of ACE inhibitors; increased INR and GI bleeding with warfarin and SNRIs; increased toxicity with lithium; increased seizure risk with fluoroquinolones; increased celecoxib levels with fluconazole and ketoconazole. Ginkgo biloba may increase bleeding risk.` },
+                    { id: 'nsaids-older-adults', title: 'NSAIDs in Older Adults', type: 'text', content: `Older adults frequently use NSAIDs for inflammatory pain. They are at higher risk for drug interactions due to polypharmacy. GI distress, including ulceration, is four times more common in older adults, often requiring hospitalization. While COX-2 inhibitors reduce GI issues, edema is still a concern. Renal function should be evaluated, and older adults should increase fluid intake for hydration. NSAID doses should be lowered to decrease complications.` },
+                    { id: 'nsaids-quiz', title: 'NSAIDs Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A nurse is preparing to administer ibuprofen to a patient. The nurse should be aware that ibuprofen is contraindicated in patients with a history of which of the following conditions? (Select all that apply.)", options: ["Coronary artery bypass graft (CABG) surgery", "Peptic ulcer disease", "Asthma", "Dehydration", "Hypertension"], correctAnswer: ["Coronary artery bypass graft (CABG) surgery", "Peptic ulcer disease", "Dehydration"] },
+                        { question: "A patient with severe rheumatoid arthritis is prescribed celecoxib. The nurse understands that this medication is preferred over traditional NSAIDs for this patient due to which of its properties?", options: ["It has a shorter half-life, allowing for more frequent dosing.", "It does not inhibit COX-1, thus reducing the risk of gastrointestinal bleeding.", "It is less protein-bound, minimizing drug interactions.", "It provides stronger pain relief than other NSAIDs."], correctAnswer: "It does not inhibit COX-1, thus reducing the risk of gastrointestinal bleeding." },
+                        { question: "An older adult patient is taking an NSAID for osteoarthritis. The nurse should prioritize monitoring for which adverse effect in this patient population?", options: ["Metallic taste", "Hearing loss", "Renal dysfunction", "Alopecia"], correctAnswer: "Renal dysfunction" }
+                      ]
+                    },
+                ]
+            },
+            'corticosteroids-dmards': {
+                title: 'Corticosteroids & DMARDs',
+                color: 'from-purple-500 to-pink-500',
+                description: 'Understand corticosteroids and disease-modifying antirheumatic drugs (DMARDs).',
+                steps: [
+                    { id: 'corticosteroids', title: 'Corticosteroids', type: 'text', content: `Corticosteroids (e.g., <strong>prednisone, prednisolone, dexamethasone</strong>) are potent anti-inflammatory agents that suppress or prevent many components of the inflammatory process. Although not the first choice for arthritis due to numerous side effects, they are often used for flare-ups. They have a long half-life (>24 hours) and are usually given once daily in large doses. Long-term therapy requires gradual tapering (5-10 days) upon discontinuation to prevent adrenal insufficiency.` },
+                    { id: 'dmards-intro', title: 'Disease-Modifying Antirheumatic Drugs (DMARDs)', type: 'text', content: `DMARDs are prescribed when NSAIDs are insufficient for immune-mediated arthritic diseases like rheumatoid arthritis (RA). These drugs are more toxic but alter the disease process and delay progression. DMARDs include immunosuppressive agents, immunomodulators, and antimalarials. They are also used for conditions like osteoarthritis, psoriatic arthritis, severe psoriasis, ankylosing spondylitis, Crohn disease, and ulcerative colitis.` },
+                    { id: 'immunosuppressive-agents', title: 'Immunosuppressive Agents', type: 'text', content: `Selected immunosuppressive agents, such as <strong>azathioprine, cyclophosphamide</strong>, and <strong>methotrexate</strong>, are used in low doses to treat refractory RA (arthritis unresponsive to anti-inflammatory drugs). While primarily used for cancer, they can suppress the inflammatory process in RA when other treatments fail. Studies show they can prevent new erosions of joint cartilage.` },
+                    { id: 'immunomodulators', title: 'Immunomodulators', type: 'text', content: `Immunomodulators treat moderate to severe RA by disrupting inflammation and delaying disease progression. They include:<br>
+                        - <strong>Interleukin 1 (IL-1) receptor antagonists (e.g., anakinra):</strong> Block IL-1 activity, preventing it from binding to receptors in cartilage and bone, thus reducing synovial inflammation and joint destruction. Administered subcutaneously.<br>
+                        - <strong>Tumor Necrosis Factor (TNF) blockers (e.g., etanercept, infliximab, adalimumab, leflunomide):</strong> Bind to TNF, neutralizing it and delaying the inflammatory disease process. Etanercept and adalimumab are subcutaneous; infliximab is intravenous; leflunomide is oral. TNF blockers can rapidly suppress RA symptoms.<br><br>
+                        Both IL-1 receptor antagonists and TNF blockers increase the risk of severe infections and are contraindicated in active infection. They should be discontinued if an infection occurs. These drugs are typically very expensive.` },
+                    { id: 'infliximab-nursing-process', title: 'Infliximab: Nursing Process', type: 'text', content: `<strong>Concept: Inflammation</strong><br>
+                        <strong>Recognize Cues (Assessment):</strong><br>
+                        - Medical history: seizures, diabetes mellitus, multiple sclerosis, kidney/liver disease (may increase bleeding risk).<br>
+                        - Obtain baseline CBC, renal, and liver function tests.<br>
+                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Acute pain, injury, nausea, reduced functional ability, decreased mobility.<br>
+                        <strong>Generate Solutions (Planning):</strong> Patient will report decreased pain within 1 hour; swelling and redness will be reduced within 1 week.<br>
+                        <strong>Take Action (Nursing Interventions):</strong><br>
+                        - Obtain negative tuberculosis skin test before initiating infliximab therapy.<br>
+                        - Monitor patients for signs and symptoms of infection. If a serious infection occurs while a patient is receiving infliximab therapy, antibiotic therapy should be initiated, and infliximab should be discontinued.<br>
+                        - Monitor laboratory tests for blood dyscrasias (CBC) and renal and liver function (blood urea nitrogen [BUN], serum creatinine, alkaline phosphatase [ALP], aspartate aminotransferase [AST], alanine aminotransferase [ALT]).<br>
+                        - Flush intravenous (IV) tubing with normal saline before and after administration. Deliver IV medication through a 1.2-micron or smaller filter.<br>
+                        - Administer each dose over a minimum of 2 hours.<br>
+                        - Discontinue IV dose of infliximab if the patient develops acute infusion reaction (e.g., chest pain, fever, chills, dyspnea, pruritus, urticaria, hypotension, or hypertension).<br>
+                        - Monitor patients up to 2 hours after infusion for acute infusion reaction.<br>
+                        <strong>Patient Teaching:</strong><br>
+                        - Keep medical appointments for labs (CBC, renal/liver function) to detect dyscrasias/damage.<br>
+                        - Avoid live vaccines.<br>
+                        - Report dizziness, chills, depression, dyspnea, severe infections, seizures, fatigue, rash immediately.<br>
+                        <strong>Evaluate Outcomes:</strong> Assess response to DMARD (pain relief, reduced swelling) and presence of adverse reactions.` },
+                    { id: 'antimalarials', title: 'Antimalarials', type: 'text', content: `Antimalarial drugs may be used to treat RA when other treatments fail. Their exact mechanism in RA is unclear, but effects may take 4-12 weeks to appear. They are often used in combination with NSAIDs for uncontrolled arthritis.` },
+                    { id: 'corticosteroids-dmards-quiz', title: 'Corticosteroids & DMARDs Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A patient has been taking prednisone 40 mg daily for 3 months for severe rheumatoid arthritis. The nurse receives an order to discontinue the prednisone. What is the most appropriate nursing action?", options: ["Discontinue the medication immediately and monitor for adverse effects.", "Instruct the patient to take the last dose tonight and stop.", "Contact the healthcare provider to clarify the order, as the dose should be tapered.", "Advise the patient to take the medication every other day for one week."], correctAnswer: "Contact the healthcare provider to clarify the order, as the dose should be tapered." },
+                        { question: "A nurse is caring for a patient receiving infliximab for rheumatoid arthritis. Which assessment finding would be most concerning and require immediate intervention by the nurse?", options: ["Mild headache", "Injection site redness", "New onset fever and chills", "Fatigue"], correctAnswer: "New onset fever and chills" },
+                        { question: "Which instruction is critical for the nurse to provide to a patient starting therapy with an immunomodulator like infliximab?", options: ["'You will need to increase your intake of leafy green vegetables.'", "'You should expect your symptoms to resolve within 24 hours.'", "'Report any signs of infection, such as fever or sore throat, immediately.'", "'This medication will not affect your immune system.'"], correctAnswer: "'Report any signs of infection, such as fever or sore throat, immediately.'" }
+                      ]
+                    },
+                ]
+            },
+            'antigout-drugs': {
+                title: 'Antigout Drugs',
+                color: 'from-emerald-500 to-green-500',
+                description: 'Learn about the pathophysiology of gout and various medications used for its treatment.',
+                steps: [
+                    { id: 'gout-intro', title: 'Antigout Drugs: Gout Pathophysiology', type: 'text', content: `Gout is an inflammatory condition affecting joints, tendons, and tissues, most commonly the big toe. It's caused by a uric acid metabolism disorder (hyperuricemia) or ineffective uric acid clearance by kidneys, leading to urate crystal formation. Complications include gouty arthritis, urinary calculi, and gouty nephropathy. Bumps called tophi can form in subcutaneous tissue.<br><br>
+                        To manage gout, increase fluid intake to promote uric acid excretion and prevent kidney stones. Avoid high-purine foods (organ meats, sardines, salmon, gravy, herring, liver, meat soups) and alcohol (especially beer), as they increase uric acid. Use acetaminophen for discomfort instead of aspirin (salicylic acid) to avoid increasing urine acidity.` },
+                    { id: 'colchicine', title: 'Anti-inflammatory Gout Drug: Colchicine', type: 'text', content: `Colchicine, introduced in 1936, is an anti-inflammatory gout drug that inhibits leukocyte migration to inflamed sites. It's effective for acute gout symptoms but not for other inflammatory disorders. It doesn't inhibit uric acid synthesis or promote its excretion. It should be taken with food due to common gastric irritation (nausea, vomiting, diarrhea, abdominal pain in ~75% of patients at high doses). Contraindicated in severe renal, cardiac, or GI problems. Well absorbed, peaks in 2 hours, mostly excreted in feces (10-20% in urine).` },
+                    { id: 'xanthine-oxidase-inhibitors', title: 'Xanthine Oxidase Inhibitors', type: 'text', content: `These drugs reduce uric acid production. <strong>Allopurinol</strong> (since 1963) inhibits the xanthine oxidase enzyme, blocking xanthine metabolism to uric acid, preventing attacks. It's a prophylactic drug of choice for chronic tophaceous gout, and for patients with renal impairment, uric acid stones, or blood disorders like leukemia and polycythemia vera. Increased fluid intake is recommended.<br><br>
+                        <strong>Febuxostat</strong> (FDA approved 2009) is more selective for xanthine oxidase than allopurinol. It can cause gout exacerbations and has a greater risk of cardiovascular adverse events. Eliminated by both hepatic and renal pathways.` },
+                    { id: 'febuxostat-pharmacokinetics', title: 'Febuxostat: Pharmacokinetics', type: 'text', content: `Febuxostat has a half-life of 5-8 hours and is highly protein-bound (99.2%). Approximately 49% is excreted in urine and 45% in feces.` },
+                    { id: 'febuxostat-pharmacodynamics', type: 'text', content: `Febuxostat inhibits uric acid production by blocking xanthine oxidase. Its onset of action is unknown, with a peak time of 1-1.5 hours. It can increase the effects of theophylline, azathioprine, didanosine, mercaptopurine, and pegloticase. Lab interactions include increased AST, ALT, and BUN. Side effects include dizziness, headache, GI issues, arthralgia, weakness, edema, rash, and erectile dysfunction. Adverse reactions include bradycardia, gout exacerbations, Guillain-Barre syndrome, chest pain, diabetes mellitus, hyperglycemia, anemia, elevated hepatic enzymes, hyperlipidemia, and rhabdomyolysis. Life-threatening reactions include blood dyscrasias, angioedema, hepatic/renal impairment, dysrhythmias, and Stevens-Johnson syndrome.` },
+                    { id: 'uricosurics', title: 'Uricosurics', type: 'text', content: `Uricosurics, like <strong>probenecid</strong> (since 1945), increase uric acid excretion by inhibiting its reabsorption. They are effective for chronic gout but not acute attacks. Probenecid can be taken with colchicine (small doses of colchicine first). Take with meals if gastric irritation occurs. It has a half-life of 3-12 hours and is 75-95% protein bound. Avoid aspirin with probenecid as it inhibits its action. Side effects include flushed skin, fever, dizziness, headache, and potential kidney stones (prevented by increased water intake and maintaining urine pH >6). Blood dyscrasias may occur.` },
+                    { id: 'allopurinol-nursing-process', title: 'Allopurinol: Nursing Process', type: 'text', content: `<strong>Concept: Inflammation</strong><br>
+                        <strong>Recognize Cues (Assessment):</strong><br>
+                        - Medical history: gastric, renal, cardiac, or liver disorders (antigout drugs are renally excreted).<br>
+                        - Obtain drug history for interactions.<br>
+                        - Assess baseline serum uric acid and urine output.<br>
+                        - Check baseline BUN, serum creatinine, ALP, AST, ALT, LDH.<br>
+                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Acute pain, injury, nausea, reduced functional ability, decreased mobility.<br>
+                        <strong>Generate Solutions (Planning):</strong> Patient will report decreased pain within 1 hour; swelling and redness will be reduced within 1 week.<br>
+                        <strong>Take Action (Nursing Interventions):</strong><br>
+                        - Report GI symptoms; administer with food.<br>
+                        - Record urine output; increase fluid intake to prevent kidney stones.<br>
+                        - Monitor renal and liver function labs.<br>
+                        <strong>Patient Teaching:</strong><br>
+                        - Keep medical appointments for regular labs (CBC, renal/liver function) due to risk of blood dyscrasias.<br>
+                        - Increase fluid intake to promote drug and uric acid excretion.<br>
+                        - Report side effects: anorexia, nausea, vomiting, diarrhea, stomatitis, dizziness, rash, pruritus, metallic taste.<br>
+                        - Yearly eye exams due to potential visual changes with prolonged use.<br>
+                        - Avoid alcohol and caffeine (increase uric acid levels).<br>
+                        - Avoid large doses of vitamin C (kidney stone risk).<br>
+                        - Avoid high-purine foods (organ meats, salmon, sardines, gravy, legumes).<br>
+                        - Take with food/mealtime if gastric distress occurs.<br>
+                        <strong>Evaluate Outcomes:</strong> Assess response to drug (pain relief, reduced swelling) and presence of adverse reactions.` },
+                    { id: 'antigout-quiz', title: 'Antigout Drugs Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A patient with a new diagnosis of gout is prescribed allopurinol. The nurse should emphasize which of the following dietary instructions?", options: ["Increase intake of organ meats.", "Limit fluid intake to prevent fluid overload.", "Avoid alcohol, especially beer.", "Consume large amounts of vitamin C to boost immunity."], correctAnswer: "Avoid alcohol, especially beer." },
+                        { question: "Which medication is typically prescribed for the *acute* management of a gout attack, rather than for long-term prophylaxis?", options: ["Allopurinol", "Febuxostat", "Probenecid", "Colchicine"], correctAnswer: "Colchicine" },
+                        { question: "A nurse is teaching a patient about probenecid therapy. The nurse should instruct the patient to report which of the following adverse effects immediately?", options: ["Flushed skin", "Mild headache", "Increased urination", "Signs of kidney stones, such as severe flank pain or hematuria"], correctAnswer: "Signs of kidney stones, such as severe flank pain or hematuria" }
+                      ]
+                    },
+                ]
+            },
+            'integrated-case-review': {
+                title: 'Integrated Case Study & Review',
+                color: 'from-rose-400 to-red-500',
+                description: 'Apply your knowledge with a clinical case study and final review questions.',
+                steps: [
+                    { id: 'antiinflammatory-case-study', title: 'Critical Thinking Case Study', type: 'case_study', case: {
+                        scenario: `A 72-year-old woman had taken 650 mg of aspirin four times a day for 8 months to alleviate her chronic symptoms of pain and inflammation associated with arthritis. Four weeks ago, a peptic ulcer developed.`,
+                        question: "1. Explain the process by which the patient could have a peptic ulcer. How could this have been prevented?<br>2. Compare the similarities and differences in the side effects of salicylates with those of acetic acid agents, propionic acid agents, COX-2 inhibitors, and phenylacetic acid.<br>3. What teaching points should the patient receive before and during the time she takes aspirin?<br>4. How would COX-2 inhibitors prevent the development of a peptic ulcer?",
+                        options: ["Select 'Continue' to view the detailed analysis and answers."], // Placeholder for interaction
+                        correctAnswer: "Continue",
+                        explanation: `<strong>1. Process of Peptic Ulcer Development and Prevention:</strong><br>
+                            Aspirin is a non-selective NSAID that inhibits both COX-1 and COX-2 enzymes. COX-1 is responsible for producing prostaglandins that protect the stomach lining by promoting mucus and bicarbonate secretion and maintaining mucosal blood flow. By inhibiting COX-1, aspirin reduces these protective mechanisms, making the stomach lining vulnerable to acid erosion, leading to gastritis and eventually peptic ulcers. This risk is dose-dependent and increases with prolonged use, especially in older adults.<br>
+                            Prevention could have included: using enteric-coated aspirin, taking aspirin with food/milk, using a proton pump inhibitor (PPI) or H2 blocker concurrently, considering a lower dose, or switching to a selective COX-2 inhibitor if appropriate for her overall health profile (considering cardiovascular risk).<br><br>
+                            <strong>2. Similarities and Differences in Side Effects:</strong><br>
+                            - <strong>Salicylates (Aspirin):</strong> High risk of GI distress (dyspepsia, nausea, abdominal pain, GI bleeding/ulceration), tinnitus, hearing loss, Reye syndrome (in children with viral infections), metabolic acidosis.<br>
+                            - <strong>Propionic Acid Derivatives (e.g., Ibuprofen):</strong> Generally less GI irritation than aspirin, but still a common side effect. Can cause dyspepsia, nausea, abdominal pain, fluid retention, dizziness, headache. Risk of GI bleeding/ulceration is present but generally lower than aspirin at equivalent anti-inflammatory doses. Highly protein-bound, increasing drug interaction risk.<br>
+                            - <strong>COX-2 Inhibitors (e.g., Celecoxib):</strong> Significantly lower risk of GI side effects (peptic ulcer, bleeding) because they spare COX-1. Common side effects include headache, dizziness, abdominal pain, nausea, peripheral edema. Higher cardiovascular risk (thromboembolism) is a concern.<br>
+                            - <strong>General NSAID Similarities:</strong> All first-generation NSAIDs (including salicylates, propionic acids, para-chlorobenzoic acids, fenamates, oxicams) inhibit both COX-1 and COX-2 to varying degrees, leading to potential GI irritation, fluid retention, and effects on platelet aggregation. All can cause dizziness, headache, and dyspepsia. Renal impairment is a risk across most NSAIDs.<br><br>
+                            <strong>3. Patient Teaching Points for Aspirin:</strong><br>
+                            - Take with food, milk, or plenty of fluids to minimize GI distress. Enteric-coated tablets should not be crushed.<br>
+                            - Avoid alcohol due to increased risk of GI irritation and bleeding.<br>
+                            - Inform dentist/surgeon about aspirin use before any procedures (discontinue 7 days prior to surgery, if approved by provider, to reduce bleeding risk).<br>
+                            - Report signs of bleeding (dark, tarry stools; bleeding gums; excessive bruising; petechiae).<br>
+                            - Report side effects like tinnitus (ringing in ears), hearing loss, severe stomach pain, or unusual bruising.<br>
+                            - Keep out of reach of children; never give to children with flu-like symptoms (Reye syndrome).<br>
+                            - Acetaminophen is preferred for dysmenorrhea.<br><br>
+                            <strong>4. How COX-2 Inhibitors Prevent Peptic Ulcers:</strong><br>
+                            COX-2 inhibitors selectively block only the COX-2 enzyme, which is primarily responsible for mediating pain and inflammation. They do not significantly inhibit the COX-1 enzyme. COX-1 produces prostaglandins that are crucial for maintaining the integrity of the gastric mucosa by promoting mucus and bicarbonate production and regulating blood flow to the stomach lining. By preserving COX-1 activity, COX-2 inhibitors allow these protective mechanisms to remain intact, thereby significantly reducing the risk of peptic ulcers and GI bleeding compared to non-selective NSAIDs like aspirin.`
+                    }},
+                    { id: 'antiinflammatory-review-quiz', title: 'Anti-inflammatories Review Quiz', type: 'quiz',
+                      questions: [
+                        { question: "A patient is taking ibuprofen. The nurse understands that COX-1 and COX-2 inhibitors are different in that ibuprofen is more likely than celecoxib to cause which adverse effect?", options: ["Fever", "Constipation", "Peptic ulcer disease", "Metallic taste when eating"], correctAnswer: "Peptic ulcer disease" },
+                        { question: "When teaching a patient who is receiving allopurinol, what should the nurse encourage the patient to do?", options: ["Eat more meat.", "Increase vitamin C intake.", "Have annual eye examinations.", "Take medication 2 hours before meals."], correctAnswer: "Have annual eye examinations." },
+                        { question: "A patient is admitted to the hospital with an acute gout attack. The nurse expects that which medication will be ordered to treat acute gout?", options: ["Colchicine", "Allopurinol", "Probenecid", "Sulfinpyrazone"], correctAnswer: "Colchicine" },
+                        { question: "A patient is taking aspirin for arthritis. Which adverse reaction should the nurse teach the patient to report to the health care provider?", options: ["Tinnitus", "Weight loss", "Sinusitis", "Palpitations"], correctAnswer: "Tinnitus" },
+                        { question: "The nurse is teaching a patient about taking aspirin. Which are important points to include? (Select all that apply.)", options: ["Advise the patient to avoid alcohol while taking aspirin.", "Instruct the patient to take aspirin before meals on an empty stomach.", "Instruct the patient to inform the dentist of the aspirin dosage before having dental work.", "Instruct the patient to inform the surgeon of the aspirin dosage before having surgery.", "Suggest that aspirin may be given to children for flu symptoms.", "Advise patient that urine may be a harmless pinkish-red or reddish-brown color."], correctAnswer: ["Advise the patient to avoid alcohol while taking aspirin.", "Instruct the patient to inform the dentist of the aspirin dosage before having dental work.", "Instruct the patient to inform the surgeon of the aspirin dosage before having surgery."] },
+                        { question: "A patient is taking infliximab and asks the nurse what side effects/adverse reactions to expect from this drug. The nurse lists which side effects? (Select all that apply.)", options: ["Fatigue", "Headache", "Chest pain", "Renal damage", "Severe infections"], correctAnswer: ["Fatigue", "Headache", "Chest pain", "Severe infections"] }
+                      ]
+                    }
+                ]
+            }
+        };
+
+        // The pre-assessment quiz data now includes questions for all new modules.
+        const preAssessmentQuizData = [
+            // Questions for Module 1: Foundations of Inflammation
+            { moduleId: 'inflammation-basics', question: "A patient presents with a swollen, red, and painful joint. The nurse understands these are classic signs of inflammation. Which chemical mediator is primarily responsible for the initial vasodilation and increased capillary permeability observed in the vascular phase?", options: ["Bradykinin", "Prostaglandin", "Histamine", "Leukotriene"], correctAnswer: "Histamine" },
+            { moduleId: 'inflammation-basics', question: "A nurse is educating a patient about the role of enzymes in inflammation. The nurse explains that blocking which specific COX enzyme form is most likely to cause gastrointestinal upset and bleeding?", options: ["COX-1", "COX-2", "Both COX-1 and COX-2 equally", "Neither COX-1 nor COX-2"], correctAnswer: "COX-1" },
+
+            // Questions for Module 2: NSAIDs: First Generation
+            { moduleId: 'nsaids-first-gen', question: "A nurse is teaching a parent about over-the-counter pain relievers for their child with a fever. Which statement by the parent indicates a need for further teaching?", options: ["'I can give my child ibuprofen for fever relief.'", "'I should avoid giving aspirin to my child if they have flu-like symptoms.'", "'Acetaminophen is a safe choice for my child's fever.'", "'Aspirin is usually preferred for children's fevers due to its rapid action.'"], correctAnswer: "'Aspirin is usually preferred for children's fevers due to its rapid action.'" },
+            { moduleId: 'nsaids-first-gen', question: "A patient on long-term aspirin therapy for arthritis reports ringing in their ears and dizziness. The nurse recognizes these symptoms as indicative of which adverse effect?", options: ["Hypoglycemia", "Reye syndrome", "Salicylism (aspirin toxicity)", "Bronchospasm"], correctAnswer: "Salicylism (aspirin toxicity)" },
+            { moduleId: 'nsaids-first-gen', question: "Which instruction is most important for the nurse to provide to a patient taking indomethacin?", options: ["'Take this medication on an empty stomach for best absorption.'", "'You may experience increased urination with this medication.'", "'Always take this medication with food to reduce stomach irritation.'", "'This medication may cause your blood pressure to decrease.'"], correctAnswer: "'Always take this medication with food to reduce stomach irritation.'" },
+
+            // Questions for Module 3: NSAIDs: Propionic Acids & COX-2 Inhibitors
+            { moduleId: 'nsaids-propionic-cox2', question: "A nurse is preparing to administer ibuprofen to a patient. The nurse should be aware that ibuprofen is contraindicated in patients with a history of which of the following conditions? (Select all that apply.)", options: ["Coronary artery bypass graft (CABG) surgery", "Peptic ulcer disease", "Asthma", "Dehydration", "Hypertension"], correctAnswer: ["Coronary artery bypass graft (CABG) surgery", "Peptic ulcer disease", "Dehydration"] },
+            { moduleId: 'nsaids-propionic-cox2', question: "A patient with severe rheumatoid arthritis is prescribed celecoxib. The nurse understands that this medication is preferred over traditional NSAIDs for this patient due to which of its properties?", options: ["It has a shorter half-life, allowing for more frequent dosing.", "It does not inhibit COX-1, thus reducing the risk of gastrointestinal bleeding.", "It is less protein-bound, minimizing drug interactions.", "It provides stronger pain relief than other NSAIDs."], correctAnswer: "It does not inhibit COX-1, thus reducing the risk of gastrointestinal bleeding." },
+            { moduleId: 'nsaids-propionic-cox2', question: "An older adult patient is taking an NSAID for osteoarthritis. The nurse should prioritize monitoring for which adverse effect in this patient population?", options: ["Metallic taste", "Hearing loss", "Renal dysfunction", "Alopecia"], correctAnswer: "Renal dysfunction" },
+
+            // Questions for Module 4: Corticosteroids & DMARDs
+            { moduleId: 'corticosteroids-dmards', question: "A patient has been taking prednisone 40 mg daily for 3 months for severe rheumatoid arthritis. The nurse receives an order to discontinue the prednisone. What is the most appropriate nursing action?", options: ["Discontinue the medication immediately and monitor for adverse effects.", "Instruct the patient to take the last dose tonight and stop.", "Contact the healthcare provider to clarify the order, as the dose should be tapered.", "Advise the patient to take the medication every other day for one week."], correctAnswer: "Contact the healthcare provider to clarify the order, as the dose should be tapered." },
+            { moduleId: 'corticosteroids-dmards', question: "A nurse is caring for a patient receiving infliximab for rheumatoid arthritis. Which assessment finding would be most concerning and require immediate intervention by the nurse?", options: ["Mild headache", "Injection site redness", "New onset fever and chills", "Fatigue"], correctAnswer: "New onset fever and chills" },
+            { moduleId: 'corticosteroids-dmards', question: "Which instruction is critical for the nurse to provide to a patient starting therapy with an immunomodulator like infliximab?", options: ["'You will need to increase your intake of leafy green vegetables.'", "'You should expect your symptoms to resolve within 24 hours.'", "'Report any signs of infection, such as fever or sore throat, immediately.'", "'This medication will not affect your immune system.'"], correctAnswer: "'Report any signs of infection, such as fever or sore throat, immediately.'" },
+
+            // Questions for Module 5: Antigout Drugs
+            { moduleId: 'antigout-drugs', question: "A patient with a new diagnosis of gout is prescribed allopurinol. The nurse should emphasize which of the following dietary instructions?", options: ["Increase intake of organ meats.", "Limit fluid intake to prevent fluid overload.", "Avoid alcohol, especially beer.", "Consume large amounts of vitamin C to boost immunity."], correctAnswer: "Avoid alcohol, especially beer." },
+            { moduleId: 'antigout-drugs', question: "Which medication is typically prescribed for the *acute* management of a gout attack, rather than for long-term prophylaxis?", options: ["Allopurinol", "Febuxostat", "Probenecid", "Colchicine"], correctAnswer: "Colchicine" },
+            { moduleId: 'antigout-drugs', question: "A nurse is teaching a patient about probenecid therapy. The nurse should instruct the patient to report which of the following adverse effects immediately?", options: ["Flushed skin", "Mild headache", "Increased urination", "Signs of kidney stones, such as severe flank pain or hematuria"], correctAnswer: "Signs of kidney stones, such as severe flank pain or hematuria" }
+        ];
+
+        // --- Helper Functions ---
+        // Utility for conditionally joining Tailwind CSS classes.
+        const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+
+        // --- Child Components ---
+
+        /**
+         * Quiz component for interactive multiple-choice questions.
+         * Users answer questions and receive immediate feedback.
+         */
+        const Quiz = ({ questions, onComplete, isPreAssessment = false }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState(null);
+            const [feedback, setFeedback] = useState(null);
+            const [answers, setAnswers] = useState([]);
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            const handleOptionSelect = (option) => {
+                if (feedback && !isPreAssessment) return;
+                setSelectedOption(option);
+            };
+
+            const handlePreAssessmentNext = () => {
+                if (selectedOption === null) return;
+                // Handle both single and multiple correct answers
+                const isCorrect = Array.isArray(currentQuestion.correctAnswer)
+                    ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
+                    : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                const updatedAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(updatedAnswers);
+
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption(null);
+                } else {
+                    onComplete(updatedAnswers);
+                }
+            };
+            
+            const handleRegularQuizSubmit = () => {
+                if (selectedOption === null) return;
+                // Handle both single and multiple correct answers
+                const isCorrect = Array.isArray(currentQuestion.correctAnswer)
+                    ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
+                    : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                setFeedback(isCorrect ? 'correct' : 'incorrect');
+                // The onComplete for regular quizzes is handled by handleRegularQuizNext
+            };
+
+            const handleRegularQuizNext = () => {
+                // Ensure the current answer is recorded before moving to the next question
+                const isCorrect = Array.isArray(currentQuestion.correctAnswer)
+                    ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
+                    : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                const finalAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                
+                if (currentQuestionIndex < questions.length - 1) {
+                    setAnswers(finalAnswers);
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption(null);
+                    setFeedback(null);
+                } else {
+                    const finalScore = finalAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete({ score: finalScore, total: questions.length });
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Quiz: {currentQuestionIndex + 1} of {questions.length}</h4>
+                    <p className="font-semibold text-gray-700 mb-3">{currentQuestion.question}</p>
+                    <div className="space-y-2">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = selectedOption === option;
+                            const isCorrectOption = Array.isArray(currentQuestion.correctAnswer)
+                                ? currentQuestion.correctAnswer.includes(option)
+                                : option.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+
+                            if (feedback && !isPreAssessment) {
+                                if (isCorrectOption) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800';
+                                } else if (isSelected && !isCorrectOption) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800';
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800';
+                            }
+
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handleOptionSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {feedback && !isPreAssessment && (isCorrectOption || (isSelected && !isCorrectOption)) && (
+                                            isCorrectOption ? <span className="text-green-600 mr-2">✓</span> : <span className="text-red-600 mr-2">✗</span>
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-4 text-center">
+                        {isPreAssessment ? (
+                             <button
+                                onClick={handlePreAssessmentNext}
+                                disabled={selectedOption === null}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Assessment'}
+                            </button>
+                        ) : (
+                            <>
+                            {!feedback ? (
+                                <button
+                                    onClick={handleRegularQuizSubmit}
+                                    disabled={selectedOption === null}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    Submit Answer
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={handleRegularQuizNext}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Next Question
+                                </button>
+                            )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+        
+        /**
+         * PreAssessmentQuiz component to handle the initial diagnostic quiz.
+         * Displays quiz questions and then results, allowing users to "test out" of modules.
+         */
+        const PreAssessmentQuiz = ({ onComplete, onExit }) => {
+            const [results, setResults] = useState(null);
+
+            const handleQuizComplete = (finalAnswers) => {
+                const moduleResults = {};
+                finalAnswers.forEach(answer => {
+                    const { moduleId } = answer.question;
+                    if (!moduleResults[moduleId]) {
+                        moduleResults[moduleId] = { correct: 0, total: 0 };
+                    }
+                    if (answer.isCorrect) {
+                        moduleResults[moduleId].correct++;
+                    }
+                    moduleResults[moduleId].total++;
+                });
+
+                const completedModules = [];
+                for (const moduleId in moduleResults) {
+                    // For pre-assessment, a module is "completed" if all its questions in the pre-assessment quiz were answered correctly.
+                    if (moduleResults[moduleId].correct === moduleResults[moduleId].total) {
+                        completedModules.push(moduleId);
+                    }
+                }
+                setResults({ completedModules, total: finalAnswers.length, correct: finalAnswers.filter(a => a.isCorrect).length });
+                onComplete(completedModules);
+            };
+
+            if (results) {
+                return (
+                    <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4 animate-fade-in">
+                        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full text-center">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">Assessment Complete!</h2>
+                            <p className="text-lg text-gray-600 mb-6">
+                                You correctly answered {results.correct} out of {results.total} questions.
+                            </p>
+                            {results.completedModules.length > 0 ? (
+                                <>
+                                    <p className="text-green-600 font-semibold mb-4">You've tested out of the following modules:</p>
+                                    <ul className="list-disc list-inside text-left mb-6 bg-green-50 p-4 rounded-lg">
+                                        {results.completedModules.map(id => <li key={id}>{contentData[id].title}</li>)}
+                                    </ul>
+                                </>
+                            ) : (
+                                <p className="text-yellow-600 font-semibold mb-6">You haven't tested out of any modules. You can proceed to the main modules for learning.</p>
+                            )}
+                            <button
+                                onClick={onExit}
+                                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                            >
+                                Return to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
+                        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Diagnostic Quiz</h2>
+                        <Quiz questions={preAssessmentQuizData} onComplete={handleQuizComplete} isPreAssessment={true} />
+                    </div>
+                </div>
+            );
+        };
+
+
+        /**
+         * Dashboard component to display the available learning modules.
+         * It allows users to select a module to start learning.
+         * Shows progress for each module using a circular progress bar and status.
+         */
+        const Dashboard = ({ onSelectModule, progress, onResetProgress, onStartPreAssessment }) => {
+            let totalCompletedSteps = 0;
+            let totalPossibleSteps = 0;
+            let totalQuizCorrect = 0;
+            let totalQuizQuestions = 0;
+
+            // Calculate overall progress and gather quiz scores
+            Object.entries(contentData).forEach(([moduleId, module]) => {
+                totalPossibleSteps += module.steps.length;
+                const moduleProgress = progress[moduleId] || {};
+                
+                Object.values(moduleProgress).forEach(stepProgress => {
+                    if (stepProgress.completed) {
+                        totalCompletedSteps++;
+                    }
+                    if (stepProgress.score !== undefined) {
+                        totalQuizCorrect += stepProgress.score;
+                    }
+                });
+
+                module.steps.forEach(step => {
+                    if (step.type === 'quiz') {
+                        totalQuizQuestions += step.questions.length;
+                    }
+                });
+            });
+
+
+            const overallPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+
+            return (
+                <div className="p-4 sm:p-6 md:p-8 min-h-screen w-full flex flex-col">
+                    <div className="w-full">
+                        <header className="mb-8 text-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                {/* Text placeholder for the main application identifier */}
+                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">AIM</span>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Anti-inflammatories Module</h1>
+                                <span className="bg-gray-200 text-gray-600 text-xs font-mono px-2.5 py-1 rounded-full">V:1.0</span>
+                            </div>
+                            <p className="text-lg text-gray-500 max-w-2xl mx-auto">Explore the world of anti-inflammatory drugs, their mechanisms, and nursing considerations for comprehensive understanding.</p>
+                        </header>
+
+                        {/* Skip Ahead Button */}
+                        <div className="mb-8 text-center">
+                            <button
+                                onClick={onStartPreAssessment}
+                                className="w-full max-w-md mx-auto px-6 py-4 bg-teal-500 text-white font-bold rounded-lg shadow-lg hover:bg-teal-600 transition-all duration-300 transform hover:scale-105"
+                            >
+                                <div className="text-xl">Skip Ahead: Take Diagnostic Quiz</div>
+                                <div className="text-sm font-normal">Test out of modules you already know.</div>
+                            </button>
+                        </div>
+
+                        {/* Overall Progress Bar & Reset Button */}
+                        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
+                           <div className="flex justify-between items-center mb-3">
+                              <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                              <button 
+                                onClick={onResetProgress}
+                                className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" clipRule="evenodd" />
+                                </svg>
+                                Reset Progress
+                              </button>
+                           </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div
+                                    className="bg-indigo-600 h-4 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-left text-sm text-gray-600 mt-2">
+                                    {totalQuizQuestions > 0 && `Quiz Performance: ${totalQuizCorrect} / ${totalQuizQuestions} correct`}
+                                </p>
+                                <p className="text-right text-sm text-gray-600 mt-2">{Math.round(overallPercentage)}% Completed</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                            {/* Iterate over all modules defined in contentData */}
+                            {Object.entries(contentData).map(([id, module]) => {
+                                const moduleProgress = progress[id] || {};
+                                // Calculate completion count for steps within the module.
+                                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                                const totalSteps = module.steps.length;
+                                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
+                                let statusText = "Not Started";
+                                let statusColor = "text-gray-500";
+                                if (completedCount === totalSteps) {
+                                    statusText = "Completed";
+                                    statusColor = "text-green-600";
+                                } else if (completedCount > 0) {
+                                    statusText = "In Progress";
+                                    statusColor = "text-yellow-600";
+                                }
+
+                                // Get quiz score for this module if available
+                                const quizStep = module.steps.find(step => step.type === 'quiz');
+                                const quizProgress = quizStep ? moduleProgress[quizStep.id] : null;
+
+                                return (
+                                    <div
+                                        key={id}
+                                        onClick={() => onSelectModule(id)}
+                                        // Styling for module cards, including hover effects.
+                                        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col"
+                                    >
+                                        <div className="flex justify-between items-start mb-4">
+                                            {/* Placeholder for module icon: Displays the first letter of the module title. */}
+                                            <div className={cn("p-3 rounded-full bg-gradient-to-br", module.color, "w-10 h-10 flex items-center justify-center text-white text-lg font-bold shadow-md flex-shrink-0")}>
+                                                {module.title.split(' ').map(word => word.charAt(0)).join('')}
+                                            </div>
+                                            {/* Progress Circle */}
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <svg className="w-full h-full" viewBox="0 0 36 36">
+                                                    {/* Background circle for the progress bar. */}
+                                                    <path
+                                                        className="text-gray-200"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                    />
+                                                    {/* Foreground arc representing the completion percentage. */}
+                                                    <path
+                                                        className="text-indigo-500"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${percentage}, 100`}
+                                                        strokeLinecap="round"
+                                                        transform="rotate(-90 18 18)"
+                                                    />
+                                                </svg>
+                                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h3>
+                                        <p className="text-gray-500 text-sm mb-2 h-10">{module.description}</p>
+                                        <div className="mt-auto">
+                                            <p className={cn("text-sm font-semibold", statusColor)}>{statusText}</p>
+                                            {quizProgress && quizProgress.score !== undefined && (
+                                                <p className="text-sm text-gray-600 mt-1">Quiz Score: {quizProgress.score} / {quizStep.questions.length}</p>
+                                            )}
+                                            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700 mt-2">
+                                                Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        /**
+         * CaseStudy component for a multiple-choice case study challenge.
+         * Presents a scenario and a question with multiple options.
+         */
+        const CaseStudy = ({ caseData, onComplete }) => {
+            // State to store the user's selected answer.
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+            // Handles the selection of an answer option.
+            const handleSelect = (option) => {
+                if (selectedAnswer) return; // Prevents changing the answer once selected.
+                setSelectedAnswer(option);
+                // Case-insensitive comparison
+                if (option.toLowerCase() === caseData.correctAnswer.toLowerCase()) {
+                    onComplete(); // Marks the step as complete if the correct answer is chosen.
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
+                    {/* Scenario description, using dangerouslySetInnerHTML to render HTML bold tags */}
+                    <p className="bg-blue-100 text-blue-800 p-3 rounded-md mb-4 text-sm" dangerouslySetInnerHTML={{ __html: caseData.scenario }}></p>
+                    <p className="font-semibold text-gray-700 mb-3">{caseData.question}</p>
+                    <div className="space-y-2">
+                        {caseData.options.map(option => {
+                            const isSelected = selectedAnswer === option;
+                            // Case-insensitive comparison for correct answer highlight
+                            const isCorrect = option.toLowerCase() === caseData.correctAnswer.toLowerCase();
+                            const showFeedback = selectedAnswer !== null; // Show feedback once any answer is selected
+
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200'; // Default styling for options.
+                            if (showFeedback) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown
+                                } else if (isSelected && !isCorrect) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission
+                            }
+
+                            return (
+                                <div
+                                    key={option}
+                                    onClick={() => handleSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {showFeedback && ( // Display a checkmark or cross icon if feedback is active
+                                            isCorrect ? <span className="text-green-600 mr-2">✓</span> : (isSelected && <span className="text-red-600 mr-2">✗</span>)
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {selectedAnswer && ( // Display the explanation after an answer has been selected.
+                        <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                            <h5 className="font-bold text-indigo-800">Explanation</h5>
+                            <p className="text-sm text-indigo-700" dangerouslySetInnerHTML={{ __html: caseData.explanation }}></p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        /**
+         * VitalsCheck component for an interactive question about vital signs.
+         * This component is not used in the Anti-inflammatories module, but kept for completeness if needed in other modules.
+         */
+        const VitalsCheck = ({ onComplete }) => {
+            // State to store the user's selected vital sign.
+            const [selectedVital, setSelectedVital] = useState(null);
+            const vitals = { "BP": "100/68 mmHg", "HR": "110 bpm", "RR": "24/min", "Temp": "99°F" };
+            const mostConcerning = "HR"; // The correct answer.
+            const explanation = "A heart rate of 110 bpm (tachycardia) is a significant sign of distress. It indicates the heart is working hard to compensate for poor perfusion, which is common during an acute myocardial infarction.";
+
+            // Handles the selection of a vital sign option.
+            const handleSelect = (vital) => {
+                if(selectedVital) return; // Prevents changing the selection once made.
+                setSelectedVital(vital);
+                // Case-insensitive comparison (though keys are already consistent)
+                if (vital.toLowerCase() === mostConcerning.toLowerCase()) {
+                    onComplete(); // Mark step as complete if correct answer is chosen
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Vitals Check</h4>
+                    <p className="text-sm text-gray-600 mb-4">A patient presents with chest pain. Based on these vital signs, which one is the MOST concerning indicator of impaired central perfusion?</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        {Object.entries(vitals).map(([key, value]) => {
+                            const isSelected = selectedVital === key;
+                            // Case-insensitive comparison for correct answer highlight
+                            const isCorrect = key.toLowerCase() === mostConcerning.toLowerCase();
+                            const showFeedback = selectedVital !== null; // Show feedback once any vital is selected
+
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200'; // Default styling.
+                            if (showFeedback) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown
+                                } else if (isSelected && !isCorrect) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission
+                            }
+                            return (
+                                <div key={key} onClick={() => handleSelect(key)} className={cn('p-4 rounded-lg border-2 cursor-pointer text-center', optionClass)}>
+                                    <div className="text-sm font-bold text-gray-500">{key}</div>
+                                    <div className="text-xl font-semibold text-gray-800">{value}</div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                   {selectedVital && ( // Display the rationale after a selection is made.
+                        <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                            <h5 className="font-bold text-indigo-800">Rationale</h5>
+                            <p className="text-sm text-indigo-700" dangerouslySetInnerHTML={{ __html: explanation }}></p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        /**
+         * StaticContentStep component for displaying basic text content.
+         * Marks itself as complete immediately on render.
+         */
+        const StaticContentStep = ({ step, onComplete }) => {
+            // For 'text' type steps, mark them as complete immediately upon rendering.
+            // The effect should only run once when the component mounts to prevent an infinite loop.
+            useEffect(() => {
+                onComplete();
+            }, []); // Empty dependency array ensures this runs only once.
+
+            // Using dangerouslySetInnerHTML to render HTML content (e.g., <strong> tags).
+            return (
+                <div className="prose max-w-none text-gray-700 leading-relaxed p-4 bg-gray-50 rounded-lg shadow-inner space-y-4" dangerouslySetInnerHTML={{ __html: step.content }}>
+                </div>
+            );
+        };
+
+        /**
+         * CompletionModal component displayed when a module is completed.
+         */
+        const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
+                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm"
+                            >
+                                Back to Dashboard
+                            </button>
+                            {hasNextModule && (
+                                <button
+                                    onClick={onNextModule}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Continue to Next Module
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        /**
+         * LearningModule component to manage steps within the selected module.
+         * Provides navigation between steps and renders the appropriate content for each.
+         */
+        const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => { // onNextModule is now correctly passed
+            const [activeStep, setActiveStep] = useState(0); // Manages the index of the currently active step.
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Controls the visibility of the sidebar on mobile.
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false); // State for completion modal
+
+            // Callback function to update the completion status of a specific step.
+            const handleStepComplete = useCallback((stepId, data = {}) => {
+                onProgressUpdate(module.id, stepId, { completed: true, ...data });
+            }, [onProgressUpdate, module.id]);
+
+            const moduleProgress = progress[module.id] || {};
+            
+            // Check if all steps in the current module are completed
+            const allStepsCompletedInModule = module.steps.every(step =>
+                moduleProgress[step.id] && moduleProgress[step.id].completed
+            );
+
+            // Navigates to the next step, if available.
+            const handleNextStep = () => {
+                // If it's the last step and all steps in the module are completed, open the modal
+                if (activeStep === module.steps.length - 1 && allStepsCompletedInModule) {
+                    setIsCompletionModalOpen(true);
+                } else if (activeStep < module.steps.length - 1) {
+                    setActiveStep(activeStep + 1);
+                }
+            };
+
+            // Navigates to the previous step, if available.
+            const handlePrevStep = () => {
+                if (activeStep > 0) {
+                    setActiveStep(activeStep - 1);
+                }
+            };
+            
+            // Ensure module and its steps are defined before accessing properties
+            if (!module || !module.steps) {
+                console.error("LearningModule received invalid module prop:", module);
+                return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
+            }
+
+            const currentStep = module.steps[activeStep];
+            
+            // Renders the appropriate content component based on the current step's type.
+            // This function acts as a router for different interactive and static content types.
+            const renderStepContent = (step) => {
+                if (!step) return <p>Please select a step.</p>;
+
+                const onCompleteForStep = (data) => handleStepComplete(step.id, data);
+
+                switch (step.type) {
+                    case 'text':
+                        return <StaticContentStep key={step.id} step={step} onComplete={onCompleteForStep} />;
+                    case 'interactive_vitals':
+                        return <VitalsCheck key={step.id} onComplete={onCompleteForStep} />;
+                    case 'case_study':
+                        return <CaseStudy key={step.id} caseData={step.case} onComplete={onCompleteForStep} />;
+                    case 'quiz':
+                        return <Quiz key={step.id} questions={step.questions} onComplete={onCompleteForStep} />;
+                    default:
+                        // Fallback for unrecognized step types, ensuring robust error handling.
+                        return <p key={step.id} className="text-red-600">Error: Content for this step type is not available.</p>;
+                }
+            };
+
+            const handleModalClose = () => {
+                setIsCompletionModalOpen(false);
+                onBack(); // Go back to dashboard when modal is closed
+            };
+
+            const handleModalNextModule = () => {
+                setIsCompletionModalOpen(false);
+                onNextModule(); // Proceed to next module
+            };
+
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
+                    {/* Header for the learning module, including back button and module title. */}
+                    <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
+                        <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            <span className="hidden sm:inline">Dashboard</span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                        </div>
+                        {/* Mobile sidebar toggle button using text/emoji placeholders. */}
+                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                    </header>
+                    {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
+                    <div className="flex flex-1 overflow-hidden">
+                        {/* Sidebar for navigation steps within the module. */}
+                        <aside className={cn(
+                            "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
+                            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        )}>
+                            <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
+                            <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
+                                {module.steps.map((step, index) => (
+                                    <button
+                                        key={step.id}
+                                        onClick={() => {
+                                            setActiveStep(index);
+                                            setIsSidebarOpen(false); // Close sidebar on mobile after a step is selected.
+                                        }}
+                                        className={cn(
+                                            'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
+                                            activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700'
+                                        )}
+                                    >
+                                        {/* Step completion indicator */}
+                                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                            {moduleProgress[step.id]?.completed ? (
+                                                <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                            ) : (
+                                                <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                            )}
+                                        </div>
+                                        <span className="flex-1 text-sm">{step.title}</span>
+                                    </button>
+                                ))}
+                            </nav>
+                        </aside>
+
+                        {/* Main content area for the current step. */}
+                        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                            <div className="max-w-5xl mx-auto">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
+                                {renderStepContent(currentStep)}
+
+                                {/* Navigation buttons for moving between steps. */}
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={handlePrevStep}
+                                        disabled={activeStep === 0}
+                                        className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <button
+                                        onClick={handleNextStep}
+                                        disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
+                                    >
+                                        {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
+                                    </button>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                    <CompletionModal
+                        isOpen={isCompletionModalOpen}
+                        onClose={handleModalClose}
+                        onNextModule={handleModalNextModule}
+                        hasNextModule={hasNextModule}
+                    />
+                </div>
+            );
+        };
+        
+        // --- Main App Component ---
+        /**
+         * The root component of the Anti-inflammatories Learning Module application.
+         * Manages overall application state, including module selection, user ID, and progress.
+         */
+        function App() {
+            // State for the currently selected learning module's ID. Null means Dashboard is active.
+            const [currentModuleId, setCurrentModuleId] = useState(null);
+            const [isPreAssessmentActive, setIsPreAssessmentActive] = useState(false);
+            // State for the authenticated user's ID, used for local storage progress tracking.
+            const [userId, setUserId] = useState(null);
+            // State for storing the user's progress across all modules and steps.
+            const [progress, setProgress] = useState({});
+            // State to indicate if authentication is complete and user ID is available.
+            const [isAuthReady, setIsAuthReady] = useState(false);
+
+            // Effect hook for handling initial authentication and setting the user ID.
+            useEffect(() => {
+                const unsubscribe = mockAuth.onAuthStateChanged((user) => {
+                    if (user) setUserId(user.uid);
+                    setIsAuthReady(true); // Mark authentication as ready once user is determined.
+                });
+                return () => unsubscribe(); // Cleanup the auth state listener on component unmount.
+            }, []); // Empty dependency array ensures this runs only once on mount.
+
+            // Effect hook for loading user progress from localStorage after authentication is ready.
+            useEffect(() => {
+                if (!isAuthReady || !userId) return; // Only proceed if auth is ready and userId is available.
+                const storedProgress = localStorage.getItem(`anti-inflammatories-module-progress-${userId}`);
+                if (storedProgress) {
+                    try {
+                        setProgress(JSON.parse(storedProgress)); // Attempt to parse and set stored progress.
+                    } catch (e) {
+                        console.error("Failed to parse stored progress, resetting.", e);
+                        setProgress({}); // Reset progress if parsing fails (e.g., corrupted data).
+                    }
+                }
+            }, [isAuthReady, userId]); // Reruns when auth status or userId changes.
+
+            // Callback function to update and persist the user's progress for a specific step.
+            const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
+                if (!isAuthReady || !userId) return;
+
+                setProgress(currentProgress => {
+                    const currentStepProgress = currentProgress[moduleId]?.[stepId] || {};
+                    const newStepProgress = { ...currentStepProgress, ...data };
+
+                    // If the old and new step data are identical, do not update state.
+                    // This prevents the infinite re-render loop.
+                    if (JSON.stringify(currentStepProgress) === JSON.stringify(newStepProgress)) {
+                        return currentProgress;
+                    }
+
+                    // Otherwise, proceed with the update.
+                    const newProgress = {
+                        ...currentProgress,
+                        [moduleId]: {
+                            ...(currentProgress[moduleId] || {}),
+                            [stepId]: newStepProgress
+                        }
+                    };
+
+                    localStorage.setItem(`anti-inflammatories-module-progress-${userId}`, JSON.stringify(newProgress));
+                    return newProgress;
+                });
+            }, [isAuthReady, userId]);
+
+            const handlePreAssessmentComplete = (completedModuleIds) => {
+                const newProgress = { ...progress };
+                completedModuleIds.forEach(moduleId => {
+                    const module = contentData[moduleId];
+                    if (module) {
+                        newProgress[moduleId] = {};
+                        module.steps.forEach(step => {
+                            newProgress[moduleId][step.id] = { completed: true };
+                        });
+                    }
+                });
+                setProgress(newProgress);
+                localStorage.setItem(`anti-inflammatories-module-progress-${userId}`, JSON.stringify(newProgress));
+                // The results screen is now part of the PreAssessmentQuiz component.
+                // We just need to handle exiting it.
+            };
+            
+            // Callback to reset all progress
+            const handleResetProgress = useCallback(() => {
+                if (!isAuthReady || !userId) return;
+                // Clear from state
+                setProgress({});
+                // Clear from localStorage
+                localStorage.removeItem(`anti-inflammatories-module-progress-${userId}`);
+            }, [isAuthReady, userId]);
+
+            // Function to navigate to the next module in the sequence
+            const handleNextModule = useCallback(() => {
+                const moduleIds = Object.keys(contentData);
+                const currentIndex = moduleIds.indexOf(currentModuleId);
+                if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
+                    setCurrentModuleId(moduleIds[currentIndex + 1]);
+                } else {
+                    // If it's the last module, go back to the dashboard.
+                    setCurrentModuleId(null);
+                }
+            }, [currentModuleId]);
+
+            // Determine which module is currently selected based on `currentModuleId`.
+            const selectedModule = currentModuleId && contentData[currentModuleId]
+                                        ? { ...contentData[currentModuleId], id: currentModuleId }
+                                        : null;
+
+            const moduleIds = Object.keys(contentData);
+            const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
+            const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
+
+
+            return (
+                <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+                    {isPreAssessmentActive ? (
+                        <PreAssessmentQuiz 
+                            onComplete={handlePreAssessmentComplete} 
+                            onExit={() => setIsPreAssessmentActive(false)}
+                        />
+                    ) : selectedModule ? (
+                        <LearningModule
+                            key={selectedModule.id}
+                            module={selectedModule}
+                            onBack={() => setCurrentModuleId(null)}
+                            progress={progress}
+                            onProgressUpdate={handleProgressUpdate}
+                            onNextModule={handleNextModule} // Passing the actual handleNextModule
+                            hasNextModule={hasNextModule}
+                        />
+                    ) : (
+                        <Dashboard 
+                            onSelectModule={setCurrentModuleId} 
+                            progress={progress} 
+                            onResetProgress={handleResetProgress}
+                            onStartPreAssessment={() => setIsPreAssessmentActive(true)}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        // --- Render the App into the DOM ---
+        // Get the DOM element where the React application will be mounted.
+        const container = document.getElementById('root');
+        // Create a React root, which is the entry point for React 18+ applications.
+        const root = ReactDOM.createRoot(container);
+        // Render the main App component into the root.
+        root.render(<App />);
+    </script>
+</body>
+</html>
