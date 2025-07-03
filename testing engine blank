@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacology Cardiac Glycosides SDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #3498db;
+            --primary-dark-blue: #2980b9;
+            --secondary-orange: #f39c12;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #ecf0f1;
+            --bg-white: #FFFFFF;
+            --border-light: #e0e4eb;
+            --success-green: #2ecc71;
+            --danger-red: #e74c3c;
+            --shadow-color: rgba(44, 62, 80, 0.1);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            box-sizing: border-box;
+        }
+
+        .quiz-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .quiz-header {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            padding: 0.75rem 2rem;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            position: absolute;
+            left: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
+        .animated-icon {
+            position: absolute;
+            right: 0;
+            animation: inspect 4s ease-in-out infinite;
+        }
+
+        .animated-icon svg { width: 30px; height: 30px; fill: var(--primary-blue); }
+        .quiz-header h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+        .version-info { font-size: 0.7rem; color: var(--text-light); margin-top: 0.2rem; }
+        
+        .quiz-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        #initial-screen { text-align: center; padding: 2rem; }
+        #initial-screen h2 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-dark-blue); }
+        #initial-screen p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 1rem auto 2rem auto; color: var(--text-light); }
+        #start-btn { background-color: var(--primary-blue); color: white; padding: 1rem 2.5rem; font-size: 1.1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
+        #start-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+        
+        #quiz-form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 15px 40px var(--shadow-color);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            box-sizing: border-box;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        
+        #quiz-form.is-transitioning { opacity: 0; transform: scale(0.98); }
+
+        .question-header { font-size: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; flex-shrink: 0; border-bottom: 1px dashed var(--border-light); color: var(--text-light); font-weight: 500; }
+        .question-header strong { font-weight: 700; color: var(--primary-blue); }
+        .question-text { font-size: 1.25rem; font-weight: 500; line-height: 1.6; margin-top: 0; margin-bottom: 1rem; flex-shrink: 0; }
+        
+        .options-container { 
+            flex-grow: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0.5rem 0;
+        }
+
+        .options-container label { padding: 0.8rem 1.2rem; margin-bottom: 0.75rem; font-size: 1rem; border: 2px solid var(--border-light); border-radius: 10px; display: flex; align-items: center; transition: all 0.2s ease-in-out; cursor: pointer; }
+        .options-container label:hover { background-color: var(--bg-light); border-color: var(--primary-blue); }
+        .options-container input { margin-right: 1rem; flex-shrink: 0; transform: scale(1.2); accent-color: var(--primary-blue); }
+        
+        .question-footer { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .flag-container label { cursor: pointer; font-weight: 500; color: var(--text-light); display: flex; align-items: center; }
+        .flag-container input { margin-right: 0.5rem; }
+        .confidence-slider-container { display: flex; align-items: center; gap: 1rem; }
+        .confidence-slider-container label { font-weight: 500; color: var(--text-light); }
+        .confidence-slider { max-width: 150px; }
+
+        #navigation-btn { padding: 0.8rem 2rem; font-size: 1rem; background-color: var(--primary-blue); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        #navigation-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+
+        #results-area { animation: fadeIn 0.8s ease-out; box-sizing: border-box; width: 100%; height: 100%; overflow-y: auto; padding: 2rem; }
+        .results-summary, #confidence-analysis, #study-focus, #results-details { background-color: var(--bg-white); margin: 0 auto 2rem auto; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px var(--shadow-color); max-width: 1000px; }
+        .results-summary { text-align: center; }
+
+        .score-animation-container { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--primary-blue); display: flex; justify-content: center; align-items: center; margin: 1.5rem auto; position: relative; background-color: var(--bg-white); }
+        .score-animation-circle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--success-green) 0% 0%, var(--border-light) 0% 100%); transition: background 1.5s ease-out; }
+        .score-animation-inner { position: relative; z-index: 2; background-color: var(--bg-white); width: calc(100% - 16px); height: calc(100% - 16px); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .score-animation-text { font-size: 2.5rem; font-weight: 800; color: var(--text-dark); }
+        
+        #confidence-analysis h3, #study-focus h3, #results-details h2 { margin-top: 0; border-bottom: 2px solid; padding-bottom: 1rem; font-size: 1.5rem; margin-bottom: 1.5rem; }
+        #confidence-analysis h3 { color: var(--primary-dark-blue); border-color: var(--primary-blue); }
+        #study-focus h3 { color: #c0392b; border-color: #e74c3c; }
+        #results-details h2 { color: var(--text-dark); border-color: var(--border-light); }
+        
+        .result-question { border: 1px solid var(--border-light); padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 12px; }
+        .result-question p strong { display: block; margin-bottom: 1rem; font-size: 1.1em; color: var(--text-dark); }
+        .result-question ul { list-style-type: none; padding: 0; margin: 0; }
+        .result-question li { padding: 0.8rem 1.2rem; border-radius: 8px; margin-bottom: 0.6rem; font-size: 1rem; }
+        .correct-answer-label { background-color: var(--light-green-bg); color: #27ae60; font-weight: 600; }
+        .incorrect-answer-label { background-color: var(--light-red-bg); color: var(--danger-red); text-decoration: line-through; }
+        .missed-correct-answer-label { border: 2px dashed var(--success-green); }
+        .rationale { margin-top: 1.5rem; padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--primary-blue); background-color: var(--light-blue-bg); font-size: 0.95rem; }
+
+        .hidden { display: none !important; }
+        .confetti { position: fixed; width: 10px; height: 10px; opacity: 0; animation: confetti-fall 5s linear forwards; border-radius: 50%; z-index: 9999; }
+        @keyframes confetti-fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+        @keyframes inspect { 0% { transform: rotate(-15deg); } 50% { transform: rotate(10deg); } 100% { transform: rotate(-15deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-wrapper">
+        <header class="quiz-header">
+            <div class="header-content">
+                <div class="logo">VSREP</div>
+                <div>
+                    <h1>Pharmacology Cardiac Glycosides - SDE</h1>
+                    <div class="version-info">
+                        <span>Engine: V4.0</span> | <span>Test: V1.0</span>
+                    </div>
+                </div>
+                <div class="animated-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-content">
+            <div id="initial-screen">
+                <h2>Welcome to the Diagnostic Exam</h2>
+                <p>You will be presented with one question at a time. Once you answer, you cannot go back. Please read each question carefully before proceeding.</p>
+                <button id="start-btn">Start Exam</button>
+            </div>
+
+            <form id="quiz-form" class="hidden"></form>
+
+            <div id="results-area" class="hidden"></div>
+        </main>
+    </div>
+
+<script>
+    const fullQuizData = [ 
+     
+    ];
+
+    let finalQuizData = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let confidenceRatings = {};
+    let flaggedForReview = new Set();
+    const NUM_QUESTIONS_TO_SELECT = 30;
+
+    const initialScreen = document.getElementById('initial-screen');
+    const startBtn = document.getElementById('start-btn');
+    const quizForm = document.getElementById('quiz-form');
+    const resultsArea = document.getElementById('results-area');
+
+    function prepareQuizData() {
+        const shuffledPool = [...fullQuizData].sort(() => 0.5 - Math.random());
+        const questionsNeeded = Math.min(NUM_QUESTIONS_TO_SELECT, shuffledPool.length);
+        finalQuizData = shuffledPool.slice(0, questionsNeeded);
+    }
+
+    function prepareAndStartQuiz() {
+        prepareQuizData();
+        if (finalQuizData.length === 0) {
+            alert("No questions loaded.");
+            return;
+        }
+        initialScreen.classList.add('hidden');
+        quizForm.classList.remove('hidden');
+        displayCurrentQuestion();
+    }
+
+    function displayCurrentQuestion() {
+        if (currentQuestionIndex >= finalQuizData.length) return;
+        const qData = finalQuizData[currentQuestionIndex];
+        
+        let optionsHTML = '<div class="options-container">';
+        const inputType = qData.type === 'sata' ? 'checkbox' : 'radio';
+        
+        for (const [key, text] of Object.entries(qData.options)) {
+            optionsHTML += `<label><input type="${inputType}" name="answer" value="${key}"> ${text}</label>`;
+        }
+        optionsHTML += '</div>';
+
+        quizForm.innerHTML = `
+            <div class="question-header">
+                Question <strong>${currentQuestionIndex + 1}</strong> of ${finalQuizData.length}
+            </div>
+            <p class="question-text">${qData.questionText}</p>
+            ${optionsHTML}
+            <div class="question-footer">
+                <div class="flag-container">
+                    <label><input type="checkbox" class="flag-for-review"> Flag for Review</label>
+                </div>
+                <div class="confidence-slider-container">
+                    <label>Confidence:</label>
+                    <input type="range" min="1" max="5" value="3" class="confidence-slider">
+                </div>
+                 <button type="submit" id="navigation-btn">${(currentQuestionIndex === finalQuizData.length - 1) ? "Submit Exam" : "Next Question"}</button>
+            </div>
+        `;
+    }
+    
+    function saveAnswer() {
+        const qData = finalQuizData[currentQuestionIndex];
+        if (!qData) return;
+
+        const selectedOptions = quizForm.querySelectorAll('input[name="answer"]:checked');
+        if (qData.type === 'sata') {
+            userAnswers[currentQuestionIndex] = Array.from(selectedOptions).map(cb => cb.value);
+        } else {
+            userAnswers[currentQuestionIndex] = selectedOptions.length ? selectedOptions[0].value : null;
+        }
+
+        const flagInput = quizForm.querySelector('.flag-for-review');
+        if(flagInput && flagInput.checked) {
+            flaggedForReview.add(currentQuestionIndex);
+        }
+
+        const confidenceInput = quizForm.querySelector('.confidence-slider');
+        if(confidenceInput) {
+            confidenceRatings[currentQuestionIndex] = parseInt(confidenceInput.value, 10);
+        }
+    }
+    
+    // --- FUNCTION RESTORED ---
+    function handleNavigation() {
+        saveAnswer();
+        quizForm.classList.add('is-transitioning');
+        
+        setTimeout(() => {
+            if (currentQuestionIndex < finalQuizData.length - 1) {
+                currentQuestionIndex++;
+                displayCurrentQuestion();
+                quizForm.classList.remove('is-transitioning');
+            } else {
+                submitQuiz();
+            }
+        }, 300);
+    }
+
+    function submitQuiz() {
+        quizForm.classList.add('hidden');
+        resultsArea.classList.remove('hidden');
+        displayResults();
+    }
+    
+    function checkAnswerCorrectness(qData, userAnswer) {
+        if (userAnswer === null || userAnswer === undefined) return false;
+        if (qData.type === 'sata') {
+            if (!Array.isArray(userAnswer) || typeof qData.correctAnswer !== 'string') return false;
+            const sortedUser = [...userAnswer].sort();
+            const sortedCorrect = [...(qData.correctAnswer.split(','))].sort();
+            return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+        }
+        return userAnswer === qData.correctAnswer;
+    }
+
+    function displayResults() {
+        let correctCount = 0;
+        finalQuizData.forEach((q, i) => { if (checkAnswerCorrectness(q, userAnswers[i])) correctCount++; });
+        const score = finalQuizData.length > 0 ? (correctCount / finalQuizData.length) * 100 : 0;
+
+        let resultsHTML = `
+            <div class="results-summary">
+                 <h2>Exam Complete!</h2>
+                 <div class="score-animation-container">
+                    <div class="score-animation-circle"></div>
+                    <div class="score-animation-inner">
+                        <span class="score-animation-text">${score.toFixed(0)}%</span>
+                    </div>
+                 </div>
+                 <p>You answered <strong>${correctCount}</strong> out of <strong>${finalQuizData.length}</strong> questions correctly.</p>
+            </div>
+        `;
+        
+        resultsArea.innerHTML = resultsHTML;
+        resultsArea.innerHTML += generateConfidenceAnalysis();
+        resultsArea.innerHTML += generateStudyFocus();
+        resultsArea.innerHTML += generateDetailedReview();
+
+        setTimeout(() => {
+            const scoreCircle = document.querySelector('.score-animation-circle');
+            if (scoreCircle) {
+                scoreCircle.style.background = `conic-gradient(var(--success-green) ${score}%, var(--border-light) ${score}% 100%)`;
+            }
+        }, 100);
+
+        if (score >= 80) {
+            triggerConfetti();
+        }
+    }
+
+    function generateDetailedReview() {
+        let detailsHTML = '<div id="results-details"><h2>Question Review</h2>';
+        finalQuizData.forEach((qData, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = checkAnswerCorrectness(qData, userAnswer);
+            
+            let resultBodyHTML = '<ul>';
+            for (const [key, text] of Object.entries(qData.options)) {
+                let li_class = '';
+                const isCorrectOpt = qData.type === 'sata' ? qData.correctAnswer.includes(key) : key === qData.correctAnswer;
+                const isUserSelect = Array.isArray(userAnswer) ? userAnswer.includes(key) : key === userAnswer;
+                if (isCorrectOpt) li_class = 'correct-answer-label';
+                if (isUserSelect && !isCorrectOpt) li_class = 'incorrect-answer-label';
+                if (!isUserSelect && isCorrectOpt && !isCorrect) li_class = 'missed-correct-answer-label';
+                resultBodyHTML += `<li class="${li_class}">${text}</li>`;
+            }
+            resultBodyHTML += '</ul>';
+
+            detailsHTML += `
+                <div class="result-question">
+                    <p><strong>Question ${index + 1}: ${qData.questionText}</strong></p>
+                    ${resultBodyHTML}
+                    <div class="rationale"><strong>Rationale:</strong> ${qData.rationale || 'N/A'}</div>
+                </div>`;
+        });
+        detailsHTML += '</div>';
+        return detailsHTML;
+    }
+    
+    function generateConfidenceAnalysis() {
+        let correctAndConfident = 0, correctButUnsure = 0, incorrectAndConfident = 0, incorrectButUnsure = 0;
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const confidence = confidenceRatings[index] || 3;
+            if (confidence >= 4) { if (isCorrect) correctAndConfident++; else incorrectAndConfident++; } 
+            else { if (isCorrect) correctButUnsure++; else incorrectButUnsure++; }
+        });
+        return `
+            <div id="confidence-analysis">
+                <h3>Confidence Analysis</h3>
+                <ul>
+                    <li>Correct & Confident: <strong>${correctAndConfident}</strong></li>
+                    <li>Correct but Unsure: <strong>${correctButUnsure}</strong></li>
+                    <li>Incorrect & Confident: <strong>${incorrectAndConfident}</strong></li>
+                    <li>Incorrect but Unsure: <strong>${incorrectButUnsure}</strong></li>
+                </ul>
+            </div>`;
+    }
+
+    function generateStudyFocus() {
+        const topicCounts = {};
+        finalQuizData.forEach((qData, index) => {
+            if (!checkAnswerCorrectness(qData, userAnswers[index])) {
+                const topic = qData.section || "General";
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+            }
+        });
+        const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+        let focusHTML = '<div id="study-focus"><h3>Personalized Study Focus</h3>';
+        if (sortedTopics.length > 0) {
+            focusHTML += '<p>Based on your performance, focus your review on these topics:</p><ul>';
+            sortedTopics.forEach(topic => { focusHTML += `<li><strong>${topic[0]}</strong> (${topic[1]} item${topic[1] > 1 ? 's' : ''} missed)</li>`; });
+            focusHTML += '</ul>';
+        } else {
+            focusHTML += '<p>Excellent work! No specific weak areas were identified.</p>';
+        }
+        focusHTML += '</div>';
+        return focusHTML;
+    }
+
+    function triggerConfetti() {
+        const numConfetti = 150;
+        for (let i = 0; i < numConfetti; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 90%, 60%)`;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 6000);
+        }
+    }
+
+    startBtn.addEventListener('click', prepareAndStartQuiz);
+    quizForm.addEventListener('submit', e => { 
+        e.preventDefault(); 
+        handleNavigation(); 
+    });
+</script>
+
+</body>
+</html>
