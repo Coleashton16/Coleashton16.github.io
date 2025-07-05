@@ -43,6 +43,12 @@
                         'vsrep-red': '#f44336', /* Error/Logout Red */
                         'vsrep-green': '#4CAF50', /* Success Green */
                         'vsrep-orange': '#FF9800', /* Calendar/Warning */
+                        'fourth-red': '#DC2626', // Tailwind red-600
+                        'fourth-blue': '#2563EB', // Tailwind blue-600
+                        'fourth-dark': '#344759', // Using vsrep-gray-dark for better contrast on "4th"
+                        'firework-gold': '#FFD700',
+                        'firework-silver': '#C0C0C0',
+                        'firework-purple': '#800080',
                     },
                     boxShadow: {
                         'soft-xl': '0 20px 60px rgba(0,0,0,0.15)', /* More pronounced shadow */
@@ -107,20 +113,48 @@
                             '25%': { transform: 'translateY(-5px) scale(1.1)' },
                             '50%': { transform: 'translateY(0) scale(1)' },
                             '75%': { transform: 'translateY(-2px) scale(1.05)' },
+                        },
+                        fireworksPop: { /* For the main 4th of July text/icon */
+                            '0%': { opacity: '0', transform: 'scale(0.5)' },
+                            '50%': { opacity: '1', transform: 'scale(1.1)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        sparkleEffect: { /* For individual sparkles */
+                            '0%': { opacity: '0', transform: 'scale(0) translateY(0)' },
+                            '20%': { opacity: '1', transform: 'scale(1) translateY(-5px)' },
+                            '100%': { opacity: '0', transform: 'scale(0) translateY(-20px)' },
+                        },
+                        firecracker: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '25%': { transform: 'translateY(-10px) rotate(5deg)' },
+                            '50%': { transform: 'translateY(0) rotate(-5deg)' },
+                            '75%': { transform: 'translateY(-5px) rotate(2deg)' },
+                        },
+                        // Removed fireworkExplosion and fireworkParticle as they are for CSS-based fireworks
+                        fireworkLaunch: { /* For the upward trajectory of a firework */
+                            '0%': { transform: 'translateY(0) scale(0.5)', opacity: '0' },
+                            '50%': { transform: 'translateY(-100px) scale(1)', opacity: '1' },
+                            '100%': { transform: 'translateY(-200px) scale(0.5)', opacity: '0' },
                         }
                     },
                     animation: {
                         fadeIn: 'fadeIn 0.6s ease-out forwards',
                         slideInUp: 'slideInUp 0.7s ease-out forwards',
-                        slideInDown: 'slideInDown 0.7s ease-out forwards', /* New animation */
+                        slideInDown: 'slideInDown 0.7s ease-out forwards',
                         pulseFade: 'pulseFade 2s infinite ease-in-out',
                         shimmer: 'shimmer 1.5s infinite linear',
-                        bgPan: 'bgPan 15s ease infinite', /* Slower, subtle background pan */
+                        bgPan: 'bgPan 15s ease infinite',
                         blob1: 'blobMove1 18s infinite alternate ease-in-out',
                         blob2: 'blobMove2 22s infinite alternate-reverse ease-in-out',
                         blob3: 'blobMove3 20s infinite alternate ease-in-out',
-                        'gradient-shift': 'gradient-shift 8s ease infinite', /* New: Animated gradient */
-                        'icon-bounce': 'icon-bounce 2s infinite ease-in-out', /* New: Enhanced icon bounce */
+                        'gradient-shift': 'gradient-shift 8s ease infinite',
+                        'icon-bounce': 'icon-bounce 2s infinite ease-in-out',
+                        fireworksPop: 'fireworksPop 1s ease-out forwards',
+                        sparkleEffect: 'sparkleEffect 0.8s ease-out infinite alternate',
+                        fireworkTrail: 'fireworkTrail 0.7s ease-out infinite',
+                        firecracker: 'firecracker 1.5s infinite ease-in-out',
+                        // Removed fireworkExplosion and fireworkParticle as they are for CSS-based fireworks
+                        fireworkLaunch: 'fireworkLaunch 1.5s ease-out forwards',
                     }
                 }
             }
@@ -142,7 +176,7 @@
             animation: bgPan 15s ease infinite;
         }
 
-        /* Animated Background Blobs */
+        /* Animated Blobs Background */
         .blob {
             position: absolute;
             background-color: theme('colors.vsrep-blue-medium');
@@ -228,7 +262,7 @@
             @apply text-vsrep-red text-sm mt-1 text-left;
         }
 
-        /* New: Styles for the pharmacology update notification */
+        /* Styles for the pharmacology update notification */
         #pharmacology-update-notification {
             background-size: 200% 200%; /* For gradient animation */
             text-shadow: 0 0 8px rgba(0,0,0,0.3); /* Subtle text shadow */
@@ -253,9 +287,40 @@
             animation: gradient-shift 4s infinite linear; /* Faster gradient shift for border */
             z-index: -1; /* Behind the content */
         }
+
+        /* Styles for the 4th of July message and fireworks */
+        .fireworks-container {
+            position: fixed; /* Changed to fixed */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allow clicks to pass through */
+            z-index: 9999; /* Higher z-index to be on top of everything */
+            background-color: transparent; /* Ensure it's transparent */
+        }
+
+        /* CSS for the Canvas-based fireworks */
+        #fireworks-canvas {
+            position: absolute; /* Position relative to .fireworks-container */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: transparent; /* Canvas background should be transparent */
+        }
+
+        .firecracker-icon {
+            animation: firecracker 1.5s infinite ease-in-out;
+            transform-origin: bottom center; /* Pivot from the bottom */
+        }
     </style>
 </head>
 <body class="font-inter">
+    <!-- Fireworks Container - positioned fixed to cover the entire viewport -->
+    <div id="fireworks-display" class="fireworks-container">
+        <canvas id="fireworks-canvas"></canvas>
+    </div>
 
     <!-- Main Application Container -->
     <div id="main-app-container" class="min-h-screen flex flex-col">
@@ -408,6 +473,20 @@
                     <h1 class="text-5xl font-extrabold text-vsrep-blue-dark mb-4 leading-tight">
                         Welcome, <span id="welcome-user-name">Guest</span>!
                     </h1>
+                    <!-- New: Happy 4th of July Celebration -->
+                    <div id="fourth-of-july-message" class="relative inline-block text-4xl font-extrabold text-fourth-red mb-6 animate-fireworksPop">
+                        <span class="text-fourth-blue">Happy</span> 
+                        <span class="text-fourth-dark">4th</span> <!-- Changed to fourth-dark for better visibility -->
+                        <span class="text-fourth-red">of</span> 
+                        <span class="text-fourth-blue">July!</span>
+                        <i class="fas fa-firecracker firecracker-icon text-fourth-red text-5xl absolute -top-8 -right-8 animate-firecracker"></i>
+                        <!-- Sparkles for the text -->
+                        <span class="sparkle text-fourth-red sparkle-1"></span>
+                        <span class="sparkle text-fourth-blue sparkle-2"></span>
+                        <span class="sparkle text-fourth-red sparkle-3"></span>
+                        <span class="sparkle text-fourth-blue sparkle-4"></span>
+                        <span class="sparkle text-fourth-red sparkle-5"></span>
+                    </div>
                     <p class="text-vsrep-gray-medium text-xl max-w-2xl mx-auto">
                         Your central hub for support, scheduling, and student resources.
                     </p>
@@ -585,9 +664,53 @@
         const pharmacologyUpdateNotification = document.getElementById('pharmacology-update-notification');
         const dismissPharmacologyUpdateBtn = document.getElementById('dismiss-pharmacology-update');
 
+        // New: 4th of July elements
+        const fourthOfJulyMessage = document.getElementById('fourth-of-july-message');
+        const fireworksDisplay = document.getElementById('fireworks-display'); // This is the container for the canvas
+
         let isLoginMode = true; // Track current mode (login by default)
 
         // --- Helper Functions ---
+
+        // Function to switch between Login and Signup forms
+        function setAuthMode(mode) {
+            isLoginMode = (mode === 'login');
+
+            // Update button styles
+            if (isLoginMode) {
+                showLoginButton.classList.add('bg-vsrep-blue-dark', 'text-white');
+                showLoginButton.classList.remove('bg-vsrep-gray-medium', 'hover:bg-vsrep-gray-dark');
+                showSignupButton.classList.add('bg-vsrep-gray-medium', 'text-white');
+                showSignupButton.classList.remove('bg-vsrep-blue-dark', 'hover:bg-vsrep-blue-medium');
+                mainAuthButton.textContent = 'Login';
+                mainAuthButton.classList.remove('hover:shadow-button-hover-gray');
+                mainAuthButton.classList.add('hover:shadow-button-hover-blue');
+
+                confirmPasswordGroup.classList.add('hidden');
+                forgotPasswordLink.classList.remove('hidden'); // Show forgot password for login
+            } else {
+                showSignupButton.classList.add('bg-vsrep-blue-dark', 'text-white');
+                showSignupButton.classList.remove('bg-vsrep-gray-medium', 'hover:bg-vsrep-gray-dark');
+                showLoginButton.classList.add('bg-vsrep-gray-medium', 'text-white');
+                showLoginButton.classList.remove('bg-vsrep-blue-dark', 'hover:bg-vsrep-blue-medium');
+                mainAuthButton.textContent = 'Create Account';
+                mainAuthButton.classList.remove('hover:shadow-button-hover-blue');
+                mainAuthButton.classList.add('hover:shadow-button-hover-gray');
+
+                confirmPasswordGroup.classList.remove('hidden');
+                forgotPasswordLink.classList.add('hidden'); // Hide forgot password for signup
+            }
+            displayAuthMessage('', false); // Clear messages on mode switch
+            clearInputFeedback(authEmailInput);
+            clearInputFeedback(authPasswordInput);
+            // Clear confirm password input feedback only if element exists
+            if (authConfirmPasswordInput) clearInputFeedback(authConfirmPasswordInput);
+            
+            authEmailInput.value = '';
+            authPasswordInput.value = '';
+            if (authConfirmPasswordInput) authConfirmPasswordInput.value = '';
+            rememberMeCheckbox.checked = false; // Reset remember me
+        }
 
         // Function to display messages to the user
         function displayAuthMessage(message, isSuccess = false) {
@@ -639,66 +762,6 @@
             }
         }
 
-        // --- Core UI Logic ---
-
-        // Function to switch between Login and Signup forms
-        function setAuthMode(mode) {
-            isLoginMode = (mode === 'login');
-
-            // Update button styles
-            if (isLoginMode) {
-                showLoginButton.classList.add('bg-vsrep-blue-dark', 'text-white');
-                showLoginButton.classList.remove('bg-vsrep-gray-medium', 'hover:bg-vsrep-gray-dark');
-                showSignupButton.classList.add('bg-vsrep-gray-medium', 'text-white');
-                showSignupButton.classList.remove('bg-vsrep-blue-dark', 'hover:bg-vsrep-blue-medium');
-                mainAuthButton.textContent = 'Login';
-                mainAuthButton.classList.remove('hover:shadow-button-hover-gray');
-                mainAuthButton.classList.add('hover:shadow-button-hover-blue');
-
-                confirmPasswordGroup.classList.add('hidden');
-                forgotPasswordLink.classList.remove('hidden'); // Show forgot password for login
-            } else {
-                showSignupButton.classList.add('bg-vsrep-blue-dark', 'text-white');
-                showSignupButton.classList.remove('bg-vsrep-gray-medium', 'hover:bg-vsrep-gray-dark');
-                showLoginButton.classList.add('bg-vsrep-gray-medium', 'text-white');
-                showLoginButton.classList.remove('bg-vsrep-blue-dark', 'hover:bg-vsrep-blue-medium');
-                mainAuthButton.textContent = 'Create Account';
-                mainAuthButton.classList.remove('hover:shadow-button-hover-blue');
-                mainAuthButton.classList.add('hover:shadow-button-hover-gray');
-
-                confirmPasswordGroup.classList.remove('hidden');
-                forgotPasswordLink.classList.add('hidden'); // Hide forgot password for signup
-            }
-            displayAuthMessage('', false); // Clear messages on mode switch
-            clearInputFeedback(authEmailInput);
-            clearInputFeedback(authPasswordInput);
-            // Clear confirm password input feedback only if element exists
-            if (authConfirmPasswordInput) clearInputFeedback(authConfirmPasswordInput);
-            
-            authEmailInput.value = '';
-            authPasswordInput.value = '';
-            if (authConfirmPasswordInput) authConfirmPasswordInput.value = '';
-            rememberMeCheckbox.checked = false; // Reset remember me
-        }
-
-        // Function to toggle password visibility
-        document.querySelectorAll('.password-toggle').forEach(toggle => {
-            toggle.addEventListener('click', function() {
-                const targetId = this.dataset.target;
-                const targetInput = document.getElementById(targetId);
-                const icon = this.querySelector('i');
-                if (targetInput.type === 'password') {
-                    targetInput.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    targetInput.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-        });
-
         // Basic client-side validation
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -748,6 +811,196 @@
             return isValid;
         }
 
+        // --- Fireworks Animation Logic (Canvas-based) ---
+        const canvas = document.getElementById('fireworks-canvas');
+        const ctx = canvas.getContext('2d');
+        let fireworks = [];
+        let particles = [];
+        let hue = 0; // For color cycling
+        let fireworkAnimationId; // To store the requestAnimationFrame ID
+
+        // Function to resize canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        // Particle class for firework trails and explosions
+        class Particle {
+            constructor(x, y, hue, isFirework = false) {
+                this.x = x;
+                this.y = y;
+                this.isFirework = isFirework; // True for the main firework rocket, false for explosion particles
+                this.hue = hue;
+                this.brightness = 0;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.01; // How fast the particle fades
+
+                if (isFirework) {
+                    this.angle = Math.PI / 2; // Always shoot upwards
+                    this.speed = Math.random() * 10 + 5;
+                    this.velocity = {
+                        x: Math.cos(this.angle) * this.speed,
+                        y: Math.sin(this.angle) * this.speed * -1 // Negative for upwards movement
+                    };
+                    this.friction = 0.99; // Slow down slightly
+                    this.gravity = 0.5; // Pull down
+                    this.size = 3;
+                } else {
+                    this.angle = Math.random() * Math.PI * 2; // Random direction for explosion
+                    this.speed = Math.random() * 10 + 1;
+                    this.velocity = {
+                        x: Math.cos(this.angle) * this.speed,
+                        y: Math.sin(this.angle) * this.speed
+                    };
+                    this.friction = 0.95; // More friction for explosion particles
+                    this.gravity = 0.2;
+                    this.size = Math.random() * 2 + 1;
+                }
+            }
+
+            update() {
+                if (this.isFirework) {
+                    this.velocity.x *= this.friction;
+                    this.velocity.y *= this.friction;
+                    this.velocity.y += this.gravity; // Apply gravity
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+                    this.brightness = Math.random() * 50 + 50; // Brighter for firework trail
+                } else {
+                    this.velocity.x *= this.friction;
+                    this.velocity.y *= this.friction;
+                    this.velocity.y += this.gravity;
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+                    this.alpha -= this.decay; // Fade out
+                    this.brightness = Math.random() * 30 + 50; // Explosion particles get dimmer
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        // Firework class (main rocket before explosion)
+        class Firework extends Particle {
+            constructor(startX, startY, targetX, targetY) {
+                super(startX, startY, hue, true); // Call Particle constructor with isFirework = true
+                this.targetX = targetX;
+                this.targetY = targetY;
+                // Calculate distance to target for accurate explosion timing
+                this.distanceToTarget = Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2));
+                this.angle = Math.atan2(targetY - startY, targetX - startX);
+                this.speed = 10;
+                this.velocity = {
+                    x: Math.cos(this.angle) * this.speed,
+                    y: Math.sin(this.angle) * this.speed
+                };
+                this.trail = []; // For the visual trail behind the firework
+                this.trailLength = 5;
+            }
+
+            update() {
+                // Add current position to trail
+                this.trail.push({ x: this.x, y: this.y, alpha: 1 });
+                if (this.trail.length > this.trailLength) {
+                    this.trail.shift(); // Remove oldest trail point
+                }
+
+                // Update firework position
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+
+                // Check if target reached (or passed)
+                const distanceTraveled = Math.sqrt(Math.pow(this.x - this.trail[0].x, 2) + Math.pow(this.y - this.trail[0].y, 2));
+                if (distanceTraveled >= this.distanceToTarget || this.y <= this.targetY) {
+                    this.explode();
+                    return true; // Indicate that this firework should be removed
+                }
+                return false; // Firework still active
+            }
+
+            draw() {
+                // Draw trail - THIS IS NOW REMOVED FOR INSTANT DISAPPEARANCE
+                // for (let i = 0; i < this.trail.length; i++) {
+                //     const p = this.trail[i];
+                //     ctx.beginPath();
+                //     ctx.arc(p.x, p.y, this.size * (i / this.trailLength), 0, Math.PI * 2);
+                //     ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${p.alpha * (i / this.trailLength)})`;
+                //     ctx.fill();
+                // }
+
+                // Draw main firework dot
+                super.draw();
+            }
+
+            explode() {
+                const particleCount = Math.random() * 100 + 50; // 50 to 150 particles
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle(this.x, this.y, this.hue, false));
+                }
+            }
+        }
+
+        // Animation loop for Canvas fireworks
+        function animateFireworks() {
+            fireworkAnimationId = requestAnimationFrame(animateFireworks);
+
+            // Clear canvas completely each frame to remove trails
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            hue += 0.5; // Cycle colors
+
+            // Update and draw fireworks
+            for (let i = fireworks.length - 1; i >= 0; i--) {
+                const firework = fireworks[i];
+                if (firework.update()) {
+                    fireworks.splice(i, 1); // Remove exploded firework
+                } else {
+                    firework.draw();
+                }
+            }
+
+            // Update and draw particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const particle = particles[i];
+                particle.update();
+                particle.draw();
+                if (particle.alpha <= particle.decay) {
+                    particles.splice(i, 1); // Remove faded particle
+                }
+            }
+
+            // Launch new fireworks periodically
+            if (Math.random() < 0.05 && fireworks.length < 5) { // Limit concurrent fireworks
+                const startX = canvas.width / 2; // Always start from bottom center
+                const startY = canvas.height;
+                const targetX = Math.random() * canvas.width;
+                const targetY = Math.random() * canvas.height / 2; // Target in upper half
+                fireworks.push(new Firework(startX, startY, targetX, targetY));
+            }
+        }
+
+        // Function to start the Canvas fireworks animation
+        function startCanvasFireworks() {
+            resizeCanvas(); // Ensure canvas is sized correctly
+            fireworksDisplay.style.display = 'block'; // Show the fireworks container
+            fireworkAnimationId = requestAnimationFrame(animateFireworks);
+        }
+
+        // Function to stop the Canvas fireworks animation
+        function stopCanvasFireworks() {
+            cancelAnimationFrame(fireworkAnimationId); // Stop the animation loop
+            fireworks = []; // Clear all active fireworks
+            particles = []; // Clear all active particles
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            fireworksDisplay.style.display = 'none'; // Hide the fireworks container
+        }
+
 
         // Function to show/hide content based on authentication state
         function updateUI(user) {
@@ -761,6 +1014,10 @@
                 // Show the pharmacology update notification after successful login
                 pharmacologyUpdateNotification.classList.remove('hidden');
 
+                // Show the 4th of July message and start fireworks
+                fourthOfJulyMessage.classList.remove('hidden');
+                startCanvasFireworks(); // Start the Canvas-based fireworks
+
                 // Update welcome message with user email
                 welcomeUserName.textContent = user.email || 'User'; // Fallback to 'User' if email is null/empty
                 displayAuthMessage('', false); // Clear any login/signup messages
@@ -773,6 +1030,9 @@
 
                 // Hide the pharmacology update notification when logged out
                 pharmacologyUpdateNotification.classList.add('hidden');
+                // Hide the 4th of July message and stop fireworks
+                fourthOfJulyMessage.classList.add('hidden');
+                stopCanvasFireworks(); // Stop the Canvas-based fireworks
 
                 welcomeUserName.textContent = 'Guest';
                 displayAuthMessage('', false); // Clear any messages on logout/initial load
@@ -827,8 +1087,6 @@
                     errorMessage = 'Email address already in use. Please try logging in or resetting password.';
                 } else if (error.code === 'auth/weak-password') {
                     errorMessage = 'Password is too weak (min 6 characters).';
-                } else if (error.code === 'auth/too-many-requests') {
-                    errorMessage = 'Too many failed attempts. Please try again later.';
                 } else {
                     errorMessage = `Error: ${error.message}`;
                 }
@@ -890,6 +1148,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Initial setup of auth mode
             setAuthMode('login');
+            resizeCanvas(); // Initial resize of the fireworks canvas
 
             // Select all links within the #app-content that are not the logout button
             const appContentLinks = document.querySelectorAll('#app-content a:not(#logout-button)');
@@ -910,6 +1169,9 @@
                     // If the user IS authenticated, the link's default behavior will proceed as normal.
                 });
             });
+
+            // Add resize listener for the canvas
+            window.addEventListener('resize', resizeCanvas);
         });
     </script>
 </body>
