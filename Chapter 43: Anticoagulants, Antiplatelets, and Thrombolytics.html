@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anticoagulants, Antiplatelets, and Thrombolytics Learning Module</title>
+    <title>Antihyperlipidemics & Peripheral Blood Flow Learning Module</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -40,6 +40,7 @@
 
     <script type="text/babel">
         // --- React and Library Setup ---
+        // Destructure necessary hooks from the global React object.
         const { useState, useEffect, useCallback, useMemo } = React;
 
         // --- Mock Authentication Setup for Standalone Demo ---
@@ -48,474 +49,461 @@
         const mockAuth = {
             onAuthStateChanged: (callback) => {
                 // Simulate an asynchronous authentication check, providing a unique user ID.
-                setTimeout(() => callback({ uid: 'standalone-anticoagulants-user' }), 100);
+                setTimeout(() => callback({ uid: 'standalone-cardio-user' }), 100);
                 return () => {}; // Returns an empty function as a cleanup/unsubscribe placeholder.
             },
-            signInAnonymously: () => Promise.resolve({ user: { uid: 'standalone-anticoagulants-user' } }), // Mock anonymous sign-in.
+            signInAnonymously: () => Promise.resolve({ user: { uid: 'standalone-cardio-user' } }), // Mock anonymous sign-in.
         };
 
         // --- Content & Data Structure for the Learning Modules ---
         // The main content is broken down into smaller, focused modules based on concepts.
         const contentData = {
-            'intro-thrombus': {
-                title: 'Introduction to Thrombus Formation',
-                color: 'from-sky-500 to-cyan-400',
-                description: 'Understand blood clot formation and the types of drugs that affect it.',
+            'lipids-fundamentals': {
+                title: 'Lipids & Apolipoproteins',
+                color: 'from-blue-500 to-indigo-400',
+                description: 'Understand the basics of lipids, lipoproteins, and apolipoproteins, and nonpharmacologic reduction methods.',
                 steps: [
-                    { id: 'drug-groups-intro', title: 'Drug Groups for Circulation', type: 'text', content: `Various drugs are used to maintain or restore circulation. The three major groups are:
-                        <ol>
-                            <li><strong>Anticoagulants:</strong> Prevent the formation of clots that inhibit circulation.</li>
-                            <li><strong>Antiplatelets (Antithrombotics):</strong> Prevent platelet aggregation (clumping together of platelets to form a clot).</li>
-                            <li><strong>Thrombolytics:</strong> Appropriately called "clot busters," they attack and dissolve blood clots that have already formed.</li>
-                        </ol>
-                        Each of these three drug groups will be discussed separately.` },
-                    { id: 'thrombus-pathophysiology', title: 'Pathophysiology: Thrombus Formation', type: 'text', content: `<strong>Thrombosis</strong> is the formation of a clot in an arterial or venous vessel.
+                    { id: 'lipoproteins-intro', title: 'Lipoproteins & Apolipoproteins', type: 'text', content: `
+                        Lipids—cholesterol, triglycerides, and phospholipids—are bound in the inner shell of protein, a carrier that transports lipids in the bloodstream. When there is an excess of one or more lipids in the blood, the condition is known as hyperlipidemia or hyperlipoproteinemia. The four major categories of lipoprotein are high-density lipoprotein (HDL), low-density lipoprotein (LDL), very-low-density lipoprotein (VLDL), and chylomicrons.
                         <br><br>
-                        <strong>Arterial Thrombus:</strong>
+                        <strong>HDL</strong>, also known as “friendly” or “good” lipoprotein, is the smallest and densest lipoprotein, meaning that it contains more protein and less fat than the others. The function of HDL is to remove cholesterol from the bloodstream and deliver it to the liver for excretion in bile.
+                        <br><br>
+                        <strong>LDL</strong>, the “bad” lipoprotein, contains 50% to 60% of cholesterol in the bloodstream. With an elevated LDL, the risk is greater for developing atherosclerotic plaques and heart disease.
+                        <br><br>
+                        <strong>VLDL</strong> carries mostly triglycerides and less cholesterol. The <strong>chylomicrons</strong> are large particles that transport fatty acids and cholesterol to the liver. They are composed mostly of triglycerides.
+                        <br><br>
+                        Serum cholesterol and triglyceride measurements are frequently part of a regular physical examination or readmission evaluation and are used as baseline test results. If the levels are high, a 12- to 14-hour fasting lipid profile may be ordered. When cholesterol, triglycerides, and LDL are elevated, the patient is at increased risk for coronary artery disease (CAD).
+                        <br><br>
+                        <strong>Reference Values for Serum Lipids:</strong>
                         <ul>
-                            <li>Caused by blood stasis (decreased circulation), platelet aggregation on the blood vessel wall, or blood coagulation.</li>
-                            <li>Usually made up of both white (platelets) and red clots. Platelets initiate the process, followed by fibrin formation and trapping of red blood cells.</li>
-                            <li>Platelets do not usually stick together unless there is a break in the endothelial lining of a blood vessel.</li>
-                            <li>When platelets adhere to a broken surface, they synthesize <strong>thromboxane A2 (TxA2)</strong>, a potent stimulus for platelet aggregation.</li>
-                            <li>The platelet receptor protein that binds fibrinogen, <strong>glycoprotein IIb/IIIa (GP IIb/IIIa)</strong>, also promotes platelet aggregation. TxA2 and adenosine diphosphate (ADP) increase the activation of this receptor.</li>
-                            <li>As the clot occludes the blood vessel, tissue ischemia occurs.</li>
+                            <li><strong>Cholesterol:</strong> Desirable (mg/dL): 150–200, Low Risk: 200, Moderate Risk: 200–240, High Risk: >240</li>
+                            <li><strong>Triglycerides:</strong> Desirable (mg/dL): 40–150 (Values vary with age), High Risk: >190</li>
+                            <li><strong>LDL:</strong> Desirable (mg/dL): &lt;100, Low Risk: 100–130, Moderate Risk: 130–159, High Risk: >160</li>
+                            <li><strong>HDL:</strong> Desirable (mg/dL): >60, Low Risk: 50–60, Moderate Risk: 35–50, High Risk: &lt;35</li>
                         </ul>
                         <br>
-                        <strong>Venous Thrombus:</strong>
+                        <strong>Apolipoproteins</strong> are within the lipoprotein shell and contain apolipoprotein (apo) A-1, B, and E. The major component of apoA-1 is HDL. The major component of apoB is LDL, which exists in two forms, apoB-100 and apoB-48. ApoB-100 has VLDL as well as LDL and is a better indicator of risk for CAD than LDL alone.
+                    `},
+                    { id: 'nonpharmacologic-methods', title: 'Nonpharmacologic Methods', type: 'text', content: `
+                        Before drugs to lower LDL and raise HDL are prescribed, nondrug therapy should be initiated to decrease cholesterol.
                         <ul>
-                            <li>Usually develops due to slow blood flow.</li>
-                            <li>Formed from platelet aggregation with fibrin that attaches to red blood cells.</li>
-                            <li>Small pieces can detach and travel to the pulmonary artery and then to the lung, leading to inadequate oxygenation and gas exchange.</li>
+                            <li><strong>Dietary Reduction:</strong> Saturated fats and cholesterol in the diet should be reduced. Total fat intake should be 30% or less of caloric intake, and cholesterol intake should be 300 mg/day or less. Patients should choose lean meats, especially chicken and fish.</li>
+                            <li><strong>Exercise:</strong> An important aspect to reduce cholesterol and increase HDL. For the older adult, exercise can be walking and bicycling.</li>
+                            <li><strong>Smoking Cessation:</strong> Smoking increases LDL cholesterol and decreases HDL.</li>
                         </ul>
-                        Both arterial and venous thrombi can dislodge and become an <strong>embolus</strong> (a blood clot moving through the bloodstream).
+                        In many cases, diet alone will not lower blood lipid levels because 75% to 85% of serum cholesterol is endogenously (internally) derived. Dietary modification alone typically lowers total cholesterol levels by only 10% to 30%. This and the fact that adherence to dietary restrictions is often short-lived explains why many patients do not respond to diet modification alone.
                         <br><br>
-                        Oral and parenteral anticoagulants (e.g., warfarin, heparin) primarily prevent venous thrombosis, while antiplatelet drugs prevent arterial thrombosis. However, both groups generally suppress thrombosis.` },
-                    { id: 'thrombus-intro-quiz', title: 'Thrombus Formation Quiz', type: 'quiz',
-                      questions: [
-                          { question: "Which type of drug is known for attacking and dissolving blood clots that have already formed?", options: ["Anticoagulants", "Antiplatelets", "Thrombolytics", "Antithrombotics"], correctAnswer: "Thrombolytics" },
-                          { question: "What is the primary initiating factor in the formation of an arterial thrombus?", options: ["Slow blood flow", "Fibrin formation", "Platelet aggregation", "Red blood cell clumping"], correctAnswer: "Platelet aggregation" },
-                          { question: "Which substance is a potent stimulus for platelet aggregation, synthesized by platelets when they adhere to a broken endothelial lining?", options: ["Fibrinogen", "Thrombin", "Thromboxane A2", "Adenosine diphosphate (ADP)"], correctAnswer: "Thromboxane A2" }
-                      ]
-                    },
+                        If nonpharmacologic methods are ineffective and hyperlipidemia remains, antihyperlipidemic drugs are prescribed. Patients must understand that dietary changes and an exercise program are still necessary even after drug therapy begins.
+                    `},
+                    { id: 'lipids-quiz', title: 'Lipids Fundamentals Quiz', type: 'quiz',
+                        questions: [
+                            { question: "Which lipoprotein is known as 'good' cholesterol because it removes cholesterol from the bloodstream?", options: ["LDL", "VLDL", "HDL", "Chylomicrons"], correctAnswer: "HDL" },
+                            { question: "What is the recommended maximum daily intake of cholesterol for cholesterol reduction?", options: ["100 mg", "200 mg", "300 mg", "400 mg"], correctAnswer: "300 mg" },
+                            { question: "A patient's fasting lipid profile shows an LDL of 180 mg/dL and HDL of 30 mg/dL. This indicates:", options: ["Low risk for CAD", "Moderate risk for CAD", "High risk for CAD", "Normal lipid levels"], correctAnswer: "High risk for CAD" }
+                        ]
+                    }
                 ]
             },
-            'anticoagulants': {
-                title: 'Anticoagulants: Heparin, Warfarin & Others',
-                color: 'from-red-500 to-orange-400',
-                description: 'Learn about the mechanisms, uses, and nursing considerations for various anticoagulant medications.',
+            'antihyperlipidemics': {
+                title: 'Antihyperlipidemics',
+                color: 'from-green-500 to-emerald-400',
+                description: 'Learn about various drug classes used to lower blood lipid levels.',
                 steps: [
-                    { id: 'anticoagulants-overview', title: 'Anticoagulants: Overview', type: 'text', content: `<strong>Anticoagulants</strong> inhibit clot formation; they do not dissolve existing clots but act prophylactically to prevent new ones.
+                    { id: 'antihyperlipidemics-intro', title: 'Antihyperlipidemics: Overview', type: 'text', content: `
+                        Drugs that lower lipid levels include bile-acid sequestrants, fibrates (fibric acid), nicotinic acid, cholesterol absorption inhibitors, and hepatic 3-hydroxy-3-methylglutaryl-coenzyme A (HMG-CoA) reductase inhibitors, better known as statins. The statin drugs have fewer adverse effects and are well tolerated.
+                    `},
+                    { id: 'bile-acid-sequestrants', title: 'Bile-Acid Sequestrants', type: 'text', content: `
+                        One of the first antihyperlipidemics, <strong>cholestyramine</strong> (A: PO: Initially 4 g qd/bid before meals; mix powder in 60–180 mL of fluid; maint: 4–16 g daily in 2 divided doses; max: 24 g daily), is a bile-acid sequestrant that reduces LDL cholesterol (LDL-C) levels by binding with bile acids in the intestine. It is effective against hyperlipidemia type II. This group may be used as an adjunct to the statins.
                         <br><br>
-                        Used in patients at high risk for clot formation due to:
-                        <ul>
-                            <li><strong>Venous disorders:</strong> Deep venous thrombosis (DVT), pulmonary embolism (PE).</li>
-                            <li><strong>Arterial problems:</strong> Coronary thrombosis (MI), artificial heart valves, cerebrovascular accident (CVA/stroke).</li>
-                        </ul>
-                        Administered orally or parenterally (subcutaneously, intravenously).` },
-                    { id: 'heparin', title: 'Heparin', type: 'text', content: `<strong>Heparin</strong> is a natural substance in the liver that prevents clot formation.
+                        <strong>Colestipol hydrochloride</strong> (A: PO: Initially 2 g tablets qd or bid, may increase at 1- to 2-month intervals; max: 16 g daily) is another resin antihyperlipidemic similar to cholestyramine. Both are effective in lowering cholesterol.
                         <br><br>
-                        <strong>Uses:</strong>
-                        <ul>
-                            <li>Rapid anticoagulant effect for DVT, PE, evolving stroke.</li>
-                            <li>Open-heart surgery (prevent clotting).</li>
-                            <li>Disseminated intravascular coagulation (DIC).</li>
-                            <li>Primary use: Prevent venous thrombosis (leading to PE or stroke).</li>
-                        </ul>
-                        <strong>Mechanism:</strong> Combines with <strong>antithrombin III</strong>, accelerating the anticoagulant cascade to prevent thrombosis. Inhibits thrombin action, preventing fibrinogen conversion to fibrin and fibrin clot formation.
+                        <strong>Colesevelam</strong> (A: PO: 1.875 g bid; max: 3.75 g/d), another bile acid sequestrant, has fewer side effects (less constipation, flatulence, and cramping) and less effect on the absorption of fat-soluble vitamins than the older agents. It is usually the first-choice bile-acid sequestrant drug.
                         <br><br>
-                        <strong>Administration:</strong> Poorly absorbed orally (destroyed by heparinase). Given subcutaneously for prophylaxis or IV for acute thrombosis (bolus or continuous infusion).
-                        <br><br>
-                        <strong>Monitoring:</strong> Prolongs clotting time. Monitored by <strong>partial thromboplastin time (PTT)</strong> and <strong>activated partial thromboplastin time (aPTT)</strong>. Can decrease platelet count (thrombocytopenia).
-                        <br><br>
-                        <strong>Antidote:</strong> <strong>Protamine sulfate</strong> (given IV) reverses heparin action if hemorrhage occurs.
-                        <br><br>
-                        Before discontinuing heparin, oral warfarin therapy is usually initiated.` },
-                    { id: 'lmwhs', title: 'Low-Molecular-Weight Heparins (LMWHs)', type: 'text', content: `<strong>Low-Molecular-Weight Heparins (LMWHs)</strong> (e.g., enoxaparin, dalteparin, fondaparinux) are derivatives of standard heparin designed to prevent venous thromboembolism with a lower risk of bleeding.
-                        <br><br>
-                        <strong>Mechanism:</strong> Inactivate factor Xa, but are less able to inactivate thrombin compared to standard heparin.
-                        <br><br>
-                        <strong>Advantages:</strong> Produce more stable responses; frequent aPTT monitoring is not required.
-                        <br><br>
-                        <strong>Uses:</strong> Most commonly prescribed to prevent DVT and acute PE after orthopedic or abdominal surgery (e.g., enoxaparin for hip/knee replacement, dalteparin for abdominal surgery). Fondaparinux is a selective factor Xa inhibitor used for similar purposes.
-                        <br><br>
-                        <strong>Administration:</strong> Can be administered at home (subcutaneously once or twice daily) in prefilled syringes. Injection sites should be alternated. Average treatment: 7-10 days. Started within 24 hours after surgery.
-                        <br><br>
-                        <strong>Half-life:</strong> Two to four times longer than heparin.
-                        <br><br>
-                        <strong>Caution:</strong> Patients should not take antiplatelet drugs (e.g., aspirin) concurrently. Bleeding is less likely than with heparin.
-                        <br><br>
-                        <strong>Antidote for LMWH overdose:</strong> Protamine sulfate (1 mg for every 100 units of LMWH).
-                        <br><br>
-                        <strong>Contraindications:</strong> Strokes, peptic ulcers, blood anomalies, eye/brain/spinal surgery.` },
-                    { id: 'direct-thrombin-inhibitors', title: 'Direct Thrombin Inhibitors (Parenteral)', type: 'text', content: `<strong>Direct Thrombin Inhibitors</strong> (e.g., argatroban, bivalirudin, desirudin, dabigatran - oral) directly inhibit thrombin from converting fibrinogen to fibrin. They differ from heparin-like anticoagulants.
-                        <br><br>
-                        <strong>Administration:</strong> Argatroban and bivalirudin are given intravenously. Desirudin is administered subcutaneously. Dabigatran is an oral anticoagulant.
-                        <br><br>
-                        <strong>Monitoring:</strong> Dabigatran does not require routine coagulation monitoring.
-                        <br><br>
-                        These drugs are generally more expensive than other anticoagulants.` },
-                    { id: 'oral-anticoagulants', title: 'Oral Anticoagulants: Warfarin', type: 'text', content: `<strong>Warfarin</strong> is an oral anticoagulant synthesized from dicumarol.
-                        <br><br>
-                        <strong>Mechanism:</strong> Inhibits hepatic synthesis of <strong>vitamin K</strong>, thus affecting clotting factors II, VII, IX, and X.
-                        <br><br>
-                        <strong>Uses:</strong> Mainly to prevent thromboembolic conditions (thrombophlebitis, PE, embolism from atrial fibrillation leading to stroke).
-                        <br><br>
-                        <strong>Monitoring:</strong> Prolongs clotting time. Monitored by <strong>prothrombin time (PT)</strong> and, more frequently, by the <strong>international normalized ratio (INR)</strong>.
-                        <ul>
-                            <li>Normal INR: 1.3 to 2.</li>
-                            <li>Target INR for warfarin therapy: 2 to 3.</li>
-                            <li>Desired INR for mechanical heart valves or recurrent systemic embolism: 2.5 to 3.5 (can be up to 4.5).</li>
-                        </ul>
-                        INR monitoring is required regularly.
-                        <br><br>
-                        <strong>Half-life:</strong> Long (20-60 hours), with very long duration. Drug accumulation can occur, leading to external or internal bleeding.
-                        <br><br>
-                        <strong>Observation:</strong> Nurse must observe for petechiae, ecchymosis, tarry stools, hematemesis, and teach patient to do the same.
-                        <br><br>
-                        <strong>Antidote for overdose:</strong> <strong>Vitamin K</strong> (phytonadione) takes 24-48 hours to be effective (low oral dose for INR 5.5). Excessive vitamin K can inhibit warfarin for 1-2 weeks. For acute bleeding, fresh frozen plasma is indicated.
-                        <br><br>
-                        <strong>Pharmacokinetics:</strong> Well absorbed orally; food delays but doesn't inhibit absorption. Highly protein bound (97%). Metabolized to inactive metabolites, excreted in urine and bile. Kidney/liver disease prolong half-life.
-                        <br><br>
-                        <strong>Pharmacodynamics:</strong> Effective for long-term anticoagulant therapy. Does not cross placental barrier (not recommended in pregnancy).
-                        <br><br>
-                        <strong>Side Effects/Adverse Reactions:</strong> Major adverse effect is <strong>bleeding (hemorrhage)</strong>. Monitor for petechiae, ecchymosis, GI bleeding, ocular hemorrhage, hematuria.
-                        <br><br>
-                        <strong>Drug Interactions:</strong> Highly protein bound, affected by many drugs (e.g., aspirin, NSAIDs, sulfonamides, phenytoin, cimetidine, allopurinol, oral hypoglycemics – displace warfarin, increase free drug, risk bleeding). Acetaminophen should be used instead of aspirin. Parenteral vitamin K for frank bleeding.
-                        <br><br>
-                        <strong>Herbal Interactions:</strong> Dong quai, feverfew, garlic, ginger, meadowsweet, willow bark, chamomile tea, ginkgo, bilberry, excessive anise, cranberry (increase bleeding/INR). Ginseng, alfalfa, goldenseal, valerian, green tea (decrease warfarin effects). Hawthorn (increases action).` },
-                    { id: 'factor-xa-inhibitors', title: 'Factor Xa Inhibitors', type: 'text', content: `<strong>Factor Xa Inhibitors</strong> include fondaparinux (subcutaneous) and oral agents like rivaroxaban, apixaban, edoxaban, and betrixaban.
-                        <br><br>
-                        <strong>Mechanism:</strong> Selectively block activity of clotting factor Xa to prevent clot formation.
-                        <br><br>
-                        <strong>Advantages:</strong> Do not require routine coagulation monitoring. Given once or twice daily.
-                        <br><br>
-                        <strong>Uses:</strong> Approved for prevention of DVT and PE.
-                        <br><br>
-                        <strong>Major Adverse Effect:</strong> Bleeding.
-                        <br><br>
-                        <strong>Caution:</strong> Not recommended for patients weighing less than 50 kg due to increased bleeding risk.` },
-                    { id: 'anticoagulants-np', title: 'Anticoagulants: Nursing Process (Warfarin & Heparin)', type: 'text', content: `<strong>Concept: Clotting</strong><br>
-                        <strong>Recognize Cues (Assessment):</strong>
-                        <ul>
-                            <li>Obtain history of abnormal clotting or health problems affecting clotting (alcoholism, liver/renal disease).</li>
-                            <li>Warfarin contraindicated for blood dyscrasias, peptic ulcer, CVA, hemophilia, severe hypertension; use cautiously with acute traumatic injury.</li>
-                            <li>Gather drug and herbal history for interactions (warfarin is highly protein bound).</li>
-                            <li>Obtain baseline PT/INR for warfarin and aPTT for heparin.</li>
-                        </ul>
-                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Bleeding, Tissue injury, Dehydration.<br>
-                        <strong>Generate Solutions (Planning):</strong> Patient will not have excessive bleeding.<br>
-                        <strong>Take Action (Nursing Interventions):</strong>
-                        <ul>
-                            <li>Monitor vital signs (increased pulse, decreased systolic BP can indicate fluid volume deficit/bleeding).</li>
-                            <li>Monitor PT/INR for warfarin (target 2-3, up to 3.5 for mechanical valves) and aPTT for heparin (target 1.5-2x control) before administering. Monitor platelet count.</li>
-                            <li>Examine for bleeding (mouth, nose/epistaxis, urine/hematuria, skin/petechiae, purpura). Watch older adults closely.</li>
-                            <li>Check stools for occult blood.</li>
-                            <li>Keep antagonists available: protamine sulfate for heparin, vitamin K for warfarin. Fresh frozen plasma for acute bleeding.</li>
-                        </ul>
-                        <strong>Patient Teaching:</strong>
-                        <ul>
-                            <li><strong>General:</strong> Inform dentist; use soft toothbrush, electric razor; have labs done as ordered; carry medical ID card/MedicAlert bracelet.</li>
-                            <li><strong>Smoking:</strong> Increases drug metabolism (warfarin dose may need increase).</li>
-                            <li><strong>OTC drugs:</strong> Check with provider (aspirin intensifies warfarin, use acetaminophen).</li>
-                            <li><strong>Herbal products:</strong> Many interact, increasing bleeding risk; monitor INR/PT closely.</li>
-                            <li><strong>Hemorrhage:</strong> Control external bleeding by applying firm, direct pressure for 5-10 minutes.</li>
-                            <li><strong>Side Effects:</strong> Report frank or occult bleeding (petechiae, ecchymosis, purpura, tarry stools, bleeding gums, epistaxis, expectoration of blood).</li>
-                            <li><strong>Diet:</strong> Avoid large amounts of green, leafy vegetables, broccoli, legumes, soybean oil (rich in vitamin K), coffee, tea, cola (caffeine), excessive alcohol, certain herbs/supplements (coenzyme Q10, fish oils, St. John’s wort, ginseng, vitamin C, garlic, ginger, kava kava, green tea, chamomile tea, ginkgo biloba, acute alcohol intoxication). Be consistent with intake.</li>
-                        </ul>
-                        <strong>Evaluate Outcomes (Evaluation):</strong> Evaluate effectiveness (PT/INR in range, no significant side effects).` },
-                    { id: 'anticoagulants-quiz', title: 'Anticoagulants Quiz', type: 'quiz',
-                      questions: [
-                          { question: "Which laboratory test is primarily used to monitor heparin therapy?", options: ["Prothrombin Time (PT)", "International Normalized Ratio (INR)", "Activated Partial Thromboplastin Time (aPTT)", "Bleeding Time"], correctAnswer: "Activated Partial Thromboplastin Time (aPTT)" },
-                          { question: "What is the antidote for a warfarin overdose?", options: ["Protamine sulfate", "Vitamin K", "Aminocaproic acid", "Fresh frozen plasma"], correctAnswer: "Vitamin K" },
-                          { question: "A nurse is preparing to administer enoxaparin. Which statement about low-molecular-weight heparins (LMWHs) is correct?", options: ["LMWHs require frequent aPTT monitoring.", "LMWHs have a shorter half-life than unfractionated heparin.", "LMWHs are typically administered orally.", "LMWHs can be administered at home."], correctAnswer: "LMWHs can be administered at home." },
-                          { question: "Which of the following foods should a patient taking warfarin be advised to consume consistently, rather than in large, varying amounts?", options: ["Citrus fruits", "Lean meats", "Green, leafy vegetables", "Dairy products"], correctAnswer: "Green, leafy vegetables" },
-                          { question: "Factor Xa inhibitors like rivaroxaban are advantageous because they:", options: ["Require daily PT/INR monitoring.", "Are administered intravenously only.", "Do not require routine coagulation monitoring.", "Are the antidote for heparin overdose."], correctAnswer: "Do not require routine coagulation monitoring." }
-                      ]
-                    },
-                ]
-            },
-            'antiplatelet-drugs': {
-                title: 'Antiplatelet Drugs',
-                color: 'from-blue-400 to-indigo-600',
-                description: 'Understand how antiplatelet medications prevent arterial thrombosis.',
-                steps: [
-                    { id: 'antiplatelets-overview', title: 'Antiplatelet Drugs: Overview', type: 'text', content: `<strong>Antiplatelet drugs</strong> prevent thrombosis in the arteries by suppressing platelet aggregation. In contrast, heparin and warfarin primarily prevent thrombosis in the veins.
-                        <br><br>
-                        Antiplatelet drug therapy is mainly for <strong>prophylactic use</strong> in:
-                        <ul>
-                            <li>Prevention of MI or stroke for patients with a family history.</li>
-                            <li>Prevention of repeat MI or stroke.</li>
-                            <li>Prevention of stroke for patients having transient ischemic attacks (TIAs).</li>
-                        </ul>` },
-                    { id: 'aspirin-antiplatelet', title: 'Aspirin as an Antiplatelet', type: 'text', content: `<strong>Aspirin (ASA)</strong> is an effective and inexpensive treatment for suppressing platelet aggregation.
-                        <br><br>
-                        <strong>Mechanism:</strong> Inhibits cyclooxygenase (COX), an enzyme needed by platelets to synthesize thromboxane A2 (TxA2).
-                        <br><br>
-                        <strong>Recommended Doses:</strong>
-                        <ul>
-                            <li>Stroke prophylaxis: 50 to 325 mg/day.</li>
-                            <li>MI prophylaxis: 75 to 162 mg/day.</li>
-                        </ul>
-                        <strong>Caution:</strong> Due to prolonged antiplatelet activity, aspirin should be discontinued at least 7 days before surgery.` },
-                    { id: 'other-antiplatelets', title: 'Other Antiplatelet Drugs', type: 'text', content: `Other antiplatelet drugs include:
-                        <ul>
-                            <li><strong>Clopidogrel</strong> (Plavix): An adenosine diphosphate (ADP) antagonist. Has effects similar to aspirin but affects platelet aggregation by blocking ADP binding to its receptor. Frequently used after MI or stroke to prevent a second event. May be prescribed singly or with aspirin (more effective together). Discontinued 7 days before surgery.</li>
-                            <li><strong>Dipyridamole:</strong> An ADP antagonist, similar to aspirin.</li>
-                            <li><strong>Cilostazol:</strong> Inhibits platelet aggregation and is a vasodilator; used for intermittent claudication.</li>
-                            <li><strong>Prasugrel, Ticagrelor, Vorapaxar, Cangrelor:</strong> Newer antiplatelet agents with specific mechanisms and uses. Ticagrelor is often taken with low-dose aspirin.</li>
-                            <li><strong>Glycoprotein (GP) IIb/IIIa Receptor Antagonists:</strong> (e.g., abciximab, eptifibatide, tirofiban) Block the binding of fibrinogen to the GP IIb/IIIa receptor on the platelet surface. Used primarily for acute coronary syndromes (unstable angina or non-Q-wave MI) and preventing reocclusion after percutaneous transluminal coronary angioplasty (PTCA). Abciximab is often the drug of choice for angioplasty.</li>
-                        </ul>
-                        <strong>Herbal Interactions:</strong> Dong quai, feverfew, garlic, ginger, Korean ginseng, saw palmetto, ginkgo biloba interfere with platelet aggregation; increase bleeding risk when taken with antiplatelets. Licorice may cause hypokalemia, potentiating drug toxicity. St. John’s wort with clopidogrel may potentiate drug effects.` },
-                    { id: 'antiplatelets-quiz', title: 'Antiplatelet Drugs Quiz', type: 'quiz',
-                      questions: [
-                          { question: "What is the primary purpose of antiplatelet drug therapy?", options: ["To dissolve existing blood clots", "To inhibit hepatic synthesis of vitamin K", "To suppress platelet aggregation in arteries", "To increase blood clotting factors"], correctAnswer: "To suppress platelet aggregation in arteries" },
-                          { question: "How does aspirin exert its antiplatelet effect?", options: ["By blocking ADP receptors", "By inhibiting thrombin directly", "By inhibiting cyclooxygenase (COX)", "By increasing fibrinogen levels"], correctAnswer: "By inhibiting cyclooxygenase (COX)" },
-                          { question: "Which antiplatelet drug is an ADP antagonist often used after MI or stroke to prevent a second event, and should be discontinued 7 days before surgery?", options: ["Aspirin", "Cilostazol", "Abciximab", "Clopidogrel"], correctAnswer: "Clopidogrel" },
-                          { question: "Glycoprotein (GP) IIb/IIIa receptor antagonists are primarily used for which condition?", options: ["Deep vein thrombosis (DVT)", "Chronic stable angina", "Acute coronary syndromes and prevention of reocclusion after PTCA", "Hypertension"], correctAnswer: "Acute coronary syndromes and prevention of reocclusion after PTCA" }
-                      ]
-                    },
-                ]
-            },
-            'thrombolytics': {
-                title: 'Thrombolytics',
-                color: 'from-gray-700 to-gray-900',
-                description: 'Understand how thrombolytic medications dissolve existing blood clots.',
-                steps: [
-                    { id: 'thrombolytics-overview', title: 'Thrombolytics: Overview & Mechanism', type: 'text', content: `<strong>Thromboembolism</strong> (occlusion by thrombus or embolus) causes ischemia and tissue necrosis. Natural fibrinolytic mechanisms take 1-2 weeks to disintegrate clots.
-                        <br><br>
-                        <strong>Thrombolytic therapy</strong> aims to dissolve new thrombi/emboli quickly to minimize tissue necrosis and reestablish blood flow.
-                        <br><br>
-                        <strong>Mechanism:</strong> Promote the fibrinolytic mechanism by converting <strong>plasminogen to plasmin</strong>. Plasmin is an enzyme that destroys the fibrin in the blood clot. These drugs induce fibrinolysis (fibrin breakdown).
-                        <br><br>
-                        <strong>Timing is Critical:</strong>
-                        <ul>
-                            <li>Administer as soon as possible after symptoms of acute myocardial infarction (AMI/heart attack). Ideally within 3-4 hours or 30 minutes of hospital arrival. Benefits may be seen up to 12 hours after initial symptoms.</li>
-                            <li>Administer within 3 hours of a thrombotic stroke.</li>
-                        </ul>
-                        This prevents or minimizes necrosis and may decrease hospitalization time.
-                        <br><br>
-                        <strong>Uses:</strong> AMI, PE, DVT, noncoronary arterial occlusion from acute thromboembolism, thrombotic stroke.` },
-                    { id: 'thrombolytics-drugs', title: 'Common Thrombolytics', type: 'text', content: `Commonly used thrombolytics include:
-                        <ul>
-                            <li><strong>Alteplase (tissue plasminogen activator - tPA):</strong> Clot-specific. Binds to the fibrin surface of a clot, promoting plasminogen conversion to plasmin. Plasmin digests fibrin, fibrinogen, and other clotting factors. Allergic reactions are less frequent than with other thrombolytics.</li>
-                            <li><strong>Tenecteplase (TNK tPA):</strong> Similar to alteplase.</li>
-                            <li><strong>Reteplase (r-PA):</strong> Penetrates clots and activates plasminogen inside the clot, potentially leading to higher clot lysis.</li>
-                        </ul>
-                        <strong>Administration (Alteplase example):</strong> Initially 10% of dose as IV bolus over 1 minute, then 90% infused over 60 minutes. Recommended max total dose is 90 mg (larger doses increase intracranial bleeding risk).
-                        <br><br>
-                        <strong>Pharmacodynamics (Alteplase):</strong> Peak action in 5-10 minutes. Duration of action is 1 hour.
-                        <br><br>
-                        <strong>Side Effects/Adverse Reactions:</strong>
-                        <ul>
-                            <li>Major complication: <strong>Hemorrhage (bleeding)</strong>.</li>
-                            <li>Allergic reactions (less than 1% for tenecteplase): Anaphylactoid reactions (rash, laryngeal edema, angioedema, anaphylactic shock).</li>
-                            <li>Reperfusion dysrhythmia or hemorrhagic infarction at myocardial necrotic area (if administered intracoronary after MI).</li>
-                        </ul>
-                        <strong>Antidote for bleeding:</strong> <strong>Aminocaproic acid</strong> (inhibits plasminogen activation, stopping thrombolysis).
-                        <br><br>
-                        <strong>Contraindications:</strong> Intracranial bleeding, aneurysm, CVA, brain tumor, head trauma, thrombocytopenia, coagulopathy, active bleeding, severe hypertension, recent traumatic injury.
-                        <br><br>
-                        <strong>Drug Interactions:</strong> Anticoagulants and antiplatelet drugs increase hemorrhage risk; avoid until thrombolytic effect passes.
-                        <br><br>
-                        <strong>Herbal Interactions:</strong> Ginkgo biloba, garlic, feverfew, ginger, green tea, omega-3 fatty acids (increase bleeding).` },
-                    { id: 'thrombolytics-np', title: 'Thrombolytics: Nursing Process', type: 'text', content: `<strong>Concept: Clotting</strong><br>
-                        <strong>Recognize Cues (Assessment):</strong>
-                        <ul>
-                            <li>Assess baseline vital signs.</li>
-                            <li>Check baseline CBC, PT/INR values.</li>
-                            <li>Obtain medical and drug history. Contraindications: recent CVA, active bleeding, severe hypertension, anticoagulant therapy, recent traumatic injury (especially head injury). Report aspirin or NSAID use.</li>
-                        </ul>
-                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Bleeding, Tissue injury, Dehydration.<br>
-                        <strong>Generate Solutions (Planning):</strong> Patient’s vital signs will be normal; patient will be free of excessive bleeding.<br>
-                        <strong>Take Action (Nursing Interventions):</strong>
-                        <ul>
-                            <li>Monitor vital signs (increased pulse, decreased BP indicates blood loss/shock). Record and report changes.</li>
-                            <li>Observe for signs of active bleeding (mouth, rectum). Hemorrhage is serious; aminocaproic acid can be given.</li>
-                            <li>Examine for active bleeding for 24 hours after therapy: every 15 mins for first hour, then every 30 mins until 8th hour, then hourly.</li>
-                            <li>Observe for allergic reaction: itching, hives, flushing, fever, dyspnea, bronchospasm, hypotension, cardiovascular collapse.</li>
-                            <li>Avoid aspirin/NSAIDs for pain; acetaminophen can be substituted.</li>
-                            <li>Monitor ECG for reperfusion dysrhythmias (antidysrhythmic therapy may be needed).</li>
-                            <li>Avoid venipuncture/arterial sticks.</li>
-                        </ul>
-                        <strong>Patient Teaching:</strong>
-                        <ul>
-                            <li>Explain treatment to patient/family. Be supportive.</li>
-                            <li>Report side effects: lightheadedness, dizziness, palpitations, nausea, pruritus, urticaria.</li>
-                        </ul>
-                        <strong>Evaluate Outcomes (Evaluation):</strong> Evaluate effectiveness (clot dissolved, stable vitals, no active bleeding, pain free).` },
-                    { id: 'thrombolytics-quiz', title: 'Thrombolytics Quiz', type: 'quiz',
-                      questions: [
-                          { question: "Thrombolytic drugs primarily work by converting plasminogen into which enzyme?", options: ["Thrombin", "Fibrinogen", "Plasmin", "Factor Xa"], correctAnswer: "Plasmin" },
-                          { question: "Ideally, within what timeframe should a thrombolytic drug be administered after the onset of symptoms of an acute myocardial infarction (AMI)?", options: ["Within 6-8 hours", "Within 12-24 hours", "Within 3-4 hours", "Within 48 hours"], correctAnswer: "Within 3-4 hours" },
-                          { question: "What is the major complication associated with thrombolytic drug therapy?", options: ["Hypotension", "Bradycardia", "Hemorrhage", "Hyperglycemia"], correctAnswer: "Hemorrhage" },
-                          { question: "Which drug is used as an antidote to stop bleeding caused by thrombolytic therapy?", options: ["Vitamin K", "Protamine sulfate", "Aminocaproic acid", "Naloxone"], correctAnswer: "Aminocaproic acid" }
-                      ]
-                    },
-                ]
-            },
-            'chapter-review': {
-                title: 'Chapter Review & NCLEX Questions',
-                color: 'from-gray-700 to-gray-900',
-                description: 'Integrate knowledge and practice NCLEX-style review questions for Chapter 43.',
-                steps: [
-                    { id: 'critical-thinking-case-study', title: 'Critical Thinking Case Study', type: 'case_study', case: {
-                        scenario: `A 57-year-old man has thrombophlebitis in the right lower leg. IV heparin, 5000 units by bolus, was given. After the IV bolus, heparin 5000 units given subcutaneously every 6 hours was prescribed. Other therapeutic means to decrease pain and alleviate swelling and redness were also prescribed, and an aPTT test was ordered.
-                        <br><br>
-                        After 5 days of heparin therapy, the patient was prescribed oral warfarin 5 mg daily. An INR test was ordered.`,
-                        question: `
-                        1. Was the patient’s heparin order within the safe daily dosage range?
-                        <br><br>
-                        2. What are the various methods for administering heparin?
-                        <br><br>
-                        3. Why was an aPTT test ordered? How would you determine whether the patient is within the desired range? Explain your answer.
-                        <br><br>
-                        4. What is the pharmacologic action of warfarin? Is the warfarin dose within the safe daily dosage range? Explain your answer.
-                        <br><br>
-                        5. What are the half-life and protein binding for warfarin? If a patient takes a drug that is highly protein bound, would there be a drug interaction? Explain your answer.
-                        <br><br>
-                        6. Why was an INR ordered for the patient? What is the desired range?
-                        <br><br>
-                        7. What serious adverse reactions could result with prolonged use or large doses of warfarin?
-                        <br><br>
-                        8. What patient teaching interventions should the nurse include? List three interventions.
-                        <br><br>
-                        <em>Months later, the patient has hematemesis.</em>
-                        <br><br>
-                        9. What nursing action should be taken?
-                        `,
-                        options: [
-                             "This is a discussion-based case study, not multiple choice."
-                        ],
-                        correctAnswer: ["This is a discussion-based case study, not multiple choice."],
-                        explanation: `This is a multi-part, open-ended case study designed for critical thinking and discussion. Here are the rationales for each question based on Chapter 43 content:
-                        <br><br>
-                        <strong>1. Was the patient’s heparin order within the safe daily dosage range?</strong>
+                        <strong>Side Effects and Adverse Reactions (Cholestyramine, Colestipol):</strong> May cause anorexia, nausea, vomiting, diarrhea, constipation, steatorrhea, abdominal pain, eructation, flatulence, osteoporosis, peptic ulcer, and GI bleeding. Protein Binding (PB): UK; t½: UK.
                         <br>
-                        The provided text for Chapter 43 does not give a specific "safe daily dosage range" for heparin beyond the bolus and maintenance infusion for DVT/PE (80 units/kg bolus; maint: 18 units/kg/h infusion based on aPTT). However, it states that heparin is used for prophylaxis or by IV to treat acute thrombosis. A subcutaneous dose of 5000 units every 6 hours (20,000 units/day) is a common prophylactic or low-dose therapeutic regimen for DVT prevention/treatment. Without the patient's weight, a precise calculation for a high-dose therapeutic range (which is weight-based) isn't possible. For DVT treatment, higher doses are often used. Given it's for thrombophlebitis, a therapeutic dose would be expected, and 20,000 units/day is a plausible therapeutic dose, but it's on the lower end for acute treatment compared to continuous IV infusion based on aPTT. It's generally within a commonly used range for subcutaneous administration.
-                        <br><br>
-                        <strong>2. What are the various methods for administering heparin?</strong>
+                        <strong>Side Effects (Colesevelam):</strong> May cause headache, dyspepsia, constipation, hypertension, weakness, nausea, influenza, hypoglycemia, and hypertriglyceridemia. PB: UK; t½: UK.
                         <br>
-                        Heparin can be administered:
+                        <strong>Nursing Consideration:</strong> Constipation can be decreased or alleviated by increasing intake of fluids and foods high in fiber. Early signs of peptic ulcer are nausea and abdominal discomfort, followed later by abdominal pain and distension. To avoid GI discomfort, the drug must be taken with and followed by sufficient fluids.
+                    `},
+                    { id: 'fibrates', title: 'Fibrates (Fibric Acid Derivatives)', type: 'text', content: `
+                        <strong>Gemfibrozil</strong> (A: PO: 600 mg bid 30 min before morning and evening meals; max: 1200 mg daily) is a fibric acid derivative that is more effective for reducing triglyceride and VLDL levels than for reducing LDL. It is used primarily to reduce hyperlipidemia type IV, but it can also be used for type II hyperlipidemia. PB: 95%; t½: 1.5 h.
+                        <br><br>
+                        This drug is highly protein bound and should not be taken with anticoagulants because they compete for protein sites. The anticoagulant dose should be reduced during antihyperlipidemic therapy, and the international normalized ratio (INR) should be closely monitored.
+                        <br><br>
+                        <strong>Fenofibrate</strong> (Lipofen capsules: A: PO: 50–150 mg daily with food; max: 150 mg daily) has similar actions and some of the same side effects as gemfibrozil. If taken with warfarin, bleeding might occur. Both fenofibrate and gemfibrozil are highly protein bound (Fenofibrate PB: 99%; t½: 20 h).
+                        <br><br>
+                        <strong>Side Effects (General for Fibrates):</strong> Dizziness, headache, weakness, nausea, diarrhea, constipation, abdominal pain, cholelithiasis, back pain, and elevated hepatic enzymes.
+                    `},
+                    { id: 'niacin', title: 'Niacin (Vitamin B3)', type: 'text', content: `
+                        <strong>Niacin</strong> (Regular release: A: PO: Initially 250 mg qd after evening meal; may increase q4–7d; max: 6 g qd. Sustained release: A: PO: 1–2 g/d in 2–3 divided doses; max: 2 g/d) reduces VLDL and LDL. Niacin is actually very effective at lowering cholesterol levels, and its effect on the lipid profile is highly desirable. PB: &lt;20%; t½: 20–48 min.
+                        <br><br>
+                        Because it has numerous side effects and large doses are required, as few as 20% of patients can initially tolerate niacin. However, with proper counseling, careful drug titration, and concomitant use of aspirin, this number can be increased to as much as 60% to 70%. Niacin is only recommended in specific clinical situations such as triglyceride levels over 500 mg/dL or if intolerant to other treatment.
+                        <br><br>
+                        <strong>Side Effects:</strong> Flushing, hypotension, dizziness, headache, cough, pruritus, nausea, vomiting, diarrhea, hyperglycemia, hyperuricemia, rash, edema, and weakness. Flushing is common but should decrease with continued use; starting with a low dose helps. Large doses can cause vasodilation, dizziness, and faintness (syncope).
+                    `},
+                    { id: 'cholesterol-absorption-inhibitors', title: 'Cholesterol Absorption Inhibitors', type: 'text', content: `
+                        <strong>Ezetimibe</strong> (A: PO: 10 mg daily; max: 10 mg daily) is a cholesterol absorption inhibitor that acts on the cells in the small intestine to inhibit cholesterol absorption. It decreases cholesterol from dietary absorption, reducing serum cholesterol, LDL, triglycerides, and apoB levels. Ezetimibe causes only a small increase in HDL. It must be combined with a statin (e.g., simvastatin) for optimum effect. PB: 90%; t½: 22 h.
+                        <br><br>
+                        <strong>Side Effects:</strong> Diarrhea, arthralgia, abdominal and back pain, fatigue, infection, pharyngitis, elevated hepatic enzymes, cholelithiasis, and myalgia.
+                    `},
+                    { id: 'statins', title: 'Statins (HMG-CoA Reductase Inhibitors)', type: 'text', content: `
+                        The statin drugs inhibit the enzyme HMG-CoA reductase in cholesterol biosynthesis; thus statins are called HMG-CoA reductase inhibitors. By inhibiting cholesterol synthesis in the liver, this group of antihyperlipidemics decreases the concentration of cholesterol, decreases LDL, and slightly increases HDL cholesterol. Reduction of LDL cholesterol may be seen as early as 2 weeks after initiating therapy. The statin group has been useful in decreasing CAD and reducing mortality rates.
+                        <br><br>
+                        Numerous statins have been approved: <strong>atorvastatin calcium</strong> (see Prototype Drug Chart: Atorvastatin), <strong>fluvastatin sodium</strong> (Regular release: A: PO: Initially 20–40 mg daily; maint: 20–80 mg daily; max: 80 mg qd. Extended release: A: PO: 20–80 mg daily; max: 80 mg daily; PB: 98%; t½: Immediate release 2.5–2.7 h, extended release 9 h), <strong>lovastatin</strong> (Immediate release: A: PO: Initially 10–20 mg qd with evening meal; max: 80 mg qd. Extended release: A: PO: 20–60 mg qd at bedtime; max: 60 mg qd; PB: 95%; t½: 1.1–1.7 h), <strong>pravastatin sodium</strong> (A: PO: Initially 40 mg daily; maint: 10–80 mg daily; max: 80 mg daily; PB: 50%; t½: 2–3 h), <strong>simvastatin</strong> (A: PO: Initially 10–20 mg qd at hs; maint: 5–40 mg daily in evening; max: 40 mg daily; PB: 95%; t½: 1.9 h), <strong>pitavastatin</strong> (A: PO: Initially 2 mg qd; max: 4 mg qd; PB: 99%; t½: 12 h), and <strong>rosuvastatin</strong> (A: PO: 5–10 mg qd; maint: 5–40 mg/d; max: 40 mg qd; PB: 88%; t½: 20 h).
+                        <br>Atorvastatin, lovastatin, rosuvastatin, and simvastatin are more effective at lowering LDL than the other statins. Rosuvastatin and atorvastatin are at the top of the list of most prescribed drugs in the United States.
+                        <br><br>
+                        The statin drugs can be combined with other drugs: <strong>amlodipine and atorvastatin</strong> (A: PO: Initially 5–10 mg amlodipine and 10–20 mg atorvastatin daily; maint: 10 mg amlodipine and 10–80 mg atorvastatin daily; max: 10 mg amlodipine and 80 mg atorvastatin daily; Older A: PO: 2.5 mg amlodipine and 10–20 mg atorvastatin; max: 10 mg amlodipine and 80 mg atorvastatin. PB: amlodipine 93%, atorvastatin 98%; t½: amlodipine 30–50 h, atorvastatin 14 h. Side effects: headache, fatigue, nasopharyngitis, gynecomastia, dyspepsia, nausea, diarrhea, arthralgia, palpitations, and edema), and <strong>ezetimibe and simvastatin</strong> (A: PO: Initially 10 mg ezetimibe and 10–20 mg simvastatin qd at hs; maint: 10 mg ezetimibe and 40 mg simvastatin daily; max: 10 mg ezetimibe and 40 mg simvastatin daily. PB: ezetimibe 90%, simvastatin 95%; t½: ezetimibe 22 h, simvastatin 1.9 h. Side effects: headache, diarrhea, myalgia, infection, influenza, musculoskeletal pain, and elevated hepatic enzymes).
+                        <br><br>
+                        <strong>Common Side Effects (General for Statins):</strong> Gastrointestinal (GI) disturbances, headaches, muscle cramps, and fatigue are early complaints. Dose-related increase in liver enzyme levels may occur.
+                        <br>
+                        <strong>Serious Adverse Reaction:</strong> Rhabdomyolysis (muscle disintegration) is rare but potentially fatal. Patients should report immediately any unexplained muscle aches or weakness, especially if accompanied by fever or malaise. Tendon rupture, hyperglycemia, and diabetes mellitus can also occur.
+                        <br>
+                        <strong>Monitoring:</strong> Serum liver enzymes (alkaline phosphatase [ALP], alanine aminotransferase [ALT], gamma-glutamyl transferase [GGT]) should be monitored. Baseline liver enzyme studies should be obtained before initiating statin therapy. A slight transient increase may be within normal range but should be rechecked in 1 week. An annual eye examination is needed because cataract formation may result. Statins are contraindicated for patients with acute hepatic disorders.
+                        <br>
+                        <strong>Important:</strong> If antihyperlipidemic therapy is withdrawn, cholesterol and LDL levels return to pretreatment levels. Antihyperlipidemic therapy is a lifetime commitment. Abruptly stopping a statin drug could cause a threefold rebound effect that may cause death from acute myocardial infarction (AMI).
+                    `},
+                    { id: 'misc-antilipemics', title: 'Miscellaneous Antilipemics', type: 'text', content: `
+                        Additional Antilipemics include:
                         <ul>
-                            <li><strong>Subcutaneously (SC/Subcut):</strong> For prophylaxis or low-dose therapeutic use.</li>
-                            <li><strong>Intravenously (IV):</strong> As an IV bolus for rapid effect, or in IV fluid for continuous infusion to treat acute thrombosis.</li>
+                            <li><strong>Icosapent ethyl</strong> (A: PO: 2 g q12h; max: 4 g daily with food. PB: 99%; t½: 89 h). Uses: For hypertriglyceridemia. May cause arthralgia, bleeding, peripheral edema, gout, musculoskeletal pain, constipation, and atrial fibrillation/flutter.</li>
+                            <li><strong>Lomitapide</strong> (A: PO: Initially 5 mg daily 2 h after evening meal, may increase to 10 mg in 2 wk; maint: 10–60 mg daily; max: 60 mg daily. PB: 99.8%; t½: 39.7 h). Uses: For hypercholesterolemia. May cause dizziness, fatigue, back pain, influenza, chest pain, elevated hepatic enzymes, dyspepsia, nausea, vomiting, diarrhea, constipation, abdominal pain, GERD, steatosis, weight loss, flatulence, and pharyngitis.</li>
+                            <li><strong>Mipomersen</strong> (A: Subcut: 200 mg/wk; max: 200 mg/wk. PB: 90%; t½: 1–2 mo). Uses: For hypercholesterolemia. May cause headache, fatigue, nausea, influenza, injection site reaction/skin discoloration, hematoma, antibody formation, pruritus, erythema, steatosis, elevated hepatic enzymes, and proteinuria.</li>
+                            <li><strong>Alirocumab</strong> (A: Subcut: Initially 75 mg q2wk; max: 150 mg q2wk. PB: UK; t½: 17–20 d). Uses: For hypercholesterolemia and hyperlipidemia. May cause myalgia, diarrhea, antibody formation, infection, injection site reaction, nasopharyngitis, chest pain, and influenza.</li>
+                            <li><strong>Evolocumab</strong> (A: Subcut: 140 mg q2wk or 420 mg q1mo; max: 420 mg/mo. PB: UK; t½: 11–17 d). Uses: For hypercholesterolemia. May cause dizziness, headache, hyperglycemia, infection, arthralgia, myalgia, diarrhea, nasopharyngitis, hypertension, influenza, sinusitis, cough, back pain, musculoskeletal pain, and injection site reaction.</li>
+                            <li><strong>Bempedoic acid</strong> (A: PO: 180 mg/d; max: 180 mg/d. PB: 99%; t½: 10–32 h). Uses: For hypercholesterolemia. May cause back/abdominal pain, muscle cramps, infection, hyperuricemia, leukopenia, and thrombocytosis.</li>
+                            <li><strong>Evinacumab</strong> (A: IV: 15 mg/kg over 60 min q4wk; max: 15 mg/kg q4wk. PB: UK; t½: UK). Uses: For hypercholesterolemia. May cause pharyngitis, rhinorrhea, nasal congestion, infusion-related reactions, dizziness, weakness, abdominal pain, nausea, and constipation.</li>
                         </ul>
-                        It is poorly absorbed orally.
+                    `},
+                    { id: 'atorvastatin-prototype', title: 'Prototype Drug: Atorvastatin', type: 'text', content: `
+                        <strong>Drug Class:</strong> Antihyperlipidemic: HMG-CoA reductase inhibitor
                         <br><br>
-                        <strong>3. Why was an aPTT test ordered? How would you determine whether the patient is within the desired range? Explain your answer.</strong>
-                        <br>
-                        An **aPTT (activated partial thromboplastin time) test** was ordered because it is the primary laboratory test used to **monitor heparin therapy**. Heparin prolongs clotting time, and aPTT measures the time it takes blood to clot in the presence of certain clotting factors affected by heparin.
-                        <br>
-                        To determine if the patient is within the desired therapeutic range, the aPTT value should be **1.5 to 2 times the control value (or baseline)**. The text states "Anticoagulant: aPTT: 30–85 s" as a general therapeutic range, but ideally, it's compared to the patient's own baseline or a laboratory-specific control.
+                        <strong>Dosage:</strong> Adult PO: Initially 10–20 mg qd; maint: 10–80 mg qd; max: 80 mg qd
                         <br><br>
-                        <strong>4. What is the pharmacologic action of warfarin? Is the warfarin dose within the safe daily dosage range? Explain your answer.</strong>
+                        <strong>Contraindications:</strong> Hepatic disease/encephalopathy, cholestasis, pregnancy, breastfeeding.
                         <br>
-                        The pharmacologic action of **warfarin** is to **inhibit hepatic synthesis of vitamin K**, thereby affecting the production of clotting factors II (prothrombin), VII, IX, and X, as well as anticoagulant proteins. This prolongs clotting time.
-                        <br>
-                        Regarding the dose: The Prototype Drug Chart for Warfarin Sodium states for DVT or PE: "A: PO: 2–5 mg/d based on INR; maint: 2–10 mg/d; target INR 2–3". A dose of 5 mg daily is **within the typical initial and maintenance dosage range** for warfarin. The actual "safe" dose is determined by the patient's INR.
+                        <strong>Caution:</strong> Alcohol use disorder, diabetes mellitus, seizures, renal impairment, stroke, hypotension, hypothyroidism, electrolyte imbalance, rhabdomyolysis, older adults.
                         <br><br>
-                        <strong>5. What are the half-life and protein binding for warfarin? If a patient takes a drug that is highly protein bound, would there be a drug interaction? Explain your answer.</strong>
-                        <br>
-                        * <strong>Half-life:</strong> Warfarin has a long half-life of **20 to 60 hours**.
-                        * <strong>Protein binding:</strong> Warfarin is **highly protein bound at 97%**.
-                        <br>
-                        **Yes, if a patient takes another drug that is also highly protein bound, there would likely be a significant drug interaction.** Because warfarin is highly protein bound, other highly protein-bound drugs can **displace warfarin from its protein-binding sites**. This increases the amount of "free" (unbound) warfarin circulating in the bloodstream. Free drug is pharmacologically active. An increased level of free warfarin intensifies its anticoagulant effect, leading to a **higher risk of bleeding and hemorrhage**. The nurse would need to closely monitor the patient's INR and assess for signs of bleeding.
-                        <br><br>
-                        <strong>6. Why was an INR ordered for the patient? What is the desired range?</strong>
-                        <br>
-                        An **INR (international normalized ratio)** was ordered for the patient because it is the **most frequently used laboratory test to monitor oral warfarin therapy**. It standardizes PT results across different laboratories, accounting for variability in reagents.
-                        <br>
-                        The **desired therapeutic range for INR** for patients on warfarin therapy is typically **2 to 3**. For patients with mechanical heart valves or recurrent systemic embolism, the desired range may be 2.5 to 3.5, or even up to 4.5.
-                        <br><br>
-                        <strong>7. What serious adverse reactions could result with prolonged use or large doses of warfarin?</strong>
-                        <br>
-                        The most serious adverse reaction with prolonged use or large doses of warfarin is **bleeding (hemorrhage)**. This can manifest as:
+                        <strong>Drug-Lab-Food Interactions:</strong>
                         <ul>
-                            <li>External bleeding: Petechiae, ecchymosis, purpura, bleeding gums, epistaxis (nosebleeds).</li>
-                            <li>Internal bleeding: Gastrointestinal (GI) bleeding (tarry stools, hematemesis), ocular hemorrhage, hematuria (blood in urine), intracranial bleeding.</li>
-                            <li>Other: Purple-toe syndrome, bone fracture, hypotension, chest pain.</li>
-                            <li>Life-threatening: Hemorrhage.</li>
+                            <li><strong>Drug:</strong> Decreased effect with antacids, phenytoin, and propranolol; may increase digoxin level, oral contraceptive efficacy; increased drug effects with macrolide antibiotics and antifungals.</li>
+                            <li><strong>Food:</strong> Grapefruit juice should be avoided as it could cause an increase in drug concentration.</li>
                         </ul>
-                        <br><br>
-                        <strong>8. What patient teaching interventions should the nurse include? List three interventions.</strong>
                         <br>
-                        Three crucial patient teaching interventions for a patient taking warfarin are:
-                        <ol>
-                            <li><strong>Bleeding Precautions:</strong> Instruct the patient to use a soft toothbrush and an electric razor to prevent cuts and bleeding. Advise them to apply firm, direct pressure for at least 5-10 minutes with a clean, dry absorbent material if external bleeding occurs from minor cuts or injuries.</li>
-                            <li><strong>Monitoring and Reporting:</strong> Emphasize the importance of having regular PT/INR laboratory tests performed as ordered, as the warfarin dose is adjusted based on these results. Instruct them to immediately report any signs of bleeding (e.g., unusual bruising, petechiae, tarry stools, blood in urine/stools, bleeding gums, nosebleeds, vomiting blood).</li>
-                            <li><strong>Dietary Consistency & Drug Interactions:</strong> Advise the patient to maintain a consistent intake of foods rich in vitamin K (e.g., green, leafy vegetables like spinach, kale, broccoli) rather than avoiding them entirely, as large fluctuations can affect INR. Warn against taking over-the-counter (OTC) drugs, especially aspirin or NSAIDs, and certain herbal products (e.g., garlic, ginger, ginkgo) without consulting their healthcare provider, as these can significantly increase bleeding risk. Suggest using acetaminophen for pain relief.</li>
-                        </ol>
-                        <br><br>
-                        <strong>9. Months later, the patient has hematemesis. What nursing action should be taken?</strong>
-                        <br>
-                        Hematemesis (vomiting blood) is a serious sign of gastrointestinal bleeding and indicates **severe internal hemorrhage**, likely due to the anticoagulant effect of warfarin. The nurse should take the following immediate actions:
+                        <strong>Pharmacokinetics:</strong>
                         <ul>
-                            <li><strong>Assess Vital Signs:</strong> Immediately assess and continuously monitor vital signs (BP, heart rate, respiratory rate, oxygen saturation) for signs of hypovolemic shock (e.g., hypotension, tachycardia, tachypnea).</li>
-                            <li><strong>Notify Healthcare Provider:</strong> Promptly notify the healthcare provider of the hematemesis and the patient's current condition.</li>
-                            <li><strong>Anticipate Orders:</strong> Expect orders to:
+                            <li>Absorption: Rapid</li>
+                            <li>Protein Binding (PB): 98%</li>
+                            <li>Half-life (t½): 14–30 h</li>
+                            <li>Excretion: Primarily in feces</li>
+                        </ul>
+                        <br>
+                        <strong>Pharmacodynamics:</strong>
+                        <ul>
+                            <li>Onset: UK (but effects seen in 3-5 days)</li>
+                            <li>Peak: 1–2 h</li>
+                            <li>Duration: UK</li>
+                            <li>Therapeutic effect of lowering lipids is seen in about 3 to 5 days; however, it takes 2 to 4 weeks to achieve full therapeutic effect. Atorvastatin may be taken without regard to meals.</li>
+                        </ul>
+                        <br>
+                        <strong>Therapeutic Effects/Uses:</strong> To decrease cholesterol levels and serum lipids, especially LDL and triglycerides; for treatment of atherosclerosis, hypercholesterolemia, hyperlipoproteinemia, and hypertriglyceridemia.
+                        <br>
+                        <strong>Mechanism of Action:</strong> Inhibits HMG-CoA reductase, the enzyme necessary for hepatic production of cholesterol.
+                        <br><br>
+                        <strong>Side Effects:</strong> Dizziness, insomnia, memory impairment, flushing, nightmares, blurred vision, weakness, myalgia, dyspepsia, nausea, diarrhea, flatulence, abdominal pain, peripheral neuropathy.
+                        <br><br>
+                        <strong>Adverse Reactions:</strong> Rhabdomyolysis (rare), tendon rupture, hyperglycemia, diabetes mellitus.
+                        <br>
+                        <strong>Life-threatening:</strong> Hepatic/renal failure, stroke, leukopenia, hemolytic anemia, thrombocytopenia.
+                    `},
+                    { id: 'lab-tests-cam', title: 'Laboratory Tests & CAM', type: 'text', content: `
+                        <strong>Laboratory Tests:</strong>
+                        <ul>
+                            <li><strong>Homocysteine:</strong> An amino acid, by-product of protein. Reference values: 4 to 17 mmol/L (fasting). High levels have been linked to cardiovascular disease, stroke, and Alzheimer disease. It may also promote blood clotting and damage the inner lining of blood vessels. Three vitamins that can lower serum homocysteine levels are vitamin B6 (pyridoxine), vitamin B12 (cyanocobalamin), and folic acid.</li>
+                            <li><strong>High-sensitivity C-reactive protein (hsCRP):</strong> A highly sensitive test for detecting the inflammatory protein that can be associated with cardiovascular and peripheral vascular disease.
                                 <ul>
-                                    <li><strong>Stop Warfarin:</strong> Discontinue warfarin immediately.</li>
-                                    <li><strong>STAT Labs:</strong> Order STAT PT/INR, CBC (hemoglobin, hematocrit, platelet count).</li>
-                                    <li><strong>Administer Antidote:</strong> Prepare to administer <strong>Vitamin K (phytonadione)</strong> intravenously. For acute bleeding, fresh frozen plasma (FFP) may also be ordered for immediate reversal of anticoagulation.</li>
-                                    <li><strong>Fluid Resuscitation:</strong> Initiate IV fluids to manage hypovolemia.</li>
-                                    <li><strong>Further Diagnostics:</strong> Prepare for further diagnostic tests (e.g., endoscopy) to locate the source of bleeding.</li>
+                                    <li>Low risk: &lt;1 mg/L</li>
+                                    <li>Moderate risk: 1 to 3 mg/L</li>
+                                    <li>High risk: >3 mg/L</li>
                                 </ul>
+                                This test is frequently ordered along with cholesterol screening. Approximately one-third of persons who have had a heart attack have normal cholesterol levels and normal blood pressure. A positive hsCRP test can indicate that the patient is at high risk for CAD, making it a valuable test for predicting CAD.
                             </li>
-                            <li><strong>Safety Measures:</strong> Implement bleeding precautions and ensure patient safety.</li>
-                        </ul>`
-                    }},
-                    { id: 'review-quiz', title: 'Review Questions', type: 'quiz',
-                      questions: [
-                          { question: "A patient is placed on heparin, and the nurse acknowledges that heparin is effective for preventing clot formation in patients who have which disorder(s)? (Select all that apply.)", options: ["Coronary thrombosis", "Acute myocardial infarction", "Deep vein thrombosis", "Hemorrhagic stroke", "Disseminated intravascular coagulation"], correctAnswer: ["Coronary thrombosis", "Acute myocardial infarction", "Deep vein thrombosis", "Disseminated intravascular coagulation"] },
-                          { question: "A patient who received heparin begins to bleed. The nurse anticipates that the health care provider will order which antidote?", options: ["Protamine sulfate", "Phytonadione", "Aminocaproic acid", "Potassium chloride"], correctAnswer: "Protamine sulfate" },
-                          { question: "A patient is prescribed enoxaparin. The nurse knows that low-molecular-weight heparin has what kind of half-life?", options: ["A longer half-life than heparin", "A shorter half-life than heparin", "The same half-life as heparin", "A four-times shorter half-life than heparin"], correctAnswer: "A longer half-life than heparin" },
-                          { question: "A patient had an orthopedic surgery and is prescribed enoxaparin. What would the nurse teach the patient and/or family members about this low-molecular-weight heparin before discharge?", options: ["Visual demonstration of intramuscular heparin administration is recommended.", "Prothrombin time and international normalized ratio monitoring will be done weekly.", "Avoidance of green leafy vegetables is recommended.", "Watch for bleeding or excessive bruising."], correctAnswer: "Watch for bleeding or excessive bruising." },
-                          { question: "A patient is being changed from an injectable anticoagulant to an oral anticoagulant. Which anticoagulant does the nurse realize is administered orally?", options: ["Enoxaparin", "Warfarin", "Bivalirudin", "Dalteparin", "Tenecteplase", "Fondaparinux"], correctAnswer: "Warfarin" },
-                          { question: "A patient is taking warfarin 5 mg/day for atrial fibrillation. The patient’s international normalized ratio is 3.8. The nurse would consider the international normalized ratio to be what?", options: ["Within normal range", "Elevated range", "Low range", "Low-average range"], correctAnswer: "Elevated range" },
-                          { question: "Cilostazol is being prescribed for a patient with coronary artery disease. The nurse understands that which of the following is the major purpose for antiplatelet drug therapy?", options: ["Dissolve the blood clot", "Decrease tissue necrosis", "Inhibit hepatic synthesis of vitamin K", "Suppress platelet aggregation"], correctAnswer: "Suppress platelet aggregation" }
-                      ]
+                        </ul>
+                        <br>
+                        <strong>Complementary and Alternative Therapies (CAM) with Statins:</strong>
+                        <ul>
+                            <li>Black cohosh: May potentiate an increase in liver enzymes.</li>
+                            <li>Chinese skullcap: May increase drug levels of rosuvastatin.</li>
+                            <li>Cranberry: May increase side effects of simvastatin.</li>
+                            <li>Ginkgo biloba: May increase drug levels of statins.</li>
+                            <li>Green tea: May increase side effects of statins.</li>
+                            <li>St. John’s wort: May decrease effect and drug levels of statins.</li>
+                        </ul>
+                    `},
+                    { id: 'antihyperlipidemics-nursing-process', title: 'Antihyperlipidemics: Nursing Process', type: 'text', content: `
+                        <strong>Concept: Perfusion</strong>
+                        <br><br>
+                        <strong>Recognize Cues (Assessment):</strong>
+                        <ul>
+                            <li>Assess vital signs and baseline serum chemistry values (cholesterol, triglycerides, aspartate aminotransferase [AST], alanine aminotransferase [ALT], and creatine phosphokinase [CPK]).</li>
+                            <li>Obtain a medical history. Statin drugs are contraindicated for patients with liver disorders and in pregnant patients.</li>
+                        </ul>
+                        <br>
+                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Hyperglycemia, Vomiting, Ischemia, Nausea, Decreased visual acuity.
+                        <br><br>
+                        <strong>Generate Solutions (Planning):</strong>
+                        <ul>
+                            <li>The patient’s cholesterol level will be less than 200 mg/dL in 6 to 8 weeks.</li>
+                            <li>The patient will choose foods from a list that are low in fat, cholesterol, and complex sugars.</li>
+                        </ul>
+                        <br>
+                        <strong>Take Action (Nursing Interventions):</strong>
+                        <ul>
+                            <li>Monitor the patient’s blood lipid levels—cholesterol, triglycerides, low-density lipoprotein (LDL), and high-density lipoprotein (HDL)—every 6 to 8 weeks for the first 6 months after statin therapy, then every 3 to 6 months. For a lipid-level profile, the patient should fast for 12 to 14 hours. The desired values are less than 200 mg/dL for cholesterol; less than 150 mg/dL for triglycerides, although this can vary; less than 100 mg/dL for LDL; and more than 60 mg/dL for HDL. Cholesterol levels higher than 240 mg/dL, LDL levels higher than 160 mg/dL, and HDL levels below 35 mg/dL can lead to severe cardiovascular events or cerebrovascular accident (CVA).</li>
+                            <li>Monitor laboratory tests for liver function (ALT, alkaline phosphatase [ALP], and gamma-glutamyl transferase [GGT]). Antihyperlipidemic drugs can cause liver disorders.</li>
+                            <li>Observe for signs and symptoms of gastrointestinal (GI) upset. Taking the drug with sufficient water or with meals may alleviate some of the discomfort.</li>
+                        </ul>
+                        <br>
+                        <strong>Patient Teaching:</strong>
+                        <ul>
+                            <li>Emphasize the need to comply with the drug regimen to lower blood lipids.</li>
+                            <li>Inform patients that it may take several weeks before blood lipid levels decline.</li>
+                            <li>Explain that laboratory tests for blood lipids—cholesterol, triglycerides, LDL, and HDL—are usually ordered every 3 to 6 months.</li>
+                            <li>Advise patients to have serum liver enzymes monitored as indicated by their health care provider. Lovastatin, pravastatin, and simvastatin are contraindicated in acute hepatic disease and pregnancy.</li>
+                            <li>Instruct patients to have an annual eye examination and to report changes in visual acuity.</li>
+                            <li>Advise patients taking gemfibrozil that the drug may increase their risk for bleeding if they are also taking an oral anticoagulant, so bleeding should be reported. Drug dosage can be changed, or another antihyperlipidemic may be ordered.</li>
+                            <li>Instruct patients to take nicotinic acid with meals to decrease GI discomfort.</li>
+                            <li>Teach patients to mix cholestyramine/colestipol powder well in water or juice.</li>
+                            <li>Advise patients that constipation may occur with cholestyramine and colestipol. Increasing fluid intake and food bulk should help alleviate the problem.</li>
+                            <li>Explain to patients that flushing is common with niacin and should decrease with continued use of the drug. Usually the drug is started at a low dose.</li>
+                            <li>Advise patients that large doses of niacin can cause vasodilation and produce dizziness and faintness (syncope).</li>
+                            <li>Explain to patients that ezetimibe may cause headaches and GI upset. If it continues, notify the health care provider.</li>
+                            <li>Explain to patients that serum liver enzyme levels are periodically monitored.</li>
+                            <li>Encourage patients to promptly report any unexplained muscle tenderness or weakness that may be caused by rhabdomyolysis.</li>
+                            <li>Caution patients not to abruptly stop taking their statin drug because a serious rebound effect might occur that could lead to acute myocardial infarction (AMI) and possible death. Before stopping a statin, the patient should talk to his or her health care provider.</li>
+                            <li>Explain to patients that GI discomfort is a common problem with most antihyperlipidemics. Suggest increasing fluid intake when taking the medication.</li>
+                            <li>Encourage patients to consume foods that are low in animal fats, cholesterol, and complex sugars. Lovastatin and other antihyperlipidemics are adjuncts to, not substitutes for, a low-fat diet.</li>
+                        </ul>
+                        <br>
+                        <strong>Evaluate Outcomes (Evaluation):</strong>
+                        <ul>
+                            <li>Evaluate effectiveness of the antihyperlipidemic drug. The patient’s cholesterol level should be within the desired range.</li>
+                            <li>Determine that the patient is maintaining a low-fat, low-cholesterol diet.</li>
+                        </ul>
+                    `},
+                    { id: 'antihyperlipidemics-quiz', title: 'Antihyperlipidemics Quiz', type: 'quiz',
+                        questions: [
+                            { question: "Which drug class inhibits the enzyme HMG-CoA reductase to decrease cholesterol synthesis in the liver?", options: ["Bile-acid sequestrants", "Fibrates", "Statins", "Cholesterol absorption inhibitors"], correctAnswer: "Statins" },
+                            { question: "A patient taking gemfibrozil is also prescribed warfarin. What is a critical nursing consideration?", options: ["Increase the warfarin dose.", "Monitor INR closely for increased bleeding risk.", "Administer both drugs with grapefruit juice.", "Expect increased VLDL levels."], correctAnswer: "Monitor INR closely for increased bleeding risk." },
+                            { question: "A nurse is teaching a patient about common side effects of niacin. Which of the following should be included?", options: ["Muscle pain and weakness", "Flushing of the skin and hyperglycemia", "Severe constipation and peptic ulcer", "Tachycardia and palpitations"], correctAnswer: "Flushing of the skin and hyperglycemia" },
+                            { question: "What serious adverse effect should the nurse monitor for in a patient taking atorvastatin?", options: ["Hypotension", "Diarrhea", "Rhabdomyolysis", "Increased appetite"], correctAnswer: "Rhabdomyolysis" },
+                            { question: "A patient is taking cholestyramine. To alleviate a common side effect, the nurse should advise the patient to:", options: ["Take the medication on an empty stomach.", "Increase fluid and fiber intake.", "Limit exercise.", "Avoid all dairy products."], correctAnswer: "Increase fluid and fiber intake." }
+                        ]
+                    }
+                ]
+            },
+            'peripheral-blood-flow': {
+                title: 'Drugs to Improve Peripheral Blood Flow',
+                color: 'from-purple-500 to-pink-400',
+                description: 'Explore medications used to enhance circulation in peripheral arterial disease.',
+                steps: [
+                    { id: 'pad-intro', title: 'Peripheral Arterial Disease (PAD)', type: 'text', content: `
+                        A common problem in older adults is <strong>peripheral arterial disease (PAD)</strong>, also called peripheral vascular disease (PVD). It is characterized by numbness and coolness of the extremities, claudication (pain and weakness of a limb when walking but no symptoms at rest), and possible leg ulcers. The primary cause is arteriosclerosis and hyperlipidemia, resulting in atherosclerosis, after which the arteries become occluded.
+                        <br><br>
+                        Peripheral vasodilators increase blood flow to the extremities. They are used in peripheral vascular disorders of venous and arterial vessels. They are more effective for disorders that result from vasospasm (Raynaud disease) than from vessel occlusion or arteriosclerosis (arteriosclerosis obliterans, thromboangiitis obliterans [Buerger disease]). In Raynaud disease, cold exposure or emotional upset can trigger vasospasm of the toes and fingers; these patients have benefited from vasodilators.
+                        <br><br>
+                        Patients with diabetes mellitus are two to four times more likely to have PAD and are at risk of intermittent claudication.
+                        <br><br>
+                        Individuals with PAD who are treated with HMG-CoA reductase inhibitors (statins) for dyslipidemia may see an improvement in intermittent claudication symptoms as well as a decrease in serum lipids. Also, patients with PAD who are hypertensive see improvement for both conditions when taking the antihypertensive drug ramipril, an angiotensin-converting enzyme (ACE) inhibitor. The alpha blocker prazosin and the calcium channel blocker nifedipine have been used as peripheral vasodilators. The antiplatelet drugs clopidogrel and aspirin have been used to decrease PAD symptoms. Another antiplatelet drug, cilostazol, has been approved by the US Food and Drug Administration (FDA) for treating intermittent claudication. It decreases arterial thrombi. Ginkgo biloba, taken with an antiplatelet drug, has been used to treat intermittent claudication because of its vasodilating and antioxidant effects, although this product has not been approved by the FDA. Most of the drugs used for treating PAD do not cure the health problem, but they can aid in relieving PAD symptoms.
+                    `},
+                    { id: 'cilostazol', title: 'Cilostazol', type: 'text', content: `
+                        <strong>Cilostazol</strong> (A: PO: 50–100 mg q12h 30 min before or 2 h after morning and evening meals with full glass of water; do not administer with grapefruit juice; max: 200 mg qd) is an antiplatelet drug that has a dual purpose of inhibiting platelet aggregation as well as causing vasodilation to treat intermittent claudication. It decreases arterial thrombi.
+                        <br><br>
+                        <strong>Drug Class:</strong> Direct-acting vasodilator
+                        <br>
+                        <strong>Contraindications:</strong> Heart failure, hypersensitivity, bleeding disorders.
+                        <br>
+                        <strong>Caution:</strong> Hepatic and renal disease, tobacco smokers, cardiovascular disease, dysrhythmias, pregnancy, breastfeeding, older adults.
+                        <br><br>
+                        <strong>Drug-Lab-Food Interactions:</strong>
+                        <ul>
+                            <li><strong>Drug:</strong> Increased effects with aspirin, cimetidine, clarithromycin, erythromycin, enoxaparin, ticlopidine, warfarin.</li>
+                            <li><strong>Food:</strong> Grapefruit and green tea will increase levels; ginger and ginkgo biloba may prolong bleeding time; St. John’s wort will decrease effect. Licorice may cause hypokalemia, which can potentiate drug toxicity.</li>
+                        </ul>
+                        <br>
+                        <strong>Pharmacokinetics:</strong>
+                        <ul>
+                            <li>Absorption: PO: Readily absorbed from the GI tract.</li>
+                            <li>Protein Binding (PB): 95%–98%</li>
+                            <li>Half-life (t½): 11–13 h</li>
+                            <li>Excretion: In urine (74%), feces (20%)</li>
+                        </ul>
+                        <br>
+                        <strong>Pharmacodynamics:</strong>
+                        <ul>
+                            <li>Onset: 2–12 wk</li>
+                            <li>Peak: UK</li>
+                            <li>Duration: UK</li>
+                            <li>Mechanism of Action: Acts directly to inhibit platelet aggregation and cause vasodilation, especially in femoral vasculature.</li>
+                        </ul>
+                        <br>
+                        <strong>Side Effects:</strong> Dizziness, headache, nasopharyngitis, rhinitis, cough, dyspepsia, myalgia, flushing, nausea, vomiting, flatulence, diarrhea, melena, back and abdominal pain, peripheral edema, infection, influenza, cholelithiasis.
+                        <br><br>
+                        <strong>Adverse Reactions:</strong> Tachycardia, palpitations, angina, HF, MI, hypo/hypertension, peptic ulcer, gout, diabetes mellitus, elevated hepatic enzymes.
+                        <br>
+                        <strong>Life-threatening:</strong> Thrombocytopenia, leukopenia, aplastic anemia, agranulocytosis, dysrhythmias, Stevens-Johnson syndrome.
+                    `},
+                    { id: 'pentoxifylline', title: 'Pentoxifylline', type: 'text', content: `
+                        <strong>Pentoxifylline</strong> (A: PO: 400 mg tid with meals; max: 1200 mg daily), classified as a hemorrheologic agent or blood viscosity reducer agent, improves microcirculation and tissue perfusion by decreasing blood viscosity and improving the flexibility of erythrocytes, thus increasing tissue oxygenation. It inhibits aggregation of platelets and red blood cells. PB: UK; t½: 0.4–0.8 h.
+                        <br><br>
+                        Approved by the FDA for patients with intermittent claudication, and it has been prescribed for those with Buerger disease resulting from arterial occlusions. However, in one research study, pentoxifylline was not determined to be more effective than a placebo.
+                        <br><br>
+                        <strong>Side Effects:</strong> Blurred vision, confusion, nausea, vomiting, constipation, cholestasis, tachycardia, edema, and hypotension.
+                        <br><br>
+                        <strong>Nursing Considerations:</strong>
+                        <ul>
+                            <li>Reactions to an overdose of pentoxifylline include tachycardia, hypotension, and blurred vision.</li>
+                            <li>The drug should be taken with food.</li>
+                            <li>The patient should avoid smoking because nicotine increases vasoconstriction.</li>
+                            <li>Patients taking an antihypertensive drug along with pentoxifylline may need to have the antihypertensive dosage decreased to avoid side effects.</li>
+                        </ul>
+                    `},
+                    { id: 'cilostazol-nursing-process', title: 'Cilostazol: Nursing Process', type: 'text', content: `
+                        <strong>Concept: Perfusion</strong>
+                        <br><br>
+                        <strong>Recognize Cues (Assessment):</strong>
+                        <ul>
+                            <li>Obtain baseline vital signs for future comparison.</li>
+                            <li>Assess for signs of inadequate blood flow to the extremities: pallor, coldness of extremities, and pain.</li>
+                        </ul>
+                        <br>
+                        <strong>Analyze Cues and Prioritize Hypothesis (Patient Problems):</strong> Hyperglycemia, Hypotension, Ischemia, Discomfort, Decreased visual acuity.
+                        <br><br>
+                        <strong>Generate Solutions (Planning):</strong>
+                        <ul>
+                            <li>The patient’s legs will be warm and pink.</li>
+                            <li>The patient will report that pain has decreased.</li>
+                        </ul>
+                        <br>
+                        <strong>Take Action (Nursing Interventions):</strong>
+                        <ul>
+                            <li>Monitor vital signs, especially blood pressure and heart rate. Tachycardia and orthostatic hypotension can be problematic with peripheral vasodilators.</li>
+                        </ul>
+                        <br>
+                        <strong>Patient Teaching:</strong>
+                        <ul>
+                            <li>Inform patients that a desired therapeutic response may take 1.5 to 3 months.</li>
+                            <li>Advise patients not to smoke because smoking increases vasospasm.</li>
+                            <li>Instruct patients to use aspirin or aspirin-like compounds only with the health care provider’s approval. Salicylates help prevent platelet aggregation.</li>
+                            <li>Encourage patients to change position slowly but frequently to avoid orthostatic hypotension. Orthostatic hypotension is common when taking high doses of a vasodilator.</li>
+                            <li>Instruct patients to report side effects of cilostazol, such as flushing, headaches, and dizziness.</li>
+                            <li>Suggest that patients with gastrointestinal (GI) disturbances take cilostazol with meals.</li>
+                            <li>Advise patients not to ingest alcohol with a vasodilator because it may cause a hypotensive reaction.</li>
+                        </ul>
+                        <br>
+                        <strong>Evaluate Outcomes (Evaluation):</strong>
+                        <ul>
+                            <li>Evaluate effectiveness of cilostazol therapy; blood flow is increased in extremities, and pain has subsided.</li>
+                            <li>The patient should experience no side effects from the prescribed drug.</li>
+                        </ul>
+                    `},
+                    { id: 'critical-thinking-case-study', title: 'Critical Thinking Case Study', type: 'case_study',
+                        case: {
+                            scenario: `A patient had a myocardial infarction (MI) 3 years ago. He was prescribed gemfibrozil 600 mg twice daily before meals, but his cholesterol remained between 220 and 240 mg/dL, and his LDL was 140 mg/dL. His anticholesterol drug was changed to simvastatin 20 mg/day in the evening.`,
+                            question: `Answer the following questions related to this case study. Select all applicable options for questions 1-8.`,
+                            options: [
+                                "1. Simvastatin is an HMG-CoA reductase inhibitor (statin); Gemfibrozil is a fibric acid derivative effective for triglycerides.",
+                                "1. Simvastatin is a fibric acid derivative; Gemfibrozil is a statin.",
+                                "1. Gemfibrozil primarily lowers VLDL and triglycerides; Simvastatin primarily lowers LDL.",
+                                "2. The patient's LDL was still too high; Statins are more effective for lowering LDL.",
+                                "2. Simvastatin has more severe GI side effects than gemfibrozil.",
+                                "3. Hepatic enzyme levels (ALT, AST, ALP)",
+                                "3. Blood glucose levels",
+                                "4. In 1 to 2 weeks",
+                                "4. Every 6 to 8 weeks for the first 6 months, then every 3 to 6 months.",
+                                "5. 60 mg/day",
+                                "5. 40 mg/day",
+                                "6. Rhabdomyolysis",
+                                "6. Normal muscle soreness from exercise",
+                                "7. Yes, they are often combined for synergistic effects.",
+                                "7. No, they should not be taken together due to increased risk of rhabdomyolysis.",
+                                "8. He should stop taking it until he returns home to avoid running out.",
+                                "8. He should contact his healthcare provider for a refill or guidance, as abrupt cessation can cause a rebound effect."
+                            ],
+                            correctAnswer: [
+                                "1. Simvastatin is an HMG-CoA reductase inhibitor (statin); Gemfibrozil is a fibric acid derivative effective for triglycerides.",
+                                "1. Gemfibrozil primarily lowers VLDL and triglycerides; Simvastatin primarily lowers LDL.",
+                                "2. The patient's LDL was still too high; Statins are more effective for lowering LDL.",
+                                "3. Hepatic enzyme levels (ALT, AST, ALP)",
+                                "4. Every 6 to 8 weeks for the first 6 months, then every 3 to 6 months.",
+                                "5. 40 mg/day",
+                                "6. Rhabdomyolysis",
+                                "7. No, they should not be taken together due to increased risk of rhabdomyolysis.",
+                                "8. He should contact his healthcare provider for a refill or guidance, as abrupt cessation can cause a rebound effect."
+                            ],
+                            explanation: `
+                                <strong>1. How does simvastatin differ from gemfibrozil?</strong> Simvastatin is an HMG-CoA reductase inhibitor (statin) that primarily lowers LDL cholesterol. Gemfibrozil is a fibric acid derivative that is more effective for reducing triglycerides and VLDL.
+                                <br><br>
+                                <strong>2. Why do you think the patient’s cholesterol drug, gemfibrozil, was changed to simvastatin?</strong> The patient's cholesterol and LDL levels were still elevated (220-240 mg/dL cholesterol, 140 mg/dL LDL) despite gemfibrozil. Statins are generally more effective at lowering LDL, which is strongly associated with CAD risk.
+                                <br><br>
+                                <strong>3. While the patient is taking simvastatin, which group of serum levels should be monitored?</strong> Hepatic enzyme levels (ALT, AST, ALP, GGT) should be monitored due to the risk of liver dysfunction with statins.
+                                <br><br>
+                                <strong>4. How long after taking simvastatin should the patient’s cholesterol and lipoproteins be checked?</strong> Blood lipid levels should be monitored every 6 to 8 weeks for the first 6 months after initiating statin therapy, then every 3 to 6 months.
+                                <br><br>
+                                <strong>5. What is the maximum dose for simvastatin?</strong> The maximum dose for simvastatin is 40 mg daily in the evening, as listed in Table 44.3.
+                                <br><br>
+                                <strong>6. The patient complains of muscle pain and muscle weakness. What might this indicate?</strong> This might indicate rhabdomyolysis, a rare but serious adverse reaction associated with statin use, which can be fatal. This should be reported immediately.
+                                <br><br>
+                                <strong>7. Could the patient receive both gemfibrozil and simvastatin? Explain your answer.</strong> Concomitant use of fibrates (like gemfibrozil) and statins (like simvastatin) is generally discouraged due to an increased risk of severe muscle side effects, including rhabdomyolysis.
+                                <br><br>
+                                <strong>8. The patient is on vacation and does not have enough simvastatin tablets. What should he do?</strong> He should contact his healthcare provider for a refill or guidance. Abruptly stopping a statin drug can cause a serious threefold rebound effect that may cause death from acute myocardial infarction.
+                            `
+                        }
                     },
+                    { id: 'peripheral-review-quiz', title: 'Peripheral Blood Flow Review Quiz', type: 'quiz',
+                        questions: [
+                            { question: "1. Which of the following is a primary characteristic of Peripheral Arterial Disease (PAD)?", options: ["Warm, flushed extremities", "Claudication", "Increased sensation in limbs", "Absence of leg ulcers"], correctAnswer: "Claudication" },
+                            { question: "2. Cilostazol has a dual purpose. What are its two main actions?", options: ["Decreases blood pressure and increases heart rate", "Inhibits platelet aggregation and causes vasodilation", "Increases blood viscosity and reduces erythrocyte flexibility", "Reduces pain and suppresses cough"], correctAnswer: "Inhibits platelet aggregation and causes vasodilation" },
+                            { question: "3. A nurse is teaching a patient about pentoxifylline. Which statement indicates the patient understands the medication?", options: ["'I will take this medication on an empty stomach.'", "'I should continue smoking to improve blood flow.'", "'This medication helps decrease blood viscosity and improves red blood cell flexibility.'", "'I can expect immediate relief from my claudication symptoms.'"], correctAnswer: "This medication helps decrease blood viscosity and improves red blood cell flexibility." },
+                            { question: "4. What should a patient avoid when taking cilostazol due to potential increased drug levels?", options: ["Water", "Lean meats", "Grapefruit juice", "Exercise"], correctAnswer: "Grapefruit juice" },
+                            { question: "5. A patient with peripheral arterial disease is prescribed cilostazol. Which of the following adverse reactions would be of most concern to the nurse?", options: ["Headache", "Diarrhea", "Tachycardia", "Nausea"], correctAnswer: "Tachycardia" },
+                            { question: "6. A patient has a serum cholesterol level of 265 mg/dL, a triglyceride level of 235 mg/dL, and a low-density lipoprotein of 180 mg/dL. What do these serum levels indicate?", options: ["a. Hypolipidemia", "b. Normolipidemia", "c. Hyperlipidemia", "d. Alipidemia"], correctAnswer: "c. Hyperlipidemia" },
+                            { question: "7. The nurse knows that a patient’s total cholesterol level should be within which range?", options: ["a. 150 to 200 mg/dL", "b. 200 to 225 mg/dL", "c. 225 to 250 mg/dL", "d. Greater than 250 mg/dL"], correctAnswer: "a. 150 to 200 mg/dL" },
+                            { question: "8. A patient has a low-density lipoprotein of 175 mg/dL and a high-density lipoprotein of 30 mg/dL. What teaching should the nurse implement for this patient?", options: ["a. Discuss medications ordered, dietary changes, and exercise.", "b. No changes in lifestyle are needed; continue with the current plan.", "c. Discuss how to have fat intake be 40% of caloric intake.", "d. Begin keeping a food diary, and schedule laboratory work to be repeated in 6 months."], correctAnswer: "a. Discuss medications ordered, dietary changes, and exercise." },
+                            { question: "9. Which laboratory test value does the nurse realize can contribute to the development of cardiovascular disease and stroke?", options: ["a. Decreased antidiuretic hormone", "b. Increased homocysteine level", "c. Decreased triglycerides", "d. Increased high-density lipoprotein level"], correctAnswer: "b. Increased homocysteine level" },
+                            { question: "10. A patient is taking lovastatin. Which serum level is most important for the nurse to monitor?", options: ["a. Blood urea nitrogen", "b. Complete blood count", "c. Cardiac enzymes", "d. Hepatic enzymes"], correctAnswer: "d. Hepatic enzymes" },
+                            { question: "11. For what severe skeletal muscle adverse reaction should the nurse observe in a patient taking rosuvastatin?", options: ["a. Myasthenia gravis", "b. Rhabdomyolysis", "c. Dyskinesia", "d. Agranulocytosis"], correctAnswer: "b. Rhabdomyolysis" },
+                            { question: "12. A patient is taking ezetimibe and asks the nurse how it works. The nurse should explain that ezetimibe does what?", options: ["a. Inhibits absorption of dietary cholesterol in the intestines", "b. Binds with bile acids in the intestines to reduce low-density lipoprotein levels", "c. Inhibits 3-hydroxy-3-methylglutaryl-coenzyme A reductase, which is necessary for cholesterol production in the liver", "d. Forms insoluble complexes and reduces circulating cholesterol in the blood"], correctAnswer: "a. Inhibits absorption of dietary cholesterol in the intestines" },
+                            { question: "13. A patient is diagnosed with peripheral arterial disease. He is prescribed pentoxifylline. What does the nurse realize are the effects of pentoxifylline? (Select all that apply.)", options: ["a. May lead to hypertension and bradycardia", "b. Improves microcirculation and tissue perfusion", "c. Decreases blood viscosity and improves flexibility of erythrocytes", "d. Alleviates intermittent claudication", "e. Commonly causes an adverse effect of rhabdomyolysis", "f. Allows vasodilation of arteries in skeletal muscles"], correctAnswer: ["b. Improves microcirculation and tissue perfusion", "c. Decreases blood viscosity and improves flexibility of erythrocytes", "d. Alleviates intermittent claudication"] }
+                        ]
+                    }
                 ]
             }
         };
 
-        // The pre-assessment quiz data now includes questions for all new modules.
+        // The pre-assessment quiz data combines relevant questions from all sections
         const preAssessmentQuizData = [
-            // Questions for Module: Introduction to Thrombus Formation
-            { moduleId: 'intro-thrombus', question: "Which type of drug is known for attacking and dissolving blood clots that have already formed?", options: ["Anticoagulants", "Antiplatelets", "Thrombolytics", "Antithrombotics"], correctAnswer: "Thrombolytics" },
-            { moduleId: 'intro-thrombus', question: "What is the primary initiating factor in the formation of an arterial thrombus?", options: ["Slow blood flow", "Fibrin formation", "Platelet aggregation", "Red blood cell clumping"], correctAnswer: "Platelet aggregation" },
-            { moduleId: 'intro-thrombus', question: "Which substance is a potent stimulus for platelet aggregation, synthesized by platelets when they adhere to a broken endothelial lining?", options: ["Fibrinogen", "Thrombin", "Thromboxane A2", "Adenosine diphosphate (ADP)"], correctAnswer: "Thromboxane A2" },
+            // Questions for Lipids & Apolipoproteins
+            { moduleId: 'lipids-fundamentals', question: "Which lipoprotein is known as 'good' cholesterol because it removes cholesterol from the bloodstream?", options: ["LDL", "VLDL", "HDL", "Chylomicrons"], correctAnswer: "HDL" },
+            { moduleId: 'lipids-fundamentals', question: "What is the recommended maximum daily intake of cholesterol for cholesterol reduction?", options: ["100 mg", "200 mg", "300 mg", "400 mg"], correctAnswer: "300 mg" },
+            { moduleId: 'lipids-fundamentals', question: "A patient's fasting lipid profile shows an LDL of 180 mg/dL and HDL of 30 mg/dL. This indicates:", options: ["Low risk for CAD", "Moderate risk for CAD", "High risk for CAD", "Normal lipid levels"], correctAnswer: "High risk for CAD" },
 
-            // Questions for Module: Anticoagulants: Heparin, Warfarin & Others
-            { moduleId: 'anticoagulants', question: "Which laboratory test is primarily used to monitor heparin therapy?", options: ["Prothrombin Time (PT)", "International Normalized Ratio (INR)", "Activated Partial Thromboplastin Time (aPTT)", "Bleeding Time"], correctAnswer: "Activated Partial Thromboplastin Time (aPTT)" },
-            { moduleId: 'anticoagulants', question: "What is the antidote for a warfarin overdose?", options: ["Protamine sulfate", "Vitamin K", "Aminocaproic acid", "Fresh frozen plasma"], correctAnswer: "Vitamin K" },
-            { moduleId: 'anticoagulants', question: "A nurse is preparing to administer enoxaparin. Which statement about low-molecular-weight heparins (LMWHs) is correct?", options: ["LMWHs require frequent aPTT monitoring.", "LMWHs have a shorter half-life than unfractionated heparin.", "LMWHs are typically administered orally.", "LMWHs can be administered at home."], correctAnswer: "LMWHs can be administered at home." },
-            { moduleId: 'anticoagulants', question: "Which of the following foods should a patient taking warfarin be advised to consume consistently, rather than in large, varying amounts?", options: ["Citrus fruits", "Lean meats", "Green, leafy vegetables", "Dairy products"], correctAnswer: "Green, leafy vegetables" },
-            { moduleId: 'anticoagulants', question: "Factor Xa inhibitors like rivaroxaban are advantageous because they:", options: ["Require daily PT/INR monitoring.", "Are administered intravenously only.", "Do not require routine coagulation monitoring.", "Are the antidote for heparin overdose."], correctAnswer: "Do not require routine coagulation monitoring." },
+            // Questions for Antihyperlipidemics
+            { moduleId: 'antihyperlipidemics', question: "Which drug class inhibits the enzyme HMG-CoA reductase to decrease cholesterol synthesis in the liver?", options: ["Bile-acid sequestrants", "Fibrates", "Statins", "Cholesterol absorption inhibitors"], correctAnswer: "Statins" },
+            { moduleId: 'antihyperlipidemics', question: "A patient taking gemfibrozil is also prescribed warfarin. What is a critical nursing consideration?", options: ["Increase the warfarin dose.", "Monitor INR closely for increased bleeding risk.", "Administer both drugs with grapefruit juice.", "Expect increased VLDL levels."], correctAnswer: "Monitor INR closely for increased bleeding risk." },
+            { moduleId: 'antihyperlipidemics', question: "A nurse is teaching a patient about common side effects of niacin. Which of the following should be included?", options: ["Muscle pain and weakness", "Flushing of the skin and hyperglycemia", "Severe constipation and peptic ulcer", "Tachycardia and palpitations"], correctAnswer: "Flushing of the skin and hyperglycemia" },
+            { moduleId: 'antihyperlipidemics', question: "What serious adverse effect should the nurse monitor for in a patient taking atorvastatin?", options: ["Hypotension", "Diarrhea", "Rhabdomyolysis", "Increased appetite"], correctAnswer: "Rhabdomyolysis" },
+            { moduleId: 'antihyperlipidemics', question: "A patient is taking cholestyramine. To alleviate a common side effect, the nurse should advise the patient to:", options: ["Take the medication on an empty stomach.", "Increase fluid and fiber intake.", "Limit exercise.", "Avoid all dairy products."], correctAnswer: "Increase fluid and fiber intake." },
 
-            // Questions for Module: Antiplatelet Drugs
-            { moduleId: 'antiplatelet-drugs', question: "What is the primary purpose of antiplatelet drug therapy?", options: ["To dissolve existing blood clots", "To inhibit hepatic synthesis of vitamin K", "To suppress platelet aggregation in arteries", "To increase blood clotting factors"], correctAnswer: "To suppress platelet aggregation in arteries" },
-            { moduleId: 'antiplatelet-drugs', question: "How does aspirin exert its antiplatelet effect?", options: ["By blocking ADP receptors", "By inhibiting thrombin directly", "By inhibiting cyclooxygenase (COX)", "By increasing fibrinogen levels"], correctAnswer: "By inhibiting cyclooxygenase (COX)" },
-            { moduleId: 'antiplatelet-drugs', question: "Which antiplatelet drug is an ADP antagonist often used after MI or stroke to prevent a second event, and should be discontinued 7 days before surgery?", options: ["Aspirin", "Cilostazol", "Abciximab", "Clopidogrel"], correctAnswer: "Clopidogrel" },
-            { moduleId: 'antiplatelet-drugs', question: "Glycoprotein (GP) IIb/IIIa receptor antagonists are primarily used for which condition?", options: ["Deep vein thrombosis (DVT)", "Chronic stable angina", "Acute coronary syndromes and prevention of reocclusion after PTCA", "Hypertension"], correctAnswer: "Acute coronary syndromes and prevention of reocclusion after PTCA" },
-
-            // Questions for Module: Thrombolytics
-            { moduleId: 'thrombolytics', question: "Thrombolytic drugs primarily work by converting plasminogen into which enzyme?", options: ["Thrombin", "Fibrinogen", "Plasmin", "Factor Xa"], correctAnswer: "Plasmin" },
-            { moduleId: 'thrombolytics', question: "Ideally, within what timeframe should a thrombolytic drug be administered after the onset of symptoms of an acute myocardial infarction (AMI)?", options: ["Within 6-8 hours", "Within 12-24 hours", "Within 3-4 hours", "Within 48 hours"], correctAnswer: "Within 3-4 hours" },
-            { moduleId: 'thrombolytics', question: "What is the major complication associated with thrombolytic drug therapy?", options: ["Hypotension", "Bradycardia", "Hemorrhage", "Hyperglycemia"], correctAnswer: "Hemorrhage" },
-            { moduleId: 'thrombolytics', question: "Which drug is used as an antidote to stop bleeding caused by thrombolytic therapy?", options: ["Vitamin K", "Protamine sulfate", "Aminocaproic acid", "Naloxone"], correctAnswer: "Aminocaproic acid" },
-
-            // Questions for Chapter Review & NCLEX Questions
-            { moduleId: 'chapter-review', question: "A patient is placed on heparin, and the nurse acknowledges that heparin is effective for preventing clot formation in patients who have which disorder(s)? (Select all that apply.)", options: ["Coronary thrombosis", "Acute myocardial infarction", "Deep vein thrombosis", "Hemorrhagic stroke", "Disseminated intravascular coagulation"], correctAnswer: ["Coronary thrombosis", "Acute myocardial infarction", "Deep vein thrombosis", "Disseminated intravascular coagulation"] },
-            { moduleId: 'chapter-review', question: "A patient who received heparin begins to bleed. The nurse anticipates that the health care provider will order which antidote?", options: ["Protamine sulfate", "Phytonadione", "Aminocaproic acid", "Potassium chloride"], correctAnswer: "Protamine sulfate" },
-            { moduleId: 'chapter-review', question: "A patient is prescribed enoxaparin. The nurse knows that low-molecular-weight heparin has what kind of half-life?", options: ["A longer half-life than heparin", "A shorter half-life than heparin", "The same half-life as heparin", "A four-times shorter half-life than heparin"], correctAnswer: "A longer half-life than heparin" },
-            { moduleId: 'chapter-review', question: "A patient had an orthopedic surgery and is prescribed enoxaparin. What would the nurse teach the patient and/or family members about this low-molecular-weight heparin before discharge?", options: ["Visual demonstration of intramuscular heparin administration is recommended.", "Prothrombin time and international normalized ratio monitoring will be done weekly.", "Avoidance of green leafy vegetables is recommended.", "Watch for bleeding or excessive bruising."], correctAnswer: "Watch for bleeding or excessive bruising." },
-            { moduleId: 'chapter-review', question: "A patient is being changed from an injectable anticoagulant to an oral anticoagulant. Which anticoagulant does the nurse realize is administered orally?", options: ["Enoxaparin", "Warfarin", "Bivalirudin", "Dalteparin", "Tenecteplase", "Fondaparinux"], correctAnswer: "Warfarin" },
-            { moduleId: 'chapter-review', question: "A patient is taking warfarin 5 mg/day for atrial fibrillation. The patient’s international normalized ratio is 3.8. The nurse would consider the international normalized ratio to be what?", options: ["Within normal range", "Elevated range", "Low range", "Low-average range"], correctAnswer: "Elevated range" },
-            { moduleId: 'chapter-review', question: "Cilostazol is being prescribed for a patient with coronary artery disease. The nurse understands that which of the following is the major purpose for antiplatelet drug therapy?", options: ["Dissolve the blood clot", "Decrease tissue necrosis", "Inhibit hepatic synthesis of vitamin K", "Suppress platelet aggregation"], correctAnswer: "Suppress platelet aggregation" }
+            // Questions for Drugs to Improve Peripheral Blood Flow
+            { moduleId: 'peripheral-blood-flow', question: "Which of the following is a primary characteristic of Peripheral Arterial Disease (PAD)?", options: ["Warm, flushed extremities", "Claudication", "Increased sensation in limbs", "Absence of leg ulcers"], correctAnswer: "Claudication" },
+            { moduleId: 'peripheral-blood-flow', question: "Cilostazol has a dual purpose. What are its two main actions?", options: ["Decreases blood pressure and increases heart rate", "Inhibits platelet aggregation and causes vasodilation", "Increases blood viscosity and reduces erythrocyte flexibility", "Reduces pain and suppresses cough"], correctAnswer: "Inhibits platelet aggregation and causes vasodilation" },
+            { moduleId: 'peripheral-blood-flow', question: "A nurse is teaching a patient about pentoxifylline. Which statement indicates the patient understands the medication?", options: ["'I will take this medication on an empty stomach.'", "'I should continue smoking to improve blood flow.'", "'This medication helps decrease blood viscosity and improves red blood cell flexibility.'", "'I can expect immediate relief from my claudication symptoms.'"], correctAnswer: "This medication helps decrease blood viscosity and improves red blood cell flexibility." },
+            { moduleId: 'peripheral-blood-flow', question: "What should a patient avoid when taking cilostazol due to potential increased drug levels?", options: ["Water", "Lean meats", "Grapefruit juice", "Exercise"], correctAnswer: "Grapefruit juice" },
+            { moduleId: 'peripheral-blood-flow', question: "A patient with peripheral arterial disease is prescribed cilostazol. Which of the following adverse reactions would be of most concern to the nurse?", options: ["Headache", "Diarrhea", "Tachycardia", "Nausea"], correctAnswer: "Tachycardia" }
         ];
 
         // --- Helper Functions ---
+        // Utility for conditionally joining Tailwind CSS classes.
         const cn = (...classes) => classes.filter(Boolean).join(' ');
 
 
@@ -527,16 +515,18 @@
          */
         const Quiz = ({ questions, onComplete, isPreAssessment = false }) => {
             const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-            const [selectedOption, setSelectedOption] = useState([]);
+            const [selectedOption, setSelectedOption] = useState([]); // Changed to array for multi-select
             const [feedback, setFeedback] = useState(null);
             const [answers, setAnswers] = useState([]);
 
             const currentQuestion = questions[currentQuestionIndex];
 
+            // Handle option selection for both single and multiple choice
             const handleOptionSelect = (option) => {
-                if (feedback && !isPreAssessment) return;
+                if (feedback && !isPreAssessment) return; // Prevent changing answer after feedback in regular quiz
 
                 if (Array.isArray(currentQuestion.correctAnswer)) {
+                    // Multi-select (SATA)
                     setSelectedOption(prevSelected => {
                         if (prevSelected.includes(option)) {
                             return prevSelected.filter(item => item !== option);
@@ -545,13 +535,15 @@
                         }
                     });
                 } else {
+                    // Single select
                     setSelectedOption(option);
                 }
             };
-
+            
             const handlePreAssessmentNext = () => {
                 if (selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)) return;
                 
+                // Logic for checking correctness for both single and multi-select
                 const isCorrect = Array.isArray(currentQuestion.correctAnswer)
                     ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
                     : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
@@ -561,7 +553,7 @@
 
                 if (currentQuestionIndex < questions.length - 1) {
                     setCurrentQuestionIndex(currentQuestionIndex + 1);
-                    setSelectedOption([]);
+                    setSelectedOption([]); // Reset for next question
                     setFeedback(null);
                 } else {
                     onComplete(updatedAnswers);
@@ -579,6 +571,7 @@
             };
 
             const handleRegularQuizNext = () => {
+                // Ensure the current answer is recorded before moving to the next question
                 const isCorrect = Array.isArray(currentQuestion.correctAnswer)
                     ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
                     : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
@@ -587,7 +580,7 @@
                 if (currentQuestionIndex < questions.length - 1) {
                     setAnswers(finalAnswers);
                     setCurrentQuestionIndex(currentQuestionIndex + 1);
-                    setSelectedOption([]);
+                    setSelectedOption([]); // Reset for next question
                     setFeedback(null);
                 } else {
                     const finalScore = finalAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
@@ -636,9 +629,9 @@
                     <div className="mt-4 text-center">
                         {isPreAssessment ? (
                              <button
-                                 onClick={handlePreAssessmentNext}
-                                 disabled={selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)}
-                                 className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                onClick={handlePreAssessmentNext}
+                                disabled={selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
                                 {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Assessment'}
                             </button>
@@ -689,6 +682,7 @@
 
                 const completedModules = [];
                 for (const moduleId in moduleResults) {
+                    // For pre-assessment, a module is "completed" if all its questions in the pre-assessment quiz were answered correctly.
                     if (moduleResults[moduleId].correct === moduleResults[moduleId].total) {
                         completedModules.push(moduleId);
                     }
@@ -778,11 +772,11 @@
                         <header className="mb-8 text-center">
                             <div className="flex items-center justify-center gap-3 mb-2">
                                 {/* Text placeholder for the main application identifier */}
-                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">ACT</span>
-                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Anticoagulants, Antiplatelets, and Thrombolytics Learning Module</h1>
+                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">ALM</span>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Antihyperlipidemics & Peripheral Blood Flow Module</h1>
                                 <span className="bg-gray-200 text-gray-600 text-xs font-mono px-2.5 py-1 rounded-full">V:1.0</span>
                             </div>
-                            <p className="text-lg text-gray-500 max-w-2xl mx-auto">Master the pharmacology of anticoagulants, antiplatelets, and thrombolytics through interactive modules and NCLEX-style assessments.</p>
+                            <p className="text-lg text-gray-500 max-w-2xl mx-auto">Master the pharmacology of blood lipid management and peripheral circulation through interactive modules and NCLEX-style assessments.</p>
                         </header>
 
                         {/* Skip Ahead Button */}
@@ -799,16 +793,16 @@
                         {/* Overall Progress Bar & Reset Button */}
                         <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
                            <div className="flex justify-between items-center mb-3">
-                             <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
-                             <button 
-                                 onClick={onResetProgress}
-                                 className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
-                             >
-                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                     <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" clipRule="evenodd" />
-                                 </svg>
-                                 Reset Progress
-                             </button>
+                                <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                                <button
+                                    onClick={onResetProgress}
+                                    className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" clipRule="evenodd" />
+                                    </svg>
+                                    Reset Progress
+                                </button>
                            </div>
                             <div className="w-full bg-gray-200 rounded-full h-4">
                                 <div
@@ -824,7 +818,7 @@
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
                             {/* Iterate over all modules defined in contentData */}
                             {Object.entries(contentData).map(([id, module]) => {
                                 const moduleProgress = progress[id] || {};
@@ -915,22 +909,32 @@
          */
         const CaseStudy = ({ caseData, onComplete }) => {
             // State to store the user's selected answer.
-            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [selectedAnswers, setSelectedAnswers] = useState([]); // Changed to array for multi-select
+            const [showFeedback, setShowFeedback] = useState(false);
 
             // Handles the selection of an answer option.
             const handleSelect = (option) => {
-                if (selectedAnswer) return; // Prevents changing the answer once selected.
-                setSelectedAnswer(option);
-                // Case-insensitive comparison needs to check if the 'option' matches any of the correct answers.
-                // For the case study, the correct answers are an array in the data.
-                const isCorrect = Array.isArray(caseData.correctAnswer)
-                    ? caseData.correctAnswer.includes(option)
-                    : option.toLowerCase() === caseData.correctAnswer.toLowerCase();
-                
+                if (showFeedback) return; // Prevent changing the answer once submitted.
+
+                setSelectedAnswers(prevSelected => {
+                    if (prevSelected.includes(option)) {
+                        return prevSelected.filter(item => item !== option);
+                    } else {
+                        return [...prevSelected, option];
+                    }
+                });
+            };
+
+            const handleSubmit = () => {
+                setShowFeedback(true);
+                // Check if all correct answers are selected AND no incorrect answers are selected
+                const isCorrect = caseData.correctAnswer.every(ans => selectedAnswers.includes(ans)) &&
+                                  selectedAnswers.length === caseData.correctAnswer.length;
                 if (isCorrect) {
                     onComplete(); // Marks the step as complete if the correct answer is chosen.
                 }
             };
+
 
             return (
                 <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
@@ -940,23 +944,20 @@
                     <p className="font-semibold text-gray-700 mb-3" dangerouslySetInnerHTML={{ __html: caseData.question }}></p>
                     <div className="space-y-2">
                         {caseData.options.map(option => {
-                            const isSelected = selectedAnswer === option;
-                            // Case-insensitive comparison for correct answer highlight
-                            const isCorrectOption = Array.isArray(caseData.correctAnswer)
-                                ? caseData.correctAnswer.includes(option)
-                                : option.toLowerCase() === caseData.correctAnswer.toLowerCase();
-                            const showFeedback = selectedAnswer !== null; // Show feedback once any answer is selected 
-
+                            const isSelected = selectedAnswers.includes(option);
+                            // Check if this option is one of the correct answers
+                            const isCorrectOption = caseData.correctAnswer.includes(option);
+                            
                             let optionClass = 'bg-white hover:bg-gray-100 border-gray-200'; // Default styling for options.
                             if (showFeedback) {
                                 if (isCorrectOption) {
-                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown 
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown
                                 } else if (isSelected && !isCorrectOption) {
-                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red 
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red
                                 }
                             } else if (isSelected) {
-                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission 
-                            } 
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission
+                            }
 
                             return (
                                 <div
@@ -965,7 +966,7 @@
                                     className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
                                 >
                                     <div className="flex items-center">
-                                        {showFeedback && ( // Display a checkmark or cross icon if feedback is active 
+                                        {showFeedback && ( // Display a checkmark or cross icon if feedback is active
                                             isCorrectOption ? <span className="text-green-600 mr-2">✓</span> : (isSelected && <span className="text-red-600 mr-2">✗</span>)
                                         )}
                                         <span className="flex-1">{option}</span>
@@ -974,7 +975,18 @@
                             );
                         })}
                     </div>
-                    {selectedAnswer && ( // Display the explanation after an answer has been selected.
+                    {!showFeedback && (
+                        <div className="mt-4 text-center">
+                            <button
+                                onClick={handleSubmit}
+                                disabled={selectedAnswers.length === 0}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                Submit Answer
+                            </button>
+                        </div>
+                    )}
+                    {showFeedback && ( // Display the explanation after an answer has been selected.
                         <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
                             <h5 className="font-bold text-indigo-800">Explanation</h5>
                             <p className="text-sm text-indigo-700" dangerouslySetInnerHTML={{ __html: caseData.explanation }}></p>
@@ -986,7 +998,7 @@
         
         /**
          * VitalsCheck component for an interactive question about vital signs.
-         * This component is not used in this module, but kept for completeness if needed in other modules.
+         * This component is not used in the Antihyperlipidemics module, but kept for completeness if needed in other modules.
          */
         const VitalsCheck = ({ onComplete }) => {
             // State to store the user's selected vital sign.
@@ -1001,7 +1013,7 @@
                 setSelectedVital(vital);
                 // Case-insensitive comparison (though keys are already consistent)
                 if (vital.toLowerCase() === mostConcerning.toLowerCase()) {
-                    onComplete(); // Mark step as complete if correct answer is chosen 
+                    onComplete(); // Mark step as complete if correct answer is chosen
                 }
             };
 
@@ -1014,22 +1026,22 @@
                             const isSelected = selectedVital === key;
                             // Case-insensitive comparison for correct answer highlight
                             const isCorrect = key.toLowerCase() === mostConcerning.toLowerCase();
-                            const showFeedback = selectedVital !== null; // Show feedback once any vital is selected 
+                            const showFeedback = selectedVital !== null; // Show feedback once any vital is selected
 
                             let optionClass = 'bg-white hover:bg-gray-100 border-gray-200'; // Default styling.
                             if (showFeedback) {
                                 if (isCorrect) {
-                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown 
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown
                                 } else if (isSelected && !isCorrect) {
-                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red 
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red
                                 }
                             } else if (isSelected) {
-                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission 
-                            } 
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission
+                            }
                             return (
                                 <div key={key} onClick={() => handleSelect(key)} className={cn('p-4 rounded-lg border-2 cursor-pointer text-center', optionClass)}>
-                                    <div className="text-sm font-bold text-gray-500">{key}</div>
-                                    <div className="text-xl font-semibold text-gray-800">{value}</div>
+                                    <div class="text-sm font-bold text-gray-500">{key}</div>
+                                    <div class="text-xl font-semibold text-gray-800">{value}</div>
                                 </div>
                             );
                         })}
@@ -1071,9 +1083,9 @@
             return (
                 <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
-                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
-                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
-                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                        <h3 class="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p class="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
                             <button
                                 onClick={onClose}
                                 className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm"
@@ -1101,7 +1113,7 @@
         const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
             const [activeStep, setActiveStep] = useState(0); // Manages the index of the currently active step.
             const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Controls the visibility of the sidebar on mobile.
-            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false); // State for completion modal 
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false); // State for completion modal
 
             // Callback function to update the completion status of a specific step.
             const handleStepComplete = useCallback((stepId, data = {}) => {
@@ -1117,7 +1129,7 @@
 
             // Navigates to the next step, if available.
             const handleNextStep = () => {
-                // If it's the last step and all steps in the module are completed, open the modal 
+                // If it's the last step and all steps in the module are completed, open the modal
                 if (activeStep === module.steps.length - 1 && allStepsCompletedInModule) {
                     setIsCompletionModalOpen(true);
                 } else if (activeStep < module.steps.length - 1) {
@@ -1132,7 +1144,7 @@
                 }
             };
             
-            // Ensure module and its steps are defined before accessing properties 
+            // Ensure module and its steps are defined before accessing properties
             if (!module || !module.steps) {
                 console.error("LearningModule received invalid module prop:", module);
                 return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
@@ -1164,40 +1176,40 @@
 
             const handleModalClose = () => {
                 setIsCompletionModalOpen(false);
-                onBack(); // Go back to dashboard when modal is closed 
+                onBack(); // Go back to dashboard when modal is closed
             };
 
             const handleModalNextModule = () => {
                 setIsCompletionModalOpen(false);
-                onNextModule(); // Proceed to next module 
+                onNextModule(); // Proceed to next module
             };
 
 
             return (
-                <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
+                <div class="fixed inset-0 bg-gray-100 flex flex-col z-20">
                     {/* Header for the learning module, including back button and module title. */}
-                    <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
+                    <header class="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
                         <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                            <span className="hidden sm:inline">Dashboard</span>
+                            <span class="hidden sm:inline">Dashboard</span>
                         </button>
-                        <div className="flex items-center gap-3">
-                            <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
                         </div>
                         {/* Mobile sidebar toggle button using text/emoji placeholders. */}
                         <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
                         </button>
                     </header>
                     {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
-                    <div className="flex flex-1 overflow-hidden">
+                    <div class="flex flex-1 overflow-hidden">
                         {/* Sidebar for navigation steps within the module. */}
-                        <aside className={cn(
+                        <aside class={cn(
                             "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
                             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
                         )}>
-                            <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
-                            <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
+                            <nav class="space-y-1 overflow-y-auto flex-1 pr-1">
                                 {module.steps.map((step, index) => (
                                     <button
                                         key={step.id}
@@ -1211,27 +1223,27 @@
                                         )}
                                     >
                                         {/* Step completion indicator */}
-                                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                        <div class="w-5 h-5 flex-shrink-0 flex items-center justify-center">
                                             {moduleProgress[step.id]?.completed ? (
-                                                <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                                <svg class="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
                                             ) : (
-                                                <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                                <div class={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
                                             )}
                                         </div>
-                                        <span className="flex-1 text-sm">{step.title}</span>
+                                        <span class="flex-1 text-sm">{step.title}</span>
                                     </button>
                                 ))}
                             </nav>
                         </aside>
 
                         {/* Main content area for the current step. */}
-                        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-                            <div className="max-w-5xl mx-auto">
-                                <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
+                        <main class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                            <div class="max-w-5xl mx-auto">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
                                 {renderStepContent(currentStep)}
 
                                 {/* Navigation buttons for moving between steps. */}
-                                <div className="flex justify-between mt-8">
+                                <div class="flex justify-between mt-8">
                                     <button
                                         onClick={handlePrevStep}
                                         disabled={activeStep === 0}
@@ -1243,7 +1255,7 @@
                                     <button
                                         onClick={handleNextStep}
                                         disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule}
-                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
                                     >
                                         {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
                                     </button>
@@ -1263,7 +1275,7 @@
         
         // --- Main App Component ---
         /**
-         * The root component of the Anticoagulants, Antiplatelets, and Thrombolytics Learning Module application.
+         * The root component of the Antihyperlipidemics & Peripheral Blood Flow Learning Module application.
          * Manages overall application state, including module selection, user ID, and progress.
          */
         function App() {
@@ -1289,7 +1301,7 @@
             // Effect hook for loading user progress from localStorage after authentication is ready.
             useEffect(() => {
                 if (!isAuthReady || !userId) return; // Only proceed if auth is ready and userId is available.
-                const storedProgress = localStorage.getItem(`anticoagulants-module-progress-${userId}`); // Updated localStorage key
+                const storedProgress = localStorage.getItem(`cardio-module-progress-${userId}`); // Changed key
                 if (storedProgress) {
                     try {
                         setProgress(JSON.parse(storedProgress)); // Attempt to parse and set stored progress.
@@ -1323,7 +1335,7 @@
                         }
                     };
 
-                    localStorage.setItem(`anticoagulants-module-progress-${userId}`, JSON.stringify(newProgress)); // Updated localStorage key
+                    localStorage.setItem(`cardio-module-progress-${userId}`, JSON.stringify(newProgress)); // Changed key
                     return newProgress;
                 });
             }, [isAuthReady, userId]);
@@ -1340,7 +1352,7 @@
                     }
                 });
                 setProgress(newProgress);
-                localStorage.setItem(`anticoagulants-module-progress-${userId}`, JSON.stringify(newProgress)); // Updated localStorage key
+                localStorage.setItem(`cardio-module-progress-${userId}`, JSON.stringify(newProgress)); // Changed key
                 // The results screen is now part of the PreAssessmentQuiz component.
                 // We just need to handle exiting it.
             };
@@ -1351,7 +1363,7 @@
                 // Clear from state
                 setProgress({});
                 // Clear from localStorage
-                localStorage.removeItem(`anticoagulants-module-progress-${userId}`); // Updated localStorage key
+                localStorage.removeItem(`cardio-module-progress-${userId}`); // Changed key
             }, [isAuthReady, userId]);
 
             // Function to navigate to the next module in the sequence
@@ -1368,8 +1380,8 @@
 
             // Determine which module is currently selected based on `currentModuleId`.
             const selectedModule = currentModuleId && contentData[currentModuleId]
-                                             ? { ...contentData[currentModuleId], id: currentModuleId }
-                                             : null;
+                                            ? { ...contentData[currentModuleId], id: currentModuleId }
+                                            : null;
 
             const moduleIds = Object.keys(contentData);
             const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
@@ -1377,10 +1389,10 @@
 
 
             return (
-                <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+                <div class="bg-gray-100 min-h-screen font-sans text-gray-900">
                     {isPreAssessmentActive ? (
-                        <PreAssessmentQuiz 
-                            onComplete={handlePreAssessmentComplete} 
+                        <PreAssessmentQuiz
+                            onComplete={handlePreAssessmentComplete}
                             onExit={() => setIsPreAssessmentActive(false)}
                         />
                     ) : selectedModule ? (
@@ -1394,9 +1406,9 @@
                             hasNextModule={hasNextModule}
                         />
                     ) : (
-                        <Dashboard 
-                            onSelectModule={setCurrentModuleId} 
-                            progress={progress} 
+                        <Dashboard
+                            onSelectModule={setCurrentModuleId}
+                            progress={progress}
                             onResetProgress={handleResetProgress}
                             onStartPreAssessment={() => setIsPreAssessmentActive(true)}
                         />
