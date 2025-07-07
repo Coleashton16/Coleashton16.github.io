@@ -40,14 +40,18 @@
     <script type="text/babel">
         const { useState, useEffect, useCallback, useMemo } = React;
 
+        // Mock authentication for demonstration purposes.
+        // In a real application, you would integrate with Firebase Auth or similar.
         const mockAuth = {
             onAuthStateChanged: (callback) => {
+                // Simulate a slight delay for auth state to be "ready"
                 setTimeout(() => callback({ uid: 'inflammation-user' }), 100);
-                return () => {};
+                return () => {}; // Return an unsubscribe function
             },
             signInAnonymously: () => Promise.resolve({ user: { uid: 'inflammation-user' } }),
         };
 
+        // Centralized content data for all learning modules
         const contentData = {
             'inflammation-core-concepts': {
                 title: 'Inflammation: Core Concepts',
@@ -209,10 +213,71 @@
                     },
                 ]
             },
+            'rheumatoid-arthritis-module': {
+                title: 'Rheumatoid Arthritis: Pathophysiology & Management',
+                color: 'from-purple-600 to-indigo-700',
+                description: 'A deep dive into the pathophysiology, assessment, and clinical management of Rheumatoid Arthritis.',
+                steps: [
+                    { id: 'ra-pathophysiology', title: 'Pathophysiology Review', type: 'text', content: `<strong>Rheumatoid arthritis (RA)</strong> is a chronic, progressive, systemic inflammatory autoimmune disease process that affects primarily the synovial joints. Systemic means that this disease can affect any or all parts of the body while affecting many joints.<br><br>In patients with RA, transformed autoantibodies (rheumatoid factors [RFs]) that attack healthy tissue, especially synovium, are formed, causing inflammation. The disease then begins to involve the articular cartilage, joint capsule, and surrounding ligaments and tendons. Immunity and inflammatory factors cause cartilage damage in patients with RA:<br><ul><li><strong>CD4 helper T cells</strong> and other immune cells in synovial fluid promote cytokine release, especially interleukin-1 (IL-1) and tumor necrosis factor–alpha (TNFA), which attack cartilage.</li><li><strong>Neutrophils</strong> and other inflammatory cells in the joint are activated and break down the cartilage.</li><li>Immune complexes deposit in synovium, and <strong>osteoclasts</strong> are activated.</li><li><strong>B and T lymphocytes</strong> of the immune system are stimulated and increase the inflammatory response.</li></ul>The synovium then thickens and becomes hyperemic, fluid accumulates in the joint space, and a <strong>pannus</strong> forms. The pannus is vascular granulation tissue composed of inflammatory cells; it erodes articular cartilage and eventually destroys bone. As a result, in late disease, fibrous adhesions, bony ankyloses (abnormal fusion of bones in the joint), and calcifications occur. Bone loses density, and secondary osteoporosis exists.<br><br>Permanent joint changes may be avoided if RA is diagnosed early. Early and aggressive treatment to suppress synovitis may lead to a remission. RA is a disease characterized by natural remissions and exacerbations (flare-ups). Interprofessional health care team management helps control the disease to decrease the intensity and number of exacerbations. Preventing flares helps prevent joint erosion and permanent joint damage.<br><br>Because RA is a systemic disease, areas of the body besides the synovial joints can be affected. Inflammatory responses similar to those occurring in synovial tissue may occur in any organ or body system in which connective tissue is prevalent. If blood vessel inflammation (vasculitis) occurs, the organ supplied by that vessel can be affected, leading to eventual failure of the organ or system in late disease.` },
+                    { id: 'ra-etiology-genetics-incidence', title: 'Etiology, Genetics & Incidence', type: 'text', content: `The etiology of RA remains unclear, but research suggests a combination of environmental and genetic factors. Some researchers also suspect that female reproductive hormones influence the development of RA because it affects women more often than men—usually young to middle-age women. Others suspect that infectious organisms may play a role, particularly the Epstein-Barr virus. Physical and emotional stressors have been linked to exacerbations of the disorder and may be contributing factors or “triggers” to its development.<br><br><strong>Genetics/Genomics:</strong> Research has shown that there is a strong association between RA and several human leukocyte antigen (HLA)–DR alleles. The cause of this association is not clear, but most HLA diseases are autoimmune. DR alleles, especially DR4 and DRB1, are the primary genetic factors contributing to the development of RA. DR4 is associated with more severe forms of the disease. Other contributing factors are being researched.<br><br><strong>Incidence and Prevalence:</strong> RA affects over 1.5 million people, and Whites have the disease more often than other groups. Women are two to three times more likely to have RA compared with men. The cause for these trends is not known.<br><br><strong>Health Disparities:</strong> Research data over a 13-year period from 2005 to 2018 demonstrate that when compared to other groups, African Americans have a higher prevalence of rheumatoid arthritis, particularly those who have an educational level of less than high school and a low family income. The impact of these social determinants of health needs further research, but the stress of poverty may contribute to the risk for developing the disease. Assess patients for these factors and incorporate into their plan of care.` },
+                    { id: 'ra-assessment-early-late', title: 'Assessment: Early & Late Signs', type: 'text', content: `The onset of rheumatoid arthritis (RA) may be acute and severe or slow and progressive; patients may have vague symptoms that last for several months before diagnosis. The onset of the disease is more common in the winter months than in the warmer months. The signs and symptoms of RA can be categorized as early or late disease and as joint (articular) or systemic (extraarticular):<br><br><strong>Common Early Signs and Symptoms (Early Disease):</strong><br><em>Joint:</em> Inflammation<br><em>Systemic:</em> Low-grade fever, Fatigue, Weakness, Anorexia, Paresthesias<br><br><strong>Common Late Signs and Symptoms (Advanced Disease):</strong><br><em>Joint:</em> Deformities (e.g., swan neck or ulnar deviation), Moderate-to-severe pain and morning stiffness<br><em>Systemic:</em> Osteoporosis, Severe fatigue, Anemia, Weight loss, Muscle atrophy, Subcutaneous nodules, Peripheral neuropathy, Vasculitis, Pericarditis, Fibrotic lung disease, Sjögren syndrome, Kidney disease` },
+                    { id: 'ra-physical-assessment', title: 'Physical Assessment & Critical Rescue', type: 'text', content: `In the early stage of RA the patient typically reports joint inflammation, generalized weakness, and fatigue. Anorexia, weight loss of about 2 to 3 lb (1 kg), and persistent low-grade fever are common. In patients with early disease, the upper-extremity joints are involved initially—often the proximal interphalangeal (PIP) and metacarpophalangeal (MCP) joints of the hands. These joints may be slightly reddened, warm, stiff, swollen, and tender or painful, particularly on palpation (caused by synovitis). The typical pattern of joint involvement in RA is bilateral and symmetric (e.g., both wrists). The number of joints involved usually increases as the disease progresses.<br><br>The presence of only one hot, swollen, painful joint (out of proportion to the other joints) may mean that the joint is infected. Refer the patient to the primary health care provider (generally the rheumatologist) immediately if this is the case. Single hot, swollen joints are considered infected until proven otherwise and require immediate long-term antibiotic treatment.<br><br>As the disease advances, the joints become progressively inflamed and very painful. The patient usually has frequent morning stiffness, which can last for several hours after awakening. On palpation the joints feel soft and look puffy because of synovitis and effusions. The fingers often appear spindlelike. Note any muscle atrophy (which can result from disuse secondary to joint pain) and a decreased range of motion in the affected joints.<br><br>Most or all synovial joints are eventually affected. The temporomandibular joint (TMJ) may be involved in severe disease, but such involvement is uncommon. When the TMJ is affected, the patient may have pain when chewing or opening the mouth.<br><br>When the spinal column is involved, the cervical joints are most likely to be affected. During clinical examination, gently palpate the posterior cervical spine and identify it as cervical pain, tenderness, or loss of motion.<br><br><strong>Critical Rescue:</strong> Cervical RA may result in subluxation, especially of the first and second vertebrae. This complication may be life-threatening because branches of the phrenic nerve that supply the diaphragm are restricted and respiratory function may be compromised. The patient is also in danger of becoming quadriparetic (weak in all extremities) or quadriplegic (paralyzed in all extremities). If cervical pain (may radiate down one arm) or loss of range of motion is present in the cervical spine, keep the neck straight in a neutral position to prevent permanent damage to the spinal cord or spinal nerves. Notify the Rapid Response Team and primary health care provider immediately about these neurologic changes!` },
+                    { id: 'ra-extraarticular-manifestations', title: 'Extraarticular Manifestations', type: 'text', content: `Joint deformity occurs as a late articular manifestation, and secondary osteoporosis can cause bone fractures. Observe common deformities, especially in the hands and feet (e.g., Boutonniere deformity, Swan neck deformity). Extensive wrist involvement can result in carpal tunnel syndrome.<br><br>Gently palpate the tissues around the joints to elicit pain or tenderness associated with other rheumatoid complications, unless the patient is having severe joint pain. For example, Baker cysts (enlarged popliteal bursae behind the knee) may occur and cause tissue compression and pain. Tendon rupture is also possible, particularly rupture of the Achilles tendon.<br><br>Numerous extraarticular signs and symptoms are associated with advanced disease. Assess the patient to ascertain systemic involvement. In addition to increased joint swelling and tenderness, moderate to severe weight loss, fever, and extreme fatigue are common in late disease exacerbations, often called flare-ups. Some patients have the characteristic soft, round, movable <strong>subcutaneous nodules</strong>, which usually appear on the ulnar surface of the arm, on the fingers, or along the Achilles tendon. These nodules can disappear and reappear at any time and are associated with severe, destructive disease. Rheumatoid nodules are usually not a problem themselves; however, they occasionally open and become infected and may interfere with ADLs. Accidentally bumping the nodules may cause discomfort. Occasionally nodules occur in the lungs.<br><br>Inflammation of the blood vessels results in <strong>vasculitis</strong>, particularly of small to medium-size vessels. When arterial involvement occurs, major organs can become ischemic and malfunction. Assess for ischemic skin lesions that appear in groups as small, brownish spots, most commonly around the nail bed. Monitor the number of lesions, note their location each day, and report vascular changes to the health care provider. Increased lesions indicate increased vasculitis, and a decreased number indicates decreased vasculitis. Also carefully assess any larger lesions that appear on the lower extremities. These lesions can lead to ulcerations, which heal slowly as a result of decreased circulation. <strong>Peripheral neuropathy</strong> associated with decreased circulation can cause footdrop and paresthesias (burning and tingling sensations), usually in older adults.<br><br>Respiratory complications may manifest as pleurisy, pneumonitis, diffuse interstitial fibrosis, and pulmonary hypertension. Cardiac complications include pericarditis and myocarditis. Assess for eye involvement, which typically manifests as iritis and scleritis. If either of these complications is present, the sclera of one or both eyes is reddened and the pupils have an irregular shape. Visual disturbances may occur.<br><br>Several syndromes are seen in patients with advanced RA. The most common is <strong>Sjögren syndrome</strong>, which includes a triad of:<ul><li>Dry eyes (keratoconjunctivitis sicca [KCS], or the sicca syndrome)</li><li>Dry mouth (xerostomia)</li><li>Dry vagina (in some cases)</li></ul>Note the patient’s report of dry mouth or dry eyes. Some patients state that their eyes feel “gritty,” as if sand is in their eyes. Inspect the mouth for dry, sticky membranes and the eyes for redness/hyperpigmentation and lack of tearing.` },
+                    { id: 'ra-psychosocial-assessment', title: 'Psychosocial Assessment', type: 'text', content: `Rheumatoid arthritis (RA) and other inflammatory types of arthritis are chronic diseases that can be disabling if not well controlled. Fear of becoming dependent, uncertainty about the disease process, altered body image, devaluation of self, frustration, and depression are common psychosocial problems. Physical limitations and persistent pain may limit the patient’s mobility. These limitations can result in role changes in the family and society. For example, the person may be unable to cook for the family or be an active sexual partner. In addition, extreme fatigue often causes patients to desire an early bedtime and napping, and may result in a reluctance to socialize.<br><br>Body changes caused by joint changes and drug therapy (if used) may also cause poor self-esteem and body image. Because many societies value people with physically fit, attractive bodies, the patient with RA may be embarrassed to be seen in public places. The patient may grieve or experience degrees of depression. The patient may have feelings of helplessness caused by a loss of control over a disease that can “consume” the body. Fortunately, newer drugs have improved the treatment of RA and provide the patient with hope and better disease control. Only a small percentage of patients with RA become wheelchair dependent.<br><br>Living with a chronic disease and its associated pain is difficult for the patient and family. Chronic suffering and pain affect quality of life. Assess the patient’s emotional and mental status in relation to the disease and its problems. Evaluate the patient’s support systems and resources. Patients who are knowledgeable about their disease and treatment options feel emotionally stronger to cope with their disease and better able to discuss treatment options with their primary health care provider.` },
+                    { id: 'ra-laboratory-assessment', title: 'Laboratory Assessment', type: 'text', content: `Laboratory tests help support a diagnosis of RA, but no single test or group of tests can confirm it. The test for <strong>rheumatoid factor (RF)</strong> measures the presence of unusual antibodies of the immunoglobulins G (IgG) and M (IgM) types that develop in a number of connective tissue diseases. Many patients with RA have a positive titer (greater than 1:80), especially in older adults. However, the presence of RF is not diagnostic for RA.<br><br>One of the newest laboratory tests, used to detect the level of <strong>anti–cyclic citrullinated peptide (anti-CCP)</strong>, is very specific and sensitive in detecting early RA. The presence of anti-CCP is also a marker for aggressive and erosive late-stage disease.<br><br>The <strong>antinuclear antibody (ANA)</strong> test measures the titer of a group of antibodies that destroy the nuclei of cells and cause tissue death in patients with autoimmune disease. The fluorescent method is sometimes referred to as FANA. If this test result is positive (a value higher than 1:40), various subtypes of this antibody are identified and measured.<br><br>An elevated <strong>erythrocyte sedimentation rate (ESR)</strong>, or “sed rate,” (greater than 20 mm/hr) can confirm inflammation or infection anywhere in the body. An elevated ESR helps support a diagnosis of an unspecified inflammatory disease. The test is most useful to monitor the course of a disease, especially for inflammatory autoimmune diseases. In general the more severe the disease gets, the higher the ESR rises; as the disease improves or goes into remission, the ESR level decreases.<br><br>Measurement of the <strong>high-sensitivity C-reactive protein, or hsCRP</strong>, is another useful test to measure inflammation and may be done with or instead of the ESR. As the name implies, it is more sensitive to inflammatory changes than the ESR. It is also very useful for detecting infection anywhere in the body.<br><br>The presence of most chronic diseases usually causes mild to moderate anemia, which contributes to the patient’s fatigue. Therefore, monitor the patient’s <strong>complete blood count (CBC)</strong> for a low hemoglobin, hematocrit, and red blood cell (RBC) count. An increase in white blood cell (WBC) count is consistent with an inflammatory response. A decrease in the WBC count may indicate Felty syndrome, a pulmonary complication associated with late RA. <strong>Thrombocytosis</strong> (increased platelets) can also occur in patients with late RA. Additional laboratory tests may be performed, depending on the body systems and organs that may be affected by the disease. For example, if heart involvement is suspected, the primary health care provider may request cardiac enzyme testing.` },
+                    { id: 'ra-diagnostic-assessment', title: 'Other Diagnostic Assessment', type: 'text', content: `A standard <strong>x-ray</strong> is used to visualize the joint changes and deformities typical of RA. A <strong>CT scan</strong> may help determine the presence and degree of cervical spine involvement.<br><br>An <strong>arthrocentesis</strong> is an invasive diagnostic procedure that may be used for patients with joint swelling caused by excess synovial fluid (effusion). It may be performed at the bedside or in a health care provider’s office or clinic. After administering a local anesthetic, the provider inserts a large-gauge needle into the joint (usually the knee) to aspirate a sample of synovial fluid and to relieve pressure caused by excess fluid. The fluid is analyzed for inflammatory cells and immune complexes, including RF. Fluid from patients with RA typically reveals increased WBCs, cloudiness, and volume.<br><br>Teach the patient to use ice and to rest the affected joint for 24 hours after arthrocentesis. Often the primary health care provider will recommend acetaminophen as needed for discomfort. If increased pain or swelling occurs, teach the patient or family to notify the primary health care provider immediately.<br><br><strong>MRI</strong> may be performed to assess spinal column disease or other joint involvement. Because RA can affect multiple body systems, tests to diagnose specific systemic manifestations are performed as needed. For example, nerve conduction studies help confirm peripheral neuropathy. Pulmonary function tests help determine the presence of lung involvement.` },
+                    { id: 'ra-collaborative-care', title: 'Interprofessional Collaborative Care & Planning', type: 'text', content: `The priority collaborative problems for patients with rheumatoid arthritis (RA) include:<br>1. Chronic inflammation and persistent pain due to systemic autoimmune disease process<br>2. Potential for decreased mobility due to joint deformity, muscle atrophy, and fatigue<br>3. Potential for decreased self-esteem image due to joint deformity<br><br>Patients who have RA are managed in the community under the supervision of a qualified primary health care provider. The expected outcome for management is that the disease goes into remission and its progression slows to decrease pain, prevent joint destruction, and increase mobility. When patients with RA are admitted to the inpatient acute care or long-term care facility, it is usually for health problems other than for complications of arthritis. Whether the patient is in a facility or community, be sure to plan interventions to manage persistent pain and inflammation, as well as the potential for decreased mobility and decreased self-esteem.` },
+                    { id: 'ra-drug-therapy-dmards', title: 'Drug Therapy: DMARDs', type: 'text', content: `Some drugs prescribed for RA have antiinflammatory and/or analgesic actions. For example, NSAIDs are sometimes used for early RA to help decrease pain and inflammation. The choice of which one to prescribe depends on the patient’s needs and tolerance and the scientific evidence supporting the drug therapy. To decrease GI problems, the NSAID may be given with an H2-blocking agent such as famotidine. If there is no clinical change after 6 to 8 weeks, the primary health care provider may discontinue the current NSAID and try another one or change to a different drug class.<br><br>Other drugs affect immunity through immunosuppression, thus modifying the progress of the disease to reduce pain and inflammation. Initially most patients are managed with <strong>disease-modifying antirheumatic drugs (DMARDs)</strong>. As the name implies, these drugs are given to slow the progression of the disease. For best results, they should be started early in the disease process.<br><br><strong>First-line DMARDs:</strong><br><strong>Methotrexate (MTX)</strong>, an immunosuppressive medication, in a low once-a-week dose is the mainstay of therapy for RA because it is effective and relatively inexpensive. It is a slow-acting drug, taking 4 to 6 weeks to begin to control joint inflammation. Observe for desired therapeutic drug effects, such as a decrease in joint pain and swelling.<br>Monitor patients for potential adverse effects, such as decreases in WBCs or platelets (as a result of bone marrow suppression) or elevations in liver enzymes or serum creatinine.<br><br><strong>Drug Alert (Methotrexate):</strong> Patients taking MTX are at risk for infection caused by impaired or decreased drug-induced immunity. Teach them to avoid crowds and people who are ill. Remind patients to avoid alcoholic beverages while taking MTX to prevent liver toxicity. Teach them to observe and report other side and toxic effects, which include mouth sores and acute dyspnea from pneumonitis. Although not commonly occurring, lymph node tumor (lymphoma) and pneumonitis (lung inflammation) have been associated in those who have RA and are taking MTX. Folic acid, one of the B vitamins, is often given to those who are taking MTX to help decrease some of the drug’s side effects. Pregnancy is not recommended while taking methotrexate because birth defects are possible. Strict birth control is recommended for childbearing women who are in need of MTX to control their RA. If pregnancy is ever desired, instruct the patient to consult the rheumatologist and an obstetric/gynecologic (OB/GYN) health care provider. Generally, the primary health care provider discontinues the drug at least 3 months before planned pregnancy. MTX may be restarted after birth if the patient does not breast-feed.<br><br>Another DMARD sometimes used for RA is <strong>hydroxychloroquine</strong>. This drug slows the progression of mild rheumatoid disease before it worsens. It is an antimalarial drug that helps suppress the immune response to decrease joint and muscle pain. Patients generally tolerate hydroxychloroquine quite well. In a few cases mild stomach discomfort, light-headedness, or headache has been reported. The drug should not be used for patients who have known cardiac disease or dysrhythmias.<br><br><strong>Drug Alert (Hydroxychloroquine):</strong> The most serious adverse effect of hydroxychloroquine is retinal damage. Teach patients to report blurred vision or headache. Remind them to have an eye examination before taking the drug and then every 6 months afterward to detect changes in the cornea, lens, or retina. If this rare complication occurs, the primary health care provider discontinues the drug.` },
+                    { id: 'ra-drug-therapy-brms-jak', title: 'Drug Therapy: BRMs & JAK Inhibitors', type: 'text', content: `As a group, <strong>biological response modifiers (BRMs)</strong>, sometimes called biologics, are one of the newest and most effective classes of DMARDs and include interleukins, tumor necrosis factor (TNF) inhibitors, and monoclonal antibodies. Any one of the BRMs may be tried. If one drug is not effective, the primary health care provider prescribes another drug in the same class. All these drugs are expensive, and insurance companies may not completely pay for their use.<br><br>Teach patients receiving any one of the BRMs that they are at a high risk for developing impaired immunity and subsequent infection. Instruct them to stay away from people with infections and to avoid large crowds if possible. Remind patients with multiple sclerosis (MS), tuberculosis (TB), or a positive TB test that they should not receive BRMs because they make patients susceptible to flare-ups of these diseases. Determine whether the patient has had a recent negative purified protein derivative (PPD) test for TB. If not, a PPD skin test is typically administered and the selected BRM is not started until a negative test result is confirmed. Collaborate with the primary health care provider to ensure that this process is complete. Most of these drugs are given parenterally and require health teaching for self-administration.<br><br>The newest classification of DMARDs is the <strong>Janus kinase (JAK)-inhibiting drugs</strong>, often called JAK inhibitors. Like other BRMs, these drugs have been approved for other types of arthritis and autoimmune disorders.<br><br><strong>Common Examples of Drug Therapy:</strong><br><em>Tumor Necrosis Factor (TNF) Inhibitor:</em> Etanercept, Infliximab, Golimumab. Teach patient to report injection site reaction, which may indicate a local allergic response and cause pain. Teach patients to report signs and symptoms of infection.<br><em>Interleukin (IL)-6 Receptor Antagonist:</em> Anakinra, Tocilizumab. Monitor the WBC count of patients receiving any of these drugs, which can cause a marked decrease, making patients susceptible to infection. Monitor liver enzymes because drugs can cause liver dysfunction.<br><em>Janus Kinase (JAK) Inhibitor:</em> Tofacitinib, Baricitinib, Upadacitinib. Be aware that tofacitinib has a black box warning about the increased risk of cardiac events, cancer, and blood clots when taking this drug. Teach patients to report signs and symptoms of infection.` },
+                    { id: 'ra-drug-therapy-other-nonpharm', title: 'Drug Therapy: Other & Nonpharmacologic', type: 'text', content: `A few drugs may be given in combination with or instead of the previously described drugs. It is not unusual for a patient to be taking several disease-modifying drugs, such as methotrexate, a BRM, and an adjunct medication. Each drug works differently to relieve symptoms and slow the progression of the disease. For example, <strong>sulfasalazine</strong>, a sulfa drug, may be given in combination with other drugs to reduce inflammation and pain. Be aware that this drug should not be used for patients who have a sulfa allergy. Common side effects of sulfasalazine include nausea, vomiting, and skin rash.<br><br><strong>Glucocorticoids (steroids)</strong>—usually prednisone—may be given for their fast-acting antiinflammatory and immunosuppressive effects. Prednisone may be given in high dose for short duration (pulse therapy) or as a low chronic dose. Moderate-dose short-term tapering bridge therapy may be used when inflammation is symptomatic and other RA medications are insufficient or have not yet had an effect.<br><br>Chronic steroid therapy can result in numerous complications, such as:<ul><li>Diabetes mellitus</li><li>Impaired or decreased immunity</li><li>Fluid and electrolyte imbalances</li><li>Hypertension</li><li>Osteoporosis</li><li>Glaucoma</li></ul>Some drug effects are dose related, whereas others are not. Observe the patient for complications associated with chronic steroid therapy, and report them to the primary health care provider. For example, if blood pressure becomes elevated or significant laboratory values change, notify the primary health care provider.<br><br>Patients with RA may experience one or a few joints that have more pain and inflammation than the others. <strong>Cortisone injections</strong> in single joints may be used to temporarily relieve local pain and inflammation. Have the patient ice and rest the joint for 24 hours after the procedure. Oral analgesics are also sometimes needed during that time.<br><br><strong>Nonpharmacologic Interventions:</strong> Adequate rest, proper positioning, and ice and heat applications are important in pain management. If acute inflammation is present, ice packs may be applied to “hot” joints for pain relief until the inflammation lessens. The ice pack should not be too heavy. At home the patient can use a small bag of frozen peas or corn as an ice pack.<br><br>Heated paraffin (wax) dips may help increase comfort of arthritic hands. Finger and hand exercises are often done more easily after paraffin treatment. To relieve morning stiffness or the pain of late-stage disease, recommend a hot shower rather than a sponge bath or a tub bath. It is often difficult for the patient with RA to get into and out of a bathtub, although special hydraulic lifts, tub chairs, and walk-in bathtubs are available to facilitate bathing. Safety (grab) bars and nonskid tread in the tub or shower floor are important safety features to discuss with all patients. Some older adults prefer using shower chairs and a walk-in shower that does not have a ledge that could cause falls.<br><br>Hot packs applied directly to involved joints may be beneficial if they are not too heavy. Most physical therapy departments have machines that keep hot packs ready for when they are needed. Teach patients to use the microwave or stovetop heating instructions to warm heat packs at home. Remind them to follow the instructions given with each heating device used.<br><br><strong>Plasmapheresis</strong> (sometimes called plasma exchange) is an in-hospital procedure prescribed by a primary health care provider in which the patient’s plasma is treated to remove the antibodies causing the disease. Although not commonly done, this procedure may be combined with steroid pulse therapy for patients with severe, life-threatening disease.` },
+                    { id: 'ra-complementary-integrative', title: 'Complementary & Integrative Health', type: 'text', content: `Some patients may have pain relief from hypnosis, acupuncture, imagery, music therapy, or other techniques. Stress management is also popular as a pain relief intervention.<br><br>Adequate nutrition is an important part of the management of RA. Obesity should be avoided or treated if present. The inflammatory state may place a greater burden on the metabolism of some essential nutrients. This catabolic state may be related to increased cytokine production, specifically tumor necrosis factor.<br><br>According to the Arthritis Foundation, no one food causes or cures arthritis; however, healthy nutrition in general is important. Refer patients to the Arthritis Foundation’s publications regarding diet and arthritis. Teach patients to take any herbal or nutrition supplement under the supervision of a qualified health care provider to prevent adverse events and drug-food or drug-drug interactions.<br><br>Other integrative therapies are safe and have been scientifically proven to be effective to help control RA pain for most people. Examples include mind-body therapies, such as relaxation techniques, imagery, and spiritual practices.` },
+                    { id: 'ra-promoting-mobility-self-esteem', title: 'Promoting Mobility & Enhancing Self-Esteem', type: 'text', content: `<strong>Promoting Mobility:</strong> Patients with RA often have decreased mobility related to multiple joint deformities and muscle atrophy. Fatigue and generalized weakness also contribute to decreased mobility. The expected outcome is that the patient will be able to independently perform ADLs with or without ambulatory and assistive devices.<br><br>Although the physical appearance of a patient with severe RA may create the image that ADL independence is not possible, a number of alternative and creative methods can be used to perform these activities. Do not perform these activities for the patient unless asked. Those with RA do not want to be dependent. For example, hand deformities often prevent a patient from opening packages of food such as a box of crackers; however, the patient may prefer to use the teeth to open the crackers rather than depend on someone else.<br><br>In the hospital or long-term care facility, a patient may not eat because of the barriers of heavy plate covers, milk cartons, small packages of condiments, and heavy containers. Styrofoam or paper cups may bend and collapse as the patient attempts to hold them. A china or heavy plastic cup with handles may be easier to manipulate. Collaborate with the registered dietitian nutritionist to help with access to food and total independence in eating.<br><br>Even though many patients with severe or late-stage rheumatoid arthritis (RA) often adapt to their pain and deformity, they may still need assistance with ADLs. For example, when fine motor activities (e.g., squeezing a tube of toothpaste) become impossible, patients often use larger joints or body surfaces that can substitute for smaller ones. Devices such as long-handled brushes can help patients brush their hair; dressing sticks can assist with putting on pants. Consult with OT to help patients learn to function as independently as possible.<br><br>Additional nursing interventions depend in part on identifying the factors contributing to fatigue. For example, persistent pain, sleep disturbances, and weakness are associated with increased fatigue. Anemia may also be a contributing factor and may be treated with iron (if an iron deficiency anemia is present), folic acid, or vitamin supplements prescribed by the primary health care provider. Chronic normochromic or chronic hypochromic anemia often occurs in most chronic systemic diseases. Assess for drug-related blood loss such as that caused by NSAIDs by checking the stool for gross or occult blood. Older white women are the most likely to experience GI bleeding as a result of taking these medications.<br><br>If fatigue and decreased mobility result from muscle atrophy, the primary health care provider prescribes an aggressive physical therapy program to strengthen muscles and prevent further atrophy. Patients also experience increased fatigue when pain prevents them from getting adequate rest and sleep. Measures to facilitate sleep include promoting a quiet environment, giving warm beverages, and administering hypnotics or relaxants as prescribed if necessary.<br><br>In addition to identifying and managing specific reasons for fatigue, determine the patient’s usual daily activities and teach principles of energy conservation. Suggestions for conserving energy and thus increasing activity tolerance and mobility include:<ul><li>Balance activity with rest. Take one or two naps each day.</li><li>Pace yourself; do not plan too much for one day.</li><li>Set priorities. Determine which activities are most important and do them first.</li><li>Delegate responsibilities and tasks to your family and friends.</li><li>Plan ahead to prevent last-minute rushing and stress.</li><li>Learn your own activity tolerance and do not exceed it.</li></ul><br><strong>Enhancing Self-Esteem:</strong> The patient with RA often has multiple joints that are inflamed or deformed, causing a potential for decreased self-esteem. Therefore, the expected outcome is that the patient will verbalize a positive perception of self as a result of interprofessional interventions.<br><br>Body image and self-esteem may be affected by the disease process. Determine the patient’s perception of these changes and the impact of the reactions of family and significant others. The most important intervention is to communicate acceptance of the patient. When a trusting relationship is established, encourage the patient to express personal feelings.<br><br>As a reaction to body changes and joint deformity and the presence of a chronic, painful disease, some patients display behaviors indicative of loss. They may use coping strategies that range from denial or fear to anger or depression. In an attempt to regain control over the effects of the disease process, they may appear to be “manipulative and demanding” and sometimes may be referred to as having an “arthritis personality.” This personality, which represents a negative label, is a myth; avoid using these terms. Patients are trying to cope with the effects of their illness and should be treated with patience and understanding. Continually assess and accept these behaviors, but remain realistic in discussing goals to improve self-esteem and body image. Emphasize their strengths and help them identify previously successful coping strategies. If needed, consult with mental health professionals or religious/spiritual leaders to help patients cope with this potentially debilitating chronic disease.` },
+                    { id: 'ra-care-coordination-resources', title: 'Care Coordination & Health Care Resources', type: 'text', content: `Patients with rheumatoid arthritis (RA) are usually managed at home, but in some cases they may be institutionalized in a long-term care facility if they become restricted to bed or a wheelchair. Some patients may be transferred to a rehabilitation facility for several weeks to help develop strategies, techniques, and skills for independent living at home.<br><br><strong>Home Care Management:</strong> The amount of home care preparation depends on the severity of the disease. Structural changes may be necessary if there are deficits in performing ADLs or mobility. Doors must be wide enough to accommodate a wheelchair or walker if one is used. Ramps are needed to prevent the patient in a wheelchair from becoming homebound. If the person cannot use stairs, access to facilities for all ADLs on one floor is needed. Handrails should be available in the bathroom and halls.<br><br>To promote continued homemaking functions, countertops and appliances may require structural changes. The patient may also require handrails and elevated chairs and toilet seats, which facilitate safe transfers. These devices are especially important for older adults with arthritis.<br><br><strong>Self-Management Education (SME):</strong> SME is a vital role for nurses in collaborative management of arthritis. Many people have signs and symptoms of joint inflammation but do not seek medical attention. Teach them to seek professional health care to reduce pain and prevent disability.<br><br>Teach patients to discuss any questions with their primary health care provider before trying any over-the-counter or home remedies. Some remedies may be harmful. Check with the Arthritis Foundation for the latest information on arthritis myths and quackery (www.arthritis.org).<br><br>Provide information to the patient and family about drug therapy, joint protection, energy conservation, rest, and exercise as summarized in the boxes presented earlier in the RA section.<br><br>Assess the patient’s coping strategies. The patient with RA often reports being on an “emotional roller coaster” from coping with a chronic illness every day. Control over one’s life is an important human need. The patient with an unpredictable chronic disease may lose this control, and this lowers self-esteem. Health care providers must allow the patient to make decisions about care. Families and significant others must also include the patient in decision making. Although the patient’s behavior may be perceived as demanding or manipulative, self-esteem cannot be improved without this important aspect of interpersonal relationships.<br><br>Increased dependency also affects a sense of control and self-esteem. Some people ignore their health needs and portray a tough image for others by insisting that they need no assistance. Emphasize to the patient and family that asking for help may be the best decision at times to prevent further joint damage and disease progression.<br><br>RA may also affect work and social roles. The patient may have physical difficulty doing tasks that require lifting, climbing, grasp, or gross motor or fine motor activities. The severity of RA disease may cause difficulty with the total number of hours worked. Some people with RA can do their jobs well without problem; others may have varying degrees of difficulty. Those who can no longer do their jobs may need to discuss the possibility of a lighter workload with their employers; others may need to file for disability with their company and the U.S. Social Security Administration.<br><br><strong>Health Care Resources:</strong> The need for health care resources for the patient with RA is often similar to that for the patient with osteoarthritis. A home care nurse or aide, physical therapist, or occupational therapist may be needed during severe exacerbations or as the disease progresses. In collaboration with the case manager, identify these resources, and make sure that they are available as needed. The Arthritis Foundation is an excellent source of information and support.<br><br>Arthritis support groups and self-help courses provide the education and support that patients, families, and friends need. Refer the patient to a psychological counselor or religious or spiritual leader for emotional support and guidance during times of crisis or as needed. Identify and recommend other support systems within the family and community when necessary.<br><br>Patients who have severe advanced RA often develop depression, anxiety, excessive stress, and a poor quality of life as a result of pain and deformity. Many patients also have anorexia and dyspnea, which could be best managed by palliative care providers. Refer patients and their families to a local palliative care program for symptom management to improve quality of life.` },
+                    { id: 'ra-evaluate-outcomes', title: 'Evaluate Outcomes', type: 'text', content: `Evaluate the care of the patient with RA on the basis of the identified priority problems. The expected outcomes are that the patient:<ul><li>Achieves pain control to a pain intensity level of 2 to 3 or less on a scale of 0 to 10 or at a level that is acceptable to the patient</li><li>Moves and functions in own environment independently with or without assistive devices</li><li>Verbalizes increased self-esteem and positive perception of self</li></ul>` },
+                    { id: 'ra-quiz', title: 'Rheumatoid Arthritis Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which of the following is an autoantibody formed in patients with Rheumatoid Arthritis that attacks healthy tissue?", options: ["Interleukin-1 (IL-1)", "Tumor Necrosis Factor–alpha (TNFA)", "Rheumatoid Factor (RF)", "C-reactive protein (CRP)"], correctAnswer: "Rheumatoid Factor (RF)" },
+                        { question: "What is a 'pannus' in the context of Rheumatoid Arthritis?", options: ["A type of cartilage cell", "A fluid accumulation in the joint space", "Vascular granulation tissue that erodes cartilage and bone", "A fibrous adhesion between bones"], correctAnswer: "Vascular granulation tissue that erodes cartilage and bone" },
+                        { question: "Which genetic factor is strongly associated with more severe forms of Rheumatoid Arthritis?", options: ["HLA-DRB1", "HLA-A", "HLA-B", "HLA-DQ"], correctAnswer: "HLA-DRB1" },
+                        { question: "Which of these is a common early systemic sign of Rheumatoid Arthritis?", options: ["Deformities", "Subcutaneous nodules", "Low-grade fever", "Vasculitis"], correctAnswer: "Low-grade fever" },
+                        { question: "What is a life-threatening complication of cervical RA?", options: ["Carpal tunnel syndrome", "Tendon rupture", "Compromised respiratory function due to phrenic nerve restriction", "Baker cysts"], correctAnswer: "Compromised respiratory function due to phrenic nerve restriction" },
+                        { question: "Which laboratory test is very specific and sensitive in detecting early RA and is also a marker for aggressive disease?", options: ["Rheumatoid Factor (RF)", "Erythrocyte Sedimentation Rate (ESR)", "Anti–cyclic citrullinated peptide (anti-CCP)", "Antinuclear Antibody (ANA)"], correctAnswer: "Anti–cyclic citrullinated peptide (anti-CCP)" },
+                        { question: "What is the most serious adverse effect of hydroxychloroquine that patients should be taught to report?", options: ["Stomach discomfort", "Headache", "Blurred vision/Retinal damage", "Light-headedness"], correctAnswer: "Blurred vision/Retinal damage" },
+                        { question: "Which nonpharmacologic intervention is recommended for relieving morning stiffness in patients with RA?", options: ["Ice packs", "Heated paraffin dips", "Cold showers", "Immobilization devices"], correctAnswer: "Heated paraffin dips" },
+                        { question: "Sjögren syndrome is characterized by a triad of symptoms. Which of the following is NOT part of this triad?", options: ["Dry eyes", "Dry mouth", "Dry vagina", "Dry skin"], correctAnswer: "Dry skin" },
+                        { question: "What is a key principle of energy conservation for patients with arthritis?", options: ["Perform all activities at once", "Avoid naps", "Delegate responsibilities", "Ignore activity tolerance"], correctAnswer: "Delegate responsibilities" },
+                      ]
+                    },
+                ]
+            },
+            'viral-infections-module': {
+                title: 'Viral Infections: Overview & Management',
+                color: 'from-teal-500 to-blue-600',
+                description: 'Understand various types of viral infections, their transmission, symptoms, and effective management strategies.',
+                steps: [
+                    { id: 'viral-types', title: 'Types of Viral Infections', type: 'text', content: `The influenza virus causes flu. <strong>Influenza A, B and C</strong> are the most common types that infect people. Influenza A and B are seasonal (most people get them in the winter) and have more severe symptoms. Influenza C doesn’t cause severe symptoms and it’s not seasonal — the number of cases stays about the same throughout the year. The flu is one of the most common infectious diseases. Every flu season, about <strong>20 to 40 million people in the U.S.</strong> catch the flu.<br><br>Other types of viral infections include:<br><ul><li><strong>Respiratory infections:</strong> Such as the common cold, influenza, and COVID-19.</li><li><strong>Digestive system infections:</strong> Like gastroenteritis (stomach flu) caused by norovirus or rotavirus.</li><li><strong>Viral hemorrhagic fevers:</strong> Severe, life-threatening illnesses like Ebola or Dengue fever.</li><li><strong>Sexually transmitted infections (STIs):</strong> Including HIV, herpes, and HPV.</li><li><strong>Neurological infections:</strong> Such as meningitis or encephalitis caused by viruses.</li><li><strong>Congenital infections:</strong> Transmitted from mother to child during pregnancy or birth, like rubella or cytomegalovirus.</li></ul>` },
+                    { id: 'viral-transmission', title: 'Transmission of Viral Infections', type: 'text', content: `Common ways you can get viral infections include:<br><ul><li><strong>From other people:</strong> Through respiratory droplets when someone coughs, sneezes, or through close contact (e.g., kissing, sharing utensils).</li><li><strong>From surfaces or objects:</strong> That someone with a virus has touched (like countertops, doorknobs, or phones), followed by touching your face.</li><li><strong>Through sexual contact:</strong> Via vaginal, oral, or anal sex.</li><li><strong>From animal or insect bites:</strong> Such as from an infected animal, mosquito (e.g., Zika, West Nile), or tick (e.g., Powassan virus).</li><li><strong>From contaminated food or water:</strong> Ingesting food or water tainted with viruses (e.g., Hepatitis A, norovirus).</li></ul>` },
+                    { id: 'viral-symptoms', title: 'Symptoms of Viral Infections', type: 'text', content: `Symptoms of a viral infection will depend on where you’re infected and the specific virus, but some common categories include:<br><ul><li><strong>Flu-like symptoms:</strong> Fever, chills, body aches, headache, and fatigue.</li><li><strong>Upper respiratory symptoms:</strong> Cough, sore throat, runny or stuffy nose, and sneezing.</li><li><strong>Digestive symptoms:</strong> Nausea, vomiting, abdominal cramps, and diarrhea.</li><li><strong>Skin conditions:</strong> Rashes, blisters, or lesions (e.g., measles, chickenpox, herpes).</li></ul>It's important to note that many viral infections, especially in their early stages or in individuals with strong immune systems, may not cause any noticeable symptoms (asymptomatic).` },
+                    { id: 'viral-risk-factors', title: 'Populations at Highest Risk', type: 'text', content: `Individuals at the highest risk for severe viral infections or complications include those who:<br><ul><li><strong>Age:</strong> Are very young (under 5) or older adults (over 65) due to immature or weakened immune systems.</li><li><strong>Pre-existing Health Conditions:</strong> Have certain chronic health conditions, like diabetes, asthma, Chronic Obstructive Pulmonary Disease (COPD), or other chronic lung diseases, which can compromise respiratory function or overall immunity.</li><li><strong>Weakened Immune System:</strong> From conditions like HIV/AIDS, cancer (especially during chemotherapy or radiation), or individuals taking immunosuppressive medications (e.g., organ transplant recipients, autoimmune disease patients).</li><li><strong>Pregnancy:</strong> Pregnant individuals may have altered immune responses, making them more susceptible to certain viral infections and their complications.</li><li><strong>Lifestyle Factors:</strong> Smokers and individuals with obesity often have compromised respiratory and immune health, increasing their risk.</li></ul>` },
+                    { id: 'viral-management', title: 'Management & Treatment Strategies', type: 'text', content: `Managing symptoms of the flu and other viral infections often involves supportive care to alleviate discomfort and aid recovery:<br><ul><li><strong>Rest:</strong> Getting plenty of rest allows the body to conserve energy and focus on fighting the infection.</li><li><strong>Hydration:</strong> Drinking fluids like water, broth, or electrolyte solutions helps prevent dehydration, especially with fever or digestive symptoms.</li><li><strong>Pain and Fever Relief:</strong> Applying heat packs or hot water bottles can help with aching muscles. Over-the-counter medications like acetaminophen (Tylenol®) or NSAIDs (e.g., Advil®, Motrin®, Aleve®) can help lower fever and relieve head and body aches.</li><li><strong>Symptom-Specific Relief:</strong> Using spray or oral decongestants for nasal congestion, taking cough suppressants for dry coughs, and using expectorants for productive coughs.</li></ul><strong>Antiviral drugs</strong> are specific medications that target viruses. For influenza, common antivirals include:<br><ul><li>Oseltamivir phosphate (Tamiflu®)</li><li>Zanamivir (Relenza®)</li><li>Peramivir (Rapivap®)</li></ul>These antiviral medications work by stopping viruses from making more copies of themselves (replicating), thereby reducing the severity and duration of the illness. Other treatments may include Convalescent plasma (containing antibodies from recovered patients) and Post-exposure prophylaxis (medication given after potential exposure to prevent infection).` },
+                    { id: 'viral-diagnosis-tests', title: 'Diagnosis & Testing', type: 'text', content: `Viral infections can be diagnosed using various laboratory tests that detect the virus itself, parts of the virus, or the body's immune response to the virus. Samples are typically collected from:<br><ul><li><strong>Blood:</strong> To detect viral antibodies, antigens, or viral genetic material (e.g., HIV, Hepatitis B, C).</li><li><strong>Spit (saliva):</strong> Useful for detecting respiratory viruses or oral infections.</li><li><strong>Phlegm or mucus (sputum):</strong> Collected for respiratory viral infections like influenza or RSV.</li><li><strong>Cells from your nose or nasopharynx (nasal/nasopharyngeal swab):</strong> Common for diagnosing respiratory viruses, including influenza and COVID-19.</li><li><strong>Skin or other affected tissue:</strong> Biopsies or swabs from rashes, blisters, or lesions can identify viruses like herpes simplex or varicella-zoster.</li><li><strong>Fluid around your brain and spinal cord (CNS fluid):</strong> Obtained via lumbar puncture to diagnose viral meningitis or encephalitis.</li><li><strong>Pee (urine):</strong> Can detect certain viral infections, especially in congenital infections (e.g., cytomegalovirus).</li><li><strong>Poop (stool):</strong> Used to diagnose viral gastroenteritis (e.g., norovirus, rotavirus).</li></ul>` },
+                    { id: 'viral-patient-education', title: 'Patient Education for Prevention', type: 'text', content: `Key patient education points for preventing viral infections and their spread include:<br><ul><li><strong>Hand Hygiene:</strong> Wash your hands frequently and thoroughly with soap and water for at least 20 seconds, especially during cold and flu season, after coughing/sneezing, and before eating.</li><li><strong>Food Safety:</strong> Practice safe food habits, including proper cooking temperatures, avoiding cross-contamination, and washing fruits and vegetables.</li><li><strong>Safe Sex Practices:</strong> Use condoms or dental dams consistently and correctly during any kind of sex to prevent sexually transmitted viral infections.</li><li><strong>Protection from Bug Bites:</strong> Use insect repellent, wear protective clothing, and eliminate standing water to reduce exposure to mosquito and tick-borne viruses.</li><li><strong>Avoid Wild Animals:</strong> Do not handle wild or aggressive animals, as they can carry viruses like rabies.</li><li><strong>Avoid Sick Individuals:</strong> If you are sick, avoid being around other people to prevent transmission. If others are sick, maintain distance and avoid close contact.</li><li><strong>Post-Exposure Prophylaxis:</strong> Understand and utilize post-exposure prophylaxis when recommended by a healthcare provider (e.g., for HIV exposure).</li><li><strong>Healthcare Setting Precautions:</strong> In healthcare settings, adhere to standard precautions, including wearing gowns, N95 masks, face shields, and protective eyewear as appropriate, and ensuring doors are kept closed to contain airborne pathogens (refer to Ignatavicius, Workman, Rebar & Heimgartner 10th edition, p. 568 under Key Features for more details).</li></ul>` },
+                    { id: 'viral-quiz', title: 'Viral Infections Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which type of influenza virus is typically seasonal and causes more severe symptoms?", options: ["Influenza A and B", "Influenza C", "Influenza D", "Influenza E"], correctAnswer: "Influenza A and B" },
+                        { question: "Which of the following is NOT a common way viral infections are transmitted?", options: ["Through coughing or sneezing", "From contaminated food or water", "Through direct sunlight exposure", "From a bite from an infected animal"], correctAnswer: "Through direct sunlight exposure" },
+                        { question: "Which age group is explicitly mentioned as being at highest risk for severe viral infections?", options: ["Adolescents", "Young adults (20-30 years old)", "Individuals under 5 or over 65", "Middle-aged adults (40-50 years old)"], correctAnswer: "Individuals under 5 or over 65" },
+                        { question: "What is the primary action of antiviral medications?", options: ["To boost the immune system", "To reduce fever", "To stop viruses from replicating", "To relieve pain"], correctAnswer: "To stop viruses from replicating" },
+                      ]
+                    },
+                ]
+            },
         };
 
+        // Utility function for conditional class names
         const cn = (...classes) => classes.filter(Boolean).join(' ');
 
+        // Quiz Component: Handles displaying questions, options, and providing feedback.
         const Quiz = ({ questions, onComplete }) => {
             const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
             const [selectedOption, setSelectedOption] = useState(null);
@@ -221,17 +286,20 @@
 
             const currentQuestion = questions[currentQuestionIndex];
 
+            // Handles user selecting an option
             const handleOptionSelect = (option) => {
-                if (feedback) return;
+                if (feedback) return; // Prevent changing selection after submission
                 setSelectedOption(option);
             };
             
+            // Handles submitting a quiz answer for immediate feedback
             const handleRegularQuizSubmit = () => {
-                if (selectedOption === null) return;
+                if (selectedOption === null) return; // Cannot submit without selection
                 const isCorrect = selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
                 setFeedback(isCorrect ? 'correct' : 'incorrect');
             };
 
+            // Handles moving to the next question or completing the quiz
             const handleRegularQuizNext = () => {
                 const isCorrect = selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
                 const finalAnswers = [...answers, { question: currentQuestion, isCorrect }];
@@ -239,9 +307,10 @@
                 if (currentQuestionIndex < questions.length - 1) {
                     setAnswers(finalAnswers);
                     setCurrentQuestionIndex(currentQuestionIndex + 1);
-                    setSelectedOption(null);
-                    setFeedback(null);
+                    setSelectedOption(null); // Reset for next question
+                    setFeedback(null); // Reset feedback
                 } else {
+                    // Quiz completed, calculate final score and call onComplete
                     const finalScore = finalAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
                     onComplete({ score: finalScore, total: questions.length });
                 }
@@ -257,6 +326,7 @@
                             const isCorrectOption = option.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
                             let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
 
+                            // Apply feedback styling after submission
                             if (feedback) {
                                 if (isCorrectOption) {
                                     optionClass = 'bg-green-100 border-green-500 text-green-800';
@@ -297,7 +367,7 @@
                                 onClick={handleRegularQuizNext}
                                 className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
                             >
-                                Next Question
+                                {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Quiz'}
                             </button>
                         )}
                     </div>
@@ -305,12 +375,14 @@
             );
         };
         
+        // Dashboard Component: Displays available modules and overall progress.
         const Dashboard = ({ onSelectModule, progress, onResetProgress }) => {
             let totalCompletedSteps = 0;
             let totalPossibleSteps = 0;
             let totalQuizCorrect = 0;
             let totalQuizQuestions = 0;
 
+            // Calculate overall progress and quiz performance
             Object.entries(contentData).forEach(([moduleId, module]) => {
                 totalPossibleSteps += module.steps.length;
                 const moduleProgress = progress[moduleId] || {};
@@ -349,8 +421,8 @@
                            <div className="flex justify-between items-center mb-3">
                               <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
                               <button 
-                                 onClick={onResetProgress}
-                                 className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                                onClick={onResetProgress}
+                                className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
                                >
                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" clipRule="evenodd" /></svg>
                                  Reset Progress
@@ -447,14 +519,16 @@
             );
         };
         
+        // CaseStudy Component: Displays a case scenario and a multiple-choice question with explanation.
         const CaseStudy = ({ caseData, onComplete }) => {
             const [selectedAnswer, setSelectedAnswer] = useState(null);
 
+            // Handles user selecting an option for the case study question
             const handleSelect = (option) => {
-                if (selectedAnswer) return;
+                if (selectedAnswer) return; // Prevent changing selection after answering
                 setSelectedAnswer(option);
                 if (option.toLowerCase() === caseData.correctAnswer.toLowerCase()) {
-                    onComplete();
+                    onComplete(); // Mark step as complete if correct
                 }
             };
 
@@ -506,10 +580,12 @@
             );
         };
         
+        // StaticContentStep Component: Displays plain text content.
         const StaticContentStep = ({ step, onComplete }) => {
+            // Mark the step as complete as soon as it's viewed
             useEffect(() => {
                 onComplete();
-            }, []);
+            }, [onComplete]); // Dependency array ensures it runs only once per step
 
             return (
                 <div className="prose max-w-none text-gray-700 leading-relaxed p-4 bg-gray-50 rounded-lg shadow-inner space-y-4" dangerouslySetInnerHTML={{ __html: step.content }}>
@@ -517,6 +593,7 @@
             );
         };
 
+        // CompletionModal Component: Appears when a module is fully completed.
         const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
             if (!isOpen) return null;
 
@@ -546,41 +623,48 @@
             );
         };
 
+        // LearningModule Component: Displays the steps of a selected module.
         const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
             const [activeStep, setActiveStep] = useState(0);
             const [isSidebarOpen, setIsSidebarOpen] = useState(false);
             const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
 
+            // Callback to update progress for a specific step
             const handleStepComplete = useCallback((stepId, data = {}) => {
                 onProgressUpdate(module.id, stepId, { completed: true, ...data });
             }, [onProgressUpdate, module.id]);
 
             const moduleProgress = progress[module.id] || {};
             
+            // Check if all steps in the current module are completed
             const allStepsCompletedInModule = module.steps.every(step =>
                 moduleProgress[step.id] && moduleProgress[step.id].completed
             );
 
+            // Handles moving to the next step
             const handleNextStep = () => {
                 if (activeStep === module.steps.length - 1 && allStepsCompletedInModule) {
-                    setIsCompletionModalOpen(true);
+                    setIsCompletionModalOpen(true); // Open completion modal if last step and all completed
                 } else if (activeStep < module.steps.length - 1) {
                     setActiveStep(activeStep + 1);
                 }
             };
 
+            // Handles moving to the previous step
             const handlePrevStep = () => {
                 if (activeStep > 0) {
                     setActiveStep(activeStep - 1);
                 }
             };
             
+            // Handle loading state or invalid module
             if (!module || !module.steps) {
                 return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
             }
 
             const currentStep = module.steps[activeStep];
             
+            // Renders the appropriate component based on step type
             const renderStepContent = (step) => {
                 if (!step) return <p>Please select a step.</p>;
 
@@ -598,14 +682,15 @@
                 }
             };
 
+            // Handlers for the completion modal
             const handleModalClose = () => {
                 setIsCompletionModalOpen(false);
-                onBack();
+                onBack(); // Go back to dashboard
             };
 
             const handleModalNextModule = () => {
                 setIsCompletionModalOpen(false);
-                onNextModule();
+                onNextModule(); // Move to the next module
             };
 
             return (
@@ -635,7 +720,7 @@
                                         key={step.id}
                                         onClick={() => {
                                             setActiveStep(index);
-                                            setIsSidebarOpen(false);
+                                            setIsSidebarOpen(false); // Close sidebar on mobile after selection
                                         }}
                                         className={cn(
                                             'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
@@ -690,12 +775,14 @@
             );
         };
         
+        // Main App Component: Manages module selection and overall progress.
         function App() {
             const [currentModuleId, setCurrentModuleId] = useState(null);
             const [userId, setUserId] = useState(null);
             const [progress, setProgress] = useState({});
             const [isAuthReady, setIsAuthReady] = useState(false);
 
+            // Simulate authentication and set user ID
             useEffect(() => {
                 const unsubscribe = mockAuth.onAuthStateChanged((user) => {
                     if (user) setUserId(user.uid);
@@ -704,6 +791,7 @@
                 return () => unsubscribe();
             }, []);
 
+            // Load progress from local storage when auth is ready
             useEffect(() => {
                 if (!isAuthReady || !userId) return;
                 const storedProgress = localStorage.getItem(`inflammation-learning-module-progress-${userId}`);
@@ -717,6 +805,7 @@
                 }
             }, [isAuthReady, userId]);
 
+            // Callback to update progress for a specific step and save to local storage
             const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
                 if (!isAuthReady || !userId) return;
 
@@ -724,6 +813,7 @@
                     const currentStepProgress = currentProgress[moduleId]?.[stepId] || {};
                     const newStepProgress = { ...currentStepProgress, ...data };
 
+                    // Only update if there's a change to prevent unnecessary localStorage writes
                     if (JSON.stringify(currentStepProgress) === JSON.stringify(newStepProgress)) {
                         return currentProgress;
                     }
@@ -741,26 +831,30 @@
                 });
             }, [isAuthReady, userId]);
             
+            // Callback to reset all progress
             const handleResetProgress = useCallback(() => {
                 if (!isAuthReady || !userId) return;
                 setProgress({});
                 localStorage.removeItem(`inflammation-learning-module-progress-${userId}`);
             }, [isAuthReady, userId]);
 
+            // Callback to navigate to the next module in sequence
             const handleNextModule = useCallback(() => {
                 const moduleIds = Object.keys(contentData);
                 const currentIndex = moduleIds.indexOf(currentModuleId);
                 if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
                     setCurrentModuleId(moduleIds[currentIndex + 1]);
                 } else {
-                    setCurrentModuleId(null);
+                    setCurrentModuleId(null); // Go back to dashboard if no next module
                 }
             }, [currentModuleId]);
 
+            // Determine the currently selected module
             const selectedModule = currentModuleId && contentData[currentModuleId]
-                                        ? { ...contentData[currentModuleId], id: currentModuleId }
-                                        : null;
+                                            ? { ...contentData[currentModuleId], id: currentModuleId }
+                                            : null;
 
+            // Determine if there's a next module for the completion modal
             const moduleIds = Object.keys(contentData);
             const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
             const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
@@ -769,7 +863,7 @@
                 <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
                     {selectedModule ? (
                         <LearningModule
-                            key={selectedModule.id}
+                            key={selectedModule.id} // Key ensures component remounts for new module
                             module={selectedModule}
                             onBack={() => setCurrentModuleId(null)}
                             progress={progress}
@@ -788,6 +882,7 @@
             );
         }
 
+        // Render the React application into the root div
         const container = document.getElementById('root');
         const root = ReactDOM.createRoot(container);
         root.render(<App />);
