@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inflammation Learning Module</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out forwards',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        const mockAuth = {
+            onAuthStateChanged: (callback) => {
+                setTimeout(() => callback({ uid: 'inflammation-user' }), 100);
+                return () => {};
+            },
+            signInAnonymously: () => Promise.resolve({ user: { uid: 'inflammation-user' } }),
+        };
+
+        const contentData = {
+            'inflammation-core-concepts': {
+                title: 'Inflammation: Core Concepts',
+                color: 'from-sky-500 to-cyan-400',
+                description: 'Understand the fundamental definition, scope, and normal physiological processes of inflammation.',
+                steps: [
+                    { id: 'inflammation-definition', title: 'Definition', type: 'text', content: `The word "inflammation" comes from the Latin <em>inflammare</em>, meaning "to set on fire." Simply put, <strong>inflammation is your body's immune defense against injury, infection, or allergic reactions.</strong> The CDC describes it as "the body’s reaction to injury, irritation, or infection characterized by redness, swelling, warmth, and/or pain; caused by accumulation of immune cells and substances around the injury or infection." It’s a protective process designed to minimize harm from a trigger, remove it, and help healing. While infection always involves inflammation, inflammation can happen without an infection. Inflammation is how your body responds to damage, not the cause of the damage itself (like an infection would be). The process is quite similar regardless of what caused the cell injury, but the intensity varies based on how severe the injury is and the individual's overall health.` },
+                    { id: 'inflammation-scope', title: 'Scope', type: 'text', content: `Inflammation can range from no inflammation at all to active inflammation. Active inflammation is categorized as <strong>acute, chronic, or reparative/restorative</strong>. It can also be localized (in one spot) or systemic (affecting the whole body).<br><br>Injuries that trigger inflammation can come from many sources: physical harm (like cuts, splinters, or crushing injuries), burns (thermal, electrical, chemical), radiation damage, or biological attacks (from viruses, bacteria, or fungi). <strong>Acute inflammation</strong> is the immediate response to tissue damage, lasting a short time (minutes to a few days). Its job is to get rid of the harmful cause and start the repair process. If inflammation continues for a long time (weeks to years) after the initial injury, it's called <strong>chronic inflammation</strong>. In this case, tissue is repeatedly damaged and repaired, which can hinder proper healing. Localized chronic inflammation can lead to a granuloma, which is a collection of immune cells, fibroblasts, and collagen, as seen in untreated tuberculosis. Systemic chronic inflammation can be a result of many diseases, including autoimmune conditions like ulcerative colitis (UC) and Crohn disease. Chronic inflammation can be a complication of the inflammatory process itself or a consequence of other diseases, such as rheumatoid arthritis.` },
+                    { id: 'inflammation-physiologic-process', title: 'Normal Physiologic Process', type: 'text', content: `Inflammation is often directly linked to your immune system. Both work together to protect your body. The inflammatory process has two main goals for a positive outcome: (1) to restore normal cell function after injury, or (2) to create fibrous repair if normal cells can't be restored.<br><br>This process involves white blood cells (WBCs) and various chemicals that shield your body from invading germs or tissue damage. WBCs are drawn to inflamed areas through a complex process called <strong>chemotaxis</strong>, which involves many chemicals. These chemicals are released by triggers that fall into four main groups: (1) toxins from bacteria or viruses, (2) by-products from inflammation itself, (3) activated proteins from the complement system, and (4) substances from blood clotting in the inflamed area.<br><br><strong>Proinflammatory hormones</strong> are key players in the inflammatory response. They help make the response effective. The three main groups of these hormones are prostaglandins, cytokines, and histamines. Generally, these hormones increase blood flow to the injured area, make blood vessels leakier (increase vascular membrane permeability), activate parts of the immune system (like the complement system), attract WBCs to the injury, promote new blood vessel growth (angiogenesis), stimulate connective tissue growth, and cause fever. Here are some specific actions of these mediators:<br><br><strong>Prostaglandins & Leukotrienes:</strong> These come from cell membranes (like mast cells). They play a role in the later stages of acute inflammation, increasing blood vessel widening (vasodilation) and leakiness. They are also active in severe allergic reactions.<br><strong>Bradykinins:</strong> These are plasma proteins that increase blood vessel leakiness and widening, and are responsible for causing pain.<br><strong>Complement proteins:</strong> Mainly from proteins C3a, C4a, and C5a (from macrophages and liver). They attract neutrophils and macrophages, and tell mast cells and basophils to release histamine and other chemicals. This leads to more blood flow, leakier vessels, and plasma proteins leaking into surrounding tissues.<br><strong>Histamine & Serotonin:</strong> Released by mast cells and basophils. They are involved in the early acute inflammatory response, increasing blood vessel widening and leakiness.<br><strong>IL1 (Interleukin 1):</strong> Produced by macrophages, neutrophils, and other immune cells. It helps T lymphocytes multiply and specialize, promotes the release of acute-phase inflammatory proteins, helps neutrophils stick to blood vessel walls, and contributes to fever.<br><strong>IL8 (Interleukin 8):</strong> From T lymphocytes and monocytes/macrophages. It acts as a chemical signal (chemotactic factor) to attract neutrophils and T lymphocytes.<br><strong>IL17 (Interleukin 17):</strong> From Helper T lymphocytes. It increases the attraction of neutrophils and macrophages and boosts chemokine production in epithelial cells.<br><strong>Platelet-activating factor:</strong> From platelets. It encourages the release of chemical mediators, promotes blood vessel widening and increased leakiness, and activates neutrophils.<br><strong>Transforming growth factor-β:</strong> From T lymphocytes, activated macrophages, and fibroblasts. It slows down T and B lymphocyte activity, attracts macrophages, increases macrophage IL1 production, and can inhibit macrophages.<br><strong>TNF-α (Tumor Necrosis Factor alpha):</strong> From activated macrophages and some lymphocytes. It promotes cell growth, increases phagocytosis (cell eating), increases WBC count, causes fever, helps neutrophils stick to blood vessel walls, and can be toxic to some tumor cells.` },
+                    { id: 'core-concepts-quiz', title: 'Core Concepts Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which of the following is NOT a primary function of inflammation?", options: ["To promote healing", "To eradicate harmful stimuli", "To cause infection", "To initiate repair"], correctAnswer: "To cause infection" },
+                        { question: "What is the term for the process by which white blood cells are attracted to an area of inflammation?", options: ["Phagocytosis", "Vasodilation", "Chemotaxis", "Opsonization"], correctAnswer: "Chemotaxis" },
+                      ]
+                    },
+                ]
+            },
+            'inflammation-acute-response': {
+                title: 'Inflammation: Acute Response',
+                color: 'from-red-500 to-orange-400',
+                description: 'Detailed steps and cellular involvement in the body\'s immediate inflammatory reaction.',
+                steps: [
+                    { id: 'acute-inflammation-process', title: 'Acute Inflammation Process', type: 'text', content: `The processes involved in acute inflammation are complex but happen in a specific order. Here are the main steps in an acute inflammatory response:<br><br>1. <strong>Tissue Injury:</strong> Damage or death of tissue occurs, releasing chemical signals.<br>2. <strong>Blood Vessel Widening:</strong> Small blood vessels around the injury expand (vasodilation), increasing blood flow to the area.<br>3. <strong>Swelling Begins:</strong> Endothelial cells (lining blood vessels) swell and slightly pull apart.<br>4. <strong>Increased Leakiness:</strong> Blood vessels become more permeable, allowing water, salts, fibrinogen (which becomes fibrin), and other small proteins from the plasma to leak into the surrounding tissue.<br>5. <strong>"Walling Off":</strong> The inflamed area is "walled off" from surrounding healthy tissues. This helps to slow down the spread of germs and their toxic products.<br>6. <strong>WBC Migration:</strong> White blood cells like neutrophils, monocytes, lymphocytes, and macrophages move to the blood vessel walls and then out into the injured area. Neutrophils can stick to the vessel walls because the endothelial cells become more adhesive.<br>7. <strong>Exudate Formation:</strong> Fluid (exudates) leaks out of the blood vessels and fills the spaces left by damaged, dead tissue.<br>8. <strong>Nutrient Delivery:</strong> Glucose and oxygen are brought to the area to help remove dead tissue and support cell repair.<br>9. <strong>Chemical Release:</strong> Activated endothelial cells release various chemicals like nitric oxide, prostacyclin, endothelin, thromboxane A2, angiotensin II, growth factor, and chemokines.` },
+                    { id: 'neutrophils-phagocytosis', title: 'Neutrophils & Phagocytosis', type: 'text', content: `<strong>Neutrophils are key players in acute inflammation.</strong> Their movement is guided by chemical signals (chemotactic factors) from the damaged tissue. When these factors bind to neutrophils, the neutrophils release more substances that break down pathogens using enzymes from their lysosomes. Neutrophils also directly engulf and destroy pathogens (phagocytosis) after the pathogens have been "marked" by antibodies or complement proteins (a process called opsonization). During phagocytosis, neutrophils and macrophages produce <strong>reactive oxygen species (ROS)</strong>, which combine with lysosomes to help kill invading germs.<br><br>Within a few hours of severe acute inflammation, neutrophil counts in the blood can increase four to five times. This makes more neutrophils available to continue the inflammatory response. Neutrophils are the main type of WBC found in the fluid (exudate) produced during an acute inflammatory response to bacterial infections. Immature neutrophils, called <strong>band cells</strong>, may also appear in the blood to boost the neutrophil numbers needed for a severe response. The bone marrow also significantly increases the production of granulocytes and monocytes, though it takes 3 to 4 days for these cells to mature and leave the bone marrow.` },
+                    { id: 'other-wbcs-acute', title: 'Other WBCs in Acute Response', type: 'text', content: `<strong>Lymphocytes</strong> are most prominent when the body is fighting viral infections. They also play an important role in chronic inflammation alongside monocytes and macrophages. <strong>Eosinophils</strong> are most noticeable in inflammatory responses to parasitic infections and allergic reactions. <strong>Mast cells and basophils</strong> release histamine, which contributes to the increased leakiness of blood vessels seen during inflammation.<br><br>An acute inflammatory response can last from minutes to days, with most of the activity happening within the first 12 to 24 hours after tissue injury. This response can be localized (in one area) or systemic (affecting the whole body). Localized inflammation starts when damaged tissue or invading organisms activate the immune system. Complement system proteins and cytokines then trigger a chain of events that lead to the classic signs and symptoms of inflammation. Autoimmune reactions can cause systemic inflammation when the body's own cells are attacked. In most people, the inflammatory response may last up to 5 days, during which invading pathogens are destroyed, foreign substances and dead tissue are cleared (phagocytized), and fibroblasts begin the process of tissue healing.` },
+                    { id: 'acute-response-quiz', title: 'Acute Response Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which type of white blood cell is primarily involved in the early stages of an acute bacterial inflammatory response?", options: ["Lymphocytes", "Eosinophils", "Neutrophils", "Macrophages"], correctAnswer: "Neutrophils" },
+                        { question: "What is the term for immature neutrophils that may be present in the blood during a severe acute inflammatory response?", options: ["Basophils", "Band cells", "Monocytes", "Mast cells"], correctAnswer: "Band cells" },
+                      ]
+                    },
+                ]
+            },
+            'inflammation-chronic-systemic': {
+                title: 'Inflammation: Chronic & Systemic',
+                color: 'from-blue-400 to-indigo-600',
+                description: 'Explore the characteristics of chronic inflammation and its systemic effects, including age-related differences.',
+                steps: [
+                    { id: 'chronic-inflammation', title: 'Chronic Inflammation', type: 'text', content: `<strong>Macrophages are essential in a chronic inflammatory response.</strong> They release substances that help with blood clotting (hemostasis) and promote the activity of fibroblasts, which are cells involved in tissue repair. Macrophages are crucial for clearing away dead tissue and foreign material from the injured area (debridement), which allows for proper repair and healing. Most white blood cells (WBCs) found in the fluid (exudate) of a chronic inflammatory response are macrophages and lymphocytes. Unfortunately, when inflammation becomes chronic, the healing process can be disrupted by repeated injury or renewed inflammation and immune activity, causing the inflammatory cycle to restart.` },
+                    { id: 'subclinical-chronic', title: 'Subclinical Chronic Inflammation', type: 'text', content: `Chronic inflammation can also be <strong>subclinical</strong>, meaning it doesn't show obvious symptoms. Instead, it might be detected by elevated levels of non-specific blood markers like <strong>C-reactive protein (CRP)</strong> or an increased <strong>erythrocyte sedimentation rate (ESR)</strong>. Sometimes, a special scan (WBC scan or inflammatory scan) is needed to find areas of inflammation. Low-grade chronic inflammation has been linked to general body symptoms such as aches and pains, frequent infections, diarrhea, dry eyes, and shortness of breath.` },
+                    { id: 'systemic-manifestations', title: 'Systemic Manifestations', type: 'text', content: `Whether inflammation is acute or chronic, it can lead to several body-wide (systemic) effects. Localized symptoms depend on the extent of the injury and how well the body can resist it. <strong>Systemic responses include:</strong><br><ul><li><strong>Neutrophilia:</strong> An increase in neutrophils (a type of WBC).</li><li><strong>Fever:</strong> Elevated body temperature.</li><li><strong>Malaise:</strong> A general feeling of discomfort, illness, or uneasiness.</li><li><strong>Loss of appetite.</strong></li><li><strong>Muscle catabolism:</strong> Breakdown of muscle tissue.</li></ul>The liver also plays a role by releasing several proteins called <strong>acute phase proteins</strong>. These include complement system proteins, clotting factors, and protease inhibitors. Acute phase proteins also boost fibrinogen levels, which helps with blood clotting. CRP and serum amyloid are also released by the liver; CRP helps "tag" foreign pathogens (opsonization) to make them easier for immune cells to engulf.` },
+                    { id: 'age-related-differences', title: 'Age-Related Differences', type: 'text', content: `There are differences in how the inflammatory response works at different ages. <strong>Newborns (neonates)</strong> often have weaker inflammatory responses to bacteria or viruses. This is because they have fewer granulocytes (especially neutrophils) and monocytes, and these cells have a reduced ability to move to the site of inflammation (chemotaxis). Neonates also have significantly reduced complement responses due to not having enough complement components, particularly those from the alternative pathway. This deficiency is temporary, and the inflammatory response matures as a person grows from infancy to adulthood.<br><br><strong>Older adults</strong> are more prone to impaired inflammation and slower wound healing. They also tend to have weaker inflammatory responses due to chronic illnesses like cardiovascular disease and diabetes. The aging skin barrier, with less collagen and subcutaneous fat, offers less protection. Additionally, age-related thinning of capillary beds can lead to tissue oxygen deprivation (hypoxia) and delayed wound healing.` },
+                    { id: 'chronic-systemic-quiz', title: 'Chronic & Systemic Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which cell type is critical in a chronic inflammatory response, instrumental in removing necrotic tissue?", options: ["Neutrophils", "Macrophages", "Eosinophils", "Basophils"], correctAnswer: "Macrophages" },
+                        { question: "Which of the following is a common systemic manifestation of inflammation?", options: ["Localized redness", "Decreased body temperature", "Loss of appetite", "Increased blood pressure"], correctAnswer: "Loss of appetite" },
+                      ]
+                    },
+                ]
+            },
+            'inflammation-variations-consequences': {
+                title: 'Inflammation: Variations & Consequences',
+                color: 'from-purple-500 to-pink-500',
+                description: 'Understand how inflammation can vary and its potential negative consequences, including severe systemic reactions.',
+                steps: [
+                    { id: 'variations-context', title: 'Variations & Context', type: 'text', content: `Inflammation can vary greatly among individuals throughout life, leading to effects from minor symptoms (like mild skin redness) to life-threatening issues. These variations can stem from acute or chronic inflammation, or an autoimmune response. An acute inflammatory response to tissue damage or injury can turn into a chronic condition, like chronic sinusitis or cirrhosis, if the tissue continues to be damaged. An acute response might even cause more tissue damage than the initial injury. For example, if a mild ankle sprain with tendon or ligament damage isn't treated properly, swelling can lead to further tissue damage and cell death. Chronic cirrhosis can also result from an acute hepatitis C virus infection. Autoimmune diseases, such as rheumatoid arthritis, can also involve chronic inflammation.` },
+                    { id: 'negative-consequences', title: 'Negative Consequences', type: 'text', content: `While inflammation has important benefits for the body, it can also have negative consequences. These include an <strong>overly strong immune response</strong> to triggers, which can cause additional tissue damage, or an <strong>inadequate response</strong>, which might lead to infection or chronic illness. For example, in spinal cord injuries, the inflammatory response—with its increased blood flow, leaky blood vessels, and fluid movement to the damaged area—can cause more compression injury to an already vulnerable spinal cord if swelling isn't controlled.` },
+                    { id: 'hypersensitivity-sirs', title: 'Hypersensitivity & SIRS', type: 'text', content: `Excessive activation of the inflammatory response, leading to chronic inflammation, can also occur due to <strong>hypersensitivity reactions</strong> from the immune system, such as allergies. In autoimmune diseases like asthma, rheumatoid arthritis, multiple sclerosis, and systemic lupus erythematosus, the initial immune and inflammatory responses trigger a cycle of physiological reactions that lead to a disease process.<br><br><strong>Systemic Inflammatory Response Syndrome (SIRS)</strong> can develop from various underlying health conditions. SIRS progresses through three stages:<br><strong>Stage I:</strong> Characterized by increased production of cytokines (signaling proteins), a cellular inflammatory response, localized blood vessel widening, swelling, pain, increased heat, loss of function, and white blood cell migration to the site.<br><strong>Stage II:</strong> Involves the stimulation of growth factors and an increase in macrophages and platelets in the affected area, requiring proinflammatory mediators to keep the response in check.<br><strong>Stage III:</strong> If the body's balance (homeostasis) isn't restored, this stage leads to a body-wide reaction and organ dysfunction.` },
+                    { id: 'organ-dysfunction-chronic-diseases', title: 'Organ Dysfunction & Chronic Diseases', type: 'text', content: `<strong>Multi-organ failure</strong>, often seen with sepsis or septic shock, involves both a strong immune and inflammatory response. A negative outcome of inflammation during shock is that inflammatory mediators can activate substances that prevent blood clot breakdown (fibrinolysis) and may cause widespread blood vessel damage, organ dysfunction, or even death. Widespread inflammation can also lead to low blood volume (hypovolemia), fluid around the lungs (pleural effusion), breathing difficulties (respiratory distress), kidney failure, and death.<br><br><strong>Chronic inflammation has been linked to several systemic diseases</strong> (or diseases that affect the whole body, especially in compromised individuals). For instance, there's been recent focus on multisystem inflammatory syndrome in children and adults, a rare but serious inflammatory condition linked to COVID-19 that impacts organs like the heart, lungs, and kidneys. Research has shown connections between chronic kidney disease, inflammation, and cardiovascular diseases, highlighting the need to manage inflammation to prevent further tissue damage. Chronic inflammation is also associated with chronic conditions like Crohn disease, ulcerative colitis, anemia, neurological disorders, and kidney problems. The connections between autoimmune diseases (like asthma and diabetes), cancer, and inflammation are now widely accepted.` },
+                    { id: 'variations-consequences-quiz', title: 'Variations & Consequences Quiz', type: 'quiz',
+                      questions: [
+                        { question: "What is a potential negative consequence of an overly severe inflammatory response?", options: ["Faster healing", "Additional tissue damage", "Reduced pain", "Increased immunity"], correctAnswer: "Additional tissue damage" },
+                        { question: "Which stage of Systemic Inflammatory Response Syndrome (SIRS) involves end organ dysfunction if homeostasis is not restored?", options: ["Stage I", "Stage II", "Stage III", "Pre-SIRS"], correctAnswer: "Stage III" },
+                      ]
+                    },
+                ]
+            },
+            'inflammation-risk-factors': {
+                title: 'Inflammation: Risk Factors',
+                color: 'from-emerald-500 to-green-500',
+                description: 'Identify populations and individual factors that increase susceptibility to inflammatory processes.',
+                steps: [
+                    { id: 'populations-at-risk', title: 'Populations at Risk', type: 'text', content: `People of all ages, genders, ethnic backgrounds, socioeconomic levels, and health histories can experience acute or chronic inflammation. <strong>Age plays a significant role in how severe an inflammatory response might be.</strong> For very young children (neonates), their immature immune system might lead to a more severe inflammatory response because they can't control minor infections as well. For older adults, their immune system becomes less effective at responding to foreign invaders, which can result in a stronger inflammatory response than they might have had when younger. Individuals who are uninsured or underinsured face higher risks because they might not get timely healthcare intervention, allowing a simple inflammatory response to worsen into a more severe injury or chronic inflammation.` },
+                    { id: 'individual-risk-factors', title: 'Individual Risk Factors', type: 'text', content: `Individual risk factors for inflammation include having autoimmune diseases and allergies, being exposed to pathogens (with or without resulting infection), and being very young or old with a weakened immune system. <strong>Genetics</strong> plays a part in chronic inflammatory conditions, as many autoimmune diseases have a genetic predisposition and involve inflammation. Certain chronic diseases like atherosclerosis, rheumatoid arthritis, diabetes, and cancer can either cause or be caused by chronic inflammation. Research continues into the role of obesity and deficiencies in vitamin D and magnesium in developing chronic inflammation.<br><br>Anything that weakens the immune system increases the chance that a mild inflammatory response could turn into severe acute or chronic inflammation. Poor hand hygiene, sharing personal items, inadequate sanitation, poor nutrition, and living in crowded spaces all raise the risk of infection and accompanying inflammation. In healthcare settings, not using standard precautions properly increases an individual's risk of infection and subsequent inflammation. Environmental factors like pollution and smoking, or repeated physical trauma, also increase the risk of triggering an inflammatory response.` },
+                    { id: 'risk-factors-quiz', title: 'Risk Factors Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which age group is typically more susceptible to a more severe inflammatory response due to an immature immune system?", options: ["Adolescents", "Middle-aged adults", "Older adults", "Neonates"], correctAnswer: "Neonates" },
+                        { question: "Which of the following is an individual risk factor that can lead to chronic inflammation?", options: ["Regular exercise", "Balanced diet", "Autoimmune diseases", "Good hand hygiene"], correctAnswer: "Autoimmune diseases" },
+                      ]
+                    },
+                ]
+            },
+            'inflammation-assessment': {
+                title: 'Inflammation: Assessment',
+                color: 'from-orange-500 to-yellow-400',
+                description: 'Learn how to effectively assess for the presence and extent of inflammation through patient history, physical examination, and diagnostic tests.',
+                steps: [
+                    { id: 'assessment-history', title: 'Patient History', type: 'text', content: `Gathering information about the patient's history is crucial. You should ask questions to understand:<br><ul><li>The cause of the inflammation (e.g., a recent injury, exposure to allergens, or infectious agents).</li><li>The patient's body's ability to respond to inflammation.</li><li>Their risk of having an ineffective inflammatory response.</li></ul>Also, ask about common inflammation symptoms like swelling, pain, and fatigue. It's important to know how long the inflammation has been present and what treatments, if any, have already been tried.` },
+                    { id: 'assessment-local-systemic-signs', title: 'Examination Findings: Local & Systemic', type: 'text', content: `Several classic signs are associated with inflammation. Obvious injuries or minor wounds will likely appear red, feel warm, and cause some pain. Swelling might be present even without an open wound, such as with a sprained joint. Fluid (exudate) might be seen from a cut or other injury where the skin is broken. Anytime there's an infection, some level of inflammation will also be present. Inflammation related to an immune response, without external trauma, will show a combination of swelling, pain, fever, and reduced or absent function of the affected tissue or organ. Severe inflammation can lead to shock, multi-organ failure, very high fever, seizures, coma, or even death.<br><br><strong>Local Manifestations:</strong><br><ul><li>Swelling</li><li>Pain</li><li>Heat</li><li>Redness</li><li>Exudate (fluid that leaks from blood vessels, can be serous/clear, fibrinous/clot-like, purulent/pus, or hemorrhagic/bloody)</li></ul><br><strong>Systemic Manifestations:</strong><br><ul><li>Fever</li><li>Leukocytosis (increased white blood cell count)</li><li>Increase in plasma proteins</li><li>Malaise (general feeling of discomfort)</li><li>Fatigue</li></ul>` },
+                    { id: 'assessment-blood-tests', title: 'Diagnostic Tests: Blood', type: 'text', content: `Blood tests help diagnose inflammation. A <strong>White Blood Cell (WBC) count with differential</strong> can show if counts of neutrophils, lymphocytes, or macrophages are high, which indicates bacterial or viral infection and acute or chronic inflammation. <strong>C-reactive protein (CRP)</strong> and <strong>Erythrocyte Sedimentation Rate (ESR)</strong> are non-specific blood tests that confirm inflammation is present but don't tell you its location or cause. Various serologic tests for viruses or antibodies against pathogens (like hepatitis, HIV, Epstein–Barr virus, herpes simplex, syphilis, MRSA, C. difficile, and H. pylori) help determine the cause of inflammation and guide treatment to control infection and minimize inflammatory damage.` },
+                    { id: 'assessment-imaging', title: 'Diagnostic Tests: Imaging', type: 'text', content: `Imaging tests are useful for finding the location and extent of inflammation inside the body. These include:
+<ul><li><strong>Computerized (or Computed) Tomography (CT) scan</strong></li><li><strong>Magnetic Resonance Imaging (MRI)</strong></li><li><strong>Positron Emission Tomography (PET) scans</strong></li><li><strong>Colonoscopy</strong> (for intestinal inflammation)</li></ul>` },
+                    { id: 'assessment-quiz', title: 'Assessment Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which of the following is a local manifestation of inflammation?", options: ["Fever", "Malaise", "Swelling", "Fatigue"], correctAnswer: "Swelling" },
+                        { question: "Which blood test is non-specific but confirms the presence of inflammation?", options: ["WBC count with differential", "C-reactive protein (CRP)", "Serologic test for HIV", "Blood culture"], correctAnswer: "C-reactive protein (CRP)" },
+                      ]
+                    },
+                ]
+            },
+            'inflammation-clinical-management': {
+                title: 'Inflammation: Clinical Management',
+                color: 'from-green-500 to-teal-400',
+                description: 'Discover primary prevention strategies, collaborative interventions, and pharmacologic agents used to manage inflammation.',
+                steps: [
+                    { id: 'management-prevention', title: 'Prevention Strategies', type: 'text', content: `<strong>Primary prevention</strong> aims to stop inflammation from happening by reducing the risk of injury and infection. While accidents happen, some precautions can be taken:<br><ul><li><strong>Hand Hygiene:</strong> Following proper handwashing significantly lowers the risk of spreading germs, thus reducing potential inflammatory responses.</li><li><strong>Safety Equipment:</strong> Using designated safety gear during sports or physical activities can minimize injuries.</li><li><strong>Food and Water Safety:</strong> Being aware of food and water safety standards and potential contamination issues can prevent pathogen transmission and avoid inflammation linked to immune responses.</li></ul><br><strong>Secondary prevention (screening)</strong> for inflammation is not routine, making primary prevention strategies extremely important in reducing how often and how severely inflammatory responses occur.` },
+                    { id: 'management-collaborative-overview', title: 'Collaborative Interventions Overview', type: 'text', content: `The main goal of managing inflammation is to control the process to promote repair and healing, and to prevent an overly strong inflammatory response that could cause more tissue damage. General treatment guidelines depend on the cause of inflammation:<br><ul><li><strong>Infection:</strong> If inflammation is due to an infection, the underlying infection must be treated and eliminated.</li><li><strong>Hypersensitivity:</strong> If inflammation results from an immune hypersensitivity reaction (like allergies, asthma, or autoimmune diseases), managing inflammation must go hand-in-hand with managing the immune response and the disease caused by immune dysfunction (e.g., diabetes, inflammatory bowel syndrome, rheumatoid arthritis, multiple sclerosis).</li><li><strong>Uncomplicated Injury:</strong> For simple sprains or strains, the standard treatment of Rest, Ice, Compression, and Elevation (RICE) combined with nonsteroidal anti-inflammatory drugs (NSAIDs) will help manage pain and moderate the inflammatory response.</li></ul>Chronic inflammatory responses from diseases need careful monitoring to prevent or slow tissue damage that could lead to organ failure. Treatment focuses on addressing the root cause of the disease, supporting ongoing tissue function, and preventing organ or limb dysfunction or deformity. Sometimes, treatment involves finding new ways to achieve physiological outcomes, such as providing external insulin for individuals with type 1 diabetes whose pancreas no longer produces it.` },
+                    { id: 'management-rice-immobilization', title: 'RICE & Immobilization', type: 'text', content: `<strong>Rest, Ice, Compression, and Elevation (RICE)</strong> are actions aimed at minimizing swelling from a sprain or strain. Swelling around an injury is a normal part of the inflammatory response. By reducing swelling, the injured and surrounding tissues are protected from further damage caused by the swelling itself. The first 24 to 48 hours after injury are critical for RICE measures to be most effective. Typically, icing the sprain or strain for 10 minutes every 2 or 3 hours is recommended; leaving ice on for too long can cause more tissue damage. Compressing the injured area also helps reduce swelling; the wrap should be snug but not so tight that it cuts off circulation (watch for fingers or toes becoming cool, tingly, or blue). Whenever possible, elevating the injured area above heart level helps minimize swelling.<br><br><strong>Immobilization devices</strong> like splints or slings help rest the injured area. Wheelchairs, walkers, or crutches can also reduce weight-bearing on an injured limb. If bed rest is needed, leg exercises or pneumatic compression devices should be used to prevent blood clot formation in the legs.` },
+                    { id: 'management-pharmacology-steroids-nsaids', title: 'Pharmacologic Agents: Steroids & NSAIDs', type: 'text', content: `Medication options for inflammation vary widely depending on the cause. The three main goals of treatment are to reduce inflammation, manage fever, and relieve pain. Many prescribed medications for inflammation have one or more of these properties.<br><br><strong>Steroidal Agents:</strong> Glucocorticoids (e.g., prednisone) are steroids that suppress the immune system and, by doing so, reduce the inflammatory response. They are very effective at decreasing swelling and pain associated with inflammation. Steroids like prednisone are used for a wide range of inflammatory conditions, from swelling after trauma to inflammation in allergies and autoimmune diseases like rheumatoid arthritis or systemic lupus erythematosus.<br><br><strong>Nonsteroidal Anti-inflammatory Drugs (NSAIDs):</strong> NSAIDs, such as ibuprofen or naproxen, are important for managing pain, fever, and inflammation. These medications are available over-the-counter or can be prescribed, sometimes combined with narcotics (e.g., hydrocodone or oxycodone). For significant inflammation, cyclooxygenase (COX) inhibitors might be used. COX-1 is found in all tissues and has protective functions. COX-2 is mainly produced at injury sites, where it mediates inflammation and makes pain receptors more sensitive. It's also in the brain, helping to manage fever and pain perception. Inhibiting COX-2 reduces inflammation, controls pain, and lowers fever. However, most COX-2 inhibitors (except celecoxib/Celebrex) have not been available in the United States since 2011 due to adverse effects. Older NSAIDs inhibited both COX-1 and COX-2, while newer ones (like celecoxib) can specifically inhibit only COX-2.` },
+                    { id: 'management-pharmacology-biologics-antipyretics', title: 'Pharmacologic Agents: Biologics & Antipyretics', type: 'text', content: `<strong>Recombinant DNA and Monoclonal Antibodies (Biologics):</strong> Advances in recombinant DNA and monoclonal antibody technology have created entirely new treatments for inflammation. For example, Interleukin 1 (IL1) antagonists block IL1 receptors, while tumor necrosis factor alpha (TNF) inhibitors prevent IL1 from causing inflammation. However, TNF inhibitors can make individuals more prone to infections. Recombinant protein C helps the body break down small blood clots that form during inflammation. Infliximab (Remicade), a TNF inhibitor, has become crucial in recent treatments for lymphoma, rheumatoid arthritis, and inflammatory bowel diseases.<br><br><strong>Antipyretics:</strong> Since fever is a common response to inflammation, antipyretics are often used to manage it. Antipyretic agents like acetaminophen, aspirin, and NSAIDs reduce fever by inhibiting cyclooxygenase. These are sometimes given along with opioid pain relievers.` },
+                    { id: 'management-pharmacology-analgesics-antimicrobials', title: 'Pharmacologic Agents: Analgesics & Antimicrobials', type: 'text', content: `<strong>Analgesics (Pain Relievers):</strong> Non-opioid analgesics, such as acetaminophen or aspirin, are the most common type of pain reliever used for inflammation-related pain. NSAIDs are also considered analgesics because reducing inflammation often eases the associated pain. Opioid analgesics are used for severe inflammatory pain.<br><br><strong>Antimicrobials:</strong> Antibiotics, antivirals, and other antimicrobials are vital for treating the underlying infection that causes inflammation. Antimicrobials are a broad category of medications needed to treat diseases linked to immune and inflammatory responses. More details on these are covered in the "Infection" concept.` },
+                    { id: 'management-quiz', title: 'Clinical Management Quiz', type: 'quiz',
+                      questions: [
+                        { question: "What is the primary goal of RICE therapy for a sprain?", options: ["To increase blood flow", "To minimize swelling", "To strengthen the joint", "To prevent infection"], correctAnswer: "To minimize swelling" },
+                        { question: "Which type of medication suppresses the immune system and is effective at reducing swelling and pain in inflammatory conditions?", options: ["NSAIDs", "Antipyretics", "Glucocorticoids (Steroids)", "Analgesics"], correctAnswer: "Glucocorticoids (Steroids)" },
+                      ]
+                    },
+                ]
+            },
+            'inflammation-interrelated-concepts': {
+                title: 'Inflammation: Interrelated Concepts',
+                color: 'from-pink-500 to-red-400',
+                description: 'Explore how inflammation connects with other vital physiological concepts in healthcare.',
+                steps: [
+                    { id: 'interrelated-concepts-overview', title: 'Connections to Other Concepts', type: 'text', content: `Inflammation is deeply connected with several other important health concepts:<br><br><ul><li><strong>Immunity and Infection:</strong> These are perhaps the most closely related. Many processes in inflammation overlap with or are triggered by immunity and infection. For example, an immune system hypersensitivity reaction can trigger inflammation, or an infection can stimulate an inflammatory response.</li><li><strong>Tissue Integrity:</strong> The health of your tissues is at risk during an inflammatory response, as inflammation can cause damage.</li><li><strong>Mobility and Pain:</strong> Initial injuries and the resulting swelling from inflammation can lead to reduced movement and pain.</li><li><strong>Thermoregulation:</strong> Your body's ability to control its temperature (thermoregulation) can be affected by inflammation, especially if the response is severe, often leading to fever.</li><li><strong>Gas Exchange:</strong> Breathing can become difficult if inflammation causes fluid buildup around the lungs (pleural effusion), impacting gas exchange.</li><li><strong>Hemostasis and Perfusion:</strong> Inflammation, particularly if chronic, can lead to changes in blood clotting (hemostasis), causing small blood clots (microvascular clotting) that impair blood flow (perfusion).</li><li><strong>Fatigue and Stress & Coping:</strong> Both fatigue and stress are often linked to injury and recovery from acute inflammation. They can also be ongoing issues during chronic inflammation from autoimmune reactions.</li></ul>` },
+                    { id: 'interrelated-concepts-quiz', title: 'Interrelated Concepts Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Inflammation can directly impact which of the following, potentially leading to fever?", options: ["Mobility", "Tissue Integrity", "Thermoregulation", "Gas Exchange"], correctAnswer: "Thermoregulation" },
+                        { question: "Which two concepts are most closely related to inflammation, often overlapping or triggering each other?", options: ["Pain and Mobility", "Immunity and Infection", "Hemostasis and Perfusion", "Fatigue and Stress"], correctAnswer: "Immunity and Infection" },
+                      ]
+                    },
+                ]
+            },
+            'inflammation-exemplars-case-study': {
+                title: 'Inflammation: Exemplars & Case Study',
+                color: 'from-gray-500 to-slate-400',
+                description: 'Apply your knowledge through common clinical examples and a detailed patient case study.',
+                steps: [
+                    { id: 'exemplars-overview', title: 'Clinical Exemplars Overview', type: 'text', content: `Here are some common examples (exemplars) of inflammation, categorized by whether they represent acute inflammation, chronic inflammation, or inflammation due to an autoimmune hypersensitivity response. Keep in mind that acute and chronic inflammation often overlap; chronic conditions can have acute flare-ups, and acute responses can become chronic. Therefore, some distinctions are simplified for understanding.<br><br><strong>Acute Inflammation Examples:</strong> Acute infection (bacterial, viral, fungal, parasitic), Bronchitis, Burn, Bursitis, Foreign body injury, Insect bite or sting, Joint sprain or strain, Nephritis, Rheumatic fever, Tendonitis, Traumatic injury.<br><br><strong>Chronic Inflammation Examples:</strong> Atherosclerosis, Chronic infection, Chronic obstructive pulmonary disease (COPD), Cirrhosis, Diverticulitis, Fibromyalgia, Gingivitis, Inflammatory bowel disease, Myocarditis, Osteoarthritis, Psoriasis, Vasculitis.<br><br><strong>Autoimmune-Based Inflammation Examples:</strong> Asthma, Crohn disease, Goodpasture syndrome, Graves disease, Multiple sclerosis, Myasthenia gravis, Rheumatoid arthritis, Systemic lupus erythematosus.` },
+                    { id: 'exemplar-bronchitis', title: 'Bronchitis', type: 'text', content: `Bronchitis is the inflammation of the bronchial tubes (airways in your lungs). It can start as an acute irritation and sometimes become a chronic infection. It often follows a cold virus or other respiratory infection. Acute bronchitis typically causes symptoms like a cough (which might be dry or produce clear or discolored thick mucus), shortness of breath, fever and chills, and chest tightness when breathing in. The cough can last for days or weeks after the initial infection clears. If chronic bronchitis develops over time, it's considered a type of chronic obstructive pulmonary disease (COPD).` },
+                    { id: 'exemplar-gastroenteritis', title: 'Gastroenteritis', type: 'text', content: `Gastroenteritis is the inflammation of the stomach and intestines, often called "stomach flu." It can be caused by various viruses, contaminated food or water, or as a side effect of certain medications. In infants, it might occur when new foods introduce allergens. Symptoms usually last a few days and include nausea or vomiting, abdominal cramps, diarrhea, or a low-grade fever. The condition usually resolves on its own, but it might need more aggressive treatment if symptoms persist for more than 2 days. Dehydration is a common and potentially life-threatening complication if not detected and treated.` },
+                    { id: 'exemplar-atherosclerosis', title: 'Atherosclerosis', type: 'text', content: `Atherosclerosis is a disease where plaque builds up on the inner lining of arteries. This is a chronic inflammatory process. Plaque is made of fat, cholesterol, calcium, and other substances that harden and narrow the arteries over time. Atherosclerosis can affect any artery in the body, including those in the heart, limbs, brain, and kidneys. When it affects the heart's arteries, it leads to coronary artery disease and heart attacks. In the carotid arteries (leading to the brain), it can cause a stroke. If it affects the kidney arteries, it can lead to chronic kidney disease and eventually kidney failure.` },
+                    { id: 'exemplar-cirrhosis', title: 'Cirrhosis', type: 'text', content: `Cirrhosis is a liver disease where healthy liver tissue is destroyed and replaced with scar tissue. This chronic condition can develop from an acute injury or ongoing damage to liver tissue. The scar tissue can block blood flow through the liver or cause healthy cells to become scarred and non-functional. This prevents the liver from providing the necessary metabolic support to maintain the body's balance (homeostasis). Cirrhosis affects many body systems because the liver's ability to produce clotting factors, immune factors, and bile, and to remove waste products and medications, is diminished.` },
+                    { id: 'exemplar-asthma', title: 'Asthma', type: 'text', content: `Asthma is an example of autoimmune-based inflammation. It's a common, chronic disorder of the airways that is complex and involves varying and recurring symptoms, airway blockage, heightened sensitivity of the airways (bronchial hyperresponsiveness), and underlying inflammation. These features together determine how asthma presents and its severity. Airway inflammation leads to narrowing of the airways (bronchoconstriction), increased responsiveness to triggers, and swelling of the airways with excessive mucus production. Asthma can be influenced by innate immunity, genetics, exposure to tobacco smoke, or environmental factors like airborne allergens or viral infections.` },
+                    { id: 'exemplar-rheumatoid-arthritis', title: 'Rheumatoid Arthritis (RA)', type: 'text', content: `Rheumatoid arthritis (RA) is an autoimmune disease that causes inflammation primarily in the joints, characterized by periods of intense symptoms (flares) and periods of improvement (remission). While the exact cause is unknown, research points to links between genetics, environment, and hormones. There is no cure for RA, but it can go into complete remission without long-term effects. Treatment focuses on managing pain, controlling joint swelling, and preserving joint function. Current research is exploring immunotherapies to restore the immune system's tolerance of "self" and target key immune pathways involved in RA.` },
+                    { id: 'case-study-chris-shomni', title: 'Case Study: Chris Shomni', type: 'case_study', case: {
+                        scenario: `Chris Shomni, a 40-year-old male in a stressful professional position, recently developed abdominal pain, cramping, and intermittent (but more frequent lately) bloody diarrhea over several weeks. He has lost 10 pounds in the past 4 weeks and complains of nausea and fatigue. A colonoscopy showed significant inflammation and ulcers in his colon and rectum, with no strictures, perforations, or paralysis. Biopsy confirmed ulcerative colitis (UC), ruling out Crohn disease. He has no family history of inflammatory bowel disease. His skin showed erythema nodosum lesions, typical of UC. Lab tests revealed a low red blood cell (RBC) count and hemoglobin, an elevated platelet count, and a normal white blood cell count. Serum total protein and albumin levels were low.`,
+                        question: "Based on Chris Shomni's presentation, which of the following is the most likely primary diagnosis related to his chronic inflammatory condition?",
+                        options: ["Acute Gastroenteritis", "Crohn Disease", "Ulcerative Colitis", "Irritable Bowel Syndrome"],
+                        correctAnswer: "Ulcerative Colitis",
+                        explanation: "Chris Shomni's symptoms (abdominal pain, cramping, bloody diarrhea, weight loss, nausea, fatigue), colonoscopy findings (inflammation and ulcers in colon/rectum), and skin lesions (erythema nodosum) are classic indicators of Ulcerative Colitis. The biopsy confirmed UC and ruled out Crohn's. Acute gastroenteritis is typically short-term, and Irritable Bowel Syndrome does not involve inflammation or ulcers."
+                    }},
+                    { id: 'case-study-chris-shomni-analysis', title: 'Case Study: Analysis Questions', type: 'text', content: `<strong>1. Consider the scope of inflammation. Where does this case fit?</strong><br>This case clearly fits within the scope of <strong>chronic inflammation</strong>, specifically as a consequence of an autoimmune disease (Ulcerative Colitis). While he experiences acute exacerbations (more frequent bloody diarrhea recently), the underlying condition is long-term and involves ongoing tissue destruction and repair in the colon and rectum.<br><br><strong>2. What are the primary treatment options represented in this case?</strong><br>The primary treatment options for Mr. Shomni focus on:<br><ul><li><strong>Resting the bowel:</strong> This is a non-pharmacological approach to reduce irritation and promote healing.</li><li><strong>Reducing inflammation:</strong> This is the cornerstone of treatment for UC.</li><li><strong>Controlling diarrhea:</strong> To prevent dehydration and fluid/electrolyte imbalances.</li><li><strong>Ensuring adequate nutrition and hydration:</strong> To address weight loss, hypoalbuminemia, and anemia.</li><li><strong>Relieving pain:</strong> Though not significant, pain management is part of his care.</li></ul><br>Specific pharmacologic interventions mentioned include:<br><ul><li><strong>Aminosalicylates (5-ASA):</strong> First-line treatment to control inflammation.</li><li><strong>Corticosteroids:</strong> Used for exacerbations or severe, unresponsive disease.</li><li><strong>Immunomodulators (e.g., 6-mercaptopurine) or Monoclonal Antibodies (e.g., infliximab):</strong> Considered if 5-ASA or corticosteroids are insufficient.</li></ul>The case also highlights the potential for surgical intervention (colostomy or ileostomy) if tissue damage becomes too severe.` },
+                    { id: 'exemplars-quiz', title: 'Exemplars & Case Study Quiz', type: 'quiz',
+                      questions: [
+                        { question: "Which of the following is an example of a chronic inflammatory condition?", options: ["Insect bite", "Acute bronchitis", "Joint sprain", "Atherosclerosis"], correctAnswer: "Atherosclerosis" },
+                        { question: "Rheumatoid Arthritis is categorized as what type of inflammation?", options: ["Acute", "Chronic", "Reparative", "Autoimmune-Based"], correctAnswer: "Autoimmune-Based" },
+                      ]
+                    },
+                ]
+            },
+        };
+
+        const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+        const Quiz = ({ questions, onComplete }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState(null);
+            const [feedback, setFeedback] = useState(null);
+            const [answers, setAnswers] = useState([]);
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            const handleOptionSelect = (option) => {
+                if (feedback) return;
+                setSelectedOption(option);
+            };
+            
+            const handleRegularQuizSubmit = () => {
+                if (selectedOption === null) return;
+                const isCorrect = selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                setFeedback(isCorrect ? 'correct' : 'incorrect');
+            };
+
+            const handleRegularQuizNext = () => {
+                const isCorrect = selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                const finalAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                
+                if (currentQuestionIndex < questions.length - 1) {
+                    setAnswers(finalAnswers);
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption(null);
+                    setFeedback(null);
+                } else {
+                    const finalScore = finalAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete({ score: finalScore, total: questions.length });
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Quiz: {currentQuestionIndex + 1} of {questions.length}</h4>
+                    <p className="font-semibold text-gray-700 mb-3">{currentQuestion.question}</p>
+                    <div className="space-y-2">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = selectedOption === option;
+                            const isCorrectOption = option.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+
+                            if (feedback) {
+                                if (isCorrectOption) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800';
+                                } else if (isSelected && !isCorrectOption) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800';
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800';
+                            }
+
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handleOptionSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {feedback && (isCorrectOption || (isSelected && !isCorrectOption)) && (
+                                            isCorrectOption ? <span className="text-green-600 mr-2">✓</span> : <span className="text-red-600 mr-2">✗</span>
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-4 text-center">
+                        {!feedback ? (
+                            <button
+                                onClick={handleRegularQuizSubmit}
+                                disabled={selectedOption === null}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                Submit Answer
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleRegularQuizNext}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                            >
+                                Next Question
+                            </button>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+        
+        const Dashboard = ({ onSelectModule, progress, onResetProgress }) => {
+            let totalCompletedSteps = 0;
+            let totalPossibleSteps = 0;
+            let totalQuizCorrect = 0;
+            let totalQuizQuestions = 0;
+
+            Object.entries(contentData).forEach(([moduleId, module]) => {
+                totalPossibleSteps += module.steps.length;
+                const moduleProgress = progress[moduleId] || {};
+                
+                Object.values(moduleProgress).forEach(stepProgress => {
+                    if (stepProgress.completed) {
+                        totalCompletedSteps++;
+                    }
+                    if (stepProgress.score !== undefined) {
+                        totalQuizCorrect += stepProgress.score;
+                    }
+                });
+
+                module.steps.forEach(step => {
+                    if (step.type === 'quiz') {
+                        totalQuizQuestions += step.questions.length;
+                    }
+                });
+            });
+
+            const overallPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+
+            return (
+                <div className="p-4 sm:p-6 md:p-8 min-h-screen w-full flex flex-col">
+                    <div className="w-full">
+                        <header className="mb-8 text-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">ILM</span>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Inflammation Learning Module</h1>
+                                <span className="bg-gray-200 text-gray-600 text-xs font-mono px-2.5 py-1 rounded-full">V:1</span>
+                            </div>
+                            <p className="text-lg text-gray-500 max-w-2xl mx-auto">Explore key concepts of inflammation through interactive modules designed for comprehensive understanding.</p>
+                        </header>
+
+                        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
+                           <div className="flex justify-between items-center mb-3">
+                              <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                              <button 
+                                 onClick={onResetProgress}
+                                 className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                               >
+                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" clipRule="evenodd" /></svg>
+                                 Reset Progress
+                               </button>
+                           </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div
+                                    className="bg-indigo-600 h-4 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-left text-sm text-gray-600 mt-2">
+                                    {totalQuizQuestions > 0 && `Quiz Performance: ${totalQuizCorrect} / ${totalQuizQuestions} correct`}
+                                </p>
+                                <p className="text-right text-sm text-gray-600 mt-2">{Math.round(overallPercentage)}% Completed</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                            {Object.entries(contentData).map(([id, module]) => {
+                                const moduleProgress = progress[id] || {};
+                                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                                const totalSteps = module.steps.length;
+                                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
+                                let statusText = "Not Started";
+                                let statusColor = "text-gray-500";
+                                if (completedCount === totalSteps) {
+                                    statusText = "Completed";
+                                    statusColor = "text-green-600";
+                                } else if (completedCount > 0) {
+                                    statusText = "In Progress";
+                                    statusColor = "text-yellow-600";
+                                }
+
+                                const quizStep = module.steps.find(step => step.type === 'quiz');
+                                const quizProgress = quizStep ? moduleProgress[quizStep.id] : null;
+
+                                return (
+                                    <div
+                                        key={id}
+                                        onClick={() => onSelectModule(id)}
+                                        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col"
+                                    >
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className={cn("p-3 rounded-full bg-gradient-to-br", module.color, "w-10 h-10 flex items-center justify-center text-white text-lg font-bold shadow-md flex-shrink-0")}>
+                                                {module.title.split(' ').map(word => word.charAt(0)).join('')}
+                                            </div>
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <svg className="w-full h-full" viewBox="0 0 36 36">
+                                                    <path
+                                                        className="text-gray-200"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                    />
+                                                    <path
+                                                        className="text-indigo-500"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${percentage}, 100`}
+                                                        strokeLinecap="round"
+                                                        transform="rotate(-90 18 18)"
+                                                    />
+                                                </svg>
+                                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h3>
+                                        <p className="text-gray-500 text-sm mb-2 h-10">{module.description}</p>
+                                        <div className="mt-auto">
+                                            <p className={cn("text-sm font-semibold", statusColor)}>{statusText}</p>
+                                            {quizProgress && quizProgress.score !== undefined && (
+                                                <p className="text-sm text-gray-600 mt-1">Quiz Score: {quizProgress.score} / {quizStep.questions.length}</p>
+                                            )}
+                                            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700 mt-2">
+                                                Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        const CaseStudy = ({ caseData, onComplete }) => {
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+            const handleSelect = (option) => {
+                if (selectedAnswer) return;
+                setSelectedAnswer(option);
+                if (option.toLowerCase() === caseData.correctAnswer.toLowerCase()) {
+                    onComplete();
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
+                    <p className="bg-blue-100 text-blue-800 p-3 rounded-md mb-4 text-sm" dangerouslySetInnerHTML={{ __html: caseData.scenario }}></p>
+                    <p className="font-semibold text-gray-700 mb-3">{caseData.question}</p>
+                    <div className="space-y-2">
+                        {caseData.options.map(option => {
+                            const isSelected = selectedAnswer === option;
+                            const isCorrect = option.toLowerCase() === caseData.correctAnswer.toLowerCase();
+                            const showFeedback = selectedAnswer !== null;
+
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+                            if (showFeedback) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800';
+                                } else if (isSelected && !isCorrect) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800';
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800';
+                            }
+
+                            return (
+                                <div
+                                    key={option}
+                                    onClick={() => handleSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {showFeedback && (
+                                            isCorrect ? <span className="text-green-600 mr-2">✓</span> : (isSelected && <span className="text-red-600 mr-2">✗</span>)
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {selectedAnswer && (
+                        <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                            <h5 className="font-bold text-indigo-800">Explanation</h5>
+                            <p className="text-sm text-indigo-700" dangerouslySetInnerHTML={{ __html: caseData.explanation }}></p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        const StaticContentStep = ({ step, onComplete }) => {
+            useEffect(() => {
+                onComplete();
+            }, []);
+
+            return (
+                <div className="prose max-w-none text-gray-700 leading-relaxed p-4 bg-gray-50 rounded-lg shadow-inner space-y-4" dangerouslySetInnerHTML={{ __html: step.content }}>
+                </div>
+            );
+        };
+
+        const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
+                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm"
+                            >
+                                Back to Dashboard
+                            </button>
+                            {hasNextModule && (
+                                <button
+                                    onClick={onNextModule}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Continue to Next Module
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
+            const [activeStep, setActiveStep] = useState(0);
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+
+            const handleStepComplete = useCallback((stepId, data = {}) => {
+                onProgressUpdate(module.id, stepId, { completed: true, ...data });
+            }, [onProgressUpdate, module.id]);
+
+            const moduleProgress = progress[module.id] || {};
+            
+            const allStepsCompletedInModule = module.steps.every(step =>
+                moduleProgress[step.id] && moduleProgress[step.id].completed
+            );
+
+            const handleNextStep = () => {
+                if (activeStep === module.steps.length - 1 && allStepsCompletedInModule) {
+                    setIsCompletionModalOpen(true);
+                } else if (activeStep < module.steps.length - 1) {
+                    setActiveStep(activeStep + 1);
+                }
+            };
+
+            const handlePrevStep = () => {
+                if (activeStep > 0) {
+                    setActiveStep(activeStep - 1);
+                }
+            };
+            
+            if (!module || !module.steps) {
+                return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
+            }
+
+            const currentStep = module.steps[activeStep];
+            
+            const renderStepContent = (step) => {
+                if (!step) return <p>Please select a step.</p>;
+
+                const onCompleteForStep = (data) => handleStepComplete(step.id, data);
+
+                switch (step.type) {
+                    case 'text':
+                        return <StaticContentStep key={step.id} step={step} onComplete={onCompleteForStep} />;
+                    case 'case_study':
+                        return <CaseStudy key={step.id} caseData={step.case} onComplete={onCompleteForStep} />;
+                    case 'quiz':
+                        return <Quiz key={step.id} questions={step.questions} onComplete={onCompleteForStep} />;
+                    default:
+                        return <p key={step.id} className="text-red-600">Error: Content for this step type is not available.</p>;
+                }
+            };
+
+            const handleModalClose = () => {
+                setIsCompletionModalOpen(false);
+                onBack();
+            };
+
+            const handleModalNextModule = () => {
+                setIsCompletionModalOpen(false);
+                onNextModule();
+            };
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
+                    <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
+                        <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            <span className="hidden sm:inline">Dashboard</span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                        </div>
+                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                    </header>
+                    {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
+                    <div className="flex flex-1 overflow-hidden">
+                        <aside className={cn(
+                            "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
+                            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        )}>
+                            <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
+                            <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
+                                {module.steps.map((step, index) => (
+                                    <button
+                                        key={step.id}
+                                        onClick={() => {
+                                            setActiveStep(index);
+                                            setIsSidebarOpen(false);
+                                        }}
+                                        className={cn(
+                                            'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
+                                            activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700'
+                                        )}
+                                    >
+                                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                            {moduleProgress[step.id]?.completed ? (
+                                                <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                            ) : (
+                                                <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                            )}
+                                        </div>
+                                        <span className="flex-1 text-sm">{step.title}</span>
+                                    </button>
+                                ))}
+                            </nav>
+                        </aside>
+
+                        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                            <div className="max-w-5xl mx-auto">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
+                                {renderStepContent(currentStep)}
+
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={handlePrevStep}
+                                        disabled={activeStep === 0}
+                                        className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <button
+                                        onClick={handleNextStep}
+                                        disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
+                                    >
+                                        {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
+                                    </button>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                    <CompletionModal
+                        isOpen={isCompletionModalOpen}
+                        onClose={handleModalClose}
+                        onNextModule={handleModalNextModule}
+                        hasNextModule={hasNextModule}
+                    />
+                </div>
+            );
+        };
+        
+        function App() {
+            const [currentModuleId, setCurrentModuleId] = useState(null);
+            const [userId, setUserId] = useState(null);
+            const [progress, setProgress] = useState({});
+            const [isAuthReady, setIsAuthReady] = useState(false);
+
+            useEffect(() => {
+                const unsubscribe = mockAuth.onAuthStateChanged((user) => {
+                    if (user) setUserId(user.uid);
+                    setIsAuthReady(true);
+                });
+                return () => unsubscribe();
+            }, []);
+
+            useEffect(() => {
+                if (!isAuthReady || !userId) return;
+                const storedProgress = localStorage.getItem(`inflammation-learning-module-progress-${userId}`);
+                if (storedProgress) {
+                    try {
+                        setProgress(JSON.parse(storedProgress));
+                    } catch (e) {
+                        console.error("Failed to parse stored progress, resetting.", e);
+                        setProgress({});
+                    }
+                }
+            }, [isAuthReady, userId]);
+
+            const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
+                if (!isAuthReady || !userId) return;
+
+                setProgress(currentProgress => {
+                    const currentStepProgress = currentProgress[moduleId]?.[stepId] || {};
+                    const newStepProgress = { ...currentStepProgress, ...data };
+
+                    if (JSON.stringify(currentStepProgress) === JSON.stringify(newStepProgress)) {
+                        return currentProgress;
+                    }
+
+                    const newProgress = {
+                        ...currentProgress,
+                        [moduleId]: {
+                            ...(currentProgress[moduleId] || {}),
+                            [stepId]: newStepProgress
+                        }
+                    };
+
+                    localStorage.setItem(`inflammation-learning-module-progress-${userId}`, JSON.stringify(newProgress));
+                    return newProgress;
+                });
+            }, [isAuthReady, userId]);
+            
+            const handleResetProgress = useCallback(() => {
+                if (!isAuthReady || !userId) return;
+                setProgress({});
+                localStorage.removeItem(`inflammation-learning-module-progress-${userId}`);
+            }, [isAuthReady, userId]);
+
+            const handleNextModule = useCallback(() => {
+                const moduleIds = Object.keys(contentData);
+                const currentIndex = moduleIds.indexOf(currentModuleId);
+                if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
+                    setCurrentModuleId(moduleIds[currentIndex + 1]);
+                } else {
+                    setCurrentModuleId(null);
+                }
+            }, [currentModuleId]);
+
+            const selectedModule = currentModuleId && contentData[currentModuleId]
+                                        ? { ...contentData[currentModuleId], id: currentModuleId }
+                                        : null;
+
+            const moduleIds = Object.keys(contentData);
+            const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
+            const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
+
+            return (
+                <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+                    {selectedModule ? (
+                        <LearningModule
+                            key={selectedModule.id}
+                            module={selectedModule}
+                            onBack={() => setCurrentModuleId(null)}
+                            progress={progress}
+                            onProgressUpdate={handleProgressUpdate}
+                            onNextModule={handleNextModule}
+                            hasNextModule={hasNextModule}
+                        />
+                    ) : (
+                        <Dashboard 
+                            onSelectModule={setCurrentModuleId} 
+                            progress={progress} 
+                            onResetProgress={handleResetProgress}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
