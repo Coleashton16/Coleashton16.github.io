@@ -2,7 +2,7 @@
 <html lang="en" class="min-h-full">
 <head>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WQKB2E7CLH"></script>
+<script async src="https://www.googletagmanager.com/gtag/js/g-tag/js?id=G-WQKB2E7CLH"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -47,17 +47,9 @@
                         'vsrep-gray-dark': '#344759', /* Dark text */
                         'vsrep-gray-medium': '#6f7c8d', /* Secondary text */
                         'vsrep-gray-light': '#e0e6ed', /* Subtle borders */
-                        'vsrep-bg-start': '#eef2f5', /* Light background gradient start */
-                        'vsrep-bg-end': '#f5f8fa', /* Light background gradient end */
                         'vsrep-red': '#f44336', /* Error/Logout Red */
                         'vsrep-green': '#4CAF50', /* Success Green */
                         'vsrep-orange': '#FF9800', /* Calendar/Warning */
-                        'fourth-red': '#DC2626', // Tailwind red-600
-                        'fourth-blue': '#2563EB', // Tailwind blue-600
-                        'fourth-dark': '#344759', // Using vsrep-gray-dark for better contrast on "4th"
-                        'firework-gold': '#FFD700',
-                        'firework-silver': '#C0C0C0',
-                        'firework-purple': '#800080',
                     },
                     boxShadow: {
                         'soft-xl': '0 20px 60px rgba(0,0,0,0.15)', /* More pronounced shadow */
@@ -123,28 +115,6 @@
                             '50%': { transform: 'translateY(0) scale(1)' },
                             '75%': { transform: 'translateY(-2px) scale(1.05)' },
                         },
-                        fireworksPop: { /* For the main 4th of July text/icon */
-                            '0%': { opacity: '0', transform: 'scale(0.5)' },
-                            '50%': { opacity: '1', transform: 'scale(1.1)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' },
-                        },
-                        sparkleEffect: { /* For individual sparkles */
-                            '0%': { opacity: '0', transform: 'scale(0) translateY(0)' },
-                            '20%': { opacity: '1', transform: 'scale(1) translateY(-5px)' },
-                            '100%': { opacity: '0', transform: 'scale(0) translateY(-20px)' },
-                        },
-                        firecracker: {
-                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
-                            '25%': { transform: 'translateY(-10px) rotate(5deg)' },
-                            '50%': { transform: 'translateY(0) rotate(-5deg)' },
-                            '75%': { transform: 'translateY(-5px) rotate(2deg)' },
-                        },
-                        // Removed fireworkExplosion and fireworkParticle as they are for CSS-based fireworks
-                        fireworkLaunch: { /* For the upward trajectory of a firework */
-                            '0%': { transform: 'translateY(0) scale(0.5)', opacity: '0' },
-                            '50%': { transform: 'translateY(-100px) scale(1)', opacity: '1' },
-                            '100%': { transform: 'translateY(-200px) scale(0.5)', opacity: '0' },
-                        }
                     },
                     animation: {
                         fadeIn: 'fadeIn 0.6s ease-out forwards',
@@ -158,12 +128,6 @@
                         blob3: 'blobMove3 20s infinite alternate ease-in-out',
                         'gradient-shift': 'gradient-shift 8s ease infinite',
                         'icon-bounce': 'icon-bounce 2s infinite ease-in-out',
-                        fireworksPop: 'fireworksPop 1s ease-out forwards',
-                        sparkleEffect: 'sparkleEffect 0.8s ease-out infinite alternate',
-                        fireworkTrail: 'fireworkTrail 0.7s ease-out infinite',
-                        firecracker: 'firecracker 1.5s infinite ease-in-out',
-                        // Removed fireworkExplosion and fireworkParticle as they are for CSS-based fireworks
-                        fireworkLaunch: 'fireworkLaunch 1.5s ease-out forwards',
                     }
                 }
             }
@@ -271,64 +235,25 @@
             @apply text-vsrep-red text-sm mt-1 text-left;
         }
 
-        /* Styles for the pharmacology update notification */
-        #pharmacology-update-notification {
-            background-size: 200% 200%; /* For gradient animation */
-            text-shadow: 0 0 8px rgba(0,0,0,0.3); /* Subtle text shadow */
-            position: relative; /* For pseudo-elements */
-        }
-
-        /* Animated border/glow for the notification */
-        #pharmacology-update-notification::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: theme('borderRadius.3xl'); /* Match parent border radius */
-            padding: 2px; /* Thickness of the border */
-            background: linear-gradient(45deg, theme('colors.vsrep-blue-light'), theme('colors.vsrep-blue-medium'), theme('colors.vsrep-blue-dark'));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            animation: gradient-shift 4s infinite linear; /* Faster gradient shift for border */
-            z-index: -1; /* Behind the content */
-        }
-
-        /* Styles for the 4th of July message and fireworks */
-        .fireworks-container {
-            position: fixed; /* Changed to fixed */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* Allow clicks to pass through */
-            z-index: 9999; /* Higher z-index to be on top of everything */
-            background-color: transparent; /* Ensure it's transparent */
-        }
-
-        /* CSS for the Canvas-based fireworks */
-        #fireworks-canvas {
-            position: absolute; /* Position relative to .fireworks-container */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: transparent; /* Canvas background should be transparent */
-        }
-
-        .firecracker-icon {
-            animation: firecracker 1.5s infinite ease-in-out;
-            transform-origin: bottom center; /* Pivot from the bottom */
-        }
+        /* Styles for notifications */
+        /* Removed .update-notification styles as they are now handled by the modal */
     </style>
 </head>
 <body class="font-inter">
-    <!-- Fireworks Container - positioned fixed to cover the entire viewport -->
-    <div id="fireworks-display" class="fireworks-container">
-        <canvas id="fireworks-canvas"></canvas>
+    <!-- Notification Modal Overlay -->
+    <div id="notification-modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <!-- Notification Modal Content -->
+        <div id="notification-modal-content" class="bg-white rounded-3xl shadow-soft-xl w-full max-w-md p-8 relative transform scale-95 opacity-0 transition-all duration-300 ease-out">
+            <button id="close-notification-modal" class="absolute top-4 right-4 text-vsrep-gray-medium hover:text-vsrep-gray-dark text-2xl transition-colors duration-200">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="text-3xl font-extrabold text-vsrep-blue-dark mb-6 text-center">
+                <i class="fas fa-bell mr-2 text-vsrep-orange"></i> Your Updates
+            </h3>
+            <div id="notification-list" class="space-y-4">
+                <!-- Notifications will be dynamically inserted here by JS -->
+            </div>
+        </div>
     </div>
 
     <!-- Main Application Container -->
@@ -356,11 +281,11 @@
                 <!-- Login/Signup Toggle Tabs -->
                 <div class="flex justify-center mb-8 relative z-10 animate-fadeIn" style="animation-delay: 0.2s;">
                     <button id="show-login" class="px-6 py-3 rounded-l-full text-lg font-bold transition-all duration-300
-                                                 bg-vsrep-blue-dark text-white shadow-md hover:bg-vsrep-blue-medium">
+                                                     bg-vsrep-blue-dark text-white shadow-md hover:bg-vsrep-blue-medium">
                         Login
                     </button>
                     <button id="show-signup" class="px-6 py-3 rounded-r-full text-lg font-bold transition-all duration-300
-                                                 bg-vsrep-gray-medium text-white shadow-md hover:bg-vsrep-gray-dark">
+                                                     bg-vsrep-gray-medium text-white shadow-md hover:bg-vsrep-gray-dark">
                         Sign Up
                     </button>
                 </div>
@@ -401,9 +326,9 @@
                     </div>
 
                     <button type="submit" id="main-auth-button" class="w-full py-4 bg-vsrep-blue-dark text-white font-bold text-xl rounded-xl
-                                                                       shadow-lg button-shimmer overflow-hidden relative group
-                                                                       hover:bg-vsrep-blue-medium transform hover:-translate-y-1 transition-all duration-300
-                                                                       hover:shadow-button-hover-blue">
+                                                                         shadow-lg button-shimmer overflow-hidden relative group
+                                                                         hover:bg-vsrep-blue-medium transform hover:-translate-y-1 transition-all duration-300
+                                                                         hover:shadow-button-hover-blue">
                         Login
                         <span class="absolute inset-0 block bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-shimmer"></span>
                     </button>
@@ -450,31 +375,26 @@
                             </a>
                         </li>
                     </ul>
-                    <!-- Logout Button -->
-                    <div id="logout-button-container" class="mt-3 sm:mt-0 hidden">
-                        <button id="logout-button" class="bg-vsrep-red text-white py-2 px-5 rounded-lg text-lg font-medium shadow-md
-                                                         hover:bg-red-700 transform hover:-translate-y-0.5 transition-all duration-200
-                                                         hover:shadow-button-hover-red">
-                            Logout <i class="fas fa-sign-out-alt ml-2"></i>
-                        </button>
+                    <!-- Notification Bell and Logout Button -->
+                    <div class="flex items-center gap-4 mt-3 sm:mt-0">
+                        <div id="notification-bell-container" class="relative">
+                            <button id="notification-bell" class="relative p-2 rounded-full bg-vsrep-blue-medium hover:bg-vsrep-blue-dark text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-vsrep-blue-light">
+                                <i class="fas fa-bell text-xl"></i>
+                                <span id="notification-count" class="absolute top-0 right-0 -mt-1 -mr-1 bg-vsrep-red text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-vsrep-blue-dark">
+                                    2
+                                </span>
+                            </button>
+                        </div>
+                        <div id="logout-button-container" class="hidden">
+                            <button id="logout-button" class="bg-vsrep-red text-white py-2 px-5 rounded-lg text-lg font-medium shadow-md
+                                                                 hover:bg-red-700 transform hover:-translate-y-0.5 transition-all duration-200
+                                                                 hover:shadow-button-hover-red">
+                                Logout <i class="fas fa-sign-out-alt ml-2"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </nav>
-
-            <!-- New: Pharmacology Unit 3 Updates Notification -->
-            <div id="pharmacology-update-notification" class="hidden bg-gradient-to-r from-vsrep-blue-medium to-vsrep-blue-dark text-white p-4 sm:p-5 rounded-b-3xl shadow-xl
-                                                                flex items-center justify-between gap-4 animate-slideInDown relative z-30 overflow-hidden">
-                <div class="absolute inset-0 bg-white/10 opacity-20 animate-shimmer pointer-events-none"></div>
-                <div class="flex items-center flex-grow">
-                    <i class="fas fa-flask text-3xl sm:text-4xl mr-3 sm:mr-4 text-vsrep-blue-light animate-icon-bounce"></i> <!-- Changed to animate-icon-bounce -->
-                    <p class="text-lg sm:text-xl font-semibold">
-                        <span class="block sm:inline">Important Update:</span> Pharmacology Unit 3 content has been published!
-                    </p>
-                </div>
-                <button id="dismiss-pharmacology-update" class="text-vsrep-blue-light hover:text-white transition-all duration-300 text-2xl p-2 rounded-full hover:bg-white/20 hover:scale-110"> <!-- Added hover effects -->
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
 
             <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 md:py-16">
                 <!-- Welcome Section with User Name -->
@@ -482,20 +402,32 @@
                     <h1 class="text-5xl font-extrabold text-vsrep-blue-dark mb-4 leading-tight">
                         Welcome, <span id="welcome-user-name">Guest</span>!
                     </h1>
-                    <!-- New: Happy 4th of July Celebration -->
-                    <div id="fourth-of-july-message" class="relative inline-block text-4xl font-extrabold text-fourth-red mb-6 animate-fireworksPop">
-                        <span class="text-fourth-blue">Happy</span> 
-                        <span class="text-fourth-dark">4th</span> <!-- Changed to fourth-dark for better visibility -->
-                        <span class="text-fourth-red">of</span> 
-                        <span class="text-fourth-blue">July!</span>
-                        <i class="fas fa-firecracker firecracker-icon text-fourth-red text-5xl absolute -top-8 -right-8 animate-firecracker"></i>
-                        <!-- Sparkles for the text -->
-                        <span class="sparkle text-fourth-red sparkle-1"></span>
-                        <span class="sparkle text-fourth-blue sparkle-2"></span>
-                        <span class="sparkle text-fourth-red sparkle-3"></span>
-                        <span class="sparkle text-fourth-blue sparkle-4"></span>
-                        <span class="sparkle text-fourth-red sparkle-5"></span>
+                    
+                    <!-- Semester Countdown -->
+                    <div class="mt-8 mb-6 p-6 bg-gradient-to-r from-vsrep-blue-medium to-vsrep-blue-dark text-white rounded-2xl shadow-lg transform hover:scale-[1.01] transition-transform duration-300">
+                        <h2 class="text-3xl font-bold mb-4 flex items-center justify-center">
+                            <i class="fas fa-hourglass-half mr-3 text-vsrep-blue-light"></i>Semester Ends In:
+                        </h2>
+                        <div id="countdown" class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                            <div class="p-4 bg-white/20 rounded-lg shadow-inner backdrop-blur-sm">
+                                <div id="countdown-days" class="text-4xl sm:text-5xl font-extrabold text-vsrep-blue-light drop-shadow-md">00</div>
+                                <div class="text-sm sm:text-base text-vsrep-blue-light/80 mt-1">Days</div>
+                            </div>
+                            <div class="p-4 bg-white/20 rounded-lg shadow-inner backdrop-blur-sm">
+                                <div id="countdown-hours" class="text-4xl sm:text-5xl font-extrabold text-vsrep-blue-light drop-shadow-md">00</div>
+                                <div class="text-sm sm:text-base text-vsrep-blue-light/80 mt-1">Hours</div>
+                            </div>
+                            <div class="p-4 bg-white/20 rounded-lg shadow-inner backdrop-blur-sm">
+                                <div id="countdown-minutes" class="text-4xl sm:text-5xl font-extrabold text-vsrep-blue-light drop-shadow-md">00</div>
+                                <div class="text-sm sm:text-base text-vsrep-blue-light/80 mt-1">Minutes</div>
+                            </div>
+                            <div class="p-4 bg-white/20 rounded-lg shadow-inner backdrop-blur-sm">
+                                <div id="countdown-seconds" class="text-4xl sm:text-5xl font-extrabold text-vsrep-blue-light drop-shadow-md">00</div>
+                                <div class="text-sm sm:text-base text-vsrep-blue-light/80 mt-1">Seconds</div>
+                            </div>
+                        </div>
                     </div>
+
                     <p class="text-vsrep-gray-medium text-xl max-w-2xl mx-auto">
                         Your central hub for support, scheduling, and student resources.
                     </p>
@@ -669,13 +601,19 @@
         const confirmPasswordGroup = document.getElementById('confirm-password-group'); 
         const welcomeUserName = document.getElementById('welcome-user-name'); 
 
-        // New: Pharmacology update notification elements
-        const pharmacologyUpdateNotification = document.getElementById('pharmacology-update-notification');
-        const dismissPharmacologyUpdateBtn = document.getElementById('dismiss-pharmacology-update');
+        // Notification Bell and Modal elements
+        const notificationBell = document.getElementById('notification-bell');
+        const notificationCount = document.getElementById('notification-count');
+        const notificationModalOverlay = document.getElementById('notification-modal-overlay');
+        const notificationModalContent = document.getElementById('notification-modal-content');
+        const closeNotificationModalBtn = document.getElementById('close-notification-modal');
+        const notificationList = document.getElementById('notification-list');
 
-        // New: 4th of July elements
-        const fourthOfJulyMessage = document.getElementById('fourth-of-july-message');
-        const fireworksDisplay = document.getElementById('fireworks-display'); // This is the container for the canvas
+        // Countdown elements
+        const countdownDays = document.getElementById('countdown-days');
+        const countdownHours = document.getElementById('countdown-hours');
+        const countdownMinutes = document.getElementById('countdown-minutes');
+        const countdownSeconds = document.getElementById('countdown-seconds');
 
         let isLoginMode = true; // Track current mode (login by default)
 
@@ -820,196 +758,130 @@
             return isValid;
         }
 
-        // --- Fireworks Animation Logic (Canvas-based) ---
-        const canvas = document.getElementById('fireworks-canvas');
-        const ctx = canvas.getContext('2d');
-        let fireworks = [];
-        let particles = [];
-        let hue = 0; // For color cycling
-        let fireworkAnimationId; // To store the requestAnimationFrame ID
+        // --- Countdown Logic ---
+        const semesterEndDate = new Date('July 24, 2025 17:00:00').getTime();
 
-        // Function to resize canvas
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = semesterEndDate - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("countdown").innerHTML = "<p class='text-xl font-bold'>Semester Ended!</p>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownDays.textContent = days.toString().padStart(2, '0');
+            countdownHours.textContent = hours.toString().padStart(2, '0');
+            countdownMinutes.textContent = minutes.toString().padStart(2, '0');
+            countdownSeconds.textContent = seconds.toString().padStart(2, '0');
         }
 
-        // Particle class for firework trails and explosions
-        class Particle {
-            constructor(x, y, hue, isFirework = false) {
-                this.x = x;
-                this.y = y;
-                this.isFirework = isFirework; // True for the main firework rocket, false for explosion particles
-                this.hue = hue;
-                this.brightness = 0;
-                this.alpha = 1;
-                this.decay = Math.random() * 0.015 + 0.01; // How fast the particle fades
+        let countdownInterval;
 
-                if (isFirework) {
-                    this.angle = Math.PI / 2; // Always shoot upwards
-                    this.speed = Math.random() * 10 + 5;
-                    this.velocity = {
-                        x: Math.cos(this.angle) * this.speed,
-                        y: Math.sin(this.angle) * this.speed * -1 // Negative for upwards movement
-                    };
-                    this.friction = 0.99; // Slow down slightly
-                    this.gravity = 0.5; // Pull down
-                    this.size = 3;
-                } else {
-                    this.angle = Math.random() * Math.PI * 2; // Random direction for explosion
-                    this.speed = Math.random() * 10 + 1;
-                    this.velocity = {
-                        x: Math.cos(this.angle) * this.speed,
-                        y: Math.sin(this.angle) * this.speed
-                    };
-                    this.friction = 0.95; // More friction for explosion particles
-                    this.gravity = 0.2;
-                    this.size = Math.random() * 2 + 1;
+        // --- Notification Logic ---
+        let notifications = [
+            { id: 'pharmacology', icon: 'fas fa-flask', title: 'Important Update:', message: 'Pharmacology Unit 3 content has been published!', dismissed: false },
+            { id: 'medical-surgical', icon: 'fas fa-notes-medical', title: 'New Resources!', message: 'Medical Surgical page has new study materials.', dismissed: false }
+        ];
+
+        // Load dismissed state from localStorage
+        function loadDismissedNotifications() {
+            const dismissedState = JSON.parse(localStorage.getItem('dismissedNotifications') || '{}');
+            notifications.forEach(notif => {
+                if (dismissedState[notif.id]) {
+                    notif.dismissed = true;
                 }
-            }
-
-            update() {
-                if (this.isFirework) {
-                    this.velocity.x *= this.friction;
-                    this.velocity.y *= this.friction;
-                    this.velocity.y += this.gravity; // Apply gravity
-                    this.x += this.velocity.x;
-                    this.y += this.velocity.y;
-                    this.brightness = Math.random() * 50 + 50; // Brighter for firework trail
-                } else {
-                    this.velocity.x *= this.friction;
-                    this.velocity.y *= this.friction;
-                    this.velocity.y += this.gravity;
-                    this.x += this.velocity.x;
-                    this.y += this.velocity.y;
-                    this.alpha -= this.decay; // Fade out
-                    this.brightness = Math.random() * 30 + 50; // Explosion particles get dimmer
-                }
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`;
-                ctx.fill();
-            }
+            });
         }
 
-        // Firework class (main rocket before explosion)
-        class Firework extends Particle {
-            constructor(startX, startY, targetX, targetY) {
-                super(startX, startY, hue, true); // Call Particle constructor with isFirework = true
-                this.targetX = targetX;
-                this.targetY = targetY;
-                // Calculate distance to target for accurate explosion timing
-                this.distanceToTarget = Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2));
-                this.angle = Math.atan2(targetY - startY, targetX - startX);
-                this.speed = 10;
-                this.velocity = {
-                    x: Math.cos(this.angle) * this.speed,
-                    y: Math.sin(this.angle) * this.speed
-                };
-                this.trail = []; // For the visual trail behind the firework
-                this.trailLength = 5;
+        // Save dismissed state to localStorage
+        function saveDismissedNotifications() {
+            const dismissedState = {};
+            notifications.forEach(notif => {
+                dismissedState[notif.id] = notif.dismissed;
+            });
+            localStorage.setItem('dismissedNotifications', JSON.stringify(dismissedState));
+        }
+
+        // Function to render notifications in the modal
+        function renderNotifications() {
+            notificationList.innerHTML = ''; // Clear previous notifications
+            let activeNotificationsCount = 0;
+
+            notifications.forEach(notif => {
+                if (!notif.dismissed) {
+                    activeNotificationsCount++;
+                    const notificationItem = document.createElement('div');
+                    notificationItem.id = `notification-item-${notif.id}`;
+                    notificationItem.className = 'bg-vsrep-blue-light/50 p-4 rounded-lg border border-vsrep-gray-light flex items-start space-x-3 transition-all duration-300 ease-in-out transform hover:scale-[1.01] hover:shadow-md';
+                    notificationItem.innerHTML = `
+                        <i class="${notif.icon} text-vsrep-blue-medium text-2xl mt-1"></i>
+                        <div class="flex-grow">
+                            <h4 class="text-lg font-bold text-vsrep-blue-dark mb-1">${notif.title}</h4>
+                            <p class="text-vsrep-gray-medium text-sm">${notif.message}</p>
+                        </div>
+                        <button data-notification-id="${notif.id}" class="dismiss-notification-btn text-vsrep-gray-medium hover:text-vsrep-red transition-colors duration-200 text-xl p-1 rounded-full hover:bg-red-100">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    notificationList.appendChild(notificationItem);
+                }
+            });
+
+            // Update the bell count
+            notificationCount.textContent = activeNotificationsCount;
+            if (activeNotificationsCount > 0) {
+                notificationBell.classList.remove('hidden');
+                notificationCount.classList.remove('hidden');
+            } else {
+                notificationBell.classList.add('hidden');
+                notificationCount.classList.add('hidden');
             }
 
-            update() {
-                // Add current position to trail
-                this.trail.push({ x: this.x, y: this.y, alpha: 1 });
-                if (this.trail.length > this.trailLength) {
-                    this.trail.shift(); // Remove oldest trail point
-                }
+            // Add event listeners to newly rendered dismiss buttons
+            document.querySelectorAll('.dismiss-notification-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const idToDismiss = e.currentTarget.dataset.notificationId;
+                    dismissNotification(idToDismiss);
+                });
+            });
+        }
 
-                // Update firework position
-                this.x += this.velocity.x;
-                this.y += this.velocity.y;
-
-                // Check if target reached (or passed)
-                const distanceTraveled = Math.sqrt(Math.pow(this.x - this.trail[0].x, 2) + Math.pow(this.y - this.trail[0].y, 2));
-                if (distanceTraveled >= this.distanceToTarget || this.y <= this.targetY) {
-                    this.explode();
-                    return true; // Indicate that this firework should be removed
-                }
-                return false; // Firework still active
-            }
-
-            draw() {
-                // Draw trail - THIS IS NOW REMOVED FOR INSTANT DISAPPEARANCE
-                // for (let i = 0; i < this.trail.length; i++) {
-                //     const p = this.trail[i];
-                //     ctx.beginPath();
-                //     ctx.arc(p.x, p.y, this.size * (i / this.trailLength), 0, Math.PI * 2);
-                //     ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${p.alpha * (i / this.trailLength)})`;
-                //     ctx.fill();
-                // }
-
-                // Draw main firework dot
-                super.draw();
-            }
-
-            explode() {
-                const particleCount = Math.random() * 100 + 50; // 50 to 150 particles
-                for (let i = 0; i < particleCount; i++) {
-                    particles.push(new Particle(this.x, this.y, this.hue, false));
-                }
+        function dismissNotification(id) {
+            const index = notifications.findIndex(notif => notif.id === id);
+            if (index !== -1) {
+                notifications[index].dismissed = true;
+                saveDismissedNotifications();
+                renderNotifications(); // Re-render to remove the dismissed notification
             }
         }
 
-        // Animation loop for Canvas fireworks
-        function animateFireworks() {
-            fireworkAnimationId = requestAnimationFrame(animateFireworks);
-
-            // Clear canvas completely each frame to remove trails
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            hue += 0.5; // Cycle colors
-
-            // Update and draw fireworks
-            for (let i = fireworks.length - 1; i >= 0; i--) {
-                const firework = fireworks[i];
-                if (firework.update()) {
-                    fireworks.splice(i, 1); // Remove exploded firework
-                } else {
-                    firework.draw();
-                }
-            }
-
-            // Update and draw particles
-            for (let i = particles.length - 1; i >= 0; i--) {
-                const particle = particles[i];
-                particle.update();
-                particle.draw();
-                if (particle.alpha <= particle.decay) {
-                    particles.splice(i, 1); // Remove faded particle
-                }
-            }
-
-            // Launch new fireworks periodically
-            if (Math.random() < 0.05 && fireworks.length < 5) { // Limit concurrent fireworks
-                const startX = canvas.width / 2; // Always start from bottom center
-                const startY = canvas.height;
-                const targetX = Math.random() * canvas.width;
-                const targetY = Math.random() * canvas.height / 2; // Target in upper half
-                fireworks.push(new Firework(startX, startY, targetX, targetY));
-            }
+        // Modal show/hide functions
+        function showModal() {
+            notificationModalOverlay.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                notificationModalOverlay.classList.add('opacity-100');
+                notificationModalContent.classList.remove('scale-95', 'opacity-0');
+                notificationModalContent.classList.add('scale-100', 'opacity-100');
+            });
+            renderNotifications(); // Render notifications when showing the modal
         }
 
-        // Function to start the Canvas fireworks animation
-        function startCanvasFireworks() {
-            resizeCanvas(); // Ensure canvas is sized correctly
-            fireworksDisplay.style.display = 'block'; // Show the fireworks container
-            fireworkAnimationId = requestAnimationFrame(animateFireworks);
+        function hideModal() {
+            notificationModalOverlay.classList.remove('opacity-100');
+            notificationModalContent.classList.remove('scale-100', 'opacity-100');
+            notificationModalContent.classList.add('scale-95', 'opacity-0');
+            // Use a timeout to ensure the transition completes before hiding
+            setTimeout(() => {
+                notificationModalOverlay.classList.add('hidden');
+            }, 300); // Matches transition duration
         }
-
-        // Function to stop the Canvas fireworks animation
-        function stopCanvasFireworks() {
-            cancelAnimationFrame(fireworkAnimationId); // Stop the animation loop
-            fireworks = []; // Clear all active fireworks
-            particles = []; // Clear all active particles
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-            fireworksDisplay.style.display = 'none'; // Hide the fireworks container
-        }
-
 
         // Function to show/hide content based on authentication state
         function updateUI(user) {
@@ -1020,12 +892,15 @@
                 appContent.classList.add('visible');
                 logoutButtonContainer.classList.remove('hidden'); 
 
-                // Show the pharmacology update notification after successful login
-                pharmacologyUpdateNotification.classList.remove('hidden');
+                // Load and render notifications for logged-in user
+                loadDismissedNotifications();
+                renderNotifications();
 
-                // Show the 4th of July message and start fireworks
-                fourthOfJulyMessage.classList.remove('hidden');
-                startCanvasFireworks(); // Start the Canvas-based fireworks
+                // Start the countdown
+                if (countdownInterval) clearInterval(countdownInterval); // Clear any existing interval
+                updateCountdown(); // Initial call to display immediately
+                countdownInterval = setInterval(updateCountdown, 1000);
+
 
                 // Update welcome message with user email
                 welcomeUserName.textContent = user.email || 'User'; // Fallback to 'User' if email is null/empty
@@ -1037,11 +912,13 @@
                 appContent.classList.remove('visible');
                 logoutButtonContainer.classList.add('hidden'); 
 
-                // Hide the pharmacology update notification when logged out
-                pharmacologyUpdateNotification.classList.add('hidden');
-                // Hide the 4th of July message and stop fireworks
-                fourthOfJulyMessage.classList.add('hidden');
-                stopCanvasFireworks(); // Stop the Canvas-based fireworks
+                // Hide the notification bell and modal when logged out
+                notificationBell.classList.add('hidden');
+                notificationCount.classList.add('hidden');
+                hideModal(); // Ensure modal is hidden
+
+                // Stop the countdown
+                if (countdownInterval) clearInterval(countdownInterval);
 
                 welcomeUserName.textContent = 'Guest';
                 displayAuthMessage('', false); // Clear any messages on logout/initial load
@@ -1148,16 +1025,24 @@
             }
         });
 
-        // Dismiss pharmacology update notification
-        dismissPharmacologyUpdateBtn.addEventListener('click', () => {
-            pharmacologyUpdateNotification.classList.add('hidden');
+        // Event listeners for the new notification system
+        notificationBell.addEventListener('click', showModal);
+        closeNotificationModalBtn.addEventListener('click', hideModal);
+        notificationModalOverlay.addEventListener('click', (e) => {
+            if (e.target === notificationModalOverlay) {
+                hideModal();
+            }
         });
 
         // --- Link Handling Logic ---
         document.addEventListener('DOMContentLoaded', function () {
             // Initial setup of auth mode
             setAuthMode('login');
-            resizeCanvas(); // Initial resize of the fireworks canvas
+            // Initial call to update the countdown
+            updateCountdown();
+            // Initial load and render of notifications (for the bell icon count)
+            loadDismissedNotifications();
+            renderNotifications();
 
             // Select all links within the #app-content that are not the logout button
             const appContentLinks = document.querySelectorAll('#app-content a:not(#logout-button)');
@@ -1178,9 +1063,6 @@
                     // If the user IS authenticated, the link's default behavior will proceed as normal.
                 });
             });
-
-            // Add resize listener for the canvas
-            window.addEventListener('resize', resizeCanvas);
         });
     </script>
 </body>
