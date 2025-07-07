@@ -1,0 +1,3169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedSurg 1 Perfusion SDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #3498db;
+            --primary-dark-blue: #2980b9;
+            --secondary-orange: #f39c12;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #ecf0f1;
+            --bg-white: #FFFFFF;
+            --border-light: #e0e4eb;
+            --success-green: #2ecc71;
+            --danger-red: #e74c3c;
+            --shadow-color: rgba(44, 62, 80, 0.1);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            box-sizing: border-box;
+        }
+
+        .quiz-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .quiz-header {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            padding: 0.75rem 2rem;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            position: absolute;
+            left: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
+        .animated-icon {
+            position: absolute;
+            right: 0;
+            animation: inspect 4s ease-in-out infinite;
+        }
+
+        .animated-icon svg { width: 30px; height: 30px; fill: var(--primary-blue); }
+        .quiz-header h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+        .version-info { font-size: 0.7rem; color: var(--text-light); margin-top: 0.2rem; }
+        
+        .quiz-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        #initial-screen { text-align: center; padding: 2rem; }
+        #initial-screen h2 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-dark-blue); }
+        #initial-screen p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 1rem auto 2rem auto; color: var(--text-light); }
+        #start-btn { background-color: var(--primary-blue); color: white; padding: 1rem 2.5rem; font-size: 1.1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
+        #start-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+        
+        #quiz-form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 15px 40px var(--shadow-color);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            box-sizing: border-box;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        
+        #quiz-form.is-transitioning { opacity: 0; transform: scale(0.98); }
+
+        .question-header { font-size: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; flex-shrink: 0; border-bottom: 1px dashed var(--border-light); color: var(--text-light); font-weight: 500; }
+        .question-header strong { font-weight: 700; color: var(--primary-blue); }
+        .question-text { font-size: 1.25rem; font-weight: 500; line-height: 1.6; margin-top: 0; margin-bottom: 1rem; flex-shrink: 0; }
+        
+        .options-container { 
+            flex-grow: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0.5rem 0;
+        }
+
+        .options-container label { padding: 0.8rem 1.2rem; margin-bottom: 0.75rem; font-size: 1rem; border: 2px solid var(--border-light); border-radius: 10px; display: flex; align-items: center; transition: all 0.2s ease-in-out; cursor: pointer; }
+        .options-container label:hover { background-color: var(--bg-light); border-color: var(--primary-blue); }
+        .options-container input { margin-right: 1rem; flex-shrink: 0; transform: scale(1.2); accent-color: var(--primary-blue); }
+        
+        .question-footer { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .flag-container label { cursor: pointer; font-weight: 500; color: var(--text-light); display: flex; align-items: center; }
+        .flag-container input { margin-right: 0.5rem; }
+        .confidence-slider-container { display: flex; align-items: center; gap: 1rem; }
+        .confidence-slider-container label { font-weight: 500; color: var(--text-light); }
+        .confidence-slider { max-width: 150px; }
+
+        #navigation-btn { padding: 0.8rem 2rem; font-size: 1rem; background-color: var(--primary-blue); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        #navigation-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+
+        #results-area { animation: fadeIn 0.8s ease-out; box-sizing: border-box; width: 100%; height: 100%; overflow-y: auto; padding: 2rem; }
+        .results-summary, #confidence-analysis, #study-focus, #results-details { background-color: var(--bg-white); margin: 0 auto 2rem auto; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px var(--shadow-color); max-width: 1000px; }
+        .results-summary { text-align: center; }
+
+        .score-animation-container { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--primary-blue); display: flex; justify-content: center; align-items: center; margin: 1.5rem auto; position: relative; background-color: var(--bg-white); }
+        .score-animation-circle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--success-green) 0% 0%, var(--border-light) 0% 100%); transition: background 1.5s ease-out; }
+        .score-animation-inner { position: relative; z-index: 2; background-color: var(--bg-white); width: calc(100% - 16px); height: calc(100% - 16px); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .score-animation-text { font-size: 2.5rem; font-weight: 800; color: var(--text-dark); }
+        
+        #confidence-analysis h3, #study-focus h3, #results-details h2 { margin-top: 0; border-bottom: 2px solid; padding-bottom: 1rem; font-size: 1.5rem; margin-bottom: 1.5rem; }
+        #confidence-analysis h3 { color: var(--primary-dark-blue); border-color: var(--primary-blue); }
+        #study-focus h3 { color: #c0392b; border-color: #e74c3c; }
+        #results-details h2 { color: var(--text-dark); border-color: var(--border-light); }
+        
+        .result-question { border: 1px solid var(--border-light); padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 12px; }
+        .result-question p strong { display: block; margin-bottom: 1rem; font-size: 1.1em; color: var(--text-dark); }
+        .result-question ul { list-style-type: none; padding: 0; margin: 0; }
+        .result-question li { padding: 0.8rem 1.2rem; border-radius: 8px; margin-bottom: 0.6rem; font-size: 1rem; }
+        .correct-answer-label { background-color: var(--light-green-bg); color: #27ae60; font-weight: 600; }
+        .incorrect-answer-label { background-color: var(--light-red-bg); color: var(--danger-red); text-decoration: line-through; }
+        .missed-correct-answer-label { border: 2px dashed var(--success-green); }
+        .rationale { margin-top: 1.5rem; padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--primary-blue); background-color: var(--light-blue-bg); font-size: 0.95rem; }
+
+        .hidden { display: none !important; }
+        .confetti { position: fixed; width: 10px; height: 10px; opacity: 0; animation: confetti-fall 5s linear forwards; border-radius: 50%; z-index: 9999; }
+        @keyframes confetti-fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+        @keyframes inspect { 0% { transform: rotate(-15deg); } 50% { transform: rotate(10deg); } 100% { transform: rotate(-15deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-wrapper">
+        <header class="quiz-header">
+            <div class="header-content">
+                <div class="logo">VSREP</div>
+                <div>
+                    <h1>MedSurg 1 Perfusion/Clotting - SDE</h1>
+                    <div class="version-info">
+                        <span>Engine: V4.0</span> | <span>Test: V1.0</span>
+                    </div>
+                </div>
+                <div class="animated-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-content">
+            <div id="initial-screen">
+                <h2>Welcome to the Diagnostic Exam</h2>
+                <p>You will be presented with one question at a time. Once you answer, you cannot go back. Please read each question carefully before proceeding.</p>
+                <button id="start-btn">Start Exam</button>
+            </div>
+
+            <form id="quiz-form" class="hidden"></form>
+
+            <div id="results-area" class="hidden"></div>
+        </main>
+    </div>
+
+<script>
+    const fullQuizData = [ 
+     {
+        "questionText": "The nurse is preparing to educate a client on factors essential for optimal perfusion. Which components should the nurse include in this teaching? (Select all that apply.)",
+        "options": {
+            "A": "The heart must generate sufficient cardiac output.",
+            "B": "Blood vessels must be patent.",
+            "C": "Oxygen and nutrients must be delivered to cells.",
+            "D": "Waste products must be effectively discarded from cells.",
+            "E": "The respiratory system is solely responsible for oxygenating blood."
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "Optimal perfusion requires the heart to generate sufficient cardiac output, patent blood vessels, delivery of nutrients and oxygen to cells, and the discarding of waste products. While the respiratory system is crucial for oxygenation, the cardiovascular system is primarily responsible for blood flow and perfusion.",
+        "type": "sata",
+        "section": "Perfusion Definition and Scope"
+    },
+    {
+        "questionText": "A nurse is explaining central perfusion to a nursing student. Which statement best describes central perfusion?",
+        "options": {
+            "A": "It is the blood flow through arteries and capillaries to target tissues.",
+            "B": "It refers to the action of the heart and large vessels to deliver oxygenated blood to body organs and tissues.",
+            "C": "It is primarily influenced by localized arterial constriction or occlusion.",
+            "D": "It is the process by which oxygen diffuses into the blood within the alveoli."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Central perfusion refers to the action of the heart and large vessels to deliver oxygenated blood to the body organs and tissues. Tissue perfusion (A) is blood flow to target tissues. Localized arterial issues (C) affect tissue perfusion. Oxygen diffusion in alveoli (D) is gas exchange, which interacts with perfusion but is not central perfusion itself.",
+        "type": "mc",
+        "section": "Central Perfusion"
+    },
+    {
+        "questionText": "The nurse is reviewing the cardiac cycle. Which events occur during the systole phase? (Select all that apply.)",
+        "options": {
+            "A": "Ventricles contract.",
+            "B": "Mitral and tricuspid valves close.",
+            "C": "Aortic and pulmonic valves open.",
+            "D": "Ventricles fill with blood.",
+            "E": "Blood is ejected into the aorta and pulmonary arteries."
+        },
+        "correctAnswer": ["A", "B", "C", "E"],
+        "rationale": "During systole, the ventricles contract (A), creating pressure that closes the mitral and tricuspid valves (B) to prevent backflow. This pressure forces the aortic and pulmonic valves to open (C), leading to the ejection of blood into the aorta and pulmonary arteries (E). Ventricular filling (D) occurs during diastole.",
+        "type": "sata",
+        "section": "Cardiac Cycle"
+    },
+    {
+        "questionText": "A client's cardiac output is 3 L/min. The nurse understands that this finding indicates:",
+        "options": {
+            "A": "Optimal cardiac output for an adult.",
+            "B": "An elevated cardiac output, indicating hypervolemia.",
+            "C": "A reduced cardiac output, as the normal range is 4 to 6 L/min.",
+            "D": "An expected cardiac output for a resting adult."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Normal cardiac output in an adult ranges from 4 to 6 L/min. A cardiac output of 3 L/min is below the normal range, indicating reduced cardiac output.",
+        "type": "mc",
+        "section": "Cardiac Output"
+    },
+    {
+        "questionText": "Which factors directly influence stroke volume? (Select all that apply.)",
+        "options": {
+            "A": "Heart rate",
+            "B": "Preload",
+            "C": "Contractility",
+            "D": "Afterload",
+            "E": "Age"
+        },
+        "correctAnswer": ["B", "C", "D"],
+        "rationale": "Stroke volume is affected by preload, contractility, and afterload. Heart rate (A) is a component of cardiac output (SV x HR) but does not directly influence stroke volume itself. Age (E) influences heart rate and overall cardiac efficiency but is not a direct variable influencing stroke volume.",
+        "type": "sata",
+        "section": "Cardiac Output"
+    },
+    {
+        "questionText": "The nurse is caring for an older adult client. Which age-related physiological changes increase this client's risk for impaired perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Stiffening and thickening of myocardial tissue.",
+            "B": "Increased elasticity of arterial walls.",
+            "C": "Calcification and fibrosis of heart valves.",
+            "D": "More efficient valves in the veins.",
+            "E": "Decreased cardiac efficiency during exercise."
+        },
+        "correctAnswer": ["A", "C", "E"],
+        "rationale": "Age-related changes in older adults include stiffening and thickening of myocardial tissue (A), calcification and fibrosis of heart valves (C), and decreased cardiac efficiency (E) during exercise. Decreased elasticity of arterial walls (B, opposite of the option) and less efficient valves in the veins (D, opposite of the option) are also age-related changes that impair perfusion.",
+        "type": "sata",
+        "section": "Age-Related Differences in Perfusion"
+    },
+    {
+        "questionText": "A client is experiencing hypovolemic shock due to severe dehydration. The nurse anticipates the body's compensatory mechanisms will include:",
+        "options": {
+            "A": "Vasodilation to increase blood flow.",
+            "B": "Decreased heart rate to conserve energy.",
+            "C": "Release of antidiuretic hormone.",
+            "D": "Decreased systemic vascular resistance."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "In response to low intravascular volume (hypovolemia), baroreceptors detect reduced pressure and trigger compensatory mechanisms such as vasoconstriction, increased heart rate, and antidiuretic hormone release. Vasodilation (A) and decreased heart rate (B) would worsen hypovolemia. Decreased SVR (D) would also be detrimental.",
+        "type": "mc",
+        "section": "Impaired Central Perfusion - Intravascular Volume"
+    },
+    {
+        "questionText": "Which conditions can lead to impaired central perfusion due to reduced myocardial contraction? (Select all that apply.)",
+        "options": {
+            "A": "Myocardial ischemia",
+            "B": "Congenital heart defects",
+            "C": "Inflammation of the heart muscle",
+            "D": "Ventricular fibrillation",
+            "E": "Atherosclerosis"
+        },
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "Reduced myocardial contraction can be caused by myocardial ischemia or infarction (A), congenital defects (B), or inflammation/infection of the heart muscle or pericardial sac (C). Ventricular fibrillation (D) is an altered conduction problem. Atherosclerosis (E) primarily affects SVR and can lead to myocardial ischemia, but it's not a direct cause of reduced myocardial contraction itself.",
+        "type": "sata",
+        "section": "Impaired Central Perfusion - Myocardial Contraction"
+    },
+    {
+        "questionText": "A client with peripheral artery disease reports leg pain that is relieved with rest. The nurse documents this finding as:",
+        "options": {
+            "A": "Rest pain",
+            "B": "Pleurisy",
+            "C": "Intermittent claudication",
+            "D": "Angina equivalent"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Intermittent claudication is pain in the legs when walking that is relieved with rest, indicating inadequate blood supply to meet muscle demands during exertion. Rest pain (A) is leg pain while walking that is not relieved with rest. Pleurisy (B) is chest pain often associated with pulmonary embolism. Angina equivalent (D) is not a term used in the provided text.",
+        "type": "mc",
+        "section": "Assessment - Pain (Peripheral Arterial Disease)"
+    },
+    {
+        "questionText": "The nurse is assessing a client who reports dizziness upon standing. The nurse suspects orthostatic hypotension if which vital sign change is observed?",
+        "options": {
+            "A": "A 10 mm Hg drop in systolic blood pressure.",
+            "B": "A 20-30 mm Hg drop in systolic blood pressure.",
+            "C": "An increase in diastolic blood pressure.",
+            "D": "No change in blood pressure, but an increased heart rate."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Orthostatic hypotension is defined as a 20- to 30-mm Hg drop in systolic blood pressure when a patient moves from a lying to a sitting or standing position. Options A, C, and D do not meet this specific definition.",
+        "type": "mc",
+        "section": "Assessment - Dizziness"
+    },
+    {
+        "questionText": "A client with suspected heart failure reports having to sleep propped up with several pillows. The nurse understands this is a compensatory mechanism for which symptom?",
+        "options": {
+            "A": "Peripheral edema",
+            "B": "Intermittent claudication",
+            "C": "Dyspnea",
+            "D": "Syncope"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Patients with heart failure often report having to sleep sitting up or using several pillows to prop themselves up during the night due to pulmonary edema interfering with oxygen diffusion, leading to dyspnea. Peripheral edema (A) is a symptom of right-sided heart failure but not directly alleviated by propping up. Intermittent claudication (B) is leg pain related to PAD. Syncope (D) is transient loss of consciousness.",
+        "type": "mc",
+        "section": "Assessment - Dyspnea"
+    },
+    {
+        "questionText": "Which physical assessment findings indicate impaired tissue perfusion in the extremities? (Select all that apply.)",
+        "options": {
+            "A": "Warm skin temperature.",
+            "B": "Capillary refill greater than 2 seconds.",
+            "C": "Presence of hair on the legs.",
+            "D": "Cool skin temperature (poikilothermia).",
+            "E": "Diminished or barely palpable peripheral pulses (1+)."
+        },
+        "correctAnswer": ["B", "D", "E"],
+        "rationale": "Impaired tissue perfusion is indicated by capillary refill greater than 2 seconds (B), cool skin temperature (poikilothermia) (D), and diminished or barely palpable peripheral pulses (1+) (E). Warm skin (A) and presence of hair (C) are typically signs of adequate perfusion.",
+        "type": "sata",
+        "section": "Physical Examination - Extremities"
+    },
+    {
+        "questionText": "The nurse is palpating a client's peripheral pulses and notes a pulse strength of 4+. The nurse interprets this finding as indicative of:",
+        "options": {
+            "A": "Poor perfusion or fluid/blood loss.",
+            "B": "Fluid excess or overload.",
+            "C": "Normal perfusion.",
+            "D": "An absent pulse."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "A bounding pulse (4+) indicates fluid overload or fluid excess. An absent pulse is 0 (D). A diminished or barely palpable pulse (1+) indicates poor perfusion or fluid/blood loss (A). A full or strong pulse (3+) indicates fluid excess.",
+        "type": "mc",
+        "section": "Physical Examination - Peripheral Pulses"
+    },
+    {
+        "questionText": "A client presents with chest pain. Which laboratory findings are highly specific for cardiac damage and would be elevated after myocardial injury? (Select all that apply.)",
+        "options": {
+            "A": "Creatine kinase (CK-MB)",
+            "B": "Cardiac troponins",
+            "C": "Myoglobin",
+            "D": "Homocysteine (Hcy)",
+            "E": "C-reactive protein (CRP)"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Cardiac troponins (B) are myocardial muscle proteins released after myocardial injury and have a high specificity for cardiac damage. CK-MB (A) and Myoglobin (C) are also elevated but troponins are highlighted for their high specificity. Hcy (D) and CRP (E) are risk factors or indicators of inflammation, not specific markers of cardiac damage.",
+        "type": "sata",
+        "section": "Diagnostic Tests - Cardiac Enzymes/Markers"
+    },
+    {
+        "questionText": "A nurse is teaching a client about modifiable risk factors for impaired perfusion. Which topics should the nurse include? (Select all that apply.)",
+        "options": {
+            "A": "Smoking cessation",
+            "B": "Age",
+            "C": "Sedentary lifestyle",
+            "D": "Genetics",
+            "E": "Elevated serum lipids"
+        },
+        "correctAnswer": ["A", "C", "E"],
+        "rationale": "Modifiable risk factors include smoking (A), sedentary lifestyle (C), and elevated serum lipids (E). Age (B) and genetics (D) are unmodifiable risk factors.",
+        "type": "sata",
+        "section": "Risk Factors - Modifiable"
+    },
+    {
+        "questionText": "The nurse is providing primary prevention education for cardiovascular disease. Which dietary recommendations should be included? (Select all that apply.)",
+        "options": {
+            "A": "Limit intake of fruits and vegetables.",
+            "B": "Choose foods low in sodium and trans fats.",
+            "C": "Select lower fat dairy products.",
+            "D": "Consume red meat frequently.",
+            "E": "Limit sugar-sweetened beverages."
+        },
+        "correctAnswer": ["B", "C", "E"],
+        "rationale": "Primary prevention dietary recommendations include choosing foods low in sodium, saturated fat, and trans fats (B), selecting lower fat dairy products (C), and limiting sugar-sweetened beverages (E). Limiting fruits and vegetables (A) and consuming red meat frequently (D) are contrary to heart-healthy dietary guidelines.",
+        "type": "sata",
+        "section": "Primary Prevention - Nutrition"
+    },
+    {
+        "questionText": "A client is prescribed a positive inotrope. The nurse understands that this medication will have which effect on the heart?",
+        "options": {
+            "A": "Decrease myocardial contraction strength.",
+            "B": "Increase the diameter of blood vessels.",
+            "C": "Increase myocardial contraction strength.",
+            "D": "Promote the formation and excretion of urine."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Positive inotropes increase myocardial contraction strength. Vasodilators (B) increase blood vessel diameter. Diuretics (D) promote urine formation and excretion. Option A is the opposite effect.",
+        "type": "mc",
+        "section": "Pharmacotherapy - Positive Inotropes"
+    },
+    {
+        "questionText": "Which medications are classified as antiplatelet agents? (Select all that apply.)",
+        "options": {
+            "A": "Heparin",
+            "B": "Aspirin",
+            "C": "Warfarin sodium",
+            "D": "Clopidogrel",
+            "E": "Dabigatran"
+        },
+        "correctAnswer": ["B", "D"],
+        "rationale": "Aspirin (B) and clopidogrel (D) are antiplatelet agents that prevent platelets from aggregating. Heparin (A), warfarin sodium (C), and dabigatran (E) are anticoagulants, which prevent blood clotting at different points in the clotting cascade.",
+        "type": "sata",
+        "section": "Pharmacotherapy - Antiplatelet Agents"
+    },
+    {
+        "questionText": "A client is experiencing ventricular fibrillation. The nurse anticipates which emergency procedure will be performed?",
+        "options": {
+            "A": "Synchronized cardioversion",
+            "B": "Insertion of a permanent pacemaker",
+            "C": "Defibrillation",
+            "D": "Administration of a positive inotrope"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Defibrillation (C) is used for emergency treatment during cardiac arrest when ventricular fibrillation or ventricular tachycardia is present. Synchronized cardioversion (A) is for nonemergent conversion of abnormal rhythms like ventricular tachycardia with a pulse or atrial fibrillation. A pacemaker (B) is for persistent bradycardia or heart blocks. Positive inotropes (D) increase myocardial contraction strength.",
+        "type": "mc",
+        "section": "Procedures - Defibrillation"
+    },
+    {
+        "questionText": "The nurse is reviewing a client's diagnostic test results. An elevated B-type natriuretic peptide (BNP) level helps the nurse differentiate dyspnea caused by which conditions?",
+        "options": {
+            "A": "Cardiac versus pulmonary origins.",
+            "B": "Anemia versus dehydration.",
+            "C": "Arterial versus venous occlusion.",
+            "D": "Stable angina versus acute myocardial infarction."
+        },
+        "correctAnswer": ["A"],
+        "rationale": "B-type natriuretic peptide (BNP) is a hormone produced by the heart and released during volume and pressure overload. It is used to help differentiate between cardiac and pulmonary origins of dyspnea.",
+        "type": "mc",
+        "section": "Diagnostic Tests - B-type Natriuretic Peptide"
+    },
+    {
+        "questionText": "A client with a history of atherosclerosis and complaints of dizziness should be assessed by the nurse for which specific finding during auscultation?",
+        "options": {
+            "A": "S3 heart sound",
+            "B": "S4 heart sound",
+            "C": "Murmurs over the precordium",
+            "D": "Bruits over the carotid artery"
+        },
+        "correctAnswer": ["D"],
+        "rationale": "When a patient has a history of atherosclerosis or reports dizziness, the nurse auscultates the carotid artery for bruits, which indicate turbulent blood flow due to narrowing. S3 and S4 heart sounds (A, B) and murmurs over the precordium (C) are related to heart function, but bruits in the carotid artery are specific to the given client history.",
+        "type": "mc",
+        "section": "Physical Examination - Auscultation"
+    },
+    {
+        "questionText": "Which conditions are examples of impaired central perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Atrial fibrillation",
+            "B": "Hypovolemic shock",
+            "C": "Peripheral artery disease",
+            "D": "Aortic stenosis",
+            "E": "Acute myocardial infarction"
+        },
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "Atrial fibrillation (A), hypovolemic shock (B), and aortic stenosis (D) are conditions associated with impaired central perfusion, affecting the heart's pumping action or large vessel function. Peripheral artery disease (C) and acute myocardial infarction (E) are examples of impaired local/tissue perfusion.",
+        "type": "sata",
+        "section": "Impaired Central Perfusion"
+    },
+    {
+        "questionText": "A client with heart failure is experiencing dyspnea and coughing up pink, foamy mucus. The nurse recognizes these symptoms are characteristic of:",
+        "options": {
+            "A": "Right-sided heart failure.",
+            "B": "Left-sided heart failure.",
+            "C": "Hypovolemic shock.",
+            "D": "Peripheral artery disease."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "In left-sided heart failure, blood backs up into the left atrium and pulmonary veins, producing dyspnea and coughing up pink, foamy mucus. Right-sided heart failure (A) typically causes peripheral edema and weight gain. Hypovolemic shock (C) involves low intravascular volume. Peripheral artery disease (D) affects extremities.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Heart Failure"
+    },
+    {
+        "questionText": "The nurse is providing education on secondary prevention for impaired perfusion. Which screening measures should be emphasized? (Select all that apply.)",
+        "options": {
+            "A": "Routine blood pressure monitoring.",
+            "B": "Regular exercise programs.",
+            "C": "Serum lipid screening.",
+            "D": "Smoking cessation programs.",
+            "E": "Statin drug use for primary prevention."
+        },
+        "correctAnswer": ["A", "C"],
+        "rationale": "Secondary prevention includes screening, early diagnosis, and prompt treatment. Routine blood pressure monitoring (A) and serum lipid screening (C) are examples of secondary prevention. Regular exercise (B), smoking cessation (D), and statin use for primary prevention (E) are primary prevention strategies.",
+        "type": "sata",
+        "section": "Secondary Prevention - Screening"
+    },
+    {
+        "questionText": "A client with a deep vein thrombus (DVT) in the leg reports pain. The nurse expects the client to describe the pain as:",
+        "options": {
+            "A": "A constricting or squeezing sensation.",
+            "B": "Worse with deep breathing.",
+            "C": "Soreness or cramping.",
+            "D": "Relieved with rest after walking."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Pain from deep vein thrombosis is described as soreness or cramping. A constricting or squeezing sensation (A) is typical of angina. Pain worse with deep breathing (B) is characteristic of pulmonary embolism. Pain relieved with rest after walking (D) describes intermittent claudication in peripheral arterial disease.",
+        "type": "mc",
+        "section": "Assessment - Pain (Deep Vein Thrombosis)"
+    },
+    {
+        "questionText": "The nurse is assessing an infant for potential heart disease. Which findings are common symptoms in infants with heart disease? (Select all that apply.)",
+        "options": {
+            "A": "Rapid breathing with feeding.",
+            "B": "Poor weight gain.",
+            "C": "Sweating with feeding.",
+            "D": "Bluish color around the lips when sucking.",
+            "E": "Increased exercise tolerance."
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "Common symptoms in infants with heart disease include feeding difficulties accompanied by fatigue, rapid breathing with feeding (A), sweating with feeding (C), poor weight gain (B), and a bluish color around the lips when sucking (D). Increased exercise tolerance (E) would be an unexpected finding.",
+        "type": "sata",
+        "section": "Assessment - Infant Heart Disease"
+    },
+    {
+        "questionText": "A client is diagnosed with hyperlipidemia. The nurse understands that high levels of which lipoprotein contribute to atherosclerosis by adhering to the endothelium?",
+        "options": {
+            "A": "High-density lipoproteins (HDLs)",
+            "B": "Very low-density lipoproteins (VLDLs)",
+            "C": "Low-density lipoproteins (LDLs)",
+            "D": "Triglycerides"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "High levels of low-density lipoproteins (LDLs) adhere to the endothelium, obstructing blood flow and contributing to atherosclerosis. HDLs (A) remove lipids and provide a protective effect. VLDLs (B) and triglycerides (D) are also lipids but LDLs are specifically noted for adhering to the endothelium.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Serum Lipids"
+    },
+    {
+        "questionText": "Which nursing interventions are appropriate for a client at risk for venous stasis? (Select all that apply.)",
+        "options": {
+            "A": "Encourage prolonged sitting.",
+            "B": "Promote regular walking.",
+            "C": "Apply compression stockings.",
+            "D": "Teach leg exercises.",
+            "E": "Administer thrombolytics daily."
+        },
+        "correctAnswer": ["B", "C", "D"],
+        "rationale": "To prevent venous stasis, nurses should encourage regular walking (B), apply compression stockings (C), and teach leg exercises (D) to enhance blood flow. Prolonged sitting (A) increases the risk of stasis. Thrombolytics (E) disrupt existing clots and are not a primary prevention for stasis.",
+        "type": "sata",
+        "section": "Primary Prevention - Clotting"
+    },
+    {
+        "questionText": "A client is experiencing symptoms of acute coronary syndrome, including severe chest pain, shortness of breath, and diaphoresis. The nurse understands that this pain is typically:",
+        "options": {
+            "A": "Relieved with rest and nitroglycerin.",
+            "B": "Precipitated by physical exertion or emotional stress.",
+            "C": "Not precipitated by exertion and not relieved by rest or nitroglycerin.",
+            "D": "Described as a dull ache in the chest."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Patients with acute coronary syndrome (unstable angina advancing to myocardial infarction) report severe chest pain that is not precipitated by exertion, stress, or other factors and is not relieved by rest or nitroglycerin. Stable angina (A, B) is relieved by rest/nitroglycerin and often precipitated by exertion. Option D is not a specific descriptor provided for acute coronary syndrome.",
+        "type": "mc",
+        "section": "Assessment - Chest Pain (Acute Coronary Syndrome)"
+    },
+    {
+        "questionText": "The nurse is reviewing a client's complete blood count (CBC). A low red blood cell (RBC) count, hemoglobin, and hematocrit indicate which condition?",
+        "options": {
+            "A": "Polycythemia",
+            "B": "Dehydration",
+            "C": "Anemia",
+            "D": "Increased risk of clotting"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Anemia is indicated by RBC, hemoglobin, and hematocrit values that are lower than normal, often due to blood loss. Polycythemia (A) involves elevated RBCs. Dehydration (B) can affect hematocrit but is not the primary diagnosis for low values across all three. Increased risk of clotting (D) is associated with polycythemia.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Complete Blood Count"
+    },
+    {
+        "questionText": "Which conditions are examples of impaired local/tissue perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Stroke",
+            "B": "Cardiogenic shock",
+            "C": "Peripheral artery disease",
+            "D": "Pulmonary embolism",
+            "E": "Heart failure"
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "Stroke (A), peripheral artery disease (C), and pulmonary embolism (D) are examples of impaired local/tissue perfusion. Cardiogenic shock (B) and heart failure (E) are examples of impaired central perfusion.",
+        "type": "sata",
+        "section": "Impaired Local/Tissue Perfusion"
+    },
+    {
+        "questionText": "A client is prescribed a diuretic. The nurse understands that this medication primarily works by:",
+        "options": {
+            "A": "Increasing myocardial contraction strength.",
+            "B": "Increasing the diameter of blood vessels.",
+            "C": "Preventing reabsorption of sodium in the kidneys.",
+            "D": "Preventing platelets from aggregating."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Diuretics promote the formation and excretion of urine by preventing reabsorption of sodium in the kidneys, thereby reducing blood volume to treat hypertension. Positive inotropes (A) increase myocardial contraction. Vasodilators (B) increase blood vessel diameter. Antiplatelet agents (D) prevent platelet aggregation.",
+        "type": "mc",
+        "section": "Pharmacotherapy - Diuretics"
+    },
+    {
+        "questionText": "Which assessment findings would indicate a pulse deficit?",
+        "options": {
+            "A": "Radial pulse rate is faster than the apical pulse rate.",
+            "B": "Apical pulse rate is faster than the radial pulse rate.",
+            "C": "Both apical and radial pulse rates are irregular but equal.",
+            "D": "Absence of a peripheral pulse."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "A pulse deficit is characterized as an apical pulse rate that is faster than the radial pulse rate. This deficit should be 0 (zero) in normal findings. Option A is incorrect. Options C and D describe other pulse abnormalities but not a pulse deficit.",
+        "type": "mc",
+        "section": "Physical Examination - Pulse Assessment"
+    },
+    {
+        "questionText": "The nurse is educating a client about unmodifiable risk factors for impaired perfusion. Which factors should the nurse include? (Select all that apply.)",
+        "options": {
+            "A": "Age",
+            "B": "Gender (men > women)",
+            "C": "Family history/Genetics",
+            "D": "Obesity",
+            "E": "Hypertension"
+        },
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "Unmodifiable risk factors for impaired perfusion include age (A), gender (men > women) (B), and genetics/family history (C). Obesity (D) and hypertension (E) are modifiable risk factors.",
+        "type": "sata",
+        "section": "Risk Factors - Unmodifiable"
+    },
+    {
+        "questionText": "A client is scheduled for an arteriogram. The nurse explains that this procedure allows visualization of arteries by injecting which substance?",
+        "options": {
+            "A": "Radioactive tracer",
+            "B": "Radiopaque contrast",
+            "C": "Saline solution",
+            "D": "Dobutamine"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "An arteriogram allows visualization of the arteries by injecting radiopaque contrast into them so that the location and extent of occlusion can be identified. Radioactive tracers are used in radionuclide imaging, saline is for flushing, and dobutamine is a pharmacologic stress test agent.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Radiographic Studies (Arteriogram)"
+    },
+    {
+        "questionText": "Which physiological consequence occurs when ischemia is prolonged, leading to irreversible cellular injury and tissue death?",
+        "options": {
+            "A": "Hypoxia",
+            "B": "Anoxia",
+            "C": "Necrosis",
+            "D": "Inflammation"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "When ischemia is prolonged, it may result in a lack of oxygen (anoxia) to tissues, followed by irreversible cellular injury, necrosis, and death of the tissues affected. Hypoxia (A) is lowered oxygenation, anoxia (B) is absence of oxygenation, and inflammation (D) is a response to tissue damage, but necrosis is the irreversible cellular injury and death.",
+        "type": "mc",
+        "section": "Physiologic Consequences"
+    },
+    {
+        "questionText": "The nurse is preparing a client for a pharmacologic stress test. Which medications might be administered during this test? (Select all that apply.)",
+        "options": {
+            "A": "Dobutamine",
+            "B": "Adenosine",
+            "C": "Nitroglycerin",
+            "D": "Metformin",
+            "E": "Aspirin"
+        },
+        "correctAnswer": ["A", "B"],
+        "rationale": "Common agents administered during a pharmacologic stress test to stimulate the physiological effects of exercise include dobutamine (A) and adenosine (B). Nitroglycerin (C) is a vasodilator for angina. Metformin (D) is an oral hypoglycemic. Aspirin (E) is an antiplatelet.",
+        "type": "sata",
+        "section": "Diagnostic Tests - Cardiac Stress Test"
+    },
+    {
+        "questionText": "A client with a history of heart failure reports feeling more tired than usual and having a lack of energy. The nurse understands this fatigue is likely due to:",
+        "options": {
+            "A": "Acute blood loss.",
+            "B": "The heart's inability to pump enough blood to meet tissue needs.",
+            "C": "Increased red blood cell production.",
+            "D": "Excessive fluid in the interstitial spaces."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Fatigue experienced during daily activities such as shopping or climbing stairs occurs because the heart cannot pump enough blood to meet the body tissue needs. Acute blood loss (A) causes rapid onset fatigue. Increased RBC production (C) would not cause fatigue. Excessive fluid (D) causes edema, not directly fatigue.",
+        "type": "mc",
+        "section": "Assessment - Fatigue"
+    },
+    {
+        "questionText": "Which procedure involves surgically implanting patent blood vessels to transport blood between the aorta and the myocardium distal to an obstructed coronary artery?",
+        "options": {
+            "A": "Angioplasty with stent placement",
+            "B": "Endarterectomy",
+            "C": "Coronary artery bypass graft (CABG)",
+            "D": "Thrombectomy"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Coronary artery bypass graft (CABG) surgically implants patent blood vessels to transport blood between the aorta and the myocardium distal to the obstructed coronary artery or arteries. Angioplasty with stent placement (A) compresses plaque and inserts a stent. Endarterectomy (B) removes plaque from the lining of an artery. Thrombectomy (D) removes a thrombus.",
+        "type": "mc",
+        "section": "Procedures - Arterial Bypass Graft"
+    },
+    {
+        "questionText": "The nurse is assessing a child and hears a venous hum over the jugular vein. The nurse interprets this finding as:",
+        "options": {
+            "A": "An abnormal finding requiring immediate intervention.",
+            "B": "Indicative of a congenital heart disorder.",
+            "C": "A normal variation in children.",
+            "D": "A sign of increased systemic vascular resistance."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "A venous hum heard over the jugular vein caused by turbulent blood flow is considered a normal variation in children. It does not indicate an immediate problem, a congenital defect, or increased SVR.",
+        "type": "mc",
+        "section": "Physical Examination - Auscultation (Pediatric)"
+    },
+    {
+        "questionText": "A client with hypertension is prescribed an angiotensin-converting enzyme (ACE) inhibitor. The nurse understands this medication works as a:",
+        "options": {
+            "A": "Positive inotrope.",
+            "B": "Vasodilator.",
+            "C": "Vasopressor.",
+            "D": "Anticoagulant."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "ACE inhibitors (e.g., captopril, lisinopril, losartan) are examples of vasodilators, which increase the diameter of blood vessels and are used to treat hypertension. Positive inotropes (A) increase contraction strength. Vasopressors (C) decrease vessel diameter. Anticoagulants (D) prevent clotting.",
+        "type": "mc",
+        "section": "Pharmacotherapy - Vasodilators"
+    },
+    {
+        "questionText": "Which assessment findings are indicative of arterial occlusion in the lower extremities? (Select all that apply.)",
+        "options": {
+            "A": "Leg pain.",
+            "B": "Paresthesia.",
+            "C": "Weak or absent dorsalis pedis pulses.",
+            "D": "Redness of the extremity.",
+            "E": "Ankle-brachial index (ABI) less than 1.0."
+        },
+        "correctAnswer": ["A", "B", "C", "E"],
+        "rationale": "Lower extremity pain (A), paresthesia (B), weak or absent dorsalis pedis and posterior tibial pulses (C), and an ankle-brachial index less than the minimum normal value of 1.0 (E) are indications of arterial occlusion. Redness of the extremity (D) is more indicative of venous occlusion.",
+        "type": "sata",
+        "section": "Physical Examination - Arterial Occlusion Assessment"
+    },
+    {
+        "questionText": "A client is diagnosed with atrial fibrillation. The nurse understands that this condition increases the client's risk for which complication?",
+        "options": {
+            "A": "Pulmonary embolism",
+            "B": "Deep vein thrombosis",
+            "C": "Ischemic stroke",
+            "D": "Hypovolemic shock"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "In atrial fibrillation, clots may form in the atria from blood stasis, which can become emboli that flow to the brain causing strokes. Atrial fibrillation accounts for as many as 20% of all ischemic strokes. Pulmonary embolism (A) and DVT (B) are related to venous clots. Hypovolemic shock (D) is due to fluid loss.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Atrial Fibrillation"
+    },
+    {
+        "questionText": "Which statements are true regarding the normal physiological process of perfusion? (Select all that apply.)",
+        "options": {
+            "A": "The right atrium receives oxygenated blood from the lungs.",
+            "B": "The heart is composed of cardiac muscle tissue with four chambers and four valves.",
+            "C": "Electrical conduction of the heart originates in the sinoatrial (SA) node.",
+            "D": "The left ventricle pumps oxygen-rich blood to the rest of the body through the aorta.",
+            "E": "The atrioventricular (AV) node delays the electrical signal to allow for ventricular contraction."
+        },
+        "correctAnswer": ["B", "C", "D"],
+        "rationale": "The heart is composed of cardiac muscle tissue with four chambers and four valves (B). Electrical conduction originates in the SA node (C). The left ventricle pumps oxygen-rich blood to the rest of the body through the aorta (D). The right atrium receives deoxygenated blood from the venous system (A is incorrect). The AV node delays the signal to allow for *atrial* contraction, not ventricular (E is incorrect).",
+        "type": "sata",
+        "section": "Normal Physiologic Process - Central Perfusion"
+    },
+    {
+        "questionText": "A client is experiencing symptoms of hypovolemia. Which assessment finding would the nurse anticipate?",
+        "options": {
+            "A": "Bounding peripheral pulses.",
+            "B": "Hypertension.",
+            "C": "Tenting of the skin.",
+            "D": "Pitting edema."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Tenting of the skin indicates reduced fluid in the interstitial space from a fluid volume deficit (hypovolemia). Bounding pulses (A) and pitting edema (D) indicate fluid excess/overload. Hypertension (B) is generally associated with increased fluid volume or SVR, not hypovolemia, which typically causes hypotension.",
+        "type": "mc",
+        "section": "Physical Examination - Palpation (Extremities)"
+    },
+    {
+        "questionText": "Which diagnostic test uses a Doppler to identify occlusion or thrombosis of veins and arteries of an extremity?",
+        "options": {
+            "A": "Echocardiography",
+            "B": "Vascular ultrasound",
+            "C": "Arteriogram",
+            "D": "Venogram"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Vascular ultrasound uses a Doppler to identify occlusion or thrombosis of veins and arteries of an extremity. Echocardiography (A) is an ultrasound of the heart. Arteriogram (C) and venogram (D) involve injecting radiopaque contrast for visualization.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Ultrasound"
+    },
+    {
+        "questionText": "A client is admitted with a blood pressure of 145/92 mm Hg. According to the provided guidelines, the nurse would classify this blood pressure as:",
+        "options": {
+            "A": "Normal range.",
+            "B": "Elevated blood pressure.",
+            "C": "Stage 1 hypertension.",
+            "D": "Stage 2 hypertension."
+        },
+        "correctAnswer": ["D"],
+        "rationale": "According to Table 16.2, Stage 2 hypertension is defined as SBP $\\ge$140 or DBP $\\ge$90. A blood pressure of 145/92 mm Hg falls into this category.",
+        "type": "mc",
+        "section": "Blood Pressure Guidelines"
+    },
+    {
+        "questionText": "The nurse is teaching a client about the importance of maintaining a healthy weight for optimal perfusion. Which BMI range is considered desirable for adults over 20 years of age?",
+        "options": {
+            "A": "Less than 18.5",
+            "B": "18.5–24.9",
+            "C": "25.0–29.9",
+            "D": "30.0 or greater"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "According to Box 16.1, a desirable weight for adults >20 years of age is a BMI of 18.5–24.9.",
+        "type": "mc",
+        "section": "Primary Prevention - Weight Management"
+    },
+    {
+        "questionText": "Which of the following are examples of procedures or surgical interventions used to improve central or tissue perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Heart valve replacement",
+            "B": "Pacemaker insertion",
+            "C": "Cardiac transplant",
+            "D": "Endarterectomy",
+            "E": "Continuous arterial blood pressure monitoring"
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "Heart valve replacement (A), pacemaker insertion (B), cardiac transplant (C), and endarterectomy (D) are all listed as procedures or surgical interventions. Continuous arterial blood pressure monitoring (E) is an assessment skill, not a procedure.",
+        "type": "sata",
+        "section": "Procedures and Surgical Interventions"
+    },
+    {
+        "questionText": "A client reports chest pain that is worse when breathing deeply, coughing, or bending. The nurse suspects which condition?",
+        "options": {
+            "A": "Myocardial ischemia (angina)",
+            "B": "Acute myocardial infarction",
+            "C": "Pulmonary embolism",
+            "D": "Peripheral arterial disease"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Chest pain from a pulmonary embolism is often worse when breathing deeply (pleurisy), coughing, bending, or stooping. Myocardial ischemia (A) and acute myocardial infarction (B) chest pain is typically described differently and not exacerbated by these movements. Peripheral arterial disease (D) causes leg pain.",
+        "type": "mc",
+        "section": "Assessment - Chest Pain (Pulmonary Embolism)"
+    },
+    {
+        "questionText": "The nurse is assessing a client's skin turgor and notes that the skin does not immediately fall back into place after palpation. The nurse documents this as tenting, indicating:",
+        "options": {
+            "A": "Increased fluid in the interstitial spaces.",
+            "B": "Reduced fluid in the interstitial space.",
+            "C": "Normal hydration status.",
+            "D": "Pitting edema."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Tenting of the skin indicates reduced fluid in the interstitial space from a fluid volume deficit. Increased fluid (A) and pitting edema (D) are opposite findings.",
+        "type": "mc",
+        "section": "Physical Examination - Skin Turgor"
+    },
+    {
+        "questionText": "Which statements accurately describe the interrelationship between perfusion and other concepts? (Select all that apply.)",
+        "options": {
+            "A": "Impaired tissue perfusion leading to ischemia creates lactic acid that contributes to pain.",
+            "B": "Walking improves central perfusion and is an important health promotion behavior.",
+            "C": "Inflammation after endothelial damage initiates atherosclerosis.",
+            "D": "Elimination from the kidneys is an indirect indicator of cardiac output.",
+            "E": "Stress creates sympathetic responses that decrease heart rate and blood pressure."
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "Impaired tissue perfusion leading to ischemia creates lactic acid that contributes to pain (A). Walking improves central perfusion (B). Inflammation after endothelial damage initiates atherosclerosis (C). Elimination from the kidneys is an indirect indicator of cardiac output (D). Stress creates sympathetic responses that *increase* heart rate and blood pressure (E is incorrect).",
+        "type": "sata",
+        "section": "Interrelated Concepts"
+    },
+    {
+        "questionText": "A client is prescribed an anticoagulant. The nurse understands that this medication is most effective in preventing which type of thrombosis?",
+        "options": {
+            "A": "Arterial thrombosis.",
+            "B": "Venous thrombosis.",
+            "C": "Pulmonary embolism.",
+            "D": "Cerebral embolism."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Anticoagulants are most effective in preventing venous thrombosis. Antiplatelet agents are most effective in preventing arterial thrombosis (A). While they can prevent PE (C) and CE (D) by preventing venous clots, their primary action is on venous thrombosis.",
+        "type": "mc",
+        "section": "Pharmacotherapy - Anticoagulants"
+    },
+    {
+        "questionText": "The nurse is assessing a client's jugular veins. Which finding is considered normal?",
+        "options": {
+            "A": "Prominent pulsations.",
+            "B": "Fluttering pulsations.",
+            "C": "Marked retraction near the apical space.",
+            "D": "Jugular vein pulsations."
+        },
+        "correctAnswer": ["D"],
+        "rationale": "Jugular vein pulsations are an expected finding. Fluttering or prominent pulsations (A, B) may indicate right-sided heart failure. Marked retraction on the chest near the apical space (C) may indicate pericardial disease or right ventricular hypertrophy.",
+        "type": "mc",
+        "section": "Physical Examination - Inspection (Chest and Neck)"
+    },
+    {
+        "questionText": "A client is diagnosed with hypertension. The nurse understands that this condition increases the workload of the heart and damages the endothelium, contributing to:",
+        "options": {
+            "A": "Hypovolemia.",
+            "B": "Vasodilation.",
+            "C": "Atherosclerosis.",
+            "D": "Decreased systemic vascular resistance."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Hypertension increases the workload of the heart and damages endothelium, contributing to atherosclerosis. Hypovolemia (A) is low fluid volume. Vasodilation (B) would decrease blood pressure. Decreased SVR (D) would also lower blood pressure.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Hypertension"
+    },
+    {
+        "questionText": "Which interventions are considered part of the clinical management of impaired perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Nutrition therapy to lower serum lipid levels.",
+            "B": "Smoking cessation programs.",
+            "C": "Progressive activity for peripheral arterial disease.",
+            "D": "Administration of thrombolytics to lyse fibrin.",
+            "E": "Cardiac rehabilitation after acute coronary syndrome."
+        },
+        "correctAnswer": ["A", "B", "C", "D", "E"],
+        "rationale": "All listed options are part of the collaborative interventions for clinical management of impaired perfusion: nutrition therapy (A), smoking cessation (B), activity and exercise including progressive activity for PAD (C) and cardiac rehabilitation (E), and pharmacotherapy such as thrombolytics (D).",
+        "type": "sata",
+        "section": "Clinical Management - Collaborative Interventions"
+    },
+    {
+        "questionText": "A client is experiencing an irregular irregularity on cardiac monitoring. The nurse suspects which cardiac dysrhythmia?",
+        "options": {
+            "A": "Premature atrial contractions.",
+            "B": "Ventricular fibrillation.",
+            "C": "Atrial fibrillation.",
+            "D": "Third-degree heart block."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "An irregular irregularity is felt in patients who have atrial fibrillation when no pattern is noted in the irregularity. Premature atrial contractions (A) cause a regular irregularity. Ventricular fibrillation (B) is a medical emergency with disorganized electrical activity. Third-degree heart block (D) causes decreased cardiac output but its rhythm description is not 'irregular irregularity'.",
+        "type": "mc",
+        "section": "Physical Examination - Pulse Assessment"
+    },
+    {
+        "questionText": "The nurse is educating a client about the purpose of a cardiac catheterization. Which information should the nurse include? (Select all that apply.)",
+        "options": {
+            "A": "It allows visualization of coronary arteries.",
+            "B": "It assesses the size and condition of lower extremity veins.",
+            "C": "It identifies the location and extent of arterial occlusion.",
+            "D": "It evaluates left ventricular function.",
+            "E": "It is a noninvasive procedure."
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "A cardiac catheterization allows visualization of coronary arteries (A), identifies the location and extent of occlusion (C), and evaluates left ventricular function (D). Assessing lower extremity veins (B) is done with a venogram. Cardiac catheterization is an invasive procedure (E is incorrect).",
+        "type": "sata",
+        "section": "Diagnostic Tests - Arteriogram (Cardiac Catheterization)"
+    },
+    {
+        "questionText": "A client with chronic obstructive pulmonary disease (COPD) is experiencing dyspnea. The nurse understands that this symptom in COPD is primarily related to a problem with:",
+        "options": {
+            "A": "Primary perfusion.",
+            "B": "Primary gas exchange.",
+            "C": "Fluid overload.",
+            "D": "Cardiac output."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Dyspnea in patients with primary gas exchange problems, such as chronic obstructive pulmonary disease, is primarily due to issues with gas exchange. While perfusion and cardiac output are interrelated, the text specifies COPD as a primary gas exchange problem.",
+        "type": "mc",
+        "section": "Assessment - Dyspnea (Interrelated Concepts)"
+    },
+    {
+        "questionText": "Which laboratory test is produced by the liver during acute inflammation and correlates with peak levels of CK-MB?",
+        "options": {
+            "A": "Cardiac troponins",
+            "B": "Myoglobin",
+            "C": "Homocysteine (Hcy)",
+            "D": "C-reactive protein (CRP)"
+        },
+        "correctAnswer": ["D"],
+        "rationale": "C-reactive protein (CRP) is produced by the liver during acute inflammation and its level correlates with the peak levels of CK-MB, although CRP peaks earlier. Cardiac troponins (A) and myoglobin (B) are direct cardiac injury markers. Homocysteine (C) is an amino acid linked to cardiovascular risk.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Cardiac Enzymes/Markers"
+    },
+    {
+        "questionText": "The nurse is preparing to auscultate a client's heart and anticipates hearing an S3 sound. This sound may be indicative of: (Select all that apply.)",
+        "options": {
+            "A": "Left ventricular failure.",
+            "B": "Volume overload.",
+            "C": "Resistance to ventricular filling.",
+            "D": "Mitral valve regurgitation.",
+            "E": "Aortic stenosis."
+        },
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "The S3 sound is heard in early diastole and may be a result of left ventricular failure (A), volume overload (B), or regurgitation of the mitral, aortic, or tricuspid valves (D). Resistance to ventricular filling (C) and aortic stenosis (E) are associated with an S4 sound.",
+        "type": "sata",
+        "section": "Physical Examination - Auscultation (Heart Sounds)"
+    },
+    {
+        "questionText": "A nurse is teaching a client about the role of afterload in cardiac output. The nurse explains that afterload is influenced by which factor?",
+        "options": {
+            "A": "The amount of blood in the ventricles at the end of diastole.",
+            "B": "The strength of myocardial contraction.",
+            "C": "Resistance to ejected blood created by the diameter of blood vessels.",
+            "D": "The number of cardiac contractions per minute."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Afterload is the force that ventricles must exert to open the semilunar valves and is influenced by resistance to the ejected blood created by the diameter of blood vessels, also called systemic vascular resistance (SVR). The amount of blood in the ventricles at the end of diastole (A) is preload. Strength of myocardial contraction (B) is contractility. Number of cardiac contractions per minute (D) is heart rate.",
+        "type": "mc",
+        "section": "Cardiac Output - Afterload"
+    },
+    {
+        "questionText": "Which risk factors for impaired perfusion are considered unmodifiable? (Select all that apply.)",
+        "options": {
+            "A": "Smoking",
+            "B": "Age",
+            "C": "Gender",
+            "D": "Diabetes",
+            "E": "Genetics"
+        },
+        "correctAnswer": ["B", "C", "E"],
+        "rationale": "Age (B), gender (C), and genetics/family history (E) are unmodifiable risk factors. Smoking (A) and diabetes (D) are modifiable risk factors.",
+        "type": "sata",
+        "section": "Risk Factors - Unmodifiable"
+    },
+    {
+        "questionText": "A client is prescribed a thrombolytic agent. The nurse understands the primary action of this medication is to:",
+        "options": {
+            "A": "Prevent blood clotting at several locations in the clotting cascade.",
+            "B": "Prevent platelets from aggregating to form clots.",
+            "C": "Disrupt blood clots that are impairing perfusion by lysing fibrin.",
+            "D": "Decrease the levels of lipids that contribute to atherosclerosis."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Thrombolytics disrupt blood clots that are impairing perfusion by lysing fibrin. Anticoagulants (A) prevent clotting. Antiplatelet agents (B) prevent platelet aggregation. Antilipidemics (D) decrease lipid levels.",
+        "type": "mc",
+        "section": "Pharmacotherapy - Thrombolytics"
+    },
+    {
+        "questionText": "A nurse is conducting a health history on an adolescent. Which questions are important to include when assessing for potential perfusion problems? (Select all that apply.)",
+        "options": {
+            "A": "Exercise tolerance.",
+            "B": "Presence of edema.",
+            "C": "Onset and frequency of skin tone changes, especially cyanosis.",
+            "D": "Chest pain or palpitations.",
+            "E": "Feeding problems and weight gain."
+        },
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "For older children and adolescents, a history should include questions about exercise tolerance (A), edema (B) and respiratory problems, chest pain (D), palpitations (D), fainting, and headaches. Onset and frequency of skin tone changes (C) and feeding problems/weight gain (E) are more relevant for infants.",
+        "type": "sata",
+        "section": "Assessment - Problem-Based History (Adolescents)"
+    },
+    {
+        "questionText": "A client with a history of heart failure is experiencing weight gain and bilateral lower extremity edema. The nurse suspects which type of heart failure?",
+        "options": {
+            "A": "Left-sided heart failure.",
+            "B": "Right-sided heart failure.",
+            "C": "Acute myocardial infarction.",
+            "D": "Cardiogenic shock."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "In right-sided heart failure, blood backs up into the right atrium and venous circulation, producing edema of legs, feet, and ankles, and weight gain from fluid retention. Left-sided heart failure (A) typically causes pulmonary symptoms. AMI (C) is cell death from coronary artery occlusion. Cardiogenic shock (D) is severe pump failure.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Heart Failure"
+    },
+    {
+        "questionText": "The nurse is caring for a client who is immobile. Which perfusion-related problems is this client at risk for developing? (Select all that apply.)",
+        "options": {
+            "A": "Pressure ulcers.",
+            "B": "Venous thrombi.",
+            "C": "Increased systemic vascular resistance.",
+            "D": "Increased cardiac output.",
+            "E": "Atherosclerosis."
+        },
+        "correctAnswer": ["A", "B"],
+        "rationale": "Immobility can lead to pressure ulcers (A) due to impaired perfusion from external pressure and venous thrombi (B) due to slowed venous return and stasis. Increased SVR (C), increased cardiac output (D), and atherosclerosis (E) are not direct consequences of immobility.",
+        "type": "sata",
+        "section": "Risk Factors - Immobility"
+    },
+    {
+        "questionText": "A client is scheduled for an endarterectomy. The nurse explains that this procedure is commonly performed on which artery to improve perfusion to the brain?",
+        "options": {
+            "A": "Coronary artery.",
+            "B": "Femoral artery.",
+            "C": "Carotid artery.",
+            "D": "Popliteal artery."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "The carotid artery is a common site for an endarterectomy, which removes obstructing plaque to improve perfusion to the brain and prevent ischemic stroke. Coronary (A), femoral (B), and popliteal (D) arteries are sites for other procedures like bypass grafts.",
+        "type": "mc",
+        "section": "Procedures - Endarterectomy"
+    },
+    {
+        "questionText": "Which clinical nursing skills are essential for the assessment of perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Measuring vital signs.",
+            "B": "Administering oral medications.",
+            "C": "Palpating peripheral pulses.",
+            "D": "Assessing capillary refill.",
+            "E": "Applying sequential compression devices."
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "Essential assessment skills for perfusion include measuring vital signs (A), palpating peripheral pulses (C), and assessing capillary refill (D). Administering oral medications (B) and applying sequential compression devices (E) are interventions, not assessment skills.",
+        "type": "sata",
+        "section": "Clinical Nursing Skills for Perfusion - Assessment"
+    },
+    {
+        "questionText": "A client with a history of coronary artery disease is undergoing an exercise cardiac stress test. The nurse monitors for which indicators of coronary artery disease during the test? (Select all that apply.)",
+        "options": {
+            "A": "Changes in electrical conduction.",
+            "B": "Chest pain.",
+            "C": "Increased heart rate.",
+            "D": "Decreased blood pressure.",
+            "E": "Normal respiratory rate."
+        },
+        "correctAnswer": ["A", "B"],
+        "rationale": "If coronary artery disease is present, changes in electrical conduction (A) or other symptoms, such as chest pain (B), may occur during an exercise stress test. Increased heart rate (C) and respiratory rate (E) are expected physiological responses to exercise. Decreased blood pressure (D) would be an abnormal, but not specifically an indicator of CAD in this context.",
+        "type": "sata",
+        "section": "Diagnostic Tests - Exercise Cardiac Stress Test"
+    },
+    {
+        "questionText": "A client is experiencing unilateral edema of one leg. The nurse suspects which underlying causes? (Select all that apply.)",
+        "options": {
+            "A": "Lymphedema.",
+            "B": "Deep vein thrombosis.",
+            "C": "Heart failure.",
+            "D": "Renal failure.",
+            "E": "Venous insufficiency from varicosities."
+        },
+        "correctAnswer": ["A", "B", "E"],
+        "rationale": "Unilateral edema of an extremity may be lymphedema (A), localized edema of one leg may be caused by venous insufficiency from varicosities (E) or deep vein thrombosis (B). Heart failure (C) and renal failure (D) typically cause bilateral edema.",
+        "type": "sata",
+        "section": "Assessment - Edema"
+    },
+    {
+        "questionText": "Which statement accurately describes the relationship between preload and contractility?",
+        "options": {
+            "A": "Preload is the strength of myocardial contraction.",
+            "B": "Contractility is attributed to the amount of blood in the ventricles at the end of diastole.",
+            "C": "The greater the preload, the greater the strength of the contraction.",
+            "D": "Preload and contractility are independent variables."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Contractility is influenced by preload; the greater the preload, the greater the stretch of the myocardium, and, thus, the greater the strength of the contraction. Preload (A) is the force stretching the heart muscle, and contractility (B) is the strength of contraction. They are not independent (D).",
+        "type": "mc",
+        "section": "Cardiac Output - Preload and Contractility"
+    },
+    {
+        "questionText": "A client is diagnosed with Raynaud disease. The nurse understands this condition is an exemplar of impaired:",
+        "options": {
+            "A": "Central perfusion.",
+            "B": "Local/tissue perfusion.",
+            "C": "Cardiac conduction.",
+            "D": "Intravascular volume."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Raynaud disease is listed as an exemplar of impaired local/tissue perfusion.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Local/Tissue Perfusion"
+    },
+    {
+        "questionText": "The nurse is teaching a client about the effects of nicotine. The nurse explains that nicotine impairs perfusion by causing which physiological response?",
+        "options": {
+            "A": "Vasodilation.",
+            "B": "Vasoconstriction.",
+            "C": "Decreased blood viscosity.",
+            "D": "Increased HDL levels."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Nicotine causes vasoconstriction and is a toxin that damages the endothelium, contributing to atherosclerosis, thereby impairing perfusion. Vasodilation (A) would improve perfusion. Decreased blood viscosity (C) and increased HDL levels (D) would be beneficial for perfusion.",
+        "type": "mc",
+        "section": "Risk Factors - Smoking"
+    },
+    {
+        "questionText": "A client is scheduled for a venogram. The nurse explains that this diagnostic test is used to assess:",
+        "options": {
+            "A": "Coronary arteries for blockages.",
+            "B": "Lower extremity veins for blood flow and condition.",
+            "C": "Heart structure and function.",
+            "D": "Electrical impulses through the heart."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "A venogram allows visualization of lower extremity veins to assess blood flow and to determine the size and condition of the veins. Coronary arteries (A) are assessed by arteriogram/cardiac catheterization. Heart structure and function (C) are evaluated by echocardiography. Electrical impulses (D) are assessed by ECG.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Venogram"
+    },
+    {
+        "questionText": "Which conditions are associated with increased intravascular volume (hypervolemia)? (Select all that apply.)",
+        "options": {
+            "A": "Heart failure.",
+            "B": "Renal failure.",
+            "C": "Hemorrhage.",
+            "D": "Liver failure.",
+            "E": "Dehydration."
+        },
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "Increased intravascular volume (hypervolemia) is associated with excess fluid and is often caused by heart failure (A), renal failure (B), and liver failure (D). Hemorrhage (C) and dehydration (E) cause low intravascular volume (hypovolemia).",
+        "type": "sata",
+        "section": "Impaired Central Perfusion - Intravascular Volume"
+    },
+    {
+        "questionText": "A client with peripheral artery disease reports 'rest pain.' The nurse understands this indicates:",
+        "options": {
+            "A": "Pain relieved with rest after walking.",
+            "B": "Leg pain that occurs while walking and is not relieved with rest.",
+            "C": "Pain that is worse with deep breathing.",
+            "D": "Pain that radiates to the jaw or arms."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "As arterial occlusion increases in peripheral artery disease, patients may report 'rest pain,' which is leg pain while walking that is not relieved with rest. Pain relieved with rest after walking (A) is intermittent claudication. Options C and D describe chest pain characteristics.",
+        "type": "mc",
+        "section": "Assessment - Pain (Peripheral Arterial Disease)"
+    },
+    {
+        "questionText": "The nurse is reviewing a client's electrocardiogram (ECG). Which information can be detected by a 12-lead ECG? (Select all that apply.)",
+        "options": {
+            "A": "Cardiac dysrhythmias.",
+            "B": "Myocardial ischemia.",
+            "C": "Myocardial infarction.",
+            "D": "Structural abnormalities of the heart chambers.",
+            "E": "Electrical abnormalities in the heart."
+        },
+        "correctAnswer": ["A", "B", "C", "E"],
+        "rationale": "A 12-lead ECG can detect cardiac dysrhythmias (A), myocardial ischemia (B), myocardial infarction (C), and electrical abnormalities in the heart (E). Structural abnormalities of the heart chambers (D) are typically evaluated by echocardiography.",
+        "type": "sata",
+        "section": "Diagnostic Tests - Electrocardiogram"
+    },
+    {
+        "questionText": "A client is prescribed a cardioglycoside. The nurse understands that this medication has which primary effects? (Select all that apply.)",
+        "options": {
+            "A": "Positive inotropic effect.",
+            "B": "Lowering of heart rate.",
+            "C": "Increase in blood pressure.",
+            "D": "Increase in cardiac output.",
+            "E": "Prevention of blood clotting."
+        },
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "Cardioglycosides, such as digoxin, have a positive inotropic effect (A) (increasing myocardial contraction strength) with a lowering of heart rate (B) to increase cardiac output (D). They do not primarily increase blood pressure (C) or prevent blood clotting (E).",
+        "type": "sata",
+        "section": "Pharmacotherapy - Cardioglycosides"
+    },
+    {
+        "questionText": "Which physiological process is responsible for the flow of blood through arteries and capillaries delivering nutrients and oxygen to cells?",
+        "options": {
+            "A": "Gas exchange.",
+            "B": "Conduction.",
+            "C": "Perfusion.",
+            "D": "Cardiac cycle."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Perfusion refers to the flow of blood through arteries and capillaries delivering nutrients and oxygen to cells. Gas exchange (A) is oxygen diffusion. Conduction (B) is the electrical impulses of the heart. Cardiac cycle (D) refers to electrical and mechanical actions of each heartbeat.",
+        "type": "mc",
+        "section": "Perfusion Definition"
+    },
+    {
+        "questionText": "The nurse is caring for a neonate. The nurse understands that the neonate's systolic blood pressure is typically low after birth due to which factor?",
+        "options": {
+            "A": "The right ventricle being weaker.",
+            "B": "The left ventricle being weaker.",
+            "C": "Increased systemic vascular resistance.",
+            "D": "A larger heart size in relation to total body size."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "In infancy, the systolic blood pressure after birth is low because the left ventricle of the neonate is weaker. The left side of the heart develops strength and the systolic pressure rises during the first 6 weeks.",
+        "type": "mc",
+        "section": "Age-Related Differences - Infants"
+    },
+    {
+        "questionText": "Which diagnostic test allows visualization of the lungs, ribs, clavicles, vertebrae, heart, and major thoracic vessels?",
+        "options": {
+            "A": "Echocardiography.",
+            "B": "Cardiac catheterization.",
+            "C": "Chest x-ray.",
+            "D": "Vascular ultrasound."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Chest x-rays allow visualization of the lungs, ribs, clavicles, vertebrae, heart, and major thoracic vessels. Echocardiography (A) is a heart ultrasound. Cardiac catheterization (B) visualizes coronary arteries and heart chambers. Vascular ultrasound (D) assesses extremity vessels.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Radiographic Studies (Chest X-ray)"
+    },
+    {
+        "questionText": "A client is experiencing symptoms of peripheral artery disease. Which assessment findings would the nurse anticipate? (Select all that apply.)",
+        "options": {
+            "A": "Increased peripheral pulses.",
+            "B": "Cool skin temperature on affected extremities.",
+            "C": "Loss of hair on affected extremities.",
+            "D": "Thin, taut, shiny skin on affected extremities.",
+            "E": "Edema of legs, feet, and ankles."
+        },
+        "correctAnswer": ["B", "C", "D"],
+        "rationale": "Manifestations of peripheral artery disease include decreased to absent peripheral pulses (A is incorrect), cool skin temperature (B), loss of hair (C), and thin, taut, shiny skin on affected extremities (D). Edema of legs, feet, and ankles (E) is more indicative of right-sided heart failure or venous issues.",
+        "type": "sata",
+        "section": "Clinical Exemplars - Peripheral Artery Disease"
+    },
+    {
+        "questionText": "The nurse is providing education on primary prevention of cardiovascular disease. Which activity level is recommended for adults over 20 years of age?",
+        "options": {
+            "A": "Less than 75 minutes of moderate-intensity activity per week.",
+            "B": "150 minutes of moderate-intensity activity per week.",
+            "C": "60 minutes of moderate-intensity activity every day.",
+            "D": "Only vigorous intensity activity for 30 minutes daily."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Adults >20 years of age should engage in 150 min of moderate-intensity activity/week or 75 min of vigorous intensity activity every week. Option C is for children. Options A and D are not the recommended guidelines.",
+        "type": "mc",
+        "section": "Primary Prevention - Physical Activity"
+    },
+    {
+        "questionText": "A client's heart rate increases due to higher metabolic demands. The nurse understands this is influenced by which part of the autonomic nervous system?",
+        "options": {
+            "A": "Parasympathetic nervous system.",
+            "B": "Somatic nervous system.",
+            "C": "Sympathetic nervous system.",
+            "D": "Enteric nervous system."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "The sympathetic nervous system increases heart rate, whereas the parasympathetic nervous system decreases it. The heart rate will increase when metabolic demands are higher. The somatic (B) and enteric (D) nervous systems are not primarily involved in heart rate regulation in this context.",
+        "type": "mc",
+        "section": "Cardiac Output - Heart Rate"
+    },
+    {
+        "questionText": "Which conditions can lead to reduced cardiac output due to ineffective heart valves? (Select all that apply.)",
+        "options": {
+            "A": "Regurgitation.",
+            "B": "Stenosis.",
+            "C": "Congenital valve defects.",
+            "D": "Cardiac dysrhythmia.",
+            "E": "Reduced myocardial contraction."
+        },
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "Malfunction of heart valves can reduce cardiac output and include regurgitation (A), stenosis (B), and congenital valve defects (C). Cardiac dysrhythmia (D) is an altered conduction problem. Reduced myocardial contraction (E) is a separate category of impaired central perfusion.",
+        "type": "sata",
+        "section": "Impaired Central Perfusion - Ineffective Heart Valves"
+    },
+    {
+        "questionText": "A client is diagnosed with familial hypercholesterolemia. The nurse understands that this genetic defect impairs the body's ability to remove which substance?",
+        "options": {
+            "A": "High-density lipoproteins (HDLs).",
+            "B": "Low-density lipoproteins (LDLs).",
+            "C": "Triglycerides.",
+            "D": "Very low-density lipoproteins (VLDLs)."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Familial hypercholesterolemia is a defect that does not allow the body to remove low-density lipoproteins (LDLs), contributing to atherosclerosis.",
+        "type": "mc",
+        "section": "Risk Factors - Genetics"
+    },
+    {
+        "questionText": "The nurse is assessing a client's precordium and palpates a prominent thrust during systole. The nurse documents this finding as a 'heave,' which may indicate:",
+        "options": {
+            "A": "Normal cardiac function.",
+            "B": "Turbulent blood flow through the valves.",
+            "C": "Left or right ventricular hypertrophy.",
+            "D": "Fluid volume deficit."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "A more prominent thrust during systole is called a heave. Lifts and heaves may occur from left or right ventricular hypertrophy due to an increased workload. Normal cardiac function (A) would be a slight thrust (lift). Turbulent blood flow (B) is associated with a thrill/murmur. Fluid volume deficit (D) is indicated by tenting.",
+        "type": "mc",
+        "section": "Physical Examination - Chest Palpation"
+    },
+    {
+        "questionText": "Which conditions are considered 'acute coronary syndrome'? (Select all that apply.)",
+        "options": {
+            "A": "Stable angina.",
+            "B": "Unstable angina.",
+            "C": "Acute myocardial infarction.",
+            "D": "Peripheral artery disease.",
+            "E": "Heart failure."
+        },
+        "correctAnswer": ["B", "C"],
+        "rationale": "Acute coronary syndrome includes unstable angina (B) and specific types of acute myocardial infarction (C). Stable angina (A) is a separate type of angina. Peripheral artery disease (D) and heart failure (E) are distinct conditions.",
+        "type": "sata",
+        "section": "Clinical Exemplars - Acute Myocardial Infarction"
+    },
+    {
+        "questionText": "The nurse is providing education to a client about the importance of preventing blood clots. Which strategies should the nurse recommend? (Select all that apply.)",
+        "options": {
+            "A": "Minimizing risks for blood stasis.",
+            "B": "Increasing blood viscosity.",
+            "C": "Performing leg exercises.",
+            "D": "Engaging in regular walking.",
+            "E": "Wearing compression stockings."
+        },
+        "correctAnswer": ["A", "C", "D", "E"],
+        "rationale": "Strategies for prevention of blood clotting include minimizing the risks for blood stasis (A), performing leg exercises (C), engaging in regular walking (D), and wearing compression stockings (E). Increasing blood viscosity (B) would increase the risk of clotting.",
+        "type": "sata",
+        "section": "Primary Prevention - Clotting"
+    },
+    {
+        "questionText": "A client is experiencing symptoms of cerebral emboli, leading to syncope. Which symptoms might the nurse expect the client to report before the syncope?",
+        "options": {
+            "A": "Ringing in the ears.",
+            "B": "Headache.",
+            "C": "Numbness.",
+            "D": "Confusion.",
+            "E": "Slow pulse rate."
+        },
+        "correctAnswer": ["B", "C", "D"],
+        "rationale": "Reports of headache (B), numbness (C), and confusion (D) may indicate a stroke caused by cerebral emboli before syncope. Ringing in the ears (A) may indicate an inner ear problem. Slowing of the pulse (E) may suggest a cardiac rhythm disorder.",
+        "type": "sata",
+        "section": "Assessment - Syncope"
+    },
+    {
+        "questionText": "The nurse is reviewing a client's medication list. Which medication is classified as an antilipidemic?",
+        "options": {
+            "A": "Furosemide.",
+            "B": "Lisinopril.",
+            "C": "Atorvastatin.",
+            "D": "Digoxin."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Statins, such as atorvastatin, are the primary group of drugs used as antilipidemics to decrease lipid levels. Furosemide (A) is a diuretic. Lisinopril (B) is an ACE inhibitor (vasodilator). Digoxin (D) is a cardioglycoside.",
+        "type": "mc",
+        "section": "Pharmacotherapy - Antilipidemics"
+    },
+    {
+        "questionText": "A client is admitted with a blood pressure of 125/78 mm Hg. The nurse classifies this blood pressure as:",
+        "options": {
+            "A": "Normal range.",
+            "B": "Elevated blood pressure.",
+            "C": "Stage 1 hypertension.",
+            "D": "Hypertensive crisis."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "According to Table 16.2, Elevated blood pressure is defined as SBP 120–129 and DBP <80. A blood pressure of 125/78 mm Hg falls into this category.",
+        "type": "mc",
+        "section": "Blood Pressure Guidelines"
+    },
+    {
+        "questionText": "Which factors contribute to increased systemic vascular resistance (SVR)? (Select all that apply.)",
+        "options": {
+            "A": "Vasoconstriction.",
+            "B": "Atherosclerosis.",
+            "C": "Arterial stenosis.",
+            "D": "Increased viscosity of the blood.",
+            "E": "Rapid and significant blood loss."
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "Increased SVR can be attributed to vasoconstriction (A), atherosclerosis (B), arterial stenosis (C), or increased viscosity of the blood (D). Rapid and significant blood loss (E) would lead to a reduction in SVR due to hypovolemia.",
+        "type": "sata",
+        "section": "Impaired Central Perfusion - Systemic Vascular Resistance"
+    },
+    {
+        "questionText": "The nurse is caring for a client with a history of rheumatic fever. This information is important because it is a risk factor for which perfusion problem?",
+        "options": {
+            "A": "Peripheral artery disease.",
+            "B": "Heart defects.",
+            "C": "Hypertension.",
+            "D": "Deep vein thrombosis."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Past health history includes questions about heart disease, heart defects, rheumatic fever, or sickle cell disease. Rheumatic fever can lead to heart valve damage and defects.",
+        "type": "mc",
+        "section": "Assessment - Baseline History"
+    },
+    {
+        "questionText": "A client with chronic heart failure has developed right-sided heart failure secondary to left-sided heart failure. The nurse understands that this progression occurs due to:",
+        "options": {
+            "A": "A backup of blood from the right ventricle into the right atrium and venae cavae.",
+            "B": "Increased pressure from the left side of the heart causing pulmonary edema.",
+            "C": "An inadequate ability to pump blood out of the heart due to a weakened pumping mechanism.",
+            "D": "Excessive afterload increasing the work of the heart."
+        },
+        "correctAnswer": ["A"],
+        "rationale": "Right-sided heart failure develops if the right ventricle is unable to eject its usual volume of blood, leading to a backup of blood from the right ventricle into the right atrium and then into the inferior and superior venae cavae (A). Increased pressure from the left side causing pulmonary edema (B) and weakened pumping mechanism (C) are characteristics of left-sided heart failure. Excessive afterload (D) is a general cause of heart failure.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Heart Failure"
+    },
+    {
+        "questionText": "Which diagnostic procedure involves passing a catheter into the heart through a peripheral vein or artery to visualize coronary arteries and heart chambers?",
+        "options": {
+            "A": "Echocardiography.",
+            "B": "Venogram.",
+            "C": "Cardiac catheterization.",
+            "D": "Vascular ultrasound."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "A cardiac catheterization is a type of arteriogram where a catheter is passed into the heart through a peripheral vein or artery to visualize coronary arteries and heart chambers. Echocardiography (A) is an ultrasound. Venogram (B) visualizes lower extremity veins. Vascular ultrasound (D) uses Doppler for extremity vessels.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Arteriogram (Cardiac Catheterization)"
+    },
+    {
+        "questionText": "The nurse is providing patient teaching on health promotion related to perfusion. Which recommendations should be included? (Select all that apply.)",
+        "options": {
+            "A": "Refrain from smoking and environmental tobacco smoke exposure.",
+            "B": "Maintain blood pressure within the recommended range.",
+            "C": "Engage in physical activity for at least 30 minutes once a week.",
+            "D": "Achieve and maintain a desirable weight.",
+            "E": "Limit intake of fruits, vegetables, and whole grains."
+        },
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "Health promotion recommendations include refraining from smoking and environmental tobacco smoke exposure (A), maintaining blood pressure in the recommended range (B), and achieving and maintaining desirable weight (D). Physical activity should be 150 min of moderate intensity per week for adults (C is incorrect). Limiting fruits, vegetables, and whole grains (E) is contrary to healthy diet recommendations.",
+        "type": "sata",
+        "section": "Primary Prevention - Health Promotion"
+    },
+    {
+        "questionText": "A client is diagnosed with a severe heart block resulting in decreased cardiac output. The nurse anticipates which procedure will be used to maintain a minimum heart rate?",
+        "options": {
+            "A": "Defibrillation.",
+            "B": "Synchronized cardioversion.",
+            "C": "Pacemaker insertion.",
+            "D": "Ventricular assist device (VAD) placement."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "A pacemaker is an electronic device used to maintain a minimum heart rate by electronically stimulating the myocardium, indicated for persistent, symptomatic bradycardia or certain heart blocks. Defibrillation (A) and synchronized cardioversion (B) are for abnormal rhythms. VAD placement (D) is for severe heart failure.",
+        "type": "mc",
+        "section": "Procedures - Pacemaker"
+    },
+    {
+        "questionText": "Which of the following are components of cardiac output? (Select all that apply.)",
+        "options": {
+            "A": "Heart rate.",
+            "B": "Preload.",
+            "C": "Stroke volume.",
+            "D": "Afterload.",
+            "E": "Contractility."
+        },
+        "correctAnswer": ["A", "C"],
+        "rationale": "Cardiac output is calculated as Stroke Volume (C) x Heart Rate (A). Preload (B), afterload (D), and contractility (E) are factors that influence stroke volume, but are not direct components of the cardiac output formula.",
+        "type": "sata",
+        "section": "Cardiac Output"
+    },
+    {
+        "questionText": "A client with a history of heart disease is prescribed digoxin. The nurse understands that digoxin is a classic example of which medication classification?",
+        "options": {
+            "A": "Vasodilator.",
+            "B": "Antidysrhythmic.",
+            "C": "Cardioglycoside.",
+            "D": "Positive inotrope."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Digoxin is the classic example of a cardioglycoside. While it has a positive inotropic effect (D), its specific classification is cardioglycoside, which also includes heart rate lowering. Vasodilators (A) and antidysrhythmics (B) are different classifications.",
+        "type": "mc",
+        "section": "Pharmacotherapy - Cardioglycosides"
+    },
+    {
+        "questionText": "The nurse is assessing a client's peripheral pulses and notes a pulse strength of 1+. The nurse interprets this finding as indicative of:",
+        "options": {
+            "A": "Fluid excess.",
+            "B": "Good perfusion.",
+            "C": "Diminished or barely palpable pulse.",
+            "D": "Bounding pulse."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "A diminished or barely palpable pulse is indicated as 1+, indicating poor perfusion or fluid/blood loss. Fluid excess (A) and bounding pulse (D) are 3+ or 4+. Good perfusion (B) would be 2+.",
+        "type": "mc",
+        "section": "Physical Examination - Peripheral Pulses"
+    },
+    {
+        "questionText": "A client is diagnosed with a ruptured arterial aneurysm leading to hemorrhagic shock. The nurse understands this is an exemplar of impaired:",
+        "options": {
+            "A": "Local/tissue perfusion.",
+            "B": "Central perfusion.",
+            "C": "Venous return.",
+            "D": "Capillary exchange."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "A ruptured arterial aneurysm leading to hemorrhagic shock is listed as an exemplar of impaired central perfusion.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Central Perfusion"
+    },
+    {
+        "questionText": "Which assessment findings are indicative of right-sided heart failure? (Select all that apply.)",
+        "options": {
+            "A": "Dyspnea.",
+            "B": "Coughing up pink, foamy mucus.",
+            "C": "Edema of legs, feet, and ankles.",
+            "D": "Weight gain from fluid retention.",
+            "E": "Irregular heartbeat (S3 heart sound)."
+        },
+        "correctAnswer": ["C", "D"],
+        "rationale": "In right-sided heart failure, blood backs up into the right atrium and venous circulation, producing edema of legs, feet, and ankles (C), and weight gain from fluid retention (D). Dyspnea (A), coughing up pink, foamy mucus (B), and irregular heartbeat (S3 heart sound) (E) are manifestations of left-sided heart failure.",
+        "type": "sata",
+        "section": "Clinical Exemplars - Heart Failure"
+    },
+    {
+        "questionText": "The nurse is preparing a client for a cardiac transplant. The nurse explains that this procedure is indicated for clients with:",
+        "options": {
+            "A": "Mild heart failure.",
+            "B": "Terminal or end-stage heart conditions.",
+            "C": "Stable angina.",
+            "D": "Isolated valvular stenosis."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "A cardiac transplant is indicated in a variety of terminal or end-stage heart conditions. It is not for mild heart failure (A), stable angina (C), or isolated valvular stenosis (D), which have less invasive interventions.",
+        "type": "mc",
+        "section": "Procedures - Cardiac Transplant"
+    },
+    {
+        "questionText": "Which type of shock is caused by hemorrhage, dehydration, or third space fluid loss?",
+        "options": {
+            "A": "Cardiogenic shock.",
+            "B": "Septic shock.",
+            "C": "Hypovolemic shock.",
+            "D": "Anaphylactic shock."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Hypovolemic shock is caused by hemorrhage, dehydration, or third space fluid loss, resulting from low intravascular volume. Cardiogenic shock (A) is pump failure. Septic (B) and anaphylactic (D) shocks have different underlying causes.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Shock"
+    },
+    {
+        "questionText": "The nurse is assessing a client's overall skin tone and notes pallor. This finding may indicate:",
+        "options": {
+            "A": "Fluid overload.",
+            "B": "Anemia.",
+            "C": "Normal perfusion.",
+            "D": "Increased blood flow."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Pale skin may indicate anemia. Fluid overload (A) would typically present with edema. Pallor is a sign of reduced blood flow, not normal perfusion (C) or increased blood flow (D).",
+        "type": "mc",
+        "section": "Physical Examination - Inspection (Skin Tone)"
+    },
+    {
+        "questionText": "A client is taking a statin drug. The nurse understands that this medication primarily works by:",
+        "options": {
+            "A": "Increasing the synthesis of cholesterol.",
+            "B": "Reducing the synthesis of cholesterol.",
+            "C": "Preventing blood clotting.",
+            "D": "Increasing blood pressure."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Statins decrease the levels of lipids that contribute to atherosclerosis and cause blood vessel occlusion by reducing the synthesis of cholesterol. They do not increase cholesterol synthesis (A), prevent clotting (C), or primarily increase blood pressure (D).",
+        "type": "mc",
+        "section": "Pharmacotherapy - Antilipidemics"
+    },
+    {
+        "questionText": "Which of the following are examples of modifiable risk factors for impaired perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Obesity.",
+            "B": "Sedentary lifestyle.",
+            "C": "Age.",
+            "D": "Smoking.",
+            "E": "Family history."
+        },
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "Modifiable risk factors include obesity (A), sedentary lifestyle (B), and smoking (D). Age (C) and family history (E) are unmodifiable risk factors.",
+        "type": "sata",
+        "section": "Risk Factors - Modifiable"
+    },
+    {
+        "questionText": "The nurse is performing a physical assessment on a client. Which findings would indicate pitting edema?",
+        "options": {
+            "A": "Skin does not immediately fall back into place after palpation.",
+            "B": "Indentation of the nurse’s thumb or finger remains in the skin.",
+            "C": "Skin temperature feels cool (poikilothermia).",
+            "D": "Capillary refill is less than 2 seconds."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "When the indentation of the nurse’s thumb or finger remains in the skin, it is termed pitting edema, indicating increased fluid in the interstitial spaces. Tenting (A) indicates fluid deficit. Cool skin (C) and prolonged capillary refill (D) indicate poor arterial perfusion.",
+        "type": "mc",
+        "section": "Physical Examination - Palpation (Extremities)"
+    },
+    {
+        "questionText": "Which of the following are considered components of a comprehensive perfusion assessment? (Select all that apply.)",
+        "options": {
+            "A": "Obtaining a family history of cardiovascular disorders.",
+            "B": "Assessing dietary habits and exercise routine.",
+            "C": "Measuring blood pressure in three positions for orthostatic hypotension.",
+            "D": "Palpating the apical pulse for rhythm and location.",
+            "E": "Administering intravenous fluids."
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "A comprehensive perfusion assessment includes obtaining family history (A), assessing diet and exercise (B), measuring orthostatic blood pressures (C), and palpating the apical pulse (D). Administering intravenous fluids (E) is an intervention, not an assessment.",
+        "type": "sata",
+        "section": "Perfusion Assessment"
+    },
+    {
+        "questionText": "A client is experiencing an S4 heart sound. The nurse understands this sound may be a result of which conditions? (Select all that apply.)",
+        "options": {
+            "A": "Hypertension.",
+            "B": "Ventricular hypertrophy.",
+            "C": "Aortic stenosis.",
+            "D": "Volume overload.",
+            "E": "Coronary artery disease."
+        },
+        "correctAnswer": ["A", "B", "C", "E"],
+        "rationale": "The S4 sound is heard in late diastole and may be a result of resistance to ventricular filling from hypertension (A), ventricular hypertrophy (B), aortic stenosis (C), or coronary artery disease (E). Volume overload (D) is associated with an S3 sound.",
+        "type": "sata",
+        "section": "Physical Examination - Auscultation (Heart Sounds)"
+    },
+    {
+        "questionText": "The nurse is educating a client about the purpose of an angioplasty with stent placement. The nurse explains that this procedure aims to:",
+        "options": {
+            "A": "Surgically bypass an obstructed artery.",
+            "B": "Remove a thrombus from a vessel.",
+            "C": "Compress atherosclerotic plaque and dilate the artery.",
+            "D": "Replace a diseased heart valve."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "During angioplasty, a balloon is inflated to compress atherosclerotic plaque, which dilates the artery, and a stent is often inserted to maintain patency. Surgically bypassing (A) is a bypass graft. Removing a thrombus (B) is a thrombectomy. Replacing a heart valve (D) is heart valve replacement.",
+        "type": "mc",
+        "section": "Procedures - Angioplasty with Stent Placement"
+    },
+    {
+        "questionText": "Which of the following are considered essential clinical nursing skills for managing perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Cardiac monitoring.",
+            "B": "Hemodynamic monitoring.",
+            "C": "Medication administration (oral and IV).",
+            "D": "Sequential compression devices and elastic stockings.",
+            "E": "Performing a cardiac transplant."
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "Essential clinical nursing skills for perfusion include cardiac monitoring (A), hemodynamic monitoring (B), medication administration (C), and sequential compression devices and elastic stockings (D). Performing a cardiac transplant (E) is a surgical procedure performed by a surgeon, not a nursing skill.",
+        "type": "sata",
+        "section": "Clinical Nursing Skills for Perfusion - Management"
+    },
+    {
+        "questionText": "The nurse is explaining the process of oxygen transport to a client. The nurse should explain that oxygen attaches to which component in the red blood cells to be transported to the cells?",
+        "options": {
+            "A": "Plasma",
+            "B": "Platelets",
+            "C": "Hemoglobin",
+            "D": "White blood cells"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Oxygen diffuses into the blood within the alveoli and then attaches to hemoglobin in the red blood cells for transport to the cells.",
+        "type": "mc",
+        "section": "Normal Physiologic Process"
+    },
+    {
+        "questionText": "The nurse is assessing a client's heart sounds. Which statement is true regarding the origin of the heart's pumping action?",
+        "options": {
+            "A": "The heart relies on impulses generated by the brain.",
+            "B": "Cardiac muscle generates its own electrical impulses.",
+            "C": "Electrical impulses are received from the peripheral nervous system.",
+            "D": "The atrioventricular (AV) node is the primary pacemaker."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Cardiac muscle is unique in that it can generate its own electrical impulses, which trigger muscle contraction and the pumping action of the heart. The sinoatrial (SA) node is the primary pacemaker, not the AV node.",
+        "type": "mc",
+        "section": "Central Perfusion - Conduction"
+    },
+    {
+        "questionText": "A nursing student asks about the path of deoxygenated blood through the heart. The nurse correctly explains that deoxygenated blood from the venous system enters which chamber first?",
+        "options": {
+            "A": "Left atrium",
+            "B": "Left ventricle",
+            "C": "Right atrium",
+            "D": "Right ventricle"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "The right atrium receives deoxygenated blood from the venous system through the superior and inferior vena cava.",
+        "type": "mc",
+        "section": "Central Perfusion"
+    },
+    {
+        "questionText": "The nurse is reviewing factors that influence cardiac output. Cardiac output is a product of which two variables?",
+        "options": {
+            "A": "Preload and Afterload",
+            "B": "Stroke volume and Heart rate",
+            "C": "Contractility and Systemic vascular resistance",
+            "D": "Blood pressure and Pulse pressure"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Cardiac output is defined as the amount of blood pumped by the heart each minute and is calculated as stroke volume (SV) x heart rate (HR).",
+        "type": "mc",
+        "section": "Central Perfusion - Cardiac Output"
+    },
+    {
+        "questionText": "A client's blood pressure is influenced by cardiac output and which other primary factor?",
+        "options": {
+            "A": "Venous pressure",
+            "B": "Systemic vascular resistance (SVR)",
+            "C": "Pulmonary artery pressure",
+            "D": "Atrial filling pressure"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Arterial blood pressure is determined by the cardiac output and systemic vascular resistance (SVR).",
+        "type": "mc",
+        "section": "Tissue Perfusion"
+    },
+    {
+        "questionText": "The nurse is providing education to parents about their infant's cardiovascular system. The nurse should include that the infant's left ventricle typically develops strength and systolic pressure rises sharply during which period?",
+        "options": {
+            "A": "The first 24 hours after birth",
+            "B": "The first 6 weeks after birth",
+            "C": "Between 6 months and 1 year of age",
+            "D": "During the adolescent growth spurt"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "The left side of the heart develops strength and the systolic pressure rises rather sharply during the first 6 weeks of life.",
+        "type": "mc",
+        "section": "Age-Related Differences - Infants"
+    },
+    {
+        "questionText": "Which conditions can lead to impaired central perfusion due to altered conduction? (Select all that apply.)",
+        "options": {
+            "A": "Ventricular fibrillation",
+            "B": "Myocardial infarction",
+            "C": "Atrial fibrillation",
+            "D": "Third-degree heart block",
+            "E": "Hypovolemic shock"
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "Altered impulse conduction, or cardiac dysrhythmias, include ventricular fibrillation (A), atrial fibrillation (C), and third-degree heart block (D). Myocardial infarction (B) is a problem of reduced myocardial contraction. Hypovolemic shock (E) is an intravascular volume issue.",
+        "type": "sata",
+        "section": "Impaired Central Perfusion - Altered Conduction"
+    },
+    {
+        "questionText": "A client is experiencing chest pain. The nurse understands that inadequate blood flow to the myocardium often results in which symptom?",
+        "options": {
+            "A": "Intermittent claudication",
+            "B": "Angina",
+            "C": "Lymphedema",
+            "D": "Syncope"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Inadequate blood flow to the heart, or myocardial ischemia, often results in chest pain, also known as angina. Intermittent claudication (A) is leg pain. Lymphedema (C) is swelling due to lymph occlusion. Syncope (D) is transient loss of consciousness.",
+        "type": "mc",
+        "section": "Assessment - Pain (Chest Pain)"
+    },
+    {
+        "questionText": "A client reports chest pain that is described as a constricting or squeezing sensation and is relieved with rest. The nurse recognizes this as characteristic of:",
+        "options": {
+            "A": "Unstable angina",
+            "B": "Acute myocardial infarction",
+            "C": "Stable angina",
+            "D": "Pulmonary embolism"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Patients with stable angina often describe their chest pain as a constricting or squeezing sensation that is relieved with rest and/or by taking one or more nitroglycerin tablets.",
+        "type": "mc",
+        "section": "Assessment - Pain (Stable Angina)"
+    },
+    {
+        "questionText": "A client reports dizziness unrelated to position changes. The nurse considers which potential causes? (Select all that apply.)",
+        "options": {
+            "A": "Inadequate intravascular volume.",
+            "B": "Orthostatic hypotension.",
+            "C": "Hypotension.",
+            "D": "Obstruction of the carotid arteries.",
+            "E": "Increased blood flow to the brain."
+        },
+        "correctAnswer": ["A", "C", "D"],
+        "rationale": "Dizziness unrelated to position changes may be caused by inadequate intravascular volume (A), hypotension (C), a physiological issue with the pumping mechanism of the heart, or an obstruction of the carotid arteries (D). Orthostatic hypotension (B) is dizziness related to position changes. Increased blood flow to the brain (E) would not cause dizziness.",
+        "type": "sata",
+        "section": "Assessment - Dizziness"
+    },
+    {
+        "questionText": "A client is experiencing dyspnea due to pulmonary edema caused by left-sided heart failure. The nurse understands that this condition interferes with:",
+        "options": {
+            "A": "The return of venous blood to the heart.",
+            "B": "The normal diffusion of oxygen.",
+            "C": "The pumping efficiency of the right ventricle.",
+            "D": "The absorption of nutrients in the intestines."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "In the case of heart failure, an inadequate ability to pump blood out of the heart causes increased pressure from the left side of the heart, leading to pulmonary edema, which interferes with the normal diffusion of oxygen. Options A and C relate more to right-sided heart failure. Option D is unrelated.",
+        "type": "mc",
+        "section": "Assessment - Dyspnea"
+    },
+    {
+        "questionText": "The nurse is assessing for peripheral pulses. Which pulse strength indicates a full or strong pulse?",
+        "options": {
+            "A": "0",
+            "B": "1+",
+            "C": "2+",
+            "D": "3+"
+        },
+        "correctAnswer": ["D"],
+        "rationale": "A full or strong pulse is 3+. 0 is absent, 1+ is diminished/barely palpable, and 2+ is expected.",
+        "type": "mc",
+        "section": "Physical Examination - Peripheral Pulses"
+    },
+    {
+        "questionText": "Which cardiac enzyme/marker is an oxygen-binding protein found in cardiac and skeletal muscles, with increased levels indicating cardiac injury about 3 hours after infarction?",
+        "options": {
+            "A": "Creatine kinase (CK-MB)",
+            "B": "Cardiac troponins",
+            "C": "Myoglobin",
+            "D": "Homocysteine (Hcy)"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Myoglobin is an oxygen-binding protein found in cardiac and skeletal muscles. Increased myoglobin levels indicating cardiac injury or death occur about 3 hours after infarction. CK-MB and troponins are also cardiac markers but have different specific characteristics and timeframes.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Cardiac Enzymes/Markers"
+    },
+    {
+        "questionText": "The nurse is teaching a client about healthy lifestyle choices to optimize perfusion. Which lifestyle factors are known to increase the risk of impaired perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Regular exercise.",
+            "B": "Smoking.",
+            "C": "Unhealthy diet.",
+            "D": "Obesity.",
+            "E": "Moderate alcohol intake."
+        },
+        "correctAnswer": ["B", "C", "D"],
+        "rationale": "Among the most important risk factors associated with lifestyle choices include smoking (B), inactivity (opposite of A), an unhealthy diet (C), and obesity (D). Excessive alcohol intake (not moderate) is associated with dysrhythmias.",
+        "type": "sata",
+        "section": "Risk Factors - Lifestyle"
+    },
+    {
+        "questionText": "Which type of medication is used to decrease or vasoconstrict the diameter of blood vessels and is used to treat hypotension?",
+        "options": {
+            "A": "Positive inotropes",
+            "B": "Vasodilators",
+            "C": "Vasopressors",
+            "D": "Antilipidemics"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Vasopressors decrease or vasoconstrict the diameter of blood vessels and are used to treat hypotension. Positive inotropes (A) increase myocardial contraction. Vasodilators (B) increase vessel diameter. Antilipidemics (D) decrease lipid levels.",
+        "type": "mc",
+        "section": "Pharmacotherapy - Vasopressors"
+    },
+    {
+        "questionText": "A client is prescribed an antidysrhythmic medication. The nurse explains that these agents act by blocking electrolytes or receptors that affect electrical conduction in the heart. Which examples might the nurse mention? (Select all that apply.)",
+        "options": {
+            "A": "Amiodarone (blocking potassium)",
+            "B": "Diltiazem (blocking calcium)",
+            "C": "Atenolol (blocking beta-adrenergic receptors)",
+            "D": "Furosemide (blocking sodium reabsorption)",
+            "E": "Warfarin (preventing clotting cascade)"
+        },
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "Antidysrhythmic agents act by blocking electrolytes that affect electrical conduction in the heart, such as potassium (amiodarone) (A) and calcium (diltiazem) (B), or by blocking $\\beta$-adrenergic receptors (atenolol) (C). Furosemide (D) is a diuretic. Warfarin (E) is an anticoagulant.",
+        "type": "sata",
+        "section": "Pharmacotherapy - Antidysrhythmics"
+    },
+    {
+        "questionText": "The nurse is caring for a client post-cardiac catheterization. The nurse understands this procedure is a type of:",
+        "options": {
+            "A": "Echocardiography",
+            "B": "Arteriogram",
+            "C": "Venogram",
+            "D": "Cardiac stress test"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "A cardiac catheterization is one type of arteriogram that allows visualization of coronary arteries and heart chambers.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Arteriogram"
+    },
+    {
+        "questionText": "A client is scheduled for synchronized cardioversion. The nurse understands this procedure is used to convert which abnormal rhythms? (Select all that apply.)",
+        "options": {
+            "A": "Ventricular fibrillation.",
+            "B": "Ventricular tachycardia with a pulse.",
+            "C": "Atrial fibrillation.",
+            "D": "Asystole.",
+            "E": "Persistent symptomatic bradycardia."
+        },
+        "correctAnswer": ["B", "C"],
+        "rationale": "Synchronized cardioversion is delivered on a nonemergent basis to convert an abnormal rhythm, such as ventricular tachycardia with a pulse (B) or atrial fibrillation (C), to a normal sinus rhythm. Defibrillation is used for ventricular fibrillation (A) and asystole (D). Bradycardia (E) is treated with a pacemaker.",
+        "type": "sata",
+        "section": "Procedures - Defibrillation and Cardioversion"
+    },
+    {
+        "questionText": "The nurse is assessing a client with severe heart failure. Which device might be used to help inefficient ventricles pump sufficient blood to meet the body’s metabolic demands?",
+        "options": {
+            "A": "Pacemaker",
+            "B": "Implantable cardioverter-defibrillator (ICD)",
+            "C": "Ventricular assist device (VAD)",
+            "D": "Automated external defibrillator (AED)"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Individuals who have severe heart failure may be candidates for a ventricular assist device (VAD), which helps inefficient ventricles pump sufficient blood. Pacemakers (A) regulate rhythm. ICDs and AEDs (B, D) deliver shocks for arrhythmias.",
+        "type": "mc",
+        "section": "Procedures - Ventricular Assist Device"
+    },
+    {
+        "questionText": "Which type of heart valve is constructed from bovine, porcine, or human (cadaver) cardiac tissue?",
+        "options": {
+            "A": "Mechanical valve",
+            "B": "Biologic valve",
+            "C": "Synthetic valve",
+            "D": "Dacron valve"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Biologic valves are constructed from bovine, porcine, or human (cadaver) cardiac tissue, and usually contain some human-made materials. Mechanical valves are constructed of metal alloys, pyrolytic carbon, and Dacron.",
+        "type": "mc",
+        "section": "Procedures - Heart Valve Replacement"
+    },
+    {
+        "questionText": "The nurse is teaching about the long-term consequences of prolonged ischemia. The nurse should explain that prolonged ischemia can lead to:",
+        "options": {
+            "A": "Reversible cellular injury.",
+            "B": "Hypoxia and anoxia without permanent damage.",
+            "C": "Irreversible cellular injury and tissue necrosis.",
+            "D": "Increased oxygen supply to the cells."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "When ischemia is prolonged, it may result in a lack of oxygen (anoxia) to tissues, followed by irreversible cellular injury, necrosis, and death of the tissues affected. Ischemia itself is a reversible cellular injury (A). Hypoxia and anoxia (B) are stages that, if prolonged, lead to irreversible damage. Prolonged ischemia causes a lack of oxygen, not an increase (D).",
+        "type": "mc",
+        "section": "Physiologic Consequences"
+    },
+    {
+        "questionText": "A client is suspected of having deep vein thrombosis (DVT). Which assessment findings support this diagnosis? (Select all that apply.)",
+        "options": {
+            "A": "Increased circumference of the affected extremity.",
+            "B": "Redness of the affected extremity.",
+            "C": "Pain described as soreness or cramping.",
+            "D": "Pallor and lack of hair on the legs.",
+            "E": "Pain relieved with rest (intermittent claudication)."
+        },
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "Deep vein thrombosis occurs when a blood clot forms in a deep vein, usually in the legs, leading to redness (B) and an increased circumference of the extremity from edema (A). The pain is described as soreness or cramping (C). Pallor and lack of hair (D) and intermittent claudication (E) are signs of arterial occlusion/peripheral artery disease.",
+        "type": "sata",
+        "section": "Assessment - Pain (Deep Vein Thrombosis) & Physical Examination"
+    },
+    {
+        "questionText": "The nurse is discussing the effects of aging on the cardiovascular system. Which changes are typically observed in older adults related to perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Decreased coronary artery blood flow.",
+            "B": "Increased stroke volume.",
+            "C": "Decreased elasticity of arterial walls.",
+            "D": "More efficient venous valves.",
+            "E": "Increased risk for heart failure."
+        },
+        "correctAnswer": ["A", "C", "E"],
+        "rationale": "In older adults, coronary artery blood flow (A), stroke volume (B is incorrect as SV decreases), and cardiac output decrease, increasing the risk for heart failure (E). Decreased elasticity of arteries (C) also occurs. The valves in veins become less efficient (D is incorrect).",
+        "type": "sata",
+        "section": "Age-Related Differences - Older Adults"
+    },
+    {
+        "questionText": "A client with chronic hypertension is at increased risk for impaired perfusion due to the increased workload on which part of the heart?",
+        "options": {
+            "A": "Right atrium",
+            "B": "Left atrium",
+            "C": "Myocardium",
+            "D": "Pericardial sac"
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Hypertension increases the work of the myocardium. The other options are structures of the heart but not directly where the workload increase occurs due to hypertension.",
+        "type": "mc",
+        "section": "Risk Factors - Hypertension"
+    },
+    {
+        "questionText": "Which type of diagnostic imaging is a noninvasive procedure used to evaluate the structure and function of the heart, diagnosing conditions like ventricular hypertrophy and valvular disorders?",
+        "options": {
+            "A": "Chest x-ray",
+            "B": "Echocardiography",
+            "C": "Arteriogram",
+            "D": "Venogram"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "An ultrasound of the heart is called echocardiography; it is a noninvasive procedure that is used to evaluate the structure and function of the heart. Chest x-ray (A) visualizes heart size and lung fields. Arteriogram (C) and venogram (D) visualize vessels using contrast.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Ultrasound (Echocardiography)"
+    },
+    {
+        "questionText": "The nurse is monitoring a client's heart rhythm and notes an apical pulse rate of 80 bpm and a radial pulse rate of 68 bpm. The nurse calculates the pulse deficit as:",
+        "options": {
+            "A": "0",
+            "B": "12",
+            "C": "68",
+            "D": "80"
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Pulse deficit is calculated by subtracting the radial rate from the apical rate. In this case, 80 bpm (apical) - 68 bpm (radial) = 12.",
+        "type": "mc",
+        "section": "Physical Examination - Pulse Assessment"
+    },
+    {
+        "questionText": "A client's health history reveals excessive alcohol intake. The nurse understands that this lifestyle choice is associated with an increased risk of:",
+        "options": {
+            "A": "Atherosclerosis.",
+            "B": "Dysrhythmias.",
+            "C": "Hypotension.",
+            "D": "Reduced cardiac workload."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Excessive alcohol intake is associated with dysrhythmias. Atherosclerosis (A) is linked to diet, smoking, and obesity. Options C and D are not directly linked to excessive alcohol intake.",
+        "type": "mc",
+        "section": "Assessment - Personal and Psychosocial History"
+    },
+    {
+        "questionText": "Which conditions are categorized as types of shock related to impaired central perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Anaphylactic shock.",
+            "B": "Cardiogenic shock.",
+            "C": "Neurogenic shock.",
+            "D": "Peripheral artery disease.",
+            "E": "Acute myocardial infarction."
+        },
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "Anaphylactic shock (A), cardiogenic shock (B), neurogenic shock (C), hypovolemic shock, and septic shock are listed as exemplars of central perfusion issues. Peripheral artery disease (D) and acute myocardial infarction (E) are local/tissue perfusion issues.",
+        "type": "sata",
+        "section": "Clinical Exemplars - Shock"
+    },
+    {
+        "questionText": "A client is experiencing signs of left ventricular hypertrophy due to increased workload. The nurse anticipates palpating which finding over the precordium?",
+        "options": {
+            "A": "A thrill.",
+            "B": "A slight thrust during systole (lift).",
+            "C": "A prominent thrust during systole (heave).",
+            "D": "Absence of apical pulse."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "An enlarged heart or increased workload can cause a prominent thrust during systole, called a heave, which may occur from left or right ventricular hypertrophy. A thrill (A) is a vibration associated with turbulent blood flow. A lift (B) is a slight thrust. Absence of apical pulse (D) is an abnormal finding, not specifically hypertrophy.",
+        "type": "mc",
+        "section": "Physical Examination - Chest Palpation"
+    },
+    {
+        "questionText": "Which type of blood vessel is described as tough and tensile, subjected to remarkable pressure from cardiac output, and maintains blood pressure by constricting or dilating?",
+        "options": {
+            "A": "Veins",
+            "B": "Venules",
+            "C": "Capillaries",
+            "D": "Arteries"
+        },
+        "correctAnswer": ["D"],
+        "rationale": "The tough and tensile arteries and their smaller branches, the arterioles, are subjected to remarkable pressure from the cardiac output and made to withstand it. They maintain blood pressure by constricting or dilating in response to stimuli.",
+        "type": "mc",
+        "section": "Tissue Perfusion"
+    },
+    {
+        "questionText": "The nurse is collecting a baseline health history for a new client. Which chronic diseases are relevant to assess for potential impaired perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Diabetes.",
+            "B": "Renal failure.",
+            "C": "Hypertension.",
+            "D": "Hemophilia.",
+            "E": "Asthma."
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "Present health status includes questions about chronic diseases, such as diabetes (A), renal failure (B), hypertension (C), or hemophilia (D). Asthma (E) is a respiratory condition, not directly listed as a chronic disease impacting perfusion in this context.",
+        "type": "sata",
+        "section": "Assessment - Baseline History"
+    },
+    {
+        "questionText": "The nurse notes that a client's ankles show an indentation after palpation. This is documented as pitting edema, indicating:",
+        "options": {
+            "A": "Dehydration.",
+            "B": "Fluid volume deficit.",
+            "C": "Increased fluid in the interstitial spaces.",
+            "D": "Normal hydration."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "When the indentation of the nurse’s thumb or finger remains in the skin, it is termed pitting edema, indicating increased fluid in the interstitial spaces. This is the opposite of dehydration or fluid volume deficit.",
+        "type": "mc",
+        "section": "Physical Examination - Palpation (Extremities)"
+    },
+    {
+        "questionText": "The nurse is educating a client about the relationship between diet and perfusion. A diet high in fat and carbohydrates combined with minimal exercise contributes to which conditions? (Select all that apply.)",
+        "options": {
+            "A": "Atherosclerosis.",
+            "B": "Obesity.",
+            "C": "Improved cardiac output.",
+            "D": "Hypotension.",
+            "E": "Hypertension."
+        },
+        "correctAnswer": ["A", "B"],
+        "rationale": "A diet high in fat and carbohydrates together with minimal or infrequent exercise contributes to atherosclerosis (A) and obesity (B). These would impair, not improve, cardiac output (C) and are risk factors for hypertension (E), not hypotension (D).",
+        "type": "sata",
+        "section": "Assessment - Personal and Psychosocial History"
+    },
+    {
+        "questionText": "Which component of the complete blood count (CBC) is used to diagnose polycythemia?",
+        "options": {
+            "A": "Hemoglobin level.",
+            "B": "Hematocrit level.",
+            "C": "White blood cell count.",
+            "D": "Red blood cell (RBC) count."
+        },
+        "correctAnswer": ["D"],
+        "rationale": "The number of red blood cells (RBCs) is used to diagnose polycythemia. Elevated levels of erythrocytes or RBCs increase the risk of clotting.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Complete Blood Count"
+    },
+    {
+        "questionText": "A client is suspected of having a myocardial infarction. Which laboratory finding will typically elevate *after* CK and myoglobin?",
+        "options": {
+            "A": "Creatine kinase (CK-MB).",
+            "B": "Cardiac troponins.",
+            "C": "Homocysteine (Hcy).",
+            "D": "C-reactive protein (CRP)."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Cardiac troponin levels become elevated sooner and remain elevated longer than CK-MB, but will typically elevate after CK and myoglobin.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Cardiac Enzymes/Markers"
+    },
+    {
+        "questionText": "The nurse is providing education about hypertension screening. The US Preventive Services Task Force recommends annual screening for adults aged 40 years or older and for those who are at increased risk, including:",
+        "options": {
+            "A": "Individuals with normal blood pressure.",
+            "B": "Those who are overweight or obese.",
+            "C": "African Americans.",
+            "D": "Adults aged 18 to 39 years with low risk."
+        },
+        "correctAnswer": ["B", "C"],
+        "rationale": "Persons at increased risk include those who have elevated blood pressure, those who are overweight or obese (B), and African Americans (C). Normal blood pressure individuals (A) and low-risk adults aged 18-39 (D) are screened less frequently (every 3-5 years).",
+        "type": "sata",
+        "section": "Secondary Prevention - Blood Pressure Screening"
+    },
+    {
+        "questionText": "Which type of medication acts by blocking electrolytes that affect electrical conduction in the heart, or by blocking $\\beta$-adrenergic receptors?",
+        "options": {
+            "A": "Anticoagulants.",
+            "B": "Antiplatelet agents.",
+            "C": "Antidysrhythmics.",
+            "D": "Vasopressors."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Antidysrhythmics correct erratic electrical impulses to create regular cardiac rhythms and act by blocking electrolytes (like potassium, calcium) or $\\beta$-adrenergic receptors. Anticoagulants (A) prevent clotting. Antiplatelet agents (B) prevent platelet aggregation. Vasopressors (D) vasoconstrict.",
+        "type": "mc",
+        "section": "Pharmacotherapy - Antidysrhythmics"
+    },
+    {
+        "questionText": "The nurse is discussing the physiological process of blood return to the heart. Which statements accurately describe the function of veins? (Select all that apply.)",
+        "options": {
+            "A": "They are less sturdy than arteries.",
+            "B": "They are less expansible than arteries.",
+            "C": "They act as a reservoir for extra blood.",
+            "D": "Pressure within veins is low compared to arteries.",
+            "E": "One-way valves in each vein keep blood flowing toward the heart."
+        },
+        "correctAnswer": ["A", "C", "D", "E"],
+        "rationale": "Veins are less sturdy (A) but more expansible (B is incorrect), enabling them to act as a reservoir for extra blood (C). Pressure within veins is low compared with that within arteries (D). One-way valves in each vein keep blood flowing toward the heart (E).",
+        "type": "sata",
+        "section": "Tissue Perfusion"
+    },
+    {
+        "questionText": "A client is exhibiting marked retraction on the chest near the apical space. The nurse recognizes this finding may indicate:",
+        "options": {
+            "A": "Normal respiratory effort.",
+            "B": "Right-sided heart failure.",
+            "C": "Pericardial disease or right ventricular hypertrophy.",
+            "D": "Left-sided heart failure."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "A marked retraction on the chest near the apical space may indicate pericardial disease or right ventricular hypertrophy.",
+        "type": "mc",
+        "section": "Physical Examination - Inspection (Anterior Chest and Neck)"
+    },
+    {
+        "questionText": "Which type of anemia causing fatigue may occur in patients with heart failure due to impaired nutritional intake caused by dyspnea during meals, renal disease, or adverse effects from medications like ACE inhibitors?",
+        "options": {
+            "A": "Iron deficiency anemia.",
+            "B": "Pernicious anemia.",
+            "C": "Anemia resulting from various causes mentioned.",
+            "D": "Sickle cell anemia."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Anemia causing fatigue may occur in patients with heart failure as a result of impaired nutritional intake caused by dyspnea during meals, renal disease resulting from reduced blood flow to kidneys, or adverse effects from medications such as from taking angiotensin-converting enzyme inhibitors (e.g., enalapril). The text does not specify a single type but a combination of causes.",
+        "type": "mc",
+        "section": "Assessment - Fatigue"
+    },
+    {
+        "questionText": "The nurse is educating a client about coronary artery bypass graft (CABG) surgery. The nurse should explain that which vessels are frequently used as bypass grafts? (Select all that apply.)",
+        "options": {
+            "A": "Internal mammary artery.",
+            "B": "Radial artery.",
+            "C": "Saphenous vein.",
+            "D": "Popliteal artery.",
+            "E": "Brachial artery."
+        },
+        "correctAnswer": ["A", "B", "C"],
+        "rationale": "The internal mammary artery (A), radial artery (B), and saphenous vein (C) of the patient are used frequently as bypass grafts. Popliteal (D) and brachial (E) arteries are not listed as frequent bypass graft sources in the text.",
+        "type": "sata",
+        "section": "Procedures - Arterial Bypass Graft"
+    },
+    {
+        "questionText": "The nurse is monitoring a client with an acute myocardial infarction (AMI). Which symptom is considered a common manifestation of AMI?",
+        "options": {
+            "A": "Intermittent claudication.",
+            "B": "Severe chest pain not relieved by rest or nitroglycerin.",
+            "C": "Leg pain with redness and edema.",
+            "D": "Ringing in the ears."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Symptoms of unstable angina often include severe chest pain that is not precipitated by exertion, stress, or other factors and is not relieved by rest or nitroglycerin. This is characteristic of AMI. Intermittent claudication (A) and leg pain with redness/edema (C) are for peripheral arterial or venous disease. Ringing in the ears (D) is related to syncope/inner ear issues.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Acute Myocardial Infarction"
+    },
+    {
+        "questionText": "A client is experiencing symptoms of excessive fluid in the interstitial spaces, which may lead to weight gain. The nurse recognizes this as:",
+        "options": {
+            "A": "Dehydration.",
+            "B": "Hypovolemia.",
+            "C": "Edema.",
+            "D": "Anemia."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Edema reflects excessive fluid in the interstitial spaces, which indicates a fluid overload or an accumulation of fluids; a related symptom is weight gain. Dehydration (A) and hypovolemia (B) are fluid deficits. Anemia (D) is related to low RBCs.",
+        "type": "mc",
+        "section": "Assessment - Edema"
+    },
+    {
+        "questionText": "Which type of valvular heart disease occurs when valves do not open completely, causing a narrowed opening and interference with blood flow?",
+        "options": {
+            "A": "Regurgitation.",
+            "B": "Insufficiency.",
+            "C": "Stenosis.",
+            "D": "Prolapse."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Stenosis occurs when valves do not open completely, causing a narrowed opening and interference with blood flow. Regurgitation (A) and insufficiency (B) occur when valves do not close properly. Prolapse (D) is a specific type of valve defect, typically mitral valve.",
+        "type": "mc",
+        "section": "Impaired Central Perfusion - Ineffective Heart Valves"
+    },
+    {
+        "questionText": "The nurse is preparing to auscultate for heart sounds in an infant. The nurse should use which piece of equipment?",
+        "options": {
+            "A": "An adult stethoscope.",
+            "B": "A pediatric stethoscope.",
+            "C": "A Doppler ultrasound device.",
+            "D": "A blood pressure cuff with a built-in stethoscope."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "When auscultating the heart of an infant and child, the nurse uses a pediatric stethoscope.",
+        "type": "mc",
+        "section": "Physical Examination - Auscultation (Pediatric)"
+    },
+    {
+        "questionText": "Which condition is characterized by a gradual thickening of arterial walls, reducing perfusion in upper and lower extremities?",
+        "options": {
+            "A": "Acute myocardial infarction.",
+            "B": "Peripheral artery disease.",
+            "C": "Hypertension.",
+            "D": "Hyperlipidemia."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Peripheral artery disease is characterized by the gradual thickening of arterial walls, reducing perfusion in upper and lower extremities. AMI (A) is myocardial cell death. Hypertension (C) is high blood pressure. Hyperlipidemia (D) is elevated lipid levels, a risk factor.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Peripheral Artery Disease"
+    },
+    {
+        "questionText": "The nurse is reviewing risk factors for cardiovascular disease. Which genetic condition results in abnormal hemoglobin that can clump and occlude blood vessels during hypoxia, dehydration, or acidosis?",
+        "options": {
+            "A": "Familial hypercholesterolemia.",
+            "B": "Coronary artery disease.",
+            "C": "Sickle cell disease.",
+            "D": "Hypertension in African Americans."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Hemoglobinopathies are inherited blood disorders resulting in abnormal hemoglobin, such as sickle cell disease. In this disorder, the abnormal hemoglobin clumps together and occludes blood vessels when the person experiences hypoxia, dehydration, or acidosis.",
+        "type": "mc",
+        "section": "Risk Factors - Genetics"
+    },
+    {
+        "questionText": "A client presents to the emergency department reporting severe chest pain, radiating to the jaw and left arm, accompanied by nausea and diaphoresis. The nurse suspects:",
+        "options": {
+            "A": "Stable angina.",
+            "B": "Pulmonary embolism.",
+            "C": "Acute myocardial infarction (AMI).",
+            "D": "Deep vein thrombosis."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Symptoms of unstable angina advancing to myocardial infarction often include severe chest pain (not precipitated by exertion and not relieved by rest or nitroglycerin), radiating pain to the jaw or arms, nausea, and diaphoresis. Stable angina (A) is relieved by rest. Pulmonary embolism (B) chest pain is often pleuritic. DVT (D) is leg pain.",
+        "type": "mc",
+        "section": "Assessment - Chest Pain (Acute Coronary Syndrome)"
+    },
+    {
+        "questionText": "Which interrelated concept is described as being altered when perfusion to the brain is impaired?",
+        "options": {
+            "A": "Mobility.",
+            "B": "Elimination.",
+            "C": "Cognition.",
+            "D": "Inflammation."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Cognition is also altered when perfusion to the brain is impaired. Mobility (A) is reduced by leg pain. Elimination (B) is an indirect indicator of cardiac output. Inflammation (D) is related to tissue damage.",
+        "type": "mc",
+        "section": "Interrelated Concepts"
+    },
+    {
+        "questionText": "The nurse is providing education to a client about a heart-healthy diet. Which food choices should the nurse recommend? (Select all that apply.)",
+        "options": {
+            "A": "Plenty of fruits, vegetables, and fiber-rich whole grains.",
+            "B": "Lean cuts of meat, limiting red meat.",
+            "C": "Full-fat dairy products.",
+            "D": "Fish and skinless poultry.",
+            "E": "Foods high in sodium and trans fats."
+        },
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "A heart-healthy diet includes plenty of fruits, vegetables, fiber-rich whole grains, legumes, nuts (A), choosing fish and skinless poultry; avoiding red meat or choosing lean cuts (B, D). Full-fat dairy (C) and foods high in sodium and trans fats (E) should be limited or avoided.",
+        "type": "sata",
+        "section": "Clinical Management - Nutrition Therapy"
+    },
+    {
+        "questionText": "Which type of stress test involves the administration of pharmacologic agents like dobutamine or adenosine to simulate the physiological effects of exercise?",
+        "options": {
+            "A": "Exercise cardiac stress test.",
+            "B": "Pharmacologic stress test.",
+            "C": "Echocardiogram.",
+            "D": "Electrocardiogram (ECG)."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "A pharmacologic stress test involves the administration of certain pharmacologic agents that stimulate the physiological effects of exercise such as dilating the coronary arteries. An exercise stress test (A) uses a treadmill or bike. Echocardiogram (C) and ECG (D) are diagnostic tools used during stress tests but are not the tests themselves.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Cardiac Stress Test"
+    },
+    {
+        "questionText": "The nurse is assessing a client for orthostatic hypotension. After moving the client from a lying to a sitting or standing position, the nurse expects a systolic blood pressure drop of at least:",
+        "options": {
+            "A": "5 mm Hg.",
+            "B": "10 mm Hg.",
+            "C": "20 mm Hg.",
+            "D": "40 mm Hg."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Orthostatic hypotension is defined as a 20- to 30-mm Hg drop in systolic blood pressure when a patient moves from a lying to a sitting or standing position.",
+        "type": "mc",
+        "section": "Assessment - Dizziness"
+    },
+    {
+        "questionText": "Which condition can result in reduced cardiac output when severe hypervolemia overwhelms the heart, making it less efficient?",
+        "options": {
+            "A": "Hemorrhage.",
+            "B": "Dehydration.",
+            "C": "Heart failure.",
+            "D": "Anaphylactic shock."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Increased intravascular volume (hypervolemia) is often caused by heart failure, renal failure, and liver failure. When severe, hypervolemia can overwhelm the heart and cause it to become less efficient, resulting in reduced cardiac output. Hemorrhage (A) and dehydration (B) cause hypovolemia. Anaphylactic shock (D) has different physiological mechanisms.",
+        "type": "mc",
+        "section": "Impaired Central Perfusion - Intravascular Volume"
+    },
+    {
+        "questionText": "The nurse is teaching a client about the cardiac cycle. The phase when ventricles fill with blood is called:",
+        "options": {
+            "A": "Systole.",
+            "B": "Diastole.",
+            "C": "Contraction.",
+            "D": "Ejection."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "The phase of the cardiac cycle when ventricles fill with blood is called diastole. Systole (A) is the contraction phase. Contraction (C) and ejection (D) occur during systole.",
+        "type": "mc",
+        "section": "Central Perfusion - Cardiac Cycle"
+    },
+    {
+        "questionText": "Which population is noted to develop hypertension more often and with greater severity in the United States, and may respond less effectively to some medications?",
+        "options": {
+            "A": "Caucasian individuals.",
+            "B": "African American individuals.",
+            "C": "Hispanic individuals.",
+            "D": "Asian individuals."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "African American individuals tend to develop hypertension more often than people of any other racial background in the United States. It often is more severe in this group, and some medications are less effective.",
+        "type": "mc",
+        "section": "Risk Factors - Genetics"
+    },
+    {
+        "questionText": "The nurse is assessing a client with suspected coarctation of the aorta. Which findings would the nurse anticipate? (Select all that apply.)",
+        "options": {
+            "A": "High blood pressure in the upper extremities.",
+            "B": "Bounding pulses in the upper extremities.",
+            "C": "Higher blood pressure in the lower extremities.",
+            "D": "Weak to absent pulses in the lower extremities.",
+            "E": "Cool lower extremities."
+        },
+        "correctAnswer": ["A", "B", "D", "E"],
+        "rationale": "Infants with coarctation of the aorta have high blood pressure (A) and bounding pulses (B) in the upper extremities, but lower blood pressure (C is incorrect), weak to absent pulses (D), and cool lower extremities (E).",
+        "type": "sata",
+        "section": "Physical Examination - Auscultation (Pediatric)"
+    },
+    {
+        "questionText": "A client has a thrombus in a vein, interfering with blood flow back to the heart. This can lead to which local/tissue perfusion impairments? (Select all that apply.)",
+        "options": {
+            "A": "Edema in surrounding tissues.",
+            "B": "Inflammation in surrounding tissues.",
+            "C": "Blockage of a cerebral artery.",
+            "D": "Narrowing of a coronary artery.",
+            "E": "Increased systemic vascular resistance."
+        },
+        "correctAnswer": ["A", "B"],
+        "rationale": "A thrombus in a vein can interfere with blood flow back to the heart, leading to edema (A) and inflammation (B) in the surrounding tissues. Blockage of a cerebral artery (C) and narrowing of a coronary artery (D) are arterial occlusions. Increased SVR (E) is a central perfusion issue.",
+        "type": "sata",
+        "section": "Impaired Local/Tissue Perfusion"
+    },
+    {
+        "questionText": "Which type of blood vessel is described as less sturdy but more expansible, acting as a reservoir for extra blood, and having low pressure compared to arteries?",
+        "options": {
+            "A": "Arteries.",
+            "B": "Arterioles.",
+            "C": "Capillaries.",
+            "D": "Veins."
+        },
+        "correctAnswer": ["D"],
+        "rationale": "Veins and their smaller branches, the venules, are less sturdy but more expansible, enabling them to act as a reservoir for extra blood. Pressure within veins is low compared with that within arteries.",
+        "type": "mc",
+        "section": "Tissue Perfusion"
+    },
+    {
+        "questionText": "A client reports experiencing fatigue. The nurse asks about the onset, time of day, and duration of the fatigue. This is part of which assessment process?",
+        "options": {
+            "A": "Baseline history.",
+            "B": "Review of systems.",
+            "C": "Problem-based history.",
+            "D": "Physical examination."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "When symptoms like fatigue are reported, the nurse follows up with a symptom analysis (problem-based history) to obtain additional data, including onset, location, duration, severity, description, aggravating/alleviating factors, associated symptoms, and actions taken.",
+        "type": "mc",
+        "section": "Assessment - Problem-Based History"
+    },
+    {
+        "questionText": "A client is scheduled for a femoropopliteal bypass. The nurse explains that this procedure is an example of:",
+        "options": {
+            "A": "Coronary artery revascularization.",
+            "B": "Peripheral artery revascularization.",
+            "C": "Carotid endarterectomy.",
+            "D": "Cardiac transplant."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Femoropopliteal bypass is an example of peripheral artery revascularization, using an autogenous vein or synthetic graft to bypass the lesion in the artery that is impairing perfusion.",
+        "type": "mc",
+        "section": "Procedures - Arterial Bypass Graft"
+    },
+    {
+        "questionText": "Which type of cellular injury occurs when the demand for oxygen exceeds the supply due to a reduction or cessation of blood flow, and is reversible?",
+        "options": {
+            "A": "Anoxia.",
+            "B": "Necrosis.",
+            "C": "Ischemia.",
+            "D": "Infarction."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Ischemia is a reversible cellular injury that occurs when the demand for oxygen exceeds the supply because of a reduction or cessation of blood flow (hypoxia). Anoxia (A) is absence of oxygen, necrosis (B) is irreversible cell death, and infarction (D) is also tissue death.",
+        "type": "mc",
+        "section": "Physiologic Consequences"
+    },
+    {
+        "questionText": "The nurse is observing a patient's overall skin tone and notes it is pale and clammy. This finding typically indicates:",
+        "options": {
+            "A": "Adequate tissue perfusion.",
+            "B": "Good hydration status.",
+            "C": "Poor tissue perfusion.",
+            "D": "Fever and infection."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "If tissue is not being perfused well, it will also typically be cold and clammy, and pale skin may indicate anemia. These are signs of poor tissue perfusion.",
+        "type": "mc",
+        "section": "Physical Examination - Inspection (Skin Tone)"
+    },
+    {
+        "questionText": "Which type of heart failure involves an inadequate ability to pump blood out of the heart due to a weakened pumping mechanism, causing blood to back up into the left atrium and pulmonary veins?",
+        "options": {
+            "A": "Right-sided heart failure.",
+            "B": "Cor pulmonale.",
+            "C": "Left-sided heart failure.",
+            "D": "Congestive heart failure (general term)."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "In left-sided heart failure, the most common type, the impairment causes blood to back up into the left atrium and pulmonary veins, producing dyspnea. Right-sided heart failure (A) involves venous circulation backup. Cor pulmonale (B) is right heart failure due to lung disease.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Heart Failure"
+    },
+    {
+        "questionText": "The nurse is reviewing an ECG tracing. Which waveform detects cardiac dysrhythmias by documenting the electrical impulses generated by the heart during contraction and relaxation of atria and ventricles?",
+        "options": {
+            "A": "T-wave.",
+            "B": "U-wave.",
+            "C": "ST segment.",
+            "D": "All waveforms collectively."
+        },
+        "correctAnswer": ["D"],
+        "rationale": "The waveforms generated by an ECG detect cardiac dysrhythmias by documenting on a screen or paper the electrical impulses generated by the heart during contraction and relaxation of atria and ventricles. It's the overall pattern and individual waveforms (P, QRS, T) that provide diagnostic information.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Electrocardiogram"
+    },
+    {
+        "questionText": "The nurse is providing education on the importance of regular blood pressure screening. For adults aged 18 to 39 years with a low risk for cardiovascular disease, screening is recommended every:",
+        "options": {
+            "A": "Annually.",
+            "B": "Every 3 to 5 years.",
+            "C": "Every 10 years.",
+            "D": "Only when symptoms occur."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "The US Preventive Services Task Force recommends screening for high blood pressure in adults aged 18 to 39 years every 3 to 5 years.",
+        "type": "mc",
+        "section": "Secondary Prevention - Blood Pressure Screening"
+    },
+    {
+        "questionText": "Which of the following interventions are included in the clinical management section for impaired perfusion? (Select all that apply.)",
+        "options": {
+            "A": "Nutrition therapy.",
+            "B": "Activity and exercise.",
+            "C": "Pharmacotherapy.",
+            "D": "Surgical interventions.",
+            "E": "Genetic counseling."
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "Clinical management involves nutrition therapy (A), smoking cessation, activity and exercise (B), pharmacotherapy (C), and procedures/surgical interventions (D). Genetic counseling (E) is part of risk factor assessment, not a direct clinical management intervention.",
+        "type": "sata",
+        "section": "Clinical Management - Collaborative Interventions"
+    },
+    {
+        "questionText": "A client has a history of high cholesterol with no symptoms. The nurse understands that this condition can lead to myocardial infarction or stroke by causing:",
+        "options": {
+            "A": "Thinning of arterial walls.",
+            "B": "Thickening of arterial walls.",
+            "C": "Increased blood flow.",
+            "D": "Decreased pressure in vessels."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "High cholesterol has no symptoms, but it thickens arterial walls in coronary or cerebral vessels, leading to myocardial infarction or stroke. It does not cause thinning (A), increased blood flow (C), or decreased pressure (D).",
+        "type": "mc",
+        "section": "Clinical Exemplars - Hyperlipidemia"
+    },
+    {
+        "questionText": "The nurse is assessing a client's capillary refill. A normal finding would be capillary refill of:",
+        "options": {
+            "A": "Greater than 3 seconds.",
+            "B": "Less than 2 seconds.",
+            "C": "Between 2 and 3 seconds.",
+            "D": "No refill observed."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Capillary refill of fingers and toes should be less than 2 seconds. Greater than 2 seconds indicates poor perfusion.",
+        "type": "mc",
+        "section": "Physical Examination - Palpation (Extremities)"
+    },
+    {
+        "questionText": "Which condition is characterized by disorganized electrical activity from impulses that trigger atrial contraction not initiated from the SA node, resulting in ineffective atrial contraction and reduced cardiac output?",
+        "options": {
+            "A": "Ventricular fibrillation.",
+            "B": "Atrial fibrillation.",
+            "C": "Sinus bradycardia.",
+            "D": "Third-degree heart block."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Atrial fibrillation is characterized by disorganized electrical activity from impulses that trigger atrial contraction that are not initiated from the sinoatrial (SA) node. The result is ineffective atrial contraction, with reduced cardiac output.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Atrial Fibrillation"
+    },
+    {
+        "questionText": "The nurse is providing education to a client about preventing cardiovascular disease. The US Preventive Services Task Force recommends the use of a statin drug for primary prevention in adults aged 40 to 75 years who have at least one cardiovascular disease risk factor and an estimated 10-year risk of a cardiovascular event of at least:",
+        "options": {
+            "A": "5%.",
+            "B": "10%.",
+            "C": "15%.",
+            "D": "20%."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "The US Preventive Services Task Force recommends use of a statin drug for the primary prevention of cardiovascular disease for adults between the ages of 40 and 75 years who have one or more cardiovascular disease risk factors and an estimated 10-year risk of a cardiovascular event of 10% or greater.",
+        "type": "mc",
+        "section": "Primary Prevention"
+    },
+    {
+        "questionText": "Which type of cardiac output problem occurs when there is a significant reduction of central perfusion?",
+        "options": {
+            "A": "Localized impairment of tissue perfusion.",
+            "B": "Increased myocardial contractility.",
+            "C": "Increased systemic vascular resistance (SVR).",
+            "D": "Normal cardiac output."
+        },
+        "correctAnswer": ["A"],
+        "rationale": "Inadequate tissue perfusion throughout the body occurs when there is a significant reduction of central perfusion. Options B and C describe factors influencing cardiac output or resistance, and D is incorrect.",
+        "type": "mc",
+        "section": "Impaired Local/Tissue Perfusion"
+    },
+    {
+        "questionText": "A client is scheduled for a thrombectomy. The nurse explains that the purpose of this procedure is to:",
+        "options": {
+            "A": "Bypass an obstructed artery.",
+            "B": "Remove obstructing plaque from an artery.",
+            "C": "Remove a thrombus from a vessel.",
+            "D": "Replace a diseased heart."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "A thrombectomy removes a thrombus from a vessel through a catheter placed percutaneously or as an open surgical procedure. Bypassing (A) is bypass graft. Removing plaque (B) is endarterectomy. Replacing the heart (D) is a cardiac transplant.",
+        "type": "mc",
+        "section": "Procedures - Thrombectomy"
+    },
+    {
+        "questionText": "The nurse is reviewing an order for a medication that promotes the formation and excretion of urine by preventing reabsorption of sodium in the kidneys. This medication is classified as a:",
+        "options": {
+            "A": "Vasopressor.",
+            "B": "Diuretic.",
+            "C": "Antidysrhythmic.",
+            "D": "Antilipidemic."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Diuretics promote the formation and excretion of urine by preventing reabsorption of sodium in the kidneys. Vasopressors (A) vasoconstrict. Antidysrhythmics (C) affect heart rhythm. Antilipidemics (D) lower lipids.",
+        "type": "mc",
+        "section": "Pharmacotherapy - Diuretics"
+    },
+    {
+        "questionText": "Which age-related cardiovascular changes in older adults contribute to lower extremity edema?",
+        "options": {
+            "A": "Stiffening of myocardial tissue.",
+            "B": "Decreased elasticity of arterial walls.",
+            "C": "Less efficient valves in the veins.",
+            "D": "Reduced cardiac output during exercise."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "The valves in the veins become less efficient, contributing to lower extremity edema in older adults. Stiffening of myocardial tissue (A), decreased arterial elasticity (B), and reduced cardiac output (D) affect central perfusion but are not direct causes of lower extremity edema through venous insufficiency.",
+        "type": "mc",
+        "section": "Age-Related Differences - Older Adults"
+    },
+    {
+        "questionText": "Which diagnostic test is used to detect issues with cardiac perfusion in the presence of a stressor and is indicated for individuals with chest pain with activity or unexplained shortness of breath?",
+        "options": {
+            "A": "Electrocardiogram (ECG).",
+            "B": "Chest x-ray.",
+            "C": "Cardiac stress test.",
+            "D": "Echocardiography."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "A cardiac stress test is used to detect issues with cardiac perfusion in the presence of a stressor and is usually indicated for individuals with symptoms (chest pain with activity or unexplained shortness of breath). ECG (A), Chest x-ray (B), and Echocardiography (D) are other diagnostic tools but not primarily for assessing perfusion under stress.",
+        "type": "mc",
+        "section": "Diagnostic Tests - Cardiac Stress Test"
+    },
+    {
+        "questionText": "The nurse is performing a physical assessment. When palpating the extremities, which finding indicates poor perfusion or fluid/blood loss?",
+        "options": {
+            "A": "A bounding pulse (4+).",
+            "B": "A full or strong pulse (3+).",
+            "C": "A diminished or barely palpable pulse (1+).",
+            "D": "An absent pulse (0)."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "A diminished or barely palpable pulse is indicated as 1+, indicating poor perfusion or fluid/blood loss. A bounding pulse (A) and full or strong pulse (B) indicate fluid excess. An absent pulse (D) is a complete lack.",
+        "type": "mc",
+        "section": "Physical Examination - Peripheral Pulses"
+    },
+    {
+        "questionText": "Which condition can lead to heart failure by causing excessive afterload that increases the work of the heart?",
+        "options": {
+            "A": "Myocardial infarction.",
+            "B": "Coronary artery disease.",
+            "C": "Hypertension.",
+            "D": "Diabetes."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Heart failure can develop in response to a weak myocardium or excessive afterload that increases the work of the heart. Hypertension is associated with heart failure and increases the workload of the heart (afterload). Myocardial infarction (A), coronary artery disease (B), and diabetes (D) are also associated with heart failure but hypertension specifically causes increased afterload.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Heart Failure"
+    },
+    {
+        "questionText": "The nurse is teaching a client about the importance of reducing cardiovascular risk factors. Which dietary change contributes to atherosclerosis?",
+        "options": {
+            "A": "High intake of fruits and vegetables.",
+            "B": "Consumption of lean meats.",
+            "C": "Diet high in fat and carbohydrates.",
+            "D": "Eating fish and skinless poultry."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "A diet high in fat and carbohydrates together with minimal or infrequent exercise contributes to atherosclerosis. The other options are heart-healthy choices.",
+        "type": "mc",
+        "section": "Assessment - Personal and Psychosocial History"
+    },
+    {
+        "questionText": "Which problem-based history symptom is characterized by transient loss of consciousness due to inadequate cerebral perfusion?",
+        "options": {
+            "A": "Dizziness.",
+            "B": "Dyspnea.",
+            "C": "Syncope.",
+            "D": "Fatigue."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Syncope is the transient loss of consciousness because of inadequate cerebral perfusion. Dizziness (A) is lightheadedness. Dyspnea (B) is shortness of breath. Fatigue (D) is feeling tired.",
+        "type": "mc",
+        "section": "Assessment - Syncope"
+    },
+    {
+        "questionText": "The nurse is reviewing the definition of preload. Preload is the force that stretches heart muscle before it contracts, and is attributed to the amount of blood in which heart chambers at the end of diastole?",
+        "options": {
+            "A": "Atria.",
+            "B": "Ventricles.",
+            "C": "Aorta.",
+            "D": "Pulmonary arteries."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Preload is the force that stretches heart muscle before it contracts; this is attributed to the amount of blood in the ventricles at the end of diastole.",
+        "type": "mc",
+        "section": "Cardiac Output - Preload"
+    },
+    {
+        "questionText": "A client has an ankle-brachial index (ABI) of 0.7. The nurse understands this finding indicates:",
+        "options": {
+            "A": "Normal arterial perfusion.",
+            "B": "Peripheral arterial disease.",
+            "C": "Venous occlusion.",
+            "D": "Fluid overload."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Those with peripheral arterial disease have an ankle-brachial index less than the minimum normal value of 1.0. A value of 0.7 is indicative of PAD.",
+        "type": "mc",
+        "section": "Physical Examination - Arterial Occlusion Assessment"
+    },
+    {
+        "questionText": "Which type of heart failure involves blood backing up into the right atrium and venous circulation?",
+        "options": {
+            "A": "Left-sided heart failure.",
+            "B": "Right-sided heart failure.",
+            "C": "High-output heart failure.",
+            "D": "Acute decompensated heart failure."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "In right-sided failure, the blood backs up into the right atrium and venous circulation, producing edema of legs, feet, and ankles, and weight gain from fluid retention. Left-sided heart failure (A) involves pulmonary backup.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Heart Failure"
+    },
+    {
+        "questionText": "The nurse is educating a client on the purpose of cardiac rehabilitation. Which aspects of this program should the nurse emphasize? (Select all that apply.)",
+        "options": {
+            "A": "Weight loss and weight maintenance.",
+            "B": "Increase in high-density lipoprotein (HDL).",
+            "C": "Progressive activity for patients with peripheral arterial disease.",
+            "D": "Cardiac rehabilitation after acute coronary syndrome.",
+            "E": "Solely medication adjustment."
+        },
+        "correctAnswer": ["A", "B", "D"],
+        "rationale": "Cardiac rehabilitation after acute coronary syndrome (D) includes progressive activity (which contributes to weight loss and maintenance (A) and increased HDL (B)). While medication adjustment is part of overall management, the program itself is broader than solely medication adjustment (E). Option C refers to PAD, but cardiac rehab specifically addresses post-ACS.",
+        "type": "sata",
+        "section": "Clinical Management - Activity and Exercise"
+    },
+    {
+        "questionText": "A client is experiencing reduced blood flow to a specific area of the brain due to a thrombus. This is a classic example of localized impairment of:",
+        "options": {
+            "A": "Central perfusion.",
+            "B": "Tissue perfusion.",
+            "C": "Venous return.",
+            "D": "Cardiac output."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Localized impairment of tissue perfusion is often associated with the occlusion or constriction of an artery, such as a cerebral artery by a thrombus that stops blood flow to part of the brain (leading to a stroke).",
+        "type": "mc",
+        "section": "Impaired Local/Tissue Perfusion"
+    },
+    {
+        "questionText": "Which professional competency involves performing a clinically relevant assessment, recognizing actual or potential health problems related to perfusion, using a person-centered approach?",
+        "options": {
+            "A": "Implementing interventions.",
+            "B": "Educating individuals and families.",
+            "C": "Collaborating with the interprofessional team.",
+            "D": "Performing assessment."
+        },
+        "correctAnswer": ["D"],
+        "rationale": "The core competency listed is 'Using a person-centered approach, perform a clinically relevant assessment, recognizing actual or potential health problems related to perfusion.' The other options are also competencies but do not describe the assessment aspect.",
+        "type": "mc",
+        "section": "Core Competencies"
+    },
+    {
+        "questionText": "A nurse is teaching a community group about the impact of social and environmental factors on cardiovascular health. Which factors are thought to play a role in adverse cardiovascular disease outcomes? (Select all that apply.)",
+        "options": {
+            "A": "Access to health care.",
+            "B": "Medical compliance.",
+            "C": "Eating habits.",
+            "D": "Depression.",
+            "E": "High socioeconomic status."
+        },
+        "correctAnswer": ["A", "B", "C", "D"],
+        "rationale": "Social and psychological factors such as access to health care (A), medical compliance (B), eating habits (C), depression (D), and stress are thought to play a role in adverse cardiovascular disease outcomes. Low, not high, family income is a contributing factor.",
+        "type": "sata",
+        "section": "Risk Factors - Social and Environmental Factors"
+    },
+    {
+        "questionText": "Which type of heart failure develops when either ventricle fails to pump efficiently due to a weak myocardium or excessive afterload?",
+        "options": {
+            "A": "Congenital heart disease.",
+            "B": "Cardiomyopathy.",
+            "C": "Heart failure.",
+            "D": "Endocarditis."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Heart failure develops when either ventricle fails to pump efficiently. This condition can develop in response to a weak myocardium that is unable to adequately pump blood or excessive afterload that increases the work of the heart.",
+        "type": "mc",
+        "section": "Clinical Exemplars - Heart Failure"
+    },
+    {
+        "questionText": "A nurse is assessing a client's vital signs. Which changes would be anticipated in a client experiencing severe bleeding?",
+        "options": {
+            "A": "Hypertension and bradycardia.",
+            "B": "Hypotension and tachycardia.",
+            "C": "Normal blood pressure and heart rate.",
+            "D": "Increased respiratory rate with normal oxygen saturation."
+        },
+        "correctAnswer": ["B"],
+        "rationale": "Severe bleeding may result in hypotension and tachycardia as compensatory mechanisms for reduced blood volume.",
+        "type": "mc",
+        "section": "Physical Examination - Vital Signs"
+    },
+    {
+        "questionText": "Which term describes the amount of blood in the ventricles at the end of diastole, which stretches the heart muscle before it contracts?",
+        "options": {
+            "A": "Afterload.",
+            "B": "Stroke volume.",
+            "C": "Preload.",
+            "D": "Contractility."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Preload is the force that stretches heart muscle before it contracts; this is attributed to the amount of blood in the ventricles at the end of diastole.",
+        "type": "mc",
+        "section": "Cardiac Output - Preload"
+    },
+    {
+        "questionText": "The nurse is reviewing the purpose of serum lipid measurement as a secondary prevention strategy. This screening is important to detect elevations that could increase the risk for:",
+        "options": {
+            "A": "Hypertension.",
+            "B": "Cardiac dysrhythmias.",
+            "C": "Atherosclerosis.",
+            "D": "Deep vein thrombosis."
+        },
+        "correctAnswer": ["C"],
+        "rationale": "Cholesterol screening is an important secondary prevention against perfusion issues. By doing this the healthcare team can find possible elevations that could increase the risk for atherosclerosis and plan intervention.",
+        "type": "mc",
+        "section": "Secondary Prevention - Lipid Screening"
+    }
+    ];
+
+    let finalQuizData = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let confidenceRatings = {};
+    let flaggedForReview = new Set();
+    const NUM_QUESTIONS_TO_SELECT = 30;
+
+    const initialScreen = document.getElementById('initial-screen');
+    const startBtn = document.getElementById('start-btn');
+    const quizForm = document.getElementById('quiz-form');
+    const resultsArea = document.getElementById('results-area');
+
+    function prepareQuizData() {
+        const shuffledPool = [...fullQuizData].sort(() => 0.5 - Math.random());
+        const questionsNeeded = Math.min(NUM_QUESTIONS_TO_SELECT, shuffledPool.length);
+        finalQuizData = shuffledPool.slice(0, questionsNeeded);
+    }
+
+    function prepareAndStartQuiz() {
+        prepareQuizData();
+        if (finalQuizData.length === 0) {
+            alert("No questions loaded.");
+            return;
+        }
+        initialScreen.classList.add('hidden');
+        quizForm.classList.remove('hidden');
+        displayCurrentQuestion();
+    }
+
+    function displayCurrentQuestion() {
+        if (currentQuestionIndex >= finalQuizData.length) return;
+        const qData = finalQuizData[currentQuestionIndex];
+        
+        let optionsHTML = '<div class="options-container">';
+        const inputType = qData.type === 'sata' ? 'checkbox' : 'radio';
+        
+        for (const [key, text] of Object.entries(qData.options)) {
+            optionsHTML += `<label><input type="${inputType}" name="answer" value="${key}"> ${text}</label>`;
+        }
+        optionsHTML += '</div>';
+
+        quizForm.innerHTML = `
+            <div class="question-header">
+                Question <strong>${currentQuestionIndex + 1}</strong> of ${finalQuizData.length}
+            </div>
+            <p class="question-text">${qData.questionText}</p>
+            ${optionsHTML}
+            <div class="question-footer">
+                <div class="flag-container">
+                    <label><input type="checkbox" class="flag-for-review"> Flag for Review</label>
+                </div>
+                <div class="confidence-slider-container">
+                    <label>Confidence:</label>
+                    <input type="range" min="1" max="5" value="3" class="confidence-slider">
+                </div>
+                 <button type="submit" id="navigation-btn">${(currentQuestionIndex === finalQuizData.length - 1) ? "Submit Exam" : "Next Question"}</button>
+            </div>
+        `;
+    }
+    
+    function saveAnswer() {
+        const qData = finalQuizData[currentQuestionIndex];
+        if (!qData) return;
+
+        const selectedOptions = quizForm.querySelectorAll('input[name="answer"]:checked');
+        if (qData.type === 'sata') {
+            userAnswers[currentQuestionIndex] = Array.from(selectedOptions).map(cb => cb.value);
+        } else {
+            userAnswers[currentQuestionIndex] = selectedOptions.length ? selectedOptions[0].value : null;
+        }
+
+        const flagInput = quizForm.querySelector('.flag-for-review');
+        if(flagInput && flagInput.checked) {
+            flaggedForReview.add(currentQuestionIndex);
+        }
+
+        const confidenceInput = quizForm.querySelector('.confidence-slider');
+        if(confidenceInput) {
+            confidenceRatings[currentQuestionIndex] = parseInt(confidenceInput.value, 10);
+        }
+    }
+    
+    // --- FUNCTION RESTORED ---
+    function handleNavigation() {
+        saveAnswer();
+        quizForm.classList.add('is-transitioning');
+        
+        setTimeout(() => {
+            if (currentQuestionIndex < finalQuizData.length - 1) {
+                currentQuestionIndex++;
+                displayCurrentQuestion();
+                quizForm.classList.remove('is-transitioning');
+            } else {
+                submitQuiz();
+            }
+        }, 300);
+    }
+
+    function submitQuiz() {
+        quizForm.classList.add('hidden');
+        resultsArea.classList.remove('hidden');
+        displayResults();
+    }
+    
+    function checkAnswerCorrectness(qData, userAnswer) {
+        if (userAnswer === null || userAnswer === undefined) return false;
+        if (qData.type === 'sata') {
+            if (!Array.isArray(userAnswer) || typeof qData.correctAnswer !== 'string') return false;
+            const sortedUser = [...userAnswer].sort();
+            const sortedCorrect = [...(qData.correctAnswer.split(','))].sort();
+            return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+        }
+        return userAnswer === qData.correctAnswer;
+    }
+
+    function displayResults() {
+        let correctCount = 0;
+        finalQuizData.forEach((q, i) => { if (checkAnswerCorrectness(q, userAnswers[i])) correctCount++; });
+        const score = finalQuizData.length > 0 ? (correctCount / finalQuizData.length) * 100 : 0;
+
+        let resultsHTML = `
+            <div class="results-summary">
+                 <h2>Exam Complete!</h2>
+                 <div class="score-animation-container">
+                    <div class="score-animation-circle"></div>
+                    <div class="score-animation-inner">
+                        <span class="score-animation-text">${score.toFixed(0)}%</span>
+                    </div>
+                 </div>
+                 <p>You answered <strong>${correctCount}</strong> out of <strong>${finalQuizData.length}</strong> questions correctly.</p>
+            </div>
+        `;
+        
+        resultsArea.innerHTML = resultsHTML;
+        resultsArea.innerHTML += generateConfidenceAnalysis();
+        resultsArea.innerHTML += generateStudyFocus();
+        resultsArea.innerHTML += generateDetailedReview();
+
+        setTimeout(() => {
+            const scoreCircle = document.querySelector('.score-animation-circle');
+            if (scoreCircle) {
+                scoreCircle.style.background = `conic-gradient(var(--success-green) ${score}%, var(--border-light) ${score}% 100%)`;
+            }
+        }, 100);
+
+        if (score >= 80) {
+            triggerConfetti();
+        }
+    }
+
+    function generateDetailedReview() {
+        let detailsHTML = '<div id="results-details"><h2>Question Review</h2>';
+        finalQuizData.forEach((qData, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = checkAnswerCorrectness(qData, userAnswer);
+            
+            let resultBodyHTML = '<ul>';
+            for (const [key, text] of Object.entries(qData.options)) {
+                let li_class = '';
+                const isCorrectOpt = qData.type === 'sata' ? qData.correctAnswer.includes(key) : key === qData.correctAnswer;
+                const isUserSelect = Array.isArray(userAnswer) ? userAnswer.includes(key) : key === userAnswer;
+                if (isCorrectOpt) li_class = 'correct-answer-label';
+                if (isUserSelect && !isCorrectOpt) li_class = 'incorrect-answer-label';
+                if (!isUserSelect && isCorrectOpt && !isCorrect) li_class = 'missed-correct-answer-label';
+                resultBodyHTML += `<li class="${li_class}">${text}</li>`;
+            }
+            resultBodyHTML += '</ul>';
+
+            detailsHTML += `
+                <div class="result-question">
+                    <p><strong>Question ${index + 1}: ${qData.questionText}</strong></p>
+                    ${resultBodyHTML}
+                    <div class="rationale"><strong>Rationale:</strong> ${qData.rationale || 'N/A'}</div>
+                </div>`;
+        });
+        detailsHTML += '</div>';
+        return detailsHTML;
+    }
+    
+    function generateConfidenceAnalysis() {
+        let correctAndConfident = 0, correctButUnsure = 0, incorrectAndConfident = 0, incorrectButUnsure = 0;
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const confidence = confidenceRatings[index] || 3;
+            if (confidence >= 4) { if (isCorrect) correctAndConfident++; else incorrectAndConfident++; } 
+            else { if (isCorrect) correctButUnsure++; else incorrectButUnsure++; }
+        });
+        return `
+            <div id="confidence-analysis">
+                <h3>Confidence Analysis</h3>
+                <ul>
+                    <li>Correct & Confident: <strong>${correctAndConfident}</strong></li>
+                    <li>Correct but Unsure: <strong>${correctButUnsure}</strong></li>
+                    <li>Incorrect & Confident: <strong>${incorrectAndConfident}</strong></li>
+                    <li>Incorrect but Unsure: <strong>${incorrectButUnsure}</strong></li>
+                </ul>
+            </div>`;
+    }
+
+    function generateStudyFocus() {
+        const topicCounts = {};
+        finalQuizData.forEach((qData, index) => {
+            if (!checkAnswerCorrectness(qData, userAnswers[index])) {
+                const topic = qData.section || "General";
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+            }
+        });
+        const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+        let focusHTML = '<div id="study-focus"><h3>Personalized Study Focus</h3>';
+        if (sortedTopics.length > 0) {
+            focusHTML += '<p>Based on your performance, focus your review on these topics:</p><ul>';
+            sortedTopics.forEach(topic => { focusHTML += `<li><strong>${topic[0]}</strong> (${topic[1]} item${topic[1] > 1 ? 's' : ''} missed)</li>`; });
+            focusHTML += '</ul>';
+        } else {
+            focusHTML += '<p>Excellent work! No specific weak areas were identified.</p>';
+        }
+        focusHTML += '</div>';
+        return focusHTML;
+    }
+
+    function triggerConfetti() {
+        const numConfetti = 150;
+        for (let i = 0; i < numConfetti; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 90%, 60%)`;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 6000);
+        }
+    }
+
+    startBtn.addEventListener('click', prepareAndStartQuiz);
+    quizForm.addEventListener('submit', e => { 
+        e.preventDefault(); 
+        handleNavigation(); 
+    });
+</script>
+
+</body>
+</html>
