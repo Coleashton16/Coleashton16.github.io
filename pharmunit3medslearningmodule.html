@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmBuddy - Nursing Pharmacology Learning App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for Inter font and flashcard animation */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        /* Ensure absolute positioning for flashcard front/back */
+        .flashcard-container {
+            position: relative;
+        }
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 antialiased">
+    <div id="app-container" class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm py-4 border-b border-gray-100">
+            <div class="container mx-auto px-6 flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <span class="mr-3 text-blue-600 text-3xl">📚</span> <!-- Book emoji -->
+                    PharmBuddy
+                </h1>
+                <nav>
+                    <button id="home-button" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-200 flex items-center">
+                        <span class="mr-2 text-lg">🏠</span> <!-- Home emoji -->
+                        Home
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="main-content" class="container mx-auto px-6 py-8 flex-grow">
+            <!-- Content will be dynamically loaded here by JavaScript -->
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-6 mt-auto">
+            <div class="container mx-auto px-6 text-center">
+                <p>&copy; 2025 PharmBuddy. Designed for interactive learning.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Data for the drugs and concepts
+        const drugsData = [
+            {
+                category: "Pain/Inflammation and Analgesics",
+                icon: `💊`, // Pill emoji
+                description: "Medications used to manage pain and reduce inflammation.",
+                drugs: [
+                    {
+                        name: "Allopurinol",
+                        classification: "Antigout, Xanthine Oxidase Inhibitor",
+                        action: "Reduces uric acid production by inhibiting xanthine oxidase.",
+                        purpose: "Treats chronic gout and prevents uric acid nephropathy during chemotherapy.",
+                        preAssessment: "Assess kidney function (BUN, creatinine), liver function (ALT, AST). Monitor uric acid levels. Check for history of hypersensitivity.",
+                        contraindications: "Hypersensitivity to allopurinol. Acute gout attacks (should not be started during an acute attack).",
+                        patientEducation: "Drink plenty of water (2-3 L/day) to prevent kidney stones. Take after meals to reduce GI upset. Avoid high-purine foods (organ meats, certain seafood, alcohol). Report rash, fever, chills, sore throat, or unusual bleeding/bruising immediately.",
+                        sideEffects: "Rash (can be severe, e.g., Stevens-Johnson syndrome), nausea, vomiting, diarrhea, liver dysfunction, kidney stones, drowsiness.",
+                        safety: "Monitor for severe skin reactions (SJS/TEN) – discontinue at first sign of rash. Adjust dose for renal impairment. May increase risk of bone marrow suppression with azathioprine/mercaptopurine.",
+                        clinicalJudgment: "If rash develops, discontinue immediately and notify provider. Ensure adequate hydration. Monitor for signs of gout flare-up when initiating therapy.",
+                        evaluation: "Decreased serum uric acid levels, reduction in frequency and severity of gout attacks."
+                    },
+                    {
+                        name: "Celecoxib",
+                        classification: "NSAID, COX-2 Inhibitor",
+                        action: "Selectively inhibits cyclooxygenase-2 (COX-2) enzyme, reducing prostaglandin synthesis.",
+                        purpose: "Relief of signs and symptoms of osteoarthritis, rheumatoid arthritis, acute pain, primary dysmenorrhea.",
+                        preAssessment: "Assess for history of cardiovascular disease (MI, stroke), GI bleeding, renal impairment. Check BP. Assess for aspirin/NSAID allergy (bronchospasm, urticaria).",
+                        contraindications: "Hypersensitivity to celecoxib, sulfonamides, aspirin, or other NSAIDs. History of asthma, urticaria, or allergic-type reactions after aspirin or other NSAIDs. Coronary artery bypass graft (CABG) surgery (contraindicated for peri-operative pain).",
+                        patientEducation: "Take with food or milk to reduce GI upset. Report signs of GI bleeding (black, tarry stools, coffee-ground emesis). Report chest pain, shortness of breath, weakness on one side of the body, or slurred speech immediately. Avoid alcohol and smoking.",
+                        sideEffects: "GI upset (less than non-selective NSAIDs), abdominal pain, diarrhea, dyspepsia, edema, hypertension, increased risk of cardiovascular thrombotic events (MI, stroke), renal impairment.",
+                        safety: "Increased risk of serious cardiovascular thrombotic events, myocardial infarction, and stroke. Increased risk of serious GI adverse events including bleeding, ulceration, and perforation of the stomach or intestines. Use lowest effective dose for shortest duration.",
+                        clinicalJudgment: "Monitor BP regularly. Assess for fluid retention. Educate patient on signs of cardiovascular and GI adverse events. Not for patients with recent MI or those undergoing CABG.",
+                        evaluation: "Reduced pain and inflammation, improved mobility."
+                    },
+                    {
+                        name: "Aspirin",
+                        classification: "NSAID, Salicylate, Antiplatelet",
+                        action: "Inhibits prostaglandin synthesis (analgesic, anti-inflammatory, antipyretic) and irreversibly inhibits platelet aggregation.",
+                        purpose: "Pain relief, fever reduction, anti-inflammatory (e.g., arthritis), prevention of cardiovascular events (MI, stroke) due to antiplatelet effect.",
+                        preAssessment: "Assess for bleeding disorders, peptic ulcer disease, asthma. Check for history of aspirin allergy. Assess for concurrent use of anticoagulants.",
+                        contraindications: "Hypersensitivity to salicylates or NSAIDs. Bleeding disorders (hemophilia, thrombocytopenia). Peptic ulcer disease. Children/adolescents with viral infections (Reye's syndrome risk). Third trimester of pregnancy.",
+                        patientEducation: "Take with food or milk to minimize GI upset. Avoid alcohol. Report ringing in the ears (tinnitus), unusual bleeding/bruising, black/tarry stools. Do not crush or chew enteric-coated tablets. Discontinue 5-7 days before surgery.",
+                        sideEffects: "GI upset, heartburn, nausea, vomiting, GI bleeding, tinnitus (sign of toxicity), Reye's syndrome (in children with viral infections), hypersensitivity reactions (bronchospasm, urticaria).",
+                        safety: "Risk of GI bleeding and ulceration. Reye's syndrome in children. Salicylism (tinnitus, dizziness, headache, confusion). Increased bleeding risk with anticoagulants.",
+                        clinicalJudgment: "Monitor for signs of bleeding. Advise patient to avoid other NSAIDs. Assess for signs of salicylism. Administer with caution in patients with asthma.",
+                        evaluation: "Reduced pain/fever/inflammation, prevention of thrombotic events."
+                    },
+                    {
+                        name: "Ibuprofen",
+                        classification: "NSAID",
+                        action: "Inhibits prostaglandin synthesis.",
+                        purpose: "Mild to moderate pain, fever, inflammation (e.g., arthritis, dysmenorrhea).",
+                        preAssessment: "Assess for history of GI bleeding, renal impairment, cardiovascular disease. Check BP. Assess for aspirin/NSAID allergy.",
+                        contraindications: "Hypersensitivity to ibuprofen or other NSAIDs. History of asthma, urticaria, or allergic-type reactions after aspirin or other NSAIDs. Active GI bleeding or peptic ulcer disease. Severe renal/hepatic impairment. Third trimester of pregnancy. CABG surgery (peri-operative pain).",
+                        patientEducation: "Take with food or milk to reduce GI upset. Report signs of GI bleeding (black, tarry stools, coffee-ground emesis). Avoid alcohol. Do not exceed recommended dose.",
+                        sideEffects: "GI upset, nausea, vomiting, dyspepsia, GI bleeding, renal impairment, fluid retention, hypertension, increased risk of cardiovascular thrombotic events.",
+                        safety: "Risk of GI bleeding and ulceration. Risk of cardiovascular thrombotic events. Renal toxicity. Use lowest effective dose for shortest duration.",
+                        clinicalJudgment: "Monitor for signs of GI bleeding. Assess renal function. Monitor BP. Advise patient to avoid other NSAIDs concurrently.",
+                        evaluation: "Reduced pain, fever, and inflammation."
+                    },
+                    {
+                        name: "Acetaminophen",
+                        classification: "Non-opioid Analgesic, Antipyretic",
+                        action: "Inhibits prostaglandin synthesis in the CNS, blocking pain impulse generation and acting on the hypothalamic heat-regulating center.",
+                        purpose: "Mild to moderate pain relief, fever reduction.",
+                        preAssessment: "Assess liver function (ALT, AST) and history of liver disease or alcohol abuse. Check for concurrent use of other acetaminophen-containing products.",
+                        contraindications: "Hypersensitivity to acetaminophen. Severe hepatic impairment or active liver disease.",
+                        patientEducation: "Do not exceed recommended dose (maximum 4g/day for adults, often lower for chronic use or liver impairment). Be aware of acetaminophen in combination products (e.g., cold medicines). Avoid alcohol while taking. Report signs of liver dysfunction (yellow skin/eyes, dark urine, clay-colored stools).",
+                        sideEffects: "Generally well-tolerated at therapeutic doses. Overdose can lead to severe hepatotoxicity (liver damage), renal failure. Rash, urticaria.",
+                        safety: "Major concern is hepatotoxicity with overdose. Antidote is N-acetylcysteine. Educate patients on total daily dose limits from all sources.",
+                        clinicalJudgment: "Assess for signs of overdose (nausea, vomiting, sweating, abdominal pain, later jaundice). Monitor liver enzymes in chronic users. Ensure patient understands not to combine with other acetaminophen products.",
+                        evaluation: "Reduced pain, reduced fever."
+                    },
+                    {
+                        name: "Morphine Sulfate",
+                        classification: "Opioid Analgesic",
+                        action: "Binds to opioid receptors in the CNS, altering perception and response to pain.",
+                        purpose: "Moderate to severe acute and chronic pain.",
+                        preAssessment: "Assess pain level (PQRST). Assess respiratory rate, depth, and rhythm; oxygen saturation. Assess level of consciousness, bowel function. Check for history of opioid tolerance/dependence.",
+                        contraindications: "Hypersensitivity to opioids. Significant respiratory depression. Acute or severe bronchial asthma. Paralytic ileus. GI obstruction. Head injury (may mask symptoms).",
+                        patientEducation: "May cause drowsiness, dizziness, constipation. Do not drive or operate machinery. Avoid alcohol and other CNS depressants. Take stool softeners/laxatives as prescribed for constipation. Report difficulty breathing or excessive sedation immediately. Risk of dependence/addiction.",
+                        sideEffects: "Respiratory depression (most serious), sedation, constipation, nausea, vomiting, pruritus, orthostatic hypotension, urinary retention, miosis.",
+                        safety: "High risk of respiratory depression, especially with overdose or in opioid-naive patients. Naloxone is the antidote. Risk of physical and psychological dependence. Fall risk due to sedation and orthostatic hypotension.",
+                        clinicalJudgment: "Monitor respiratory rate and depth closely. Have naloxone readily available. Implement fall precautions. Assess bowel function and administer laxatives as needed. Titrate dose slowly to effect.",
+                        evaluation: "Reduced pain, improved comfort."
+                    },
+                    {
+                        name: "Nalbuphine",
+                        classification: "Opioid Agonist-Antagonist",
+                        action: "Agonist at kappa opioid receptors and partial antagonist at mu opioid receptors.",
+                        purpose: "Moderate to severe pain. Preoperative sedation. Analgesia during labor and delivery.",
+                        preAssessment: "Assess pain level. Assess respiratory rate, depth, and rhythm. Assess level of consciousness. Check for history of opioid dependence (may precipitate withdrawal).",
+                        contraindications: "Hypersensitivity to nalbuphine. Patients physically dependent on opioids (may precipitate withdrawal symptoms).",
+                        patientEducation: "May cause drowsiness, dizziness. Do not drive or operate machinery. Avoid alcohol and other CNS depressants. Report difficulty breathing or excessive sedation. If switching from a pure opioid agonist, be aware of potential withdrawal symptoms.",
+                        sideEffects: "Sedation, nausea, vomiting, dry mouth, dizziness, headache, respiratory depression (less than pure agonists), sweating.",
+                        safety: "Less risk of respiratory depression and abuse potential than pure agonists, but still present. Can precipitate withdrawal in opioid-dependent individuals.",
+                        clinicalJudgment: "Monitor respiratory rate. Assess for signs of withdrawal in patients with prior opioid use. Implement fall precautions. Not recommended for patients with history of opioid abuse.",
+                        evaluation: "Reduced pain."
+                    },
+                    {
+                        name: "Migraine Headaches (General Management)",
+                        classification: "Various (Triptans, Ergot Alkaloids, CGRP Inhibitors, NSAIDs)",
+                        action: "Depends on specific drug class (e.g., Triptans: serotonin receptor agonists, causing vasoconstriction).",
+                        purpose: "Acute treatment of migraine attacks; prophylaxis of recurrent migraines.",
+                        preAssessment: "Assess headache characteristics (severity, aura, triggers). Assess cardiovascular history (for triptans/ergots). Check for concurrent vasoconstrictor use.",
+                        contraindications: "Triptans/Ergot Alkaloids: Uncontrolled hypertension, ischemic heart disease, peripheral vascular disease, history of stroke/TIA. Concurrent use of MAOIs (with triptans).",
+                        patientEducation: "Take at first sign of migraine. Do not exceed recommended dose. Avoid triggers. Report chest pain, tingling, numbness. For prophylaxis, take regularly as prescribed.",
+                        sideEffects: "Triptans: Tingling, flushing, chest tightness, dizziness, nausea. Ergot Alkaloids: Nausea, vomiting, peripheral vasoconstriction. CGRP Inhibitors: Injection site reactions, constipation.",
+                        safety: "Triptans/Ergot Alkaloids: Risk of vasoconstriction, especially in patients with cardiovascular disease. Avoid overuse (medication overuse headache).",
+                        clinicalJudgment: "Careful patient selection for triptans/ergots. Educate on proper administration and potential side effects. Differentiate between acute and prophylactic treatments.",
+                        evaluation: "Reduced migraine severity and duration, decreased frequency of attacks (prophylaxis)."
+                    }
+                ]
+            },
+            {
+                category: "Antimicrobial Drugs",
+                icon: `🧪`, // Test Tube emoji
+                description: "Medications used to treat infections caused by bacteria, fungi, viruses, or parasites.",
+                drugs: [
+                    {
+                        name: "Penicillins (e.g., Amoxicillin, Penicillin G)",
+                        classification: "Antibiotic, Beta-Lactam",
+                        action: "Inhibits bacterial cell wall synthesis, leading to cell lysis.",
+                        purpose: "Treats various bacterial infections (e.g., respiratory tract infections, UTIs, skin infections).",
+                        preAssessment: "Assess for penicillin allergy (rash, hives, anaphylaxis). Obtain culture and sensitivity results before starting therapy.",
+                        contraindications: "Hypersensitivity to penicillins or cephalosporins (cross-sensitivity).",
+                        patientEducation: "Take full course of medication, even if feeling better. Take with food if GI upset occurs. Report rash, itching, difficulty breathing immediately. May decrease effectiveness of oral contraceptives.",
+                        sideEffects: "Hypersensitivity reactions (rash, anaphylaxis), nausea, vomiting, diarrhea, C. difficile-associated diarrhea (CDAD).",
+                        safety: "Anaphylaxis is a major concern; monitor closely after first dose. Always ask about allergies. Risk of CDAD.",
+                        clinicalJudgment: "Administer test dose if history of mild allergy. Monitor for allergic reactions. Educate on completing the full course. Monitor for superinfection.",
+                        evaluation: "Resolution of infection symptoms, negative culture results."
+                    },
+                    {
+                        name: "Cephalosporins (e.g., Ceftriaxone)",
+                        classification: "Antibiotic, Beta-Lactam",
+                        action: "Inhibits bacterial cell wall synthesis.",
+                        purpose: "Treats a wide range of bacterial infections (e.g., respiratory, skin, bone, joint, UTIs, gonorrhea, meningitis).",
+                        preAssessment: "Assess for allergy to cephalosporins or penicillins (cross-sensitivity ~5-10%). Obtain culture and sensitivity results.",
+                        contraindications: "Hypersensitivity to cephalosporins. Severe penicillin allergy (use with extreme caution).",
+                        patientEducation: "Take full course of medication. Report rash, itching, difficulty breathing. Avoid alcohol (with some cephalosporins like cefotetan, can cause disulfiram-like reaction).",
+                        sideEffects: "GI upset (nausea, vomiting, diarrhea), rash, C. difficile-associated diarrhea (CDAD), pain at injection site (IM/IV).",
+                        safety: "Cross-sensitivity with penicillins. Risk of CDAD. Some can cause bleeding disorders (e.g., cefotetan).",
+                        clinicalJudgment: "Monitor for allergic reactions. Assess for signs of superinfection. Educate on avoiding alcohol with specific cephalosporins.",
+                        evaluation: "Resolution of infection symptoms, negative culture results."
+                    },
+                    {
+                        name: "Vancomycin",
+                        classification: "Antibiotic, Glycopeptide",
+                        action: "Inhibits bacterial cell wall synthesis. Active against gram-positive bacteria.",
+                        purpose: "Treats serious infections caused by MRSA, C. difficile (oral form), endocarditis.",
+                        preAssessment: "Assess hearing (ototoxicity risk). Assess kidney function (BUN, creatinine, urine output). Obtain peak and trough levels (for IV).",
+                        contraindications: "Hypersensitivity to vancomycin. Previous hearing loss. Renal impairment (adjust dose).",
+                        patientEducation: "Report ringing in ears, hearing loss, dizziness. Report facial flushing, rash, itching (Red Man Syndrome). Report decreased urine output. Take oral form for C. diff. as prescribed.",
+                        sideEffects: "Ototoxicity (hearing loss, tinnitus), nephrotoxicity (kidney damage), Red Man Syndrome (flushing, rash, pruritus, hypotension due to rapid IV infusion), phlebitis at IV site.",
+                        safety: "Narrow therapeutic index, requiring therapeutic drug monitoring (peak/trough levels). Ototoxicity and nephrotoxicity are dose-related. Infuse IV slowly over at least 60 minutes to prevent Red Man Syndrome.",
+                        clinicalJudgment: "Monitor peak and trough levels. Assess renal function and hearing. Infuse slowly. Ensure proper hydration. Monitor IV site for extravasation/phlebitis.",
+                        evaluation: "Resolution of infection, therapeutic drug levels within range."
+                    },
+                    {
+                        name: "Aminoglycosides (e.g., Gentamicin)",
+                        classification: "Antibiotic",
+                        action: "Inhibits bacterial protein synthesis.",
+                        purpose: "Treats serious gram-negative bacterial infections (e.g., pseudomonas, E. coli), often in combination with other antibiotics.",
+                        preAssessment: "Assess hearing and balance (ototoxicity risk). Assess kidney function (BUN, creatinine, urine output). Obtain peak and trough levels. Assess for dehydration.",
+                        contraindications: "Hypersensitivity to aminoglycosides. Pre-existing hearing impairment. Renal impairment. Myasthenia gravis.",
+                        patientEducation: "Report ringing in ears, hearing loss, dizziness, vertigo. Report decreased urine output. Drink plenty of fluids.",
+                        sideEffects: "Ototoxicity (irreversible hearing loss, vertigo), nephrotoxicity (acute tubular necrosis), neuromuscular blockade (muscle weakness, respiratory depression).",
+                        safety: "High risk of ototoxicity and nephrotoxicity. Requires therapeutic drug monitoring (peak/trough levels). Avoid concurrent use with other ototoxic/nephrotoxic drugs (e.g., loop diuretics, vancomycin).",
+                        clinicalJudgment: "Monitor peak and trough levels. Assess renal function and hearing. Ensure adequate hydration. Monitor for signs of neuromuscular blockade. Dose adjustments for renal impairment are crucial.",
+                        evaluation: "Resolution of infection, therapeutic drug levels within range."
+                    },
+                    {
+                        name: "Clindamycin",
+                        classification: "Antibiotic, Lincosamide",
+                        action: "Inhibits bacterial protein synthesis.",
+                        purpose: "Treats serious anaerobic infections, skin and soft tissue infections, dental infections, some protozoal infections.",
+                        preAssessment: "Assess for history of GI disease, especially colitis. Obtain culture and sensitivity results.",
+                        contraindications: "Hypersensitivity to clindamycin. History of regional enteritis, ulcerative colitis, or antibiotic-associated colitis.",
+                        patientEducation: "Take with a full glass of water to prevent esophageal irritation. Report severe diarrhea, abdominal cramping, fever, or bloody stools immediately (signs of CDAD). Take full course.",
+                        sideEffects: "Diarrhea (can be severe, leading to CDAD), abdominal pain, nausea, vomiting, rash, metallic taste.",
+                        safety: "High risk of C. difficile-associated diarrhea (CDAD), which can be life-threatening. Discontinue if significant diarrhea occurs. Not for minor infections.",
+                        clinicalJudgment: "Monitor for diarrhea closely. Educate patient on signs of CDAD. Do not administer to patients with pre-existing colitis. Consider probiotics.",
+                        evaluation: "Resolution of infection symptoms."
+                    },
+                    {
+                        name: "Fluoroquinolones (e.g., Ciprofloxacin, Levofloxacin)",
+                        classification: "Antibiotic",
+                        action: "Inhibits bacterial DNA gyrase and topoisomerase IV, essential for DNA replication.",
+                        purpose: "Treats a broad range of bacterial infections including UTIs, respiratory tract infections, skin infections, bone/joint infections.",
+                        preAssessment: "Assess for history of tendonitis/tendon rupture, myasthenia gravis, cardiac arrhythmias (QT prolongation), diabetes (glucose dysregulation).",
+                        contraindications: "Hypersensitivity to fluoroquinolones. History of tendonitis/tendon rupture associated with fluoroquinolone use. Myasthenia gravis (may exacerbate muscle weakness).",
+                        patientEducation: "Report tendon pain, swelling, or inflammation immediately. Avoid excessive sun exposure (photosensitivity). Avoid taking with antacids, iron, zinc, or dairy products (decreases absorption). Drink plenty of fluids. May cause dizziness/lightheadedness. Take full course.",
+                        sideEffects: "Tendonitis and tendon rupture (especially Achilles tendon), peripheral neuropathy, CNS effects (dizziness, confusion, seizures), QT prolongation, photosensitivity, C. difficile-associated diarrhea (CDAD), blood glucose disturbances.",
+                        safety: "Black box warning for tendon rupture, peripheral neuropathy, and CNS effects. Avoid in patients with history of these conditions. Risk of QT prolongation. Avoid in children/adolescents due to cartilage damage risk.",
+                        clinicalJudgment: "Educate on tendon rupture symptoms. Monitor for CNS effects. Assess for drug interactions (e.g., QT prolonging drugs). Avoid in patients with myasthenia gravis.",
+                        evaluation: "Resolution of infection symptoms."
+                    }
+                ]
+            },
+            {
+                category: "Cardiac Part 1",
+                icon: `🫀`, // Anatomical Heart emoji
+                description: "Medications affecting the heart and blood pressure.",
+                drugs: [
+                    {
+                        name: "Digoxin",
+                        classification: "Cardiac Glycoside, Antiarrhythmic",
+                        action: "Increases myocardial contractility (positive inotropic effect) and decreases heart rate (negative chronotropic effect).",
+                        purpose: "Treats heart failure (improves cardiac output) and atrial fibrillation (slows ventricular rate).",
+                        preAssessment: "Assess apical pulse for a full minute; hold if <60 bpm (adults). Assess potassium levels (hypokalemia increases digoxin toxicity). Assess renal function (BUN, creatinine). Obtain baseline ECG.",
+                        contraindications: "Ventricular fibrillation. Hypersensitivity to digoxin. Certain heart blocks (e.g., second or third-degree AV block without pacemaker).",
+                        patientEducation: "Take pulse daily before taking medication. Report signs of toxicity (nausea, vomiting, diarrhea, anorexia, visual disturbances-yellow/green halos, bradycardia, arrhythmias). Do not take with antacids (separate by 2 hours).",
+                        sideEffects: "Digoxin toxicity (anorexia, nausea, vomiting, diarrhea, visual disturbances, bradycardia, arrhythmias), fatigue, headache.",
+                        safety: "Narrow therapeutic range. Hypokalemia, hypercalcemia, and hypomagnesemia increase risk of toxicity. Antidote is Digoxin immune Fab. Monitor digoxin levels (therapeutic range 0.5-2 ng/mL for HF, 1.5-2.5 ng/mL for Afib).",
+                        clinicalJudgment: "Always check apical pulse before administration. Monitor serum digoxin levels, potassium, magnesium, and calcium. Educate patient on signs of toxicity. Administer slowly IV if given that route.",
+                        evaluation: "Improved cardiac output (reduced edema, dyspnea), slowed ventricular rate in Afib, stable heart rhythm."
+                    },
+                    {
+                        name: "Nitroglycerin",
+                        classification: "Nitrate, Antianginal",
+                        action: "Relaxes vascular smooth muscle, causing vasodilation (primarily venous, reducing preload; high doses also arterial, reducing afterload).",
+                        purpose: "Treats and prevents angina pectoris (chest pain).",
+                        preAssessment: "Assess blood pressure and heart rate. Assess pain characteristics (PQRST).",
+                        contraindications: "Hypersensitivity to nitrates. Severe anemia. Closed-angle glaucoma. Head trauma/cerebral hemorrhage. Concurrent use with PDE5 inhibitors (e.g., sildenafil, tadalafil) due to severe hypotension risk.",
+                        patientEducation: "Sublingual: Take at first sign of chest pain. May repeat every 5 minutes for up to 3 doses. If pain persists after 3 doses, seek emergency medical help. Keep in original dark bottle, away from heat/light. May cause headache (common), dizziness, flushing. Transdermal patch: Apply to hairless area, rotate sites, remove for 10-12 hours daily (nitrate-free period) to prevent tolerance.",
+                        sideEffects: "Headache (common, due to vasodilation), dizziness, orthostatic hypotension, flushing, reflex tachycardia.",
+                        safety: "Severe hypotension with PDE5 inhibitors. Monitor BP closely. Tolerance can develop with continuous use (nitrate-free period needed).",
+                        clinicalJudgment: "Teach proper sublingual administration. Monitor BP before and after administration. Educate on headache as a common side effect and not a reason to stop. Implement fall precautions.",
+                        evaluation: "Relief of angina pain, prevention of angina episodes."
+                    },
+                    {
+                        name: "Furosemide (Lasix)",
+                        classification: "Loop Diuretic",
+                        action: "Inhibits sodium and chloride reabsorption in the ascending loop of Henle, leading to increased excretion of water, sodium, chloride, potassium, and calcium.",
+                        purpose: "Treats edema associated with heart failure, renal disease, hepatic disease. Manages hypertension.",
+                        preAssessment: "Assess fluid status (intake/output, weight, edema). Assess blood pressure, heart rate. Monitor electrolytes (potassium, sodium, magnesium, calcium). Assess renal function (BUN, creatinine).",
+                        contraindications: "Hypersensitivity to furosemide or sulfonamides. Anuria. Hepatic coma. Severe electrolyte depletion.",
+                        patientEducation: "Take in the morning to prevent nocturia. Report signs of dehydration (excessive thirst, dry mouth, dizziness). Report muscle cramps, weakness, irregular heartbeat (signs of hypokalemia). Consume potassium-rich foods or supplements as advised. Avoid prolonged sun exposure.",
+                        sideEffects: "Hypokalemia, hyponatremia, hypomagnesemia, hypochloremia, dehydration, hypotension, ototoxicity (especially with rapid IV push or high doses), hyperglycemia, hyperuricemia.",
+                        safety: "Risk of severe fluid and electrolyte imbalance. Ototoxicity can be permanent. Administer IV push slowly (over 1-2 minutes). Increased risk of digoxin toxicity with hypokalemia.",
+                        clinicalJudgment: "Monitor electrolytes, especially potassium. Assess for signs of dehydration. Monitor BP and urine output. Educate on potassium-rich foods. Implement fall precautions due to orthostatic hypotension.",
+                        evaluation: "Reduced edema, decreased fluid volume, improved breathing, decreased blood pressure."
+                    },
+                    {
+                        name: "Hydrochlorothiazide (HCTZ)",
+                        classification: "Thiazide Diuretic",
+                        action: "Inhibits sodium and chloride reabsorption in the distal convoluted tubule.",
+                        purpose: "Treats hypertension and edema (mild to moderate heart failure, renal dysfunction).",
+                        preAssessment: "Assess fluid status. Assess blood pressure. Monitor electrolytes (potassium, sodium). Assess renal function. Check for sulfonamide allergy.",
+                        contraindications: "Hypersensitivity to thiazides or sulfonamides. Anuria. Severe renal impairment.",
+                        patientEducation: "Take in the morning. Report signs of dehydration or electrolyte imbalance (muscle cramps, weakness). Consume potassium-rich foods or supplements as advised. Avoid prolonged sun exposure (photosensitivity).",
+                        sideEffects: "Hypokalemia, hyponatremia, hypochloremia, hyperglycemia, hyperuricemia, hypotension, photosensitivity.",
+                        safety: "Less potent than loop diuretics. Risk of electrolyte imbalances. May exacerbate gout. Can increase blood glucose.",
+                        clinicalJudgment: "Monitor electrolytes, especially potassium. Assess BP. Educate on photosensitivity and potassium intake. Often first-line for hypertension.",
+                        evaluation: "Decreased blood pressure, reduced edema."
+                    },
+                    {
+                        name: "Spironolactone",
+                        classification: "Potassium-Sparing Diuretic",
+                        action: "Antagonizes aldosterone in the distal tubule and collecting ducts, leading to increased sodium and water excretion and potassium retention.",
+                        purpose: "Treats hypertension, edema (often with other diuretics), heart failure (reduces mortality), hypokalemia.",
+                        preAssessment: "Assess fluid status. Assess blood pressure. Monitor potassium levels (risk of hyperkalemia). Assess renal function.",
+                        contraindications: "Hypersensitivity to spironolactone. Hyperkalemia. Severe renal impairment. Anuria. Addison's disease.",
+                        patientEducation: "Take in the morning. Avoid potassium supplements, salt substitutes, and potassium-rich foods (e.g., bananas, oranges, leafy greens) unless advised by provider. Report muscle weakness, fatigue, irregular heartbeat (signs of hyperkalemia).",
+                        sideEffects: "Hyperkalemia (most significant), gynecomastia (in men), menstrual irregularities (in women), deepened voice, hirsutism, GI upset, dizziness.",
+                        safety: "Major risk is hyperkalemia, especially in patients with renal impairment or those taking ACE inhibitors/ARBs. Avoid potassium supplements.",
+                        clinicalJudgment: "Monitor potassium levels closely. Educate on avoiding potassium-rich foods/supplements. Assess for signs of hyperkalemia. Often used in combination with loop or thiazide diuretics to counteract potassium loss.",
+                        evaluation: "Decreased blood pressure, reduced edema, improved symptoms of heart failure, potassium level within normal range."
+                    },
+                    {
+                        name: "Metoprolol",
+                        classification: "Beta-Blocker (Beta-1 selective)",
+                        action: "Selectively blocks beta-1 adrenergic receptors in the heart, decreasing heart rate, myocardial contractility, and conduction velocity.",
+                        purpose: "Treats hypertension, angina, heart failure, myocardial infarction, arrhythmias.",
+                        preAssessment: "Assess apical pulse for a full minute; hold if <60 bpm. Assess blood pressure; hold if systolic <90-100 mmHg. Assess for history of asthma/COPD (less risk with beta-1 selective but still caution). Assess for diabetes (may mask hypoglycemia symptoms).",
+                        contraindications: "Hypersensitivity to metoprolol. Sinus bradycardia, greater than first-degree heart block, cardiogenic shock, overt cardiac failure.",
+                        patientEducation: "Do not stop abruptly (can cause rebound hypertension/angina). Take pulse and BP regularly. Report dizziness, fatigue, shortness of breath, swelling. May mask signs of hypoglycemia in diabetics. Change positions slowly.",
+                        sideEffects: "Bradycardia, hypotension, fatigue, dizziness, depression, insomnia, sexual dysfunction, bronchospasm (less common with beta-1 selective), masking of hypoglycemia symptoms.",
+                        safety: "Abrupt discontinuation can lead to rebound cardiac excitation. Use with caution in patients with asthma/COPD (even beta-1 selective). May worsen heart failure initially. Monitor blood glucose in diabetics.",
+                        clinicalJudgment: "Always check HR and BP before administration. Educate on abrupt cessation. Monitor for signs of worsening heart failure. Assess for respiratory distress in patients with lung conditions.",
+                        evaluation: "Decreased blood pressure, reduced heart rate, decreased angina episodes, improved heart failure symptoms."
+                    },
+                    {
+                        name: "Lisinopril",
+                        classification: "ACE Inhibitor",
+                        action: "Inhibits angiotensin-converting enzyme (ACE), preventing conversion of angiotensin I to angiotensin II (a potent vasoconstrictor). Also inhibits bradykinin breakdown.",
+                        purpose: "Treats hypertension, heart failure, and improves survival post-MI. Protects kidneys in diabetics.",
+                        preAssessment: "Assess blood pressure. Monitor renal function (BUN, creatinine). Monitor potassium levels (risk of hyperkalemia). Assess for history of angioedema.",
+                        contraindications: "Hypersensitivity to ACE inhibitors. History of angioedema related to previous ACE inhibitor therapy. Pregnancy (black box warning). Bilateral renal artery stenosis.",
+                        patientEducation: "May cause a persistent dry cough (common, but not serious). Report swelling of face, lips, tongue, or throat (angioedema) immediately. Avoid potassium supplements and salt substitutes. Change positions slowly to prevent dizziness. Take consistently.",
+                        sideEffects: "Dry, persistent cough (common), hypotension (especially first-dose), hyperkalemia, angioedema (rare but serious), renal impairment, fatigue, dizziness.",
+                        safety: "Risk of angioedema (life-threatening). Risk of first-dose hypotension. Hyperkalemia risk. Contraindicated in pregnancy.",
+                        clinicalJudgment: "Monitor BP closely, especially after first dose. Assess for cough. Educate on angioedema symptoms. Monitor potassium and renal function. Avoid in pregnancy.",
+                        evaluation: "Decreased blood pressure, improved heart failure symptoms, reduced proteinuria."
+                    },
+                    {
+                        name: "Amlodipine",
+                        classification: "Calcium Channel Blocker (Dihydropyridine)",
+                        action: "Inhibits calcium ion influx across cardiac and vascular smooth muscle cell membranes, causing peripheral vasodilation and coronary artery vasodilation.",
+                        purpose: "Treats hypertension and angina (stable and vasospastic).",
+                        preAssessment: "Assess blood pressure and heart rate. Assess for peripheral edema.",
+                        contraindications: "Hypersensitivity to amlodipine. Severe hypotension. Cardiogenic shock.",
+                        patientEducation: "Report swelling in ankles/feet. Report dizziness or lightheadedness. Take consistently. Avoid grapefruit juice (may increase drug levels).",
+                        sideEffects: "Peripheral edema (common), headache, dizziness, flushing, fatigue, palpitations, gingival hyperplasia (rare).",
+                        safety: "Generally well-tolerated. Risk of excessive hypotension, especially with overdose. Peripheral edema is a common, dose-related side effect.",
+                        clinicalJudgment: "Monitor BP and heart rate. Assess for peripheral edema. Educate on common side effects and to report persistent swelling. Can be used in patients with lung conditions.",
+                        evaluation: "Decreased blood pressure, reduced frequency and severity of angina."
+                    }
+                ]
+            },
+            {
+                category: "Cardiac Part 2",
+                icon: `🩺`, // Stethoscope emoji
+                description: "Medications affecting blood clotting and lipid levels.",
+                drugs: [
+                    {
+                        name: "Clopidogrel",
+                        classification: "Antiplatelet, P2Y12 Inhibitor",
+                        action: "Inhibits platelet aggregation by irreversibly blocking the P2Y12 ADP receptor on platelets.",
+                        purpose: "Prevents thrombotic events (MI, stroke) in patients with acute coronary syndrome, recent MI/stroke, or peripheral artery disease. Used after stent placement.",
+                        preAssessment: "Assess for active bleeding (GI bleed, intracranial hemorrhage). Assess for history of bleeding disorders or recent surgery. Monitor platelet count.",
+                        contraindications: "Active pathological bleeding (e.g., peptic ulcer, intracranial hemorrhage). Hypersensitivity to clopidogrel.",
+                        patientEducation: "Report any signs of bleeding (unusual bruising, nosebleeds, blood in urine/stools, prolonged bleeding from cuts). Do not stop taking without consulting provider (increased risk of thrombotic events). Avoid NSAIDs and aspirin unless prescribed.",
+                        sideEffects: "Bleeding (GI, bruising, epistaxis), dyspepsia, abdominal pain, diarrhea, rash, thrombotic thrombocytopenic purpura (TTP - rare but serious).",
+                        safety: "Increased risk of bleeding. Black box warning for patients who are poor metabolizers of CYP2C19 (reduced effectiveness). Risk of TTP.",
+                        clinicalJudgment: "Monitor for bleeding. Educate on bleeding precautions. Advise against abrupt discontinuation. Assess for signs of TTP (fever, weakness, petechiae, pallor, neurological changes).",
+                        evaluation: "Prevention of thrombotic events."
+                    },
+                    {
+                        name: "Heparin",
+                        classification: "Anticoagulant",
+                        action: "Potentiates the action of antithrombin III, inactivating thrombin and factor Xa, thus preventing clot formation.",
+                        purpose: "Prevents and treats venous thromboembolism (DVT, PE), prevents clotting in arterial and cardiac surgery, and during dialysis.",
+                        preAssessment: "Assess for active bleeding. Monitor aPTT (activated partial thromboplastin time) for IV heparin (therapeutic range 1.5-2.5 times control). Monitor platelet count (risk of HIT). Assess for history of heparin-induced thrombocytopenia (HIT).",
+                        contraindications: "Active bleeding. Severe thrombocytopenia. Uncontrolled hypertension. Intracranial hemorrhage. Lumbar puncture/spinal anesthesia (risk of hematoma). Hypersensitivity to heparin.",
+                        patientEducation: "Report any signs of bleeding (unusual bruising, nosebleeds, blood in urine/stools, prolonged bleeding from cuts). Avoid activities that may cause injury. Do not take aspirin or NSAIDs without consulting provider. Do not massage injection site (SC).",
+                        sideEffects: "Bleeding (hemorrhage), heparin-induced thrombocytopenia (HIT - severe, life-threatening decrease in platelets), hypersensitivity reactions, osteoporosis (long-term use).",
+                        safety: "High risk of bleeding. HIT is a serious adverse effect. Antidote is Protamine Sulfate. Requires careful dose adjustment based on aPTT.",
+                        clinicalJudgment: "Monitor aPTT and platelet count strictly. Assess for bleeding. Educate on bleeding precautions. Do not administer IM. Double-check doses.",
+                        evaluation: "Prevention/treatment of thrombosis, aPTT within therapeutic range."
+                    },
+                    {
+                        name: "Warfarin",
+                        classification: "Anticoagulant, Vitamin K Antagonist",
+                        action: "Interferes with hepatic synthesis of vitamin K-dependent clotting factors (II, VII, IX, X).",
+                        purpose: "Long-term prevention and treatment of venous thromboembolism (DVT, PE), prevention of stroke in atrial fibrillation, prosthetic heart valves.",
+                        preAssessment: "Assess for active bleeding. Monitor PT/INR (prothrombin time/international normalized ratio) (therapeutic INR usually 2-3). Assess dietary vitamin K intake. Check for drug interactions.",
+                        contraindications: "Active bleeding. Hemorrhagic tendencies. Recent surgery (especially eye, brain, spinal cord). Uncontrolled hypertension. Pregnancy (black box warning). Hypersensitivity to warfarin.",
+                        patientEducation: "Report any signs of bleeding. Maintain a consistent intake of vitamin K-rich foods (green leafy vegetables) – do not drastically increase or decrease. Avoid alcohol. Do not take aspirin or NSAIDs without consulting provider. Carry medical alert identification. Regular blood tests (INR) are essential.",
+                        sideEffects: "Bleeding (hemorrhage), skin necrosis (rare), purple toe syndrome (rare).",
+                        safety: "High risk of bleeding. Narrow therapeutic index. Numerous drug and food interactions (especially vitamin K). Antidote is Vitamin K (phytonadione). Black box warning for major or fatal bleeding.",
+                        clinicalJudgment: "Monitor PT/INR closely. Educate on consistent vitamin K intake. Assess for bleeding. Review all concurrent medications for interactions. Individualize dose based on INR.",
+                        evaluation: "Prevention of thrombosis, PT/INR within therapeutic range."
+                    },
+                    {
+                        name: "Enoxaparin",
+                        classification: "Low Molecular Weight Heparin (LMWH)",
+                        action: "Potentiates antithrombin III, primarily inhibiting Factor Xa.",
+                        purpose: "Prevents and treats DVT/PE, manages unstable angina/NSTEMI.",
+                        preAssessment: "Assess for active bleeding. Monitor platelet count (risk of HIT, though less than unfractionated heparin). Assess renal function (dose adjustment needed).",
+                        contraindications: "Active major bleeding. History of HIT. Hypersensitivity to enoxaparin. Lumbar puncture/spinal anesthesia (risk of hematoma).",
+                        patientEducation: "Report any signs of bleeding. Do not rub injection site (SC). Inject into abdomen, alternating sides. Do not expel air bubble from pre-filled syringe. Do not take aspirin or NSAIDs without consulting provider.",
+                        sideEffects: "Bleeding, injection site hematoma/pain, thrombocytopenia (including HIT, less common than unfractionated heparin).",
+                        safety: "Black box warning for spinal/epidural hematoma in patients undergoing spinal puncture or epidural anesthesia. Less monitoring required than unfractionated heparin (no routine aPTT).",
+                        clinicalJudgment: "Monitor for bleeding. Educate on proper subcutaneous injection technique. Assess renal function. Not interchangeable with other LMWHs or unfractionated heparin.",
+                        evaluation: "Prevention/treatment of thrombosis."
+                    },
+                    {
+                        name: "\"Statins\" (e.g., Atorvastatin, Simvastatin)",
+                        classification: "HMG-CoA Reductase Inhibitor, Antihyperlipidemic",
+                        action: "Inhibits HMG-CoA reductase, an enzyme essential for cholesterol synthesis in the liver. Increases LDL receptors in the liver, leading to increased removal of LDL from blood.",
+                        purpose: "Reduces elevated LDL-C, total cholesterol, and triglycerides; increases HDL-C. Prevents cardiovascular events (MI, stroke).",
+                        preAssessment: "Assess liver function (ALT, AST) before starting and periodically. Assess for muscle pain/weakness. Check for concurrent use of drugs that increase statin levels (e.g., grapefruit juice, certain antifungals).",
+                        contraindications: "Active liver disease or unexplained persistent elevations of serum transaminases. Pregnancy and lactation (black box warning). Hypersensitivity to statins.",
+                        patientEducation: "Take in the evening (for some statins like simvastatin, due to cholesterol synthesis timing). Report unusual muscle pain, tenderness, or weakness (signs of myopathy/rhabdomyolysis) immediately. Avoid grapefruit juice. Continue lifestyle modifications (diet, exercise).",
+                        sideEffects: "Myopathy (muscle pain, weakness), rhabdomyolysis (severe muscle breakdown, can lead to kidney failure), hepatotoxicity (liver damage), GI upset, headache.",
+                        safety: "Risk of myopathy and rhabdomyolysis (rare but serious). Monitor liver enzymes. Contraindicated in pregnancy. Numerous drug interactions.",
+                        clinicalJudgment: "Monitor liver enzymes. Educate on reporting muscle pain. Assess for drug interactions. Encourage lifestyle modifications. Consider coenzyme Q10 for muscle symptoms.",
+                        evaluation: "Reduced LDL-C and total cholesterol, increased HDL-C, prevention of cardiovascular events."
+                    }
+                ]
+            }
+        ];
+
+        // Global state variables
+        let currentMode = 'home'; // 'home', 'category', 'drugDetail', 'flashcards', 'quiz', 'quizResult', 'majorConcepts'
+        let selectedCategory = null;
+        let selectedDrug = null;
+        let quizQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let quizFeedback = '';
+        let flashcards = [];
+        let currentFlashcardIndex = 0;
+        let showFlashcardBack = false;
+        // Removed searchTerm and filteredDrugs as they are no longer needed for search
+
+        const mainContentDiv = document.getElementById('main-content');
+        const homeButton = document.getElementById('home-button');
+
+        // Helper to shuffle array for quizzes and flashcards
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [
+                    array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // --- Navigation Functions ---
+        function navigateHome() {
+            currentMode = 'home';
+            selectedCategory = null;
+            selectedDrug = null;
+            renderContent();
+        }
+
+        function navigateToCategory(category) {
+            currentMode = 'category';
+            selectedCategory = category;
+            renderContent();
+        }
+
+        function navigateToDrugDetail(drug) {
+            currentMode = 'drugDetail';
+            selectedDrug = drug;
+            renderContent();
+        }
+
+        function startFlashcards() {
+            currentMode = 'flashcards';
+            const categoryDrugs = drugsData.find(cat => cat.category === selectedCategory.category)?.drugs || [];
+            flashcards = shuffleArray([...categoryDrugs]);
+            currentFlashcardIndex = 0;
+            showFlashcardBack = false;
+            renderContent();
+        }
+
+        function startQuiz() {
+            currentMode = 'quiz';
+            score = 0;
+            currentQuestionIndex = 0;
+            quizFeedback = '';
+            generateQuizQuestions();
+            renderContent();
+        }
+
+        function navigateToMajorConcepts() {
+            currentMode = 'majorConcepts';
+            renderContent();
+        }
+
+        // --- Quiz Logic ---
+        function generateQuizQuestions() {
+            const categoryDrugs = drugsData.find(cat => cat.category === selectedCategory.category)?.drugs || [];
+            const questions = [];
+
+            categoryDrugs.forEach(drug => {
+                // Question 1: Action/Purpose
+                questions.push({
+                    type: 'multiple-choice',
+                    question: `What is the primary action/purpose of ${drug.name}?`,
+                    correctAnswer: drug.purpose || drug.action,
+                    options: shuffleArray([
+                        drug.purpose || drug.action,
+                        categoryDrugs[Math.floor(Math.random() * categoryDrugs.length)].purpose || '',
+                        categoryDrugs[Math.floor(Math.random() * categoryDrugs.length)].action || '',
+                        'To increase blood sugar levels' // Generic wrong answer
+                    ].filter(Boolean).slice(0, 4)).filter((value, index, self) => self.indexOf(value) === index), // Ensure unique options
+                    drug: drug
+                });
+
+                // Question 2: Pre-assessment/Contraindication
+                if (drug.preAssessment || drug.contraindications) {
+                    const keyPoint = drug.preAssessment || drug.contraindications;
+                    questions.push({
+                        type: 'multiple-choice',
+                        question: `Which of the following is a key pre-assessment or contraindication for ${drug.name}?`,
+                        correctAnswer: keyPoint,
+                        options: shuffleArray([
+                            keyPoint,
+                            categoryDrugs[Math.floor(Math.random() * categoryDrugs.length)].preAssessment || '',
+                            categoryDrugs[Math.floor(Math.random() * categoryDrugs.length)].contraindications || '',
+                            'Assess patient\'s favorite color' // Generic wrong answer
+                        ].filter(Boolean).slice(0, 4)).filter((value, index, self) => self.indexOf(value) === index),
+                        drug: drug
+                    });
+                }
+
+                // Question 3: Side Effect/Safety
+                if (drug.sideEffects || drug.safety) {
+                    const keyPoint = drug.sideEffects || drug.safety;
+                    questions.push({
+                        type: 'multiple-choice',
+                        question: `Which of these is a pertinent side effect or safety concern for ${drug.name}?`,
+                        correctAnswer: keyPoint,
+                        options: shuffleArray([
+                            keyPoint,
+                            categoryDrugs[Math.floor(Math.random() * categoryDrugs.length)].sideEffects || '',
+                            categoryDrugs[Math.floor(Math.random() * categoryDrugs.length)].safety || '',
+                            'Increased hair growth' // Generic wrong answer
+                        ].filter(Boolean).slice(0, 4)).filter((value, index, self) => self.indexOf(value) === index),
+                        drug: drug
+                    });
+                }
+
+                // Question 4: Patient Education
+                if (drug.patientEducation) {
+                    questions.push({
+                        type: 'multiple-choice',
+                        question: `What is a crucial piece of patient education for ${drug.name}?`,
+                        correctAnswer: drug.patientEducation,
+                        options: shuffleArray([
+                            drug.patientEducation,
+                            categoryDrugs[Math.floor(Math.random() * categoryDrugs.length)].patientEducation || '',
+                            'Eat whatever you want', // Generic wrong answer
+                            'Stop taking when you feel better' // Generic wrong answer
+                        ].filter(Boolean).slice(0, 4)).filter((value, index, self) => self.indexOf(value) === index),
+                        drug: drug
+                    });
+                }
+            });
+
+            quizQuestions = shuffleArray(questions);
+        }
+
+        function handleAnswer(selectedOption) {
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            if (selectedOption === currentQuestion.correctAnswer) {
+                score++;
+                quizFeedback = 'Correct!';
+            } else {
+                quizFeedback = `Incorrect. The correct answer was: ${currentQuestion.correctAnswer}`;
+            }
+            renderContent(); // Re-render to show feedback
+
+            setTimeout(() => {
+                quizFeedback = '';
+                if (currentQuestionIndex < quizQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    renderContent(); // Re-render for next question
+                } else {
+                    currentMode = 'quizResult'; // Change mode to show result
+                    renderContent(); // Re-render for results
+                }
+            }, 1500); // Give feedback for 1.5 seconds
+        }
+
+        // --- Flashcard Logic ---
+        function nextFlashcard() {
+            showFlashcardBack = false;
+            currentFlashcardIndex = (currentFlashcardIndex + 1) % flashcards.length;
+            renderContent();
+        }
+
+        function prevFlashcard() {
+            showFlashcardBack = false;
+            currentFlashcardIndex = (currentFlashcardIndex - 1 + flashcards.length) % flashcards.length;
+            renderContent();
+        }
+
+        function toggleFlashcardFlip() {
+            showFlashcardBack = !showFlashcardBack;
+            renderContent();
+        }
+
+        // --- Render Functions for different views ---
+        function renderHome() {
+            mainContentDiv.innerHTML = `
+                <div class="p-6">
+                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Choose a Learning Category</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${drugsData.map(category => `
+                            <div
+                                class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col items-center text-center border border-gray-200"
+                                data-category="${category.category}"
+                            >
+                                <div class="text-blue-600 mb-4 text-4xl">${category.icon}</div>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">${category.category}</h3>
+                                <p class="text-gray-600 text-sm">${category.description}</p>
+                            </div>
+                        `).join('')}
+                        <div
+                            id="major-concepts-card"
+                            class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col items-center text-center border border-gray-200"
+                        >
+                            <div class="text-green-600 mb-4 text-4xl">💡</div> <!-- Lightbulb emoji -->
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Major Concepts & Focus Points</h3>
+                            <p class="text-gray-600 text-sm">Review foundational principles for analyzing questions.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners for categories
+            mainContentDiv.querySelectorAll('[data-category]').forEach(div => {
+                div.addEventListener('click', (event) => {
+                    const categoryName = event.currentTarget.dataset.category;
+                    const category = drugsData.find(cat => cat.category === categoryName);
+                    if (category) {
+                        navigateToCategory(category);
+                    }
+                });
+            });
+
+            // Add event listener for Major Concepts card
+            document.getElementById('major-concepts-card').addEventListener('click', navigateToMajorConcepts);
+        }
+
+        function renderCategory() {
+            if (!selectedCategory) {
+                navigateHome();
+                return;
+            }
+
+            mainContentDiv.innerHTML = `
+                <div class="p-6">
+                    <button id="back-to-categories" class="mb-6 flex items-center text-blue-600 hover:text-blue-800 transition duration-200 font-semibold">
+                        <span class="mr-2 text-lg">⬅️</span> <!-- Left Arrow emoji -->
+                        Back to Categories
+                    </button>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">${selectedCategory.category}</h2>
+
+                    <div class="flex justify-center space-x-4 mb-8">
+                        <button id="start-flashcards" class="px-6 py-3 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition duration-200 flex items-center text-lg font-semibold">
+                            <span class="mr-2 text-lg">💡</span> <!-- Lightbulb emoji -->
+                            Start Flashcards
+                        </button>
+                        <button id="start-quiz" class="px-6 py-3 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition duration-200 flex items-center text-lg font-semibold">
+                            <span class="mr-2 text-lg">🎓</span> <!-- Graduation Cap emoji -->
+                            Start Quiz
+                        </button>
+                    </div>
+
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Drugs in this Category:</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${selectedCategory.drugs.map(drug => `
+                            <div
+                                class="bg-white p-4 rounded-lg shadow hover:shadow-md transition duration-200 cursor-pointer border border-gray-200"
+                                data-drug-name="${drug.name}"
+                            >
+                                <h4 class="text-lg font-semibold text-gray-800">${drug.name}</h4>
+                                <p class="text-sm text-gray-600">${drug.classification}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners
+            document.getElementById('back-to-categories').addEventListener('click', navigateHome);
+            document.getElementById('start-flashcards').addEventListener('click', startFlashcards);
+            document.getElementById('start-quiz').addEventListener('click', startQuiz);
+            mainContentDiv.querySelectorAll('[data-drug-name]').forEach(div => {
+                div.addEventListener('click', (event) => {
+                    const drugName = event.currentTarget.dataset.drugName;
+                    const drug = selectedCategory.drugs.find(d => d.name === drugName);
+                    if (drug) {
+                        navigateToDrugDetail(drug);
+                    }
+                });
+            });
+        }
+
+        function renderDrugDetail() {
+            if (!selectedDrug || !selectedCategory) {
+                navigateHome();
+                return;
+            }
+
+            let detailsHtml = '';
+            for (const key in selectedDrug) {
+                if (['name', 'classification'].includes(key)) continue;
+                const title = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                detailsHtml += `
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-100">
+                        <p class="font-semibold text-blue-700 flex items-center mb-1">
+                            <span class="mr-2 text-blue-500 text-lg">ℹ️</span> <!-- Info emoji -->
+                            ${title}:
+                        </p>
+                        <p class="text-gray-700 leading-relaxed">${selectedDrug[key]}</p>
+                    </div>
+                `;
+            }
+
+            mainContentDiv.innerHTML = `
+                <div class="p-6">
+                    <button id="back-to-category" class="mb-6 flex items-center text-blue-600 hover:text-blue-800 transition duration-200 font-semibold">
+                        <span class="mr-2 text-lg">⬅️</span> <!-- Left Arrow emoji -->
+                        Back to ${selectedCategory.category}
+                    </button>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">${selectedDrug.name}</h2>
+                    <p class="text-xl text-gray-700 font-medium mb-4 text-center">${selectedDrug.classification}</p>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Key Information:</h3>
+                        <div class="space-y-4">
+                            ${detailsHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('back-to-category').addEventListener('click', () => navigateToCategory(selectedCategory));
+        }
+
+        function renderFlashcards() {
+            if (!selectedCategory || flashcards.length === 0) {
+                mainContentDiv.innerHTML = `
+                    <div class="p-6 text-center text-gray-600">
+                        <p>No flashcards available for this category.</p>
+                        <button id="back-to-category-from-flashcards" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+                            Back to Category
+                        </button>
+                    </div>
+                `;
+                document.getElementById('back-to-category-from-flashcards').addEventListener('click', () => navigateToCategory(selectedCategory));
+                return;
+            }
+
+            const currentFlashcard = flashcards[currentFlashcardIndex];
+            mainContentDiv.innerHTML = `
+                <div class="p-6 flex flex-col items-center">
+                    <button id="back-to-category-from-flashcards" class="mb-6 self-start flex items-center text-blue-600 hover:text-blue-800 transition duration-200 font-semibold">
+                        <span class="mr-2 text-lg">⬅️</span> <!-- Left Arrow emoji -->
+                        Back to ${selectedCategory.category}
+                    </button>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Flashcards: ${selectedCategory.category}</h2>
+
+                    <div id="flashcard-card"
+                        class="flashcard-container w-full max-w-xl h-80 bg-gradient-to-br from-blue-100 to-purple-100 p-6 rounded-2xl shadow-xl border-4 border-blue-300 flex items-center justify-center text-center cursor-pointer transform transition-transform duration-500 hover:scale-105 perspective-1000"
+                        style="transform-style: preserve-3d;"
+                    >
+                        <div
+                            class="flashcard-face backface-hidden flex items-center justify-center p-6"
+                            style="transform: ${showFlashcardBack ? 'rotateY(180deg)' : 'rotateY(0deg)'}; transition: transform 0.5s; background-color: white; border-radius: inherit; box-shadow: inherit;"
+                        >
+                            <div class="text-gray-800 text-2xl font-semibold">
+                                ${currentFlashcard.name}
+                            </div>
+                        </div>
+                        <div
+                            class="flashcard-face backface-hidden flex flex-col items-center justify-center p-6 overflow-auto"
+                            style="transform: ${showFlashcardBack ? 'rotateY(0deg)' : 'rotateY(-180deg)'}; transition: transform 0.5s; background-color: white; border-radius: inherit; box-shadow: inherit;"
+                        >
+                            <p class="text-xl text-gray-700 font-medium mb-2">${currentFlashcard.classification}</p>
+                            <p class="text-gray-700 text-lg leading-relaxed">${currentFlashcard.purpose || currentFlashcard.action}</p>
+                            <p class="text-sm text-gray-500 mt-2">Click to flip</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center items-center mt-8 space-x-4 w-full max-w-xl">
+                        <button id="prev-flashcard" class="p-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition duration-200">
+                            <span class="text-2xl">⬅️</span> <!-- Left Arrow emoji -->
+                        </button>
+                        <span class="text-gray-700 text-lg font-medium">
+                            ${currentFlashcardIndex + 1} / ${flashcards.length}
+                        </span>
+                        <button id="next-flashcard" class="p-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition duration-200">
+                            <span class="text-2xl">➡️</span> <!-- Right Arrow emoji -->
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('back-to-category-from-flashcards').addEventListener('click', () => navigateToCategory(selectedCategory));
+            document.getElementById('flashcard-card').addEventListener('click', toggleFlashcardFlip);
+            document.getElementById('prev-flashcard').addEventListener('click', prevFlashcard);
+            document.getElementById('next-flashcard').addEventListener('click', nextFlashcard);
+        }
+
+        function renderQuiz() {
+            if (!selectedCategory || quizQuestions.length === 0) {
+                mainContentDiv.innerHTML = `
+                    <div class="p-6 text-center text-gray-600">
+                        <p>No quiz questions available for this category.</p>
+                        <button id="back-to-category-from-quiz" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+                            Back to Category
+                        </button>
+                    </div>
+                `;
+                document.getElementById('back-to-category-from-quiz').addEventListener('click', () => navigateToCategory(selectedCategory));
+                return;
+            }
+
+            if (currentMode === 'quizResult') {
+                mainContentDiv.innerHTML = `
+                    <div class="p-6 text-center flex flex-col items-center">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-6">Quiz Results</h2>
+                        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-md w-full">
+                            <p class="text-4xl font-extrabold text-blue-600 mb-4">
+                                ${score} / ${quizQuestions.length}
+                            </p>
+                            <p class="text-xl text-gray-700 mb-6">
+                                You scored ${((score / quizQuestions.length) * 100).toFixed(0)}%
+                            </p>
+                            <button id="retake-quiz" class="px-6 py-3 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition duration-200 mr-4">
+                                Retake Quiz
+                            </button>
+                            <button id="back-to-category-from-results" class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-200">
+                                Back to Category
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('retake-quiz').addEventListener('click', startQuiz);
+                document.getElementById('back-to-category-from-results').addEventListener('click', () => navigateToCategory(selectedCategory));
+                return;
+            }
+
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            let optionsHtml = '';
+            currentQuestion.options.forEach((option, index) => {
+                optionsHtml += `
+                    <button
+                        class="w-full text-left p-4 border border-gray-300 rounded-lg hover:bg-blue-50 transition duration-200 text-gray-700 font-medium text-lg ${quizFeedback ? 'opacity-50 cursor-not-allowed' : ''}"
+                        data-option="${option}"
+                        ${quizFeedback ? 'disabled' : ''}
+                    >
+                        ${option}
+                    </button>
+                `;
+            });
+
+            let feedbackHtml = '';
+            if (quizFeedback) {
+                const feedbackClass = quizFeedback.startsWith('Correct') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+                const feedbackIcon = quizFeedback.startsWith('Correct') ? `✅` : `❌`; // Check/X emoji
+                feedbackHtml = `
+                    <div class="mt-6 p-4 rounded-lg text-lg font-semibold flex items-center ${feedbackClass}">
+                        <span class="mr-3 text-2xl">${feedbackIcon}</span>
+                        ${quizFeedback}
+                    </div>
+                `;
+            }
+
+            mainContentDiv.innerHTML = `
+                <div class="p-6 flex flex-col items-center">
+                    <button id="back-to-category-from-quiz" class="mb-6 self-start flex items-center text-blue-600 hover:text-blue-800 transition duration-200 font-semibold">
+                        <span class="mr-2 text-lg">⬅️</span> <!-- Left Arrow emoji -->
+                        Back to ${selectedCategory.category}
+                    </button>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Quiz: ${selectedCategory.category}</h2>
+
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-2xl w-full">
+                        <p class="text-lg text-gray-600 mb-2">
+                            Question ${currentQuestionIndex + 1} of ${quizQuestions.length}
+                        </p>
+                        <p class="text-xl font-semibold text-gray-800 mb-6">${currentQuestion.question}</p>
+
+                        <div class="space-y-4">
+                            ${optionsHtml}
+                        </div>
+
+                        ${feedbackHtml}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('back-to-category-from-quiz').addEventListener('click', () => navigateToCategory(selectedCategory));
+            mainContentDiv.querySelectorAll('[data-option]').forEach(button => {
+                button.addEventListener('click', (event) => handleAnswer(event.currentTarget.dataset.option));
+            });
+        }
+
+        function renderMajorConcepts() {
+            mainContentDiv.innerHTML = `
+                <div class="p-6">
+                    <button id="back-to-home-from-concepts" class="mb-6 flex items-center text-blue-600 hover:text-blue-800 transition duration-200 font-semibold">
+                        <span class="mr-2 text-lg">⬅️</span> <!-- Left Arrow emoji -->
+                        Back to Home
+                    </button>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Major Concepts & Focus Points</h2>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-3">Major Concepts to Refer to When Analyzing Questions</h3>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                <li><strong>1. Safety:</strong> “Stop” Think safety, fall risk/protocols/policies/procedures/processes/rules/regulations/laws/lab values</li>
+                                <li><strong>2. Patient Education:</strong> “Go” Continuous process......Think communication, what’s pertinent</li>
+                                <li><strong>3. Clinical Judgment:</strong> “Caution” Think actions taken to fix what's abnormal (the doing)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-3">Focus Points for Questions (When reviewing drug classifications think about):</h3>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                <li>What is the action/purpose of this classification of medication</li>
+                                <li>Why are they getting this medication</li>
+                                <li>What do you expect the medication to do</li>
+                                <li>Assessment before intervention</li>
+                                <li>Any contraindications or things you have to assess prior to administering the med (Ex: check or assess K level and BP prior to giving Lasix, other meds, food, herbs, lab values or vital signs)</li>
+                                <li>Patient education about the medication</li>
+                                <li>Common side effects (SE) or adverse reactions you will teach the patient (SE that stands out meaning pertinent, not just N/V, upset stomach or diarrhea)</li>
+                                <li>Evaluation of Medication Administered</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('back-to-home-from-concepts').addEventListener('click', navigateHome);
+        }
+
+        // --- Main Render Function (orchestrates views) ---
+        function renderContent() {
+            switch (currentMode) {
+                case 'home':
+                    renderHome();
+                    break;
+                case 'category':
+                    renderCategory();
+                    break;
+                case 'drugDetail':
+                    renderDrugDetail();
+                    break;
+                case 'flashcards':
+                    renderFlashcards();
+                    break;
+                case 'quiz':
+                case 'quizResult': // Quiz result is handled within renderQuiz
+                    renderQuiz();
+                    break;
+                case 'majorConcepts':
+                    renderMajorConcepts();
+                    break;
+                default:
+                    renderHome();
+            }
+        }
+
+        // --- Initialize the application ---
+        document.addEventListener('DOMContentLoaded', () => {
+            homeButton.addEventListener('click', navigateHome);
+            renderContent(); // Initial render of the home screen
+        });
+    </script>
+</body>
+</html>
