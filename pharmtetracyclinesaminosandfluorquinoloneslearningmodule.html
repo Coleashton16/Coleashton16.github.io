@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetracyclines, Aminoglycosides & Fluoroquinolones Learning Module</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        'slide-in-up': {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out forwards',
+                        'slide-in-up': 'slide-in-up 0.4s ease-out forwards',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+        const mockAuth = {
+            onAuthStateChanged: (callback) => {
+                setTimeout(() => callback({ uid: 'standalone-ch28-user' }), 100);
+                return () => {};
+            },
+        };
+
+        const contentData = {
+            'introduction-ch28': {
+                title: 'Introduction to Chapter 28 Antibacterials',
+                color: 'from-blue-500 to-indigo-600',
+                description: 'Overview of Tetracyclines, Glycylcyclines, Aminoglycosides, and Fluoroquinolones.',
+                steps: [
+                    {
+                        id: 'ch28-intro',
+                        title: 'Introduction to Chapter 28 Antibacterials',
+                        type: 'text',
+                        content: `
+                            <h3>Key Antibacterial Groups in Chapter 28</h3>
+                            <p>This chapter discusses several important groups of antibacterials, each with unique characteristics and clinical applications:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2">
+                                <li><strong>Tetracyclines</strong></li>
+                                <li><strong>Glycylcyclines</strong></li>
+                                <li><strong>Aminoglycosides</strong></li>
+                                <li><strong>Fluoroquinolones (Quinolones)</strong></li>
+                            </ul>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-4">
+                                <p class="font-semibold">Learning Objectives for this Module:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>Apply the Clinical Judgment [Nursing Process] for tetracyclines, including patient teaching.</li>
+                                    <li>Compare the similarities and differences between tetracyclines and glycylcyclines.</li>
+                                    <li>Summarize the nurse’s role in detecting ototoxicity and nephrotoxicity associated with the administration of aminoglycosides.</li>
+                                    <li>Explain the importance for ordering peak and trough concentration levels for aminoglycosides.</li>
+                                    <li>Develop a teaching plan for a patient prescribed a fluoroquinolone (quinolone).</li>
+                                    <li>Contrast the nursing interventions for each of the drug categories: tetracyclines, glycylcyclines, aminoglycosides, and fluoroquinolones.</li>
+                                    <li>Apply the Clinical Judgment [Nursing Process] to the patient taking fluoroquinolones.</li>
+                                </ul>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            'tetracyclines-glycylcyclines': {
+                title: 'Tetracyclines & Glycylcyclines',
+                color: 'from-orange-400 to-red-500',
+                description: 'Detailed look at tetracycline and glycylcycline antibiotics, their uses, and considerations.',
+                steps: [
+                    {
+                        id: 'tetracyclines-overview',
+                        title: 'Tetracyclines: Overview and Mechanism',
+                        type: 'text',
+                        content: `
+                            <h3>Tetracyclines: Broad-Spectrum Antibiotics</h3>
+                            <p>Tetracyclines, first isolated from <em>Streptomyces aureofaciens</em> in 1948, were groundbreaking as the first broad-spectrum antibiotics. They are effective against a wide range of organisms:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2">
+                                <li>Gram-positive and gram-negative bacteria</li>
+                                <li>Mycobacteria, rickettsiae, spirochetes, and chlamydiae</li>
+                            </ul>
+
+                            <h4 class="mt-4">Mechanism of Action</h4>
+                            <p>Tetracyclines act by <strong>inhibiting bacterial protein synthesis</strong>. They primarily have a <strong>bacteriostatic</strong> effect, meaning they inhibit bacterial growth rather than directly killing the bacteria.</p>
+
+                            <h4 class="mt-4">Specific Uses and Limitations</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Not effective against:</strong> <em>S. aureus</em> (except for newer tetracyclines), <em>Pseudomonas</em>, or <em>Proteus</em> species.</li>
+                                <li><strong>Effective against:</strong> <em>Mycoplasma pneumoniae</em>.</li>
+                                <li><strong>Combination Therapy:</strong> Tetracycline in combination with metronidazole and bismuth subsalicylate is useful in treating <em>Helicobacter pylori</em>, a bacterium in the stomach that can cause peptic ulcers.</li>
+                                <li><strong>Acne Treatment:</strong> For years, oral and topical tetracyclines have been used to treat severe acne vulgaris; low doses are usually prescribed to minimize toxic effects.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'tetracyclines-administration',
+                        title: 'Tetracyclines: Administration & Absorption',
+                        type: 'text',
+                        content: `
+                            <h3>Tetracyclines: Administration Routes and Absorption</h3>
+                            <p>Tetracyclines are frequently prescribed for oral use, but they are also available for intravenous (IV) use to treat severe infections.</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2">
+                                <li>The newer oral preparations of tetracyclines (i.e., <strong>doxycycline, minocycline</strong>) are more rapidly and completely absorbed.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Important Food and Drug Interactions Affecting Absorption</h4>
+                            <div class="bg-red-50 border-l-4 border-red-400 text-red-800 p-4 rounded-md shadow-sm mt-4">
+                                <p class="font-semibold">Critical Absorption Inhibitors:</p>
+                                <p>Tetracyclines should <strong>NOT</strong> be taken with:</p>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Magnesium and aluminum antacid preparations</li>
+                                    <li>Milk products containing calcium</li>
+                                    <li>Iron-containing drugs</li>
+                                </ul>
+                                <p class="ml-4 mt-1">These substances bind with tetracycline and prevent absorption of the drug.</p>
+                            </div>
+
+                            <h4 class="mt-4">Timing of Administration</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Typically, tetracyclines are administered on an empty stomach (1 to 2 hours prior or 2 to 4 hours after meals and/or milk) for optimum absorption.</li>
+                                <li><strong>Exception (Doxycycline and Minocycline):</strong> Of all the tetracyclines, doxycycline and minocycline have the least affinity for calcium ions, so their overall absorption is not significantly affected when taken with dairy products (doxycycline absorption may only be decreased up to 20%, minocycline up to 13%, compared to tetracycline's 65% reduction). The FDA states that if gastric irritation occurs, doxycycline and minocycline may be administered with food and/or milk.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Bacterial Resistance to Tetracyclines</h4>
+                            <p>Continuous use of tetracyclines has led to increased bacterial resistance. Tetracycline resistance has particularly increased in the treatment of pneumococcal and gonococcal infections, making tetracyclines less useful for these infections today.</p>
+                            <p>Despite their wide use, tetracyclines have numerous side effects, adverse reactions, toxicities, and drug interactions that must be carefully considered.</p>
+                        `
+                    },
+                    {
+                        id: 'doxycycline-prototype',
+                        title: 'Prototype Drug: Doxycycline',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Doxycycline (Antibacterial: Tetracycline)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Drug Class & Therapeutic Uses</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Drug Class:</strong> Antibacterial: Tetracycline.</li>
+                                    <li><strong>Therapeutic Effects/Uses:</strong> For treating acne, anthrax, amebiasis, cholera, brucellosis, psittacosis, epididymitis, malaria, tularemia, plague, STIs, rickettsia, and respiratory, urinary tract, and skin infections.</li>
+                                    <li><strong>Effectiveness:</strong> Effective against <em>Escherichia coli</em> and MRSA, and species of <em>Clostridium, Haemophilus, Enterococcus, Chlamydia, Neisseria, Klebsiella, Staphylococcus, Streptococcus</em>, and <em>Shigella</em>.</li>
+                                    <li><strong>Mechanism of Action:</strong> Inhibits the steps of protein synthesis; bacteriostatic or bactericidal effect.</li>
+                                </ul>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Dosage & Pharmacokinetics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Dosage (Urinary tract infection - Delayed release):</strong> Adult: PO: 100 mg q12h on day 1, then 100 mg/day. IV: 200 mg on day 1, then 100–200 mg/day.</li>
+                                        <li><strong>Absorption (PO):</strong> 100% absorbed.</li>
+                                        <li><strong>Distribution:</strong> Protein Binding (PB): 80%–90%.</li>
+                                        <li><strong>Metabolism:</strong> Half-life (t½): 12–25 hours.</li>
+                                        <li><strong>Excretion:</strong> Urine and feces.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Pharmacodynamics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>PO:</strong> Onset, duration: Unknown. Peak: 3 hours.</li>
+                                        <li><strong>IV:</strong> Onset: Rapid. Peak, duration: Unknown.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Side Effects & Adverse Reactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Side Effects:</strong> Abdominal pain, glossitis (tongue inflammation), dysphagia (difficulty swallowing), dry mouth, tooth/nail discoloration, nausea, vomiting, diarrhea, headache, blurred vision, diplopia (double vision), photosensitivity, rash, cough, injection site reaction, nasopharyngitis, skin hyperpigmentation, anxiety, sinusitis, throat irritation, nasal congestion, dyspepsia, back pain, influenza, musculoskeletal pain, elevated hepatic enzymes, candidiasis, Jarisch-Herxheimer reaction.</li>
+                                    <li><strong>Adverse Reactions:</strong> Superinfection, angioedema (swelling), hypertension, enterocolitis, hyperglycemia, pancreatitis, esophageal ulceration.</li>
+                                    <li><strong>Life-threatening:</strong> Anaphylaxis, eosinophilia, thrombocytopenia, hemolytic anemia, neutropenia, hepatotoxicity, increased intracranial pressure, CDAD (<em>Clostridium difficile</em>–associated diarrhea), Stevens-Johnson syndrome.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Contraindications & Drug-Lab-Food Interactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Contraindications:</strong> Hypersensitivity.</li>
+                                    <li><strong>Caution:</strong> Renal and hepatic dysfunction, asthma, diabetes mellitus, obesity, chemotherapy, sulfite hypersensitivity, diarrhea, CDAD, immunosuppression, STI, sunlight exposure, breastfeeding, pregnancy, children (younger than 8 years of age), older adults.</li>
+                                    <li><strong>Drug Interactions:</strong>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>May increase effects of digoxin and warfarin.</li>
+                                            <li>Doxycycline absorption decreases with sucralfate, antacids, iron, calcium, magnesium, zinc, barbiturates, phenytoin, quinapril, and rifampin.</li>
+                                            <li>Decreases effects of oral contraceptives, ciprofloxacin, and penicillin.</li>
+                                            <li>May alter lithium levels.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Lab Interactions:</strong> Decreases serum potassium level.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'tetracyclines-side-effects',
+                        title: 'Tetracyclines: Side Effects and Adverse Reactions',
+                        type: 'text',
+                        content: `
+                            <h3>Common Side Effects & Adverse Reactions of Tetracyclines</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>GI Disturbances:</strong> Nausea, vomiting, and diarrhea are common side effects.</li>
+                                <li><strong>Photosensitivity:</strong> A sunburn-like reaction may occur in persons taking tetracyclines, especially demeclocycline. Patients should be advised to use sun protection.</li>
+                                <li><strong>Dental Discoloration:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Pregnant patients should <strong>NOT</strong> take tetracycline during the first trimester of pregnancy due to possible teratogenic effects.</li>
+                                        <li>Women in the last trimester of pregnancy and children younger than 8 years of age should also <strong>NOT</strong> take tetracycline because it can irreversibly discolor the permanent teeth (yellow-gray-brown).</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Vestibular Damage:</strong> Minocycline can cause damage to the vestibular part of the inner ear, which may result in difficulty maintaining balance (dizziness, vertigo).</li>
+                                <li><strong>Drug Degradation:</strong> Outdated tetracyclines should always be discarded because the drug breaks down into a toxic by-product, which can cause Fanconi syndrome (a disorder of kidney tubules).</li>
+                                <li><strong>Renal Failure:</strong> Can result with some tetracyclines, especially when given in high doses or concurrently with other nephrotoxic drugs.</li>
+                                <li><strong>Superinfection:</strong> Because tetracycline can disrupt the normal microbial flora of the body, superinfection (secondary infection resulting from drug therapy) is another adverse reaction that might result (e.g., candidiasis, CDAD).</li>
+                                <li><strong>Blood Dyscrasias:</strong> May occur with tetracyclines (e.g., hemolytic anemia, thrombocytopenia, neutropenia).</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'tetracyclines-drug-interactions',
+                        title: 'Tetracyclines: Drug Interactions',
+                        type: 'text',
+                        content: `
+                            <h3>Significant Drug Interactions with Tetracyclines</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Decreased Absorption:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Antacids and iron-containing drugs can prevent absorption of tetracycline from the GI tract.</li>
+                                        <li>Milk and foods high in calcium can inhibit absorption of some tetracyclines.</li>
+                                        <li>To avoid drug interactions, these should be taken at least 2 to 4 hours apart from some tetracyclines.</li>
+                                        <li><strong>Note:</strong> Lipid-soluble tetracyclines, such as doxycycline and minocycline, can be given without regard to meals and/or milk, as their absorption is less affected.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Oral Contraceptives:</strong> The desired action of oral contraceptives can be lessened when taken with tetracyclines. Advise patients to use alternative birth control methods.</li>
+                                <li><strong>Penicillins:</strong> The activity of penicillins given with a tetracycline can be decreased because tetracyclines are bacteriostatic and can interfere with the bactericidal action of penicillins.</li>
+                                <li><strong>Aminoglycosides:</strong> Administering tetracycline with an aminoglycoside may increase the risk of nephrotoxicity.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'glycylcyclines-overview',
+                        title: 'Glycylcyclines: Overview and Uses',
+                        type: 'text',
+                        content: `
+                            <h3>Glycylcyclines: A Newer Class of Antibiotics</h3>
+                            <p><strong>Tigecycline</strong> is an antibiotic in a category called glycylcyclines. These are synthetic analogues of the tetracyclines, designed to overcome some forms of tetracycline resistance.</p>
+                            
+                            <h4 class="mt-4">Mechanism of Action</h4>
+                            <p>Tigecycline acts by blocking protein synthesis in bacterial cells, resulting in a <strong>bacteriostatic</strong> action. It binds to the <strong>30S ribosomal subunit</strong>, preventing the binding of transfer RNA (tRNA) and thus inhibiting bacterial protein translation.</p>
+                            <p>It has broad-spectrum activity against gram-positive and gram-negative bacterial pathogens.</p>
+
+                            <h4 class="mt-4">Indications for Use</h4>
+                            <p>Tigecycline is indicated for:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Community-acquired pneumonia</li>
+                                <li>Complicated skin infections (including those caused by MRSA)</li>
+                                <li>Intraabdominal infections</li>
+                                <li>Effective against: <em>S. aureus, E. coli, S. pyogenes, K. pneumoniae</em>, and <em>C. perfringens</em>.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Glycylcyclines: Uses and Dosages (from Table 28.1)</h4>
+                            <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                <h5 class="font-semibold text-indigo-700 mb-2">Tigecycline</h5>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li><strong>Route and Dosage (Skin infections):</strong> Adult: IV: Initially: 100 mg over 30–60 min; maint: 50 mg q12h for 7–14 days; max: 100 mg/day.</li>
+                                    <li><strong>Uses:</strong> Treating community-acquired pneumonia, MRSA, and skin and intraabdominal infections.</li>
+                                    <li><strong>Pharmacokinetics:</strong> PB: 71%–89%; t½: 27–42 hours.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'glycylcyclines-pharmacokinetics-dynamics',
+                        title: 'Glycylcyclines: Pharmacokinetics & Pharmacodynamics',
+                        type: 'text',
+                        content: `
+                            <h3>Tigecycline: Pharmacokinetics (What the Body Does to the Drug)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Administration:</strong> Tigecycline is administered intravenously (IV).</li>
+                                <li><strong>Dosage:</strong> Initial loading dose of 100 mg over 30 to 60 minutes, followed by 50 mg every 12 hours.</li>
+                                <li><strong>Protein Binding (PB):</strong> Ranges from 71% to 89%.</li>
+                                <li><strong>Half-life (t½):</strong> 27 to 42 hours.</li>
+                                <li><strong>Excretion:</strong> Eliminated from the body in bile, feces, and urine, with biliary excretion being the primary route.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Tigecycline: Pharmacodynamics (What the Drug Does to the Body)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Mechanism of Action:</strong> Tigecycline binds to the 30S ribosomal subunit, blocking protein synthesis and ultimately causing bacterial cell death (bacteriostatic action).</li>
+                                <li><strong>Spectrum:</strong> It has broad-spectrum activity against gram-positive and gram-negative bacterial pathogens.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'glycylcyclines-side-effects',
+                        title: 'Glycylcyclines: Side Effects and Adverse Reactions',
+                        type: 'text',
+                        content: `
+                            <h3>Tigecycline: Side Effects and Adverse Reactions</h3>
+                            <p>Due to their related structural formulas, many side effects of tigecycline are similar to those of tetracycline.</p>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Most Common Side Effects (GI Tract):</strong> Nausea, vomiting, abdominal pain, and diarrhea.</li>
+                                <li><strong>CDAD:</strong> <em>Clostridium difficile</em>–associated diarrhea (CDAD) may occur but is rare.</li>
+                                <li><strong>Other Side Effects:</strong> Photosensitivity, tooth discoloration, weakness, headache, dizziness, anemia, and thrombocythemia.</li>
+                                <li><strong>Serious Adverse Effects:</strong> Elevated hepatic enzymes, hepatic failure, and Stevens-Johnson syndrome.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'glycylcyclines-drug-interactions',
+                        title: 'Glycylcyclines: Drug Interactions',
+                        type: 'text',
+                        content: `
+                            <h3>Tigecycline: Drug Interactions</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Oral Contraceptives:</strong> Oral contraceptives may be less effective when given concurrently with tigecycline. Advise patients to use alternative birth control methods.</li>
+                                <li><strong>Warfarin:</strong> Warfarin levels may be increased, potentially leading to increased bleeding when taken with tigecycline. Close monitoring of INR is crucial.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            'aminoglycosides-group': {
+                title: 'Aminoglycosides',
+                color: 'from-cyan-400 to-sky-600',
+                description: 'Understand aminoglycoside antibiotics, their uses, and critical monitoring parameters.',
+                steps: [
+                    {
+                        id: 'aminoglycosides-overview',
+                        title: 'Aminoglycosides: Overview and Uses',
+                        type: 'text',
+                        content: `
+                            <h3>Aminoglycosides: Potent Antibiotics for Serious Infections</h3>
+                            <p>Aminoglycosides act by <strong>inhibiting bacterial protein synthesis</strong>. They are primarily used against serious gram-negative bacteria.</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2">
+                                <li><strong>Effective against:</strong> <em>E. coli</em> and <em>Proteus</em> and <em>Pseudomonas</em> species.</li>
+                                <li>Some gram-positive cocci are resistant to aminoglycosides, so penicillins or cephalosporins may be used in combination.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Streptomycin Sulfate: Historical and Niche Use</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Derived from <em>Streptomyces griseus</em> in 1944, it was the first aminoglycoside for clinical use, initially for tuberculosis.</li>
+                                <li>Due to its ototoxicity and potential for bacterial resistance, it is infrequently used today.</li>
+                                <li>Despite its toxicity, streptomycin remains the drug of choice to treat <strong>tularemia and plague</strong>.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Administration Routes and Distribution</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Aminoglycosides are used for serious infections and cannot be absorbed from the GI tract.</li>
+                                <li>They do not cross the blood-brain barrier in adults (they do in children).</li>
+                                <li>Primarily administered IM and IV.</li>
+                                <li><strong>Exception:</strong> A few aminoglycosides (e.g., <strong>neomycin</strong>) may be given orally to decrease bacteria and other organisms in the bowel (e.g., as a preoperative bowel antiseptic).</li>
+                            </ul>
+
+                            <h4 class="mt-4">Commonly Used Aminoglycosides for <em>P. aeruginosa</em>:</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Gentamicin</strong></li>
+                                <li><strong>Tobramycin</strong></li>
+                                <li><strong>Amikacin</strong> (may be used when there is bacterial resistance to gentamicin and tobramycin)</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'gentamicin-prototype',
+                        title: 'Prototype Drug: Gentamicin Sulfate',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Gentamicin Sulfate (Antibacterial: Aminoglycoside)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Drug Class & Therapeutic Uses</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Drug Class:</strong> Antibacterial: Aminoglycoside.</li>
+                                    <li><strong>Therapeutic Effects/Uses:</strong> For treating endocarditis, meningitis, bacteremia, sepsis, and respiratory, intraabdominal, bone/joint, skin, and urinary tract infections.</li>
+                                    <li><strong>Effectiveness:</strong> Effective against <em>Pseudomonas aeruginosa, Escherichia coli</em>, and species of <em>Proteus, Enterococcus, Haemophilus, Klebsiella, Salmonella, Serratia, Staphylococcus</em>, and <em>Streptococcus</em>.</li>
+                                    <li><strong>Mechanism of Action:</strong> Inhibits bacterial protein synthesis; bactericidal effect.</li>
+                                </ul>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Dosage & Pharmacokinetics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Dosage (Respiratory infection):</strong> Adult: IM/IV: 3–5 mg/kg/day in 3–4 divided doses.</li>
+                                        <li><strong>Therapeutic Drug Monitoring (TDM):</strong> Peak: 5–8 mcg/mL; Trough: <1–2 mcg/mL.</li>
+                                        <li><strong>Absorption:</strong> IM, IV.</li>
+                                        <li><strong>Distribution:</strong> Protein Binding (PB): 0%–30%.</li>
+                                        <li><strong>Metabolism:</strong> Half-life (t½): 2 hours.</li>
+                                        <li><strong>Excretion:</strong> Unchanged in urine.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Pharmacodynamics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>IM/IV:</strong> Onset: Rapid.</li>
+                                        <li><strong>Peak:</strong> IM 30–60 minutes, IV 30 minutes.</li>
+                                        <li><strong>Duration:</strong> Unknown.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Side Effects & Adverse Reactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Side Effects:</strong> Stomatitis (mouth inflammation), nausea, vomiting, alopecia (hair loss), rash, pruritus (itching), skin/ocular irritation, photosensitivity, headache, dizziness, confusion, depression, tinnitus (ringing in ears), weakness, arthralgia (joint pain), conjunctivitis, phlebitis (vein inflammation), injection site reaction, paresthesias (numbness/tingling), vitamin B6 and B12 deficiency.</li>
+                                    <li><strong>Adverse Reactions:</strong> Peripheral neuropathy, laryngeal edema (throat swelling), hearing loss, ototoxicity (ear damage), hypokalemia, hypomagnesemia, hyponatremia, neurotoxicity, hyperbilirubinemia (jaundice).</li>
+                                    <li><strong>Life-threatening:</strong> Anaphylaxis, nephrotoxicity (kidney damage), thrombocytopenia, anemia, agranulocytosis, eosinophilia, leukopenia, hepatic dysfunction, increased intracranial pressure.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Contraindications & Drug-Lab-Food Interactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Contraindications:</strong> Hypersensitivity.</li>
+                                    <li><strong>Caution:</strong> Renal disease, neuromuscular disorders (myasthenia gravis, parkinsonism), electrolyte imbalance, dehydration, hearing impairment, CDAD, ulcerative colitis, ototoxicity, respiratory depression, older adults.</li>
+                                    <li><strong>Drug Interactions:</strong>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>Increases risk of ototoxicity with loop diuretics and methoxyflurane.</li>
+                                            <li>Increases risk of nephrotoxicity with NSAIDs, amphotericin B, cephalosporins, cisplatin, furosemide, and vancomycin.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Lab Interactions:</strong> Increases BUN, serum AST, ALT, LDH, bilirubin, and creatinine; decreases serum potassium and magnesium.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'aminoglycosides-pharmacokinetics-dynamics',
+                        title: 'Aminoglycosides: Pharmacokinetics & Pharmacodynamics',
+                        type: 'text',
+                        content: `
+                            <h3>Aminoglycosides: Pharmacokinetics (What the Body Does to the Drug)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Administration:</strong> Gentamicin is administered IM and IV.</li>
+                                <li><strong>Half-life:</strong> This drug has a short half-life, and the drug dose can be given three to four times a day.</li>
+                                <li><strong>Excretion:</strong> Excretion of this drug is primarily unchanged in the urine.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Aminoglycosides: Pharmacodynamics (What the Drug Does to the Body)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Mechanism of Action:</strong> Gentamicin inhibits bacterial protein synthesis and has a bactericidal effect.</li>
+                                <li><strong>Onset of Action:</strong> The onset of action is rapid or immediate.</li>
+                                <li><strong>Peak Action:</strong> The peak action for gentamicin is 30 minutes to 1 hour for IM administration and 30 minutes for IV administration.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Therapeutic Drug Monitoring (TDM): Peak and Trough Levels</h4>
+                            <p>To ensure a desired blood level and minimize toxicity, aminoglycosides are usually administered IV, and the patient’s blood levels are drawn periodically to determine the drug’s peak (highest concentration) and trough (lowest concentration) blood levels.</p>
+                            <ul class="list-disc list-inside ml-4">
+                                <li><strong>Peak Level:</strong> Blood should be drawn 45 to 60 minutes after the drug has been administered for peak levels. Peak levels are useful to monitor for toxicity.</li>
+                                <li><strong>Trough Level:</strong> Blood should be drawn minutes before the next drug dosing for trough levels. A therapeutic drug level can be maintained by monitoring the trough level.</li>
+                                <li><strong>Gentamicin Therapeutic Ranges:</strong> Peak values should be 5 to 8 mcg/mL, and trough values should be less than 1 to 2 mcg/mL.</li>
+                            </ul>
+                            <p>Many other antibiotics should also be monitored to maintain effective blood levels.</p>
+                            
+                            <h4 class="mt-4">Combination Therapy Considerations</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>IV aminoglycosides can be given concurrently with penicillins and cephalosporins but should <strong>NOT be mixed together in the same container</strong>.</li>
+                                <li>When combinations of antibiotics are given by IV, the IV line is flushed after each antibiotic has been administered to ensure that the antibiotic was completely delivered and to prevent incompatibility reactions.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'aminoglycosides-side-effects',
+                        title: 'Aminoglycosides: Side Effects and Adverse Reactions',
+                        type: 'text',
+                        content: `
+                            <h3>Serious Adverse Reactions to Aminoglycosides</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Ototoxicity:</strong> Damage to the inner ear, affecting hearing (cochlear damage leading to permanent hearing loss) or balance (vestibular damage leading to dizziness, vertigo, ataxia). The nurse must assess changes in patients’ hearing and balance.</li>
+                                <li><strong>Nephrotoxicity:</strong> Damage to the kidneys. Renal function, drug dose, and age are all factors that determine whether a patient will develop nephrotoxicity from aminoglycoside therapy. Careful drug dosing is especially important with younger and older patients. The nurse must assess changes in patients’ urinary output and renal lab values.</li>
+                                <li><strong>Superinfection:</strong> Prolonged use of aminoglycosides could result in a superinfection (e.g., CDAD, candidiasis).</li>
+                                <li><strong>Other Side Effects:</strong> Stomatitis, nausea, vomiting, alopecia, rash, pruritus, skin/ocular irritation, photosensitivity, headache, dizziness, confusion, depression, tinnitus, weakness, arthralgia, conjunctivitis, phlebitis, injection site reaction, paresthesias, vitamin B6 and B12 deficiency.</li>
+                                <li><strong>Life-threatening:</strong> Anaphylaxis, thrombocytopenia, anemia, agranulocytosis, eosinophilia, leukopenia, hepatic dysfunction, increased intracranial pressure.</li>
+                            </ul>
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Nurse’s Role in Detecting Ototoxicity and Nephrotoxicity:</p>
+                                <p>The nurse plays a critical role in monitoring for these serious adverse effects. This includes regular assessment of hearing (asking about tinnitus, hearing loss), balance (observing for dizziness, unsteadiness), and renal function (monitoring urine output, BUN, creatinine levels). Prompt reporting of any changes is vital.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'aminoglycosides-drug-interactions',
+                        title: 'Aminoglycosides: Drug Interactions',
+                        type: 'text',
+                        content: `
+                            <h3>Significant Drug Interactions with Aminoglycosides</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Decreased Aminoglycoside Effects:</strong> When aminoglycosides are administered concurrently with penicillins, the desired effects of the aminoglycosides are greatly decreased. Preferably, these drugs should be given several hours apart.</li>
+                                <li><strong>Increased Warfarin Action:</strong> The drug action of oral anticoagulants such as warfarin can increase when taken simultaneously with aminoglycoside administration, increasing the risk of bleeding.</li>
+                                <li><strong>Increased Ototoxicity Risk:</strong> The risk of ototoxicity increases significantly when ethacrynic acid (a loop diuretic) and an aminoglycoside are given concurrently.</li>
+                                <li><strong>Increased Nephrotoxicity Risk:</strong> The risk of nephrotoxicity is increased when aminoglycosides are taken with NSAIDs, amphotericin B, cephalosporins, cisplatin, furosemide, and vancomycin.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            'fluoroquinolones-group': {
+                title: 'Fluoroquinolones (Quinolones)',
+                color: 'from-green-500 to-teal-600',
+                description: 'In-depth look at fluoroquinolone antibiotics, their mechanism, uses, and important safety considerations.',
+                steps: [
+                    {
+                        id: 'fluoroquinolones-overview',
+                        title: 'Fluoroquinolones: Overview and Mechanism',
+                        type: 'text',
+                        content: `
+                            <h3>Fluoroquinolones (Quinolones): Mechanism and Spectrum</h3>
+                            <p>The mechanism of action of fluoroquinolones is to interfere with the enzyme <strong>DNA gyrase</strong>, which is essential for bacterial DNA synthesis. This inhibition prevents bacterial replication and leads to a <strong>bactericidal</strong> effect.</p>
+                            
+                            <h4 class="mt-4">Antibacterial Spectrum:</h4>
+                            <p>Fluoroquinolones have a broad antibacterial spectrum, including bactericidal action on both gram-positive and gram-negative organisms.</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2">
+                                <li><strong>Effective against:</strong> Some gram-positive organisms (e.g., <em>S. pneumoniae</em>), as well as <em>H. influenzae, P. aeruginosa</em>, and <em>Salmonella</em> and <em>Shigella</em> species.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Therapeutic Uses:</h4>
+                            <p>This group of antibiotics is useful in the treatment of:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Urinary tract infections (UTIs)</li>
+                                <li>Bone and joint infections</li>
+                                <li>Bronchitis</li>
+                                <li>Pneumonia (including community-acquired pneumonia)</li>
+                                <li>Gastroenteritis</li>
+                                <li>Gonorrhea</li>
+                                <li>Sinusitis, plague, anthrax prophylaxis, typhoid fever, STIs, prostatitis, enteric, intraabdominal, skin infections, corneal ulcers, bacterial conjunctivitis, and otitis media/externa.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'ciprofloxacin-prototype',
+                        title: 'Prototype Drug: Ciprofloxacin',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Ciprofloxacin (Antibacterial: Quinolone, Fluoroquinolone)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Drug Class & Therapeutic Uses</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Drug Class:</strong> Antibacterial: Quinolone, Fluoroquinolone.</li>
+                                    <li><strong>Therapeutic Effects/Uses:</strong> For treating sinusitis, plague, anthrax prophylaxis, typhoid fever, STIs, prostatitis, and respiratory, enteric, intraabdominal, bone/joint, urinary tract, and skin infections, as well as corneal ulcers, bacterial conjunctivitis, and otitis media/externa.</li>
+                                    <li><strong>Effectiveness:</strong> Effective against <em>Escherichia coli</em> and species of <em>Enterobacter, Haemophilus, Klebsiella, Neisseria, Proteus, Pseudomonas, Serratia, Chlamydia, Enterococcus, Staphylococcus</em>, and <em>Streptococcus</em>.</li>
+                                    <li><strong>Mechanism of Action:</strong> Inhibits the enzyme DNA gyrase, which is needed for bacterial DNA synthesis; bactericidal effect.</li>
+                                </ul>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Dosage & Pharmacokinetics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Dosage (UTI - Regular release):</strong> Adult: PO: 250 mg q12h for 3 days; max: 1.5 g/day.</li>
+                                        <li><strong>Dosage (UTI - Extended release):</strong> Adult: PO: 500 mg/day for 3 days; max: 1 g/day.</li>
+                                        <li><strong>Dosage (IV):</strong> Adult: 200–400 mg q12h for 7–14 days; max: 1.2 g/day.</li>
+                                        <li><strong>Absorption (PO):</strong> Rapidly absorbed.</li>
+                                        <li><strong>Distribution:</strong> Protein Binding (PB): 20%–40%. High tissue distribution.</li>
+                                        <li><strong>Metabolism:</strong> Half-life (t½): 4 hours.</li>
+                                        <li><strong>Excretion:</strong> 35%–50% excreted in urine, 20%–35% excreted in feces.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Pharmacodynamics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>IR (Immediate Release) PO:</strong> Onset: 0.5–1 hour. Peak: 1–2 hours. Duration: Unknown.</li>
+                                        <li><strong>ER (Extended Release) PO:</strong> Onset: Unknown. Peak: 1–4 hours. Duration: Unknown.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Side Effects & Adverse Reactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Side Effects:</strong> Dizziness, syncope (fainting), anxiety, irritability, flushing, dry mouth, dyspepsia (indigestion), anorexia, dysgeusia (taste alteration), nausea, vomiting, diarrhea, abdominal cramps, constipation, headache, ocular irritation/pain/ulceration, nystagmus (involuntary eye movement), corneal deposits, blurred vision, myalgia (muscle pain), arthralgia (joint pain), restlessness, confusion, pharyngitis, rhinorrhea (runny nose), insomnia, weakness, nightmares, tremor, ocular pruritus, conjunctival hyperemia, injection site reaction, peripheral neuropathy, paresthesia (numbness/tingling), tinnitus (ringing in ears), phlebitis (vein inflammation), photosensitivity.</li>
+                                    <li><strong>Adverse Reactions:</strong> Neurotoxicity, crystalluria (crystals in urine), myasthenia, ileus (bowel obstruction), GI bleeding, hypercholesterolemia, tendon rupture, superinfection, hearing loss, bradycardia, tachycardia, hypo/hyperglycemia, hypertriglyceridemia, hypo/hypertension.</li>
+                                    <li><strong>Life-threatening:</strong> Anaphylaxis, angioedema, anemia, leukopenia, agranulocytosis, thrombocytopenia, aplastic anemia, eosinophilia, hemolytic anemia, pancytopenia, increased intracranial pressure, Stevens-Johnson syndrome, seizures, CDAD, hepatic/renal failure, dysrhythmias, suicidal ideation.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Contraindications & Drug-Lab-Food Interactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Contraindications:</strong> Hypersensitivity to other quinolones.</li>
+                                    <li><strong>Caution:</strong> Renal/hepatic dysfunction, children (due to cartilage damage risk), severe renal disease, stroke, neurotoxicity, dehydration, rheumatoid arthritis, seizures, dysrhythmias, myasthenia gravis, tendon rupture, diarrhea, diabetes mellitus, cardiovascular/cerebrovascular disease, colitis, tendinitis, older adults.</li>
+                                    <li><strong>Drug Interactions:</strong>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>Increases effects of theophylline and caffeine.</li>
+                                            <li>Increases levels of ciprofloxacin with NSAIDs and probenecid.</li>
+                                            <li>Decreases drug absorption with iron and calcium.</li>
+                                            <li>May increase warfarin effects.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Lab Interactions:</strong> Increased AST, ALT; prolonged bleeding time.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'fluoroquinolones-safety',
+                        title: 'Fluoroquinolones: Important Safety Information',
+                        type: 'text',
+                        content: `
+                            <h3>Fluoroquinolones: Important Safety Information (Black Box Warning)</h3>
+                            <div class="bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-md shadow-sm mt-4">
+                                <p class="font-semibold">Patient Safety Alert: Black Box Warning for Fluoroquinolones</p>
+                                <p>Fluoroquinolones, especially <strong>levofloxacin</strong>, should be reserved for patients who have no other alternative treatment options for uncomplicated urinary tract infection (UTI), acute bacterial exacerbation of chronic bronchitis, or acute bacterial sinusitis.</p>
+                                <p>This is due to the risk of disabling and potentially irreversible serious adverse reactions, which include:</p>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li><strong>Tendon rupture</strong> and <strong>tendinitis</strong> (inflammation of a tendon)</li>
+                                    <li><strong>Peripheral neuropathy</strong> (nerve damage in the extremities)</li>
+                                    <li><strong>Central nervous system (CNS) effects</strong> (e.g., seizures, confusion, hallucinations)</li>
+                                    <li>Exacerbation of <strong>myasthenia gravis</strong> (worsening of muscle weakness)</li>
+                                </ul>
+                                <p class="mt-2">Healthcare providers should carefully weigh the benefits and risks of fluoroquinolones and discuss these serious adverse reactions with patients.</p>
+                            </div>
+                            
+                            <h4 class="mt-6">Other Fluoroquinolones:</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Levofloxacin:</strong> Used primarily to treat respiratory problems such as community-acquired pneumonia, chronic bronchitis, acute sinusitis, and uncomplicated skin infections, in addition to urinary tract infections.</li>
+                                <li><strong>Moxifloxacin:</strong> Available for once-a-day oral and parenteral dosing. Prescribed to treat similar infections as other fluoroquinolones. More active than levofloxacin against <em>S. pneumoniae</em>. Also effective against some strains of <em>S. aureus</em> and enterococci but not effective against vancomycin-resistant <em>Enterococcus faecium</em>.</li>
+                                <li><strong>Ofloxacin:</strong> Used for UTIs, otitis media/externa, PID, STIs, prostatitis, and respiratory, urinary tract, ophthalmic, and skin infections.</li>
+                                <li><strong>Delafloxacin:</strong> Used for respiratory and skin infections.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'fluoroquinolones-pharmacokinetics-dynamics',
+                        title: 'Fluoroquinolones: Pharmacokinetics & Pharmacodynamics',
+                        type: 'text',
+                        content: `
+                            <h3>Ciprofloxacin: Pharmacokinetics (What the Body Does to the Drug)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Absorption:</strong> Ciprofloxacin is rapidly absorbed from the GI tract.</li>
+                                <li><strong>Protein Binding (PB):</strong> Low protein-binding effect of 20% to 40%.</li>
+                                <li><strong>Half-life (t½):</strong> Moderately short half-life of 4 hours.</li>
+                                <li><strong>Excretion:</strong> Excreted in the urine and feces.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Ciprofloxacin: Pharmacodynamics (What the Drug Does to the Body)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Mechanism of Action:</strong> Ciprofloxacin inhibits bacterial DNA synthesis by inhibiting the enzyme DNA gyrase, leading to a bactericidal effect.</li>
+                                <li><strong>Tissue Distribution:</strong> The drug has a high tissue distribution.</li>
+                                <li><strong>Administration Timing:</strong> If possible, it should be taken before meals because food slows the absorption rate; antacids also significantly decrease the absorption rate.</li>
+                                <li><strong>Onset & Peak:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Average onset of action: 30 minutes to 1 hour.</li>
+                                        <li>Peak concentration time: 1 to 2 hours.</li>
+                                        <li>Duration of action: Unknown.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            'nursing-process-ch28': {
+                title: 'Clinical Judgment & Review',
+                color: 'from-purple-500 to-pink-500',
+                description: 'Apply nursing process and test your knowledge on Chapter 28 antibacterials.',
+                steps: [
+                    {
+                        id: 'nursing-process-tetracyclines',
+                        title: 'Clinical Judgment [Nursing Process]: Tetracyclines',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Concept: Infection (Applying the Nursing Process for Tetracyclines)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Recognize Cues (Assessment)</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Assess vital signs and urine output. Report any abnormal findings.</li>
+                                    <li>Check laboratory results, especially those that indicate renal and liver function (blood urea nitrogen [BUN], serum creatinine, aspartate aminotransferase [AST], alanine aminotransferase [ALT], bilirubin).</li>
+                                    <li>Obtain a history of dietary intake and drugs the patient currently takes. Note that dairy products, antacids, iron, calcium, and magnesium decrease drug absorption. Digoxin absorption is increased, which may lead to digitalis toxicity.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Analyze Cues and Prioritize Hypothesis (Patient Problems)</h4>
+                                <ul class="list-disc list-inside">
+                                    <li>Tissue injury (e.g., photosensitivity, renal/hepatic toxicity)</li>
+                                    <li>Vomiting, Nausea, Diarrhea (related to GI upset)</li>
+                                    <li>Risk for Superinfection</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Generate Solutions (Planning)</h4>
+                                <ul class="list-disc list-inside">
+                                    <li>The patient’s white blood cells (WBCs) will be within normal limits.</li>
+                                    <li>The patient will experience minimal side effects and no signs of organ toxicity.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Take Action (Nursing Interventions)</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Culture & Sensitivity (C&S):</strong> Obtain a sample for culture from the infected area and send it to the laboratory for C&S before starting antibiotic therapy.</li>
+                                    <li><strong>Administration:</strong> Administer tetracycline 1 hour before or 2 hours after meals for optimum absorption.</li>
+                                    <li><strong>Monitoring:</strong> Monitor laboratory values to assess liver and kidney function (in particular, liver enzymes, BUN, and serum creatinine). Record vital signs and urine output.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Patient Teaching</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Storage:</strong> Instruct patients to store tetracycline away from light and extreme heat, as decomposition can cause the drug to become toxic.</li>
+                                    <li><strong>Expiration Dates:</strong> Advise patients to check expiration dates on bottles of tetracycline; out-of-date tetracycline can be toxic.</li>
+                                    <li><strong>Pregnancy:</strong> Inform female patients who are contemplating pregnancy to avoid taking tetracycline because of possible teratogenic effects.</li>
+                                    <li><strong>Children:</strong> Warn parents that children younger than 8 years of age should not take tetracycline because it can cause irreversible discoloration of permanent teeth.</li>
+                                    <li><strong>Compliance:</strong> Encourage patients to take the complete course of tetracycline as prescribed.</li>
+                                    <li><strong>Photosensitivity:</strong> Advise patients to use a sun block and protective clothing during sun exposure, as photosensitivity is associated with tetracycline.</li>
+                                    <li><strong>Superinfection:</strong> Encourage patients to report signs of a superinfection (e.g., mouth ulcers, anal or genital discharge).</li>
+                                    <li><strong>Oral Contraceptives:</strong> Advise patients to use additional contraceptive techniques and not to rely solely on oral contraceptives when taking the drug, as contraceptive effectiveness may decrease.</li>
+                                    <li><strong>Oral Hygiene:</strong> Teach patients to use effective oral hygiene several times a day to prevent or alleviate mouth ulcers (stomatitis).</li>
+                                    <li><strong>Diet:</strong> Educate patients to avoid milk products, iron, and antacids when taking tetracycline. It should be taken with a full glass of water. If gastrointestinal (GI) upset occurs, the drug may be taken with non-dairy foods.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                <h4 class="font-bold text-gray-800 mb-3">Evaluate Outcomes (Evaluation)</h4>
+                                <p>Evaluate the effectiveness of tetracycline by determining whether:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>The infection has been controlled or has ceased.</li>
+                                    <li>No significant side effects have occurred.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'nursing-process-aminoglycosides',
+                        title: 'Clinical Judgment [Nursing Process]: Aminoglycosides',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Concept: Infection (Applying the Nursing Process for Aminoglycosides)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Recognize Cues (Assessment)</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Record vital signs and urine output. Compare these results with future vital signs and urine output, as nephrotoxicity is an adverse reaction to most aminoglycosides.</li>
+                                    <li>Assess laboratory results to determine renal and liver function, including blood urea nitrogen (BUN), serum creatinine, alkaline phosphatase (ALP), alanine aminotransferase (ALT), aspartate aminotransferase (AST), and bilirubin.</li>
+                                    <li>Check serum electrolytes, as aminoglycosides may decrease serum potassium and magnesium levels.</li>
+                                    <li>Obtain a medical history related to renal or hearing disorders, as large doses of aminoglycosides could cause nephrotoxicity or ototoxicity.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Analyze Cues and Prioritize Hypothesis (Patient Problems)</h4>
+                                <ul class="list-disc list-inside">
+                                    <li>Tissue injury (e.g., nephrotoxicity, ototoxicity, phlebitis)</li>
+                                    <li>Vomiting, Nausea (related to GI upset)</li>
+                                    <li>Risk for Fluid Imbalance (due to renal dysfunction or dehydration)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Generate Solutions (Planning)</h4>
+                                <ul class="list-disc list-inside">
+                                    <li>The patient’s white blood cells (WBCs) will be within normal limits.</li>
+                                    <li>The patient will maintain adequate renal function and hearing.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Take Action (Nursing Interventions)</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Culture & Sensitivity (C&S):</strong> Send a sample from the infected area to the laboratory for culture to determine the organism and its antibiotic sensitivity before the aminoglycoside is started.</li>
+                                    <li><strong>Monitor I&O:</strong> Monitor intake and output. Urine output should be at least 600 mL/day. Immediately report any decrease in urine output. Urinalysis may be ordered daily, and results should be checked for proteinuria, casts, blood cells, and appearance.</li>
+                                    <li><strong>Hearing Assessment:</strong> Check for hearing loss (e.g., asking about tinnitus, difficulty hearing). Aminoglycosides can cause ototoxicity.</li>
+                                    <li><strong>Lab Monitoring:</strong> Evaluate laboratory results and compare with baseline values. Report abnormal results (e.g., elevated BUN/creatinine, abnormal electrolytes).</li>
+                                    <li><strong>Vital Signs:</strong> Monitor vital signs. Note whether body temperature has decreased, indicating infection resolution.</li>
+                                    <li><strong>IV Administration (Gentamicin):</strong> Dilute gentamicin in 50 to 200 mL of normal saline (NS) or 5% dextrose in water (D5W) solution and administer intravenously (IV) over 30 to 60 minutes.</li>
+                                    <li><strong>Therapeutic Drug Monitoring (TDM):</strong> Check that therapeutic drug monitoring (TDM) has been ordered for peak and trough drug levels.
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>Blood should be drawn 45 to 60 minutes after drug has been administered for peak levels.</li>
+                                            <li>Blood should be drawn minutes before the next drug dosing for trough levels.</li>
+                                            <li>Gentamicin therapeutic ranges: Peak values should be 5 to 8 mcg/mL, and trough values should be less than 1 to 2 mcg/mL.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Superinfection:</strong> Monitor for signs and symptoms of superinfection: stomatitis (mouth ulcers), genital discharge (vaginitis), and anal or genital itching.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Patient Teaching</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Fluid Intake:</strong> Encourage patients to increase fluid intake unless fluids are restricted.</li>
+                                    <li><strong>Report Side Effects:</strong> Advise patients to report aminoglycoside side effects, which include nausea, vomiting, tremors, tinnitus, pruritus, and muscle cramps.</li>
+                                    <li><strong>Photosensitivity:</strong> Direct patients to use a sun block and protective clothing during sun exposure because aminoglycosides can cause photosensitivity.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                <h4 class="font-bold text-gray-800 mb-3">Evaluate Outcomes (Evaluation)</h4>
+                                <p>Evaluate the effectiveness of the aminoglycoside by determining whether:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>The infection has ceased.</li>
+                                    <li>Any significant side effects or organ toxicities have occurred.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'nursing-process-fluoroquinolones',
+                        title: 'Clinical Judgment [Nursing Process]: Fluoroquinolones',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Concept: Infection (Applying the Nursing Process for Fluoroquinolones)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Recognize Cues (Assessment)</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Record vital signs along with intake and urine output. Compare these results with future vital signs and urine output. Fluid intake should be at least 2000 mL/day to prevent crystalluria.</li>
+                                    <li>Assess laboratory results (blood urea nitrogen [BUN] and serum creatinine) to determine renal function.</li>
+                                    <li>Obtain a drug and diet history. Note that antacids and iron preparations decrease absorption of fluoroquinolones such as levofloxacin. Levofloxacin can increase the effects of theophylline and caffeine and can also increase the effects of oral hypoglycemics. When levofloxacin is taken with nonsteroidal antiinflammatory drugs (NSAIDs), central nervous system (CNS) reactions (including seizures) may occur.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Analyze Cues and Prioritize Hypothesis (Patient Problems)</h4>
+                                <ul class="list-disc list-inside">
+                                    <li>Tissue injury (e.g., tendon rupture, peripheral neuropathy, crystalluria)</li>
+                                    <li>Vomiting, Nausea (related to GI upset)</li>
+                                    <li>Risk for CNS effects (e.g., seizures, confusion)</li>
+                                    <li>Risk for Fluid Imbalance</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Generate Solutions (Planning)</h4>
+                                <ul class="list-disc list-inside">
+                                    <li>The patient’s white blood cells (WBCs) will be within normal limits.</li>
+                                    <li>The patient will not experience severe adverse reactions such as tendon rupture or significant CNS effects.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Take Action (Nursing Interventions)</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Culture & Sensitivity (C&S):</strong> Obtain a specimen from the infected site and send it to the laboratory for C&S before initiating antibacterial drug therapy.</li>
+                                    <li><strong>Fluid Management:</strong> Monitor intake and output. Urine output should be at least 750 mL per day. The patient should be well hydrated, and fluid intake should be greater than 2000 mL daily to prevent crystalluria (crystals in the urine). Urine pH should be below 6.7.</li>
+                                    <li><strong>Vital Signs & Labs:</strong> Record vital signs and report any abnormal findings. Check laboratory results, especially BUN and serum creatinine; elevated values may indicate renal dysfunction.</li>
+                                    <li><strong>Oral Administration:</strong> Administer levofloxacin 2 hours before or after antacids and iron products for best absorption. Give with a full glass of water. If gastrointestinal (GI) distress occurs, the drug may be taken with food.</li>
+                                    <li><strong>Intravenous (IV) Administration:</strong> Dilute intravenous (IV) levofloxacin in recommended amount of solution (NS, D5W, D5NS). Infuse over 60–90 minutes.</li>
+                                    <li><strong>Superinfection:</strong> Check for signs and symptoms of superinfection: stomatitis (mouth ulcers), furry black tongue, and anal or genital discharge or itching.</li>
+                                    <li><strong>Drug Interactions Monitoring:</strong>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>Monitor serum theophylline levels when taken concurrently with levofloxacin, which can increase theophylline levels. Check for symptoms of CNS stimulation such as nervousness, insomnia, anxiety, and tachycardia.</li>
+                                            <li>Monitor blood glucose. Levofloxacin can increase the effects of oral hypoglycemics.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Patient Teaching</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Fluid Intake:</strong> Teach patients to drink at least 6 to 8 glasses (8 oz) of fluid daily.</li>
+                                    <li><strong>Caffeine:</strong> Encourage patients to avoid caffeinated products, as fluoroquinolones can increase caffeine effects.</li>
+                                    <li><strong>Driving/Operating Machinery:</strong> Direct patients to avoid operating motor vehicles or hazardous machinery while taking the drug, at least until drug stability has occurred, because of possible drug-related dizziness.</li>
+                                    <li><strong>Photosensitivity:</strong> Inform patients that photosensitivity is a side effect of most fluoroquinolones. Patients should wear sunglasses, sun block, and protective clothing when in the sun.</li>
+                                    <li><strong>Report Side Effects:</strong> Encourage patients to report side effects such as dizziness, nausea, vomiting, diarrhea, flatulence, abdominal cramps, tinnitus, rash, and especially <strong>tendon rupture</strong> (very rare but serious). Older adults are more likely to develop side effects.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                <h4 class="font-bold text-gray-800 mb-3">Evaluate Outcomes (Evaluation)</h4>
+                                <p>Evaluate the effectiveness of the fluoroquinolone by determining whether:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>The infection has resolved.</li>
+                                    <li>The body temperature has returned within normal range.</li>
+                                    <li>No significant adverse effects have occurred.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'critical-thinking-case-study-ch28',
+                        title: 'Critical Thinking Case Study',
+                        type: 'case_study',
+                        case: {
+                            scenario: `A 46-year-old female patient has a wound infection. The culture report states that the infection is due to <em>Pseudomonas aeruginosa</em>, and the patient’s temperature has risen to 104°F (40°C). Amikacin sulfate is to be administered intravenously in 100 mL of 5% dextrose in water (D5W solution) over 45 minutes every 8 hours. The dosage is 15 mg/kg/day in three divided doses. The patient weighs 165 pounds.`,
+                            question: `Based on this scenario, answer the following questions:
+                                1. What is the drug classification of amikacin? How many milligrams of amikacin should the patient receive every 8 hours?
+                                2. What type of intravenous (IV) infusion should be used? What would be the IV flow rate?
+                                3. When would a wound culture be obtained to determine the appropriate antibacterial agent? Explain your answer.
+                                4. What are the similarities of amikacin to other aminoglycosides such as gentamicin? Would one aminoglycoside be preferred over another? Explain your answer.
+                                5. Why should a hearing assessment be included?
+                                6. The patient’s urine output in the last 8 hours was 125 mL. Explain the possible cause for the amount of urine output. What nursing action should be taken?
+                                7. What laboratory tests monitor renal function?
+                                8. The health care provider requests peak and trough serum amikacin levels. When should the blood samples to determine peak serum level and trough serum level be drawn?`,
+                            options: [
+                                "Amikacin is an aminoglycoside. Patient receives 375 mg q8h. IV infusion should be intermittent. Wound culture before first dose. Similar to gentamicin in mechanism, amikacin preferred for resistance. Hearing assessment for ototoxicity. Low urine output indicates nephrotoxicity, stop infusion and notify HCP. BUN, creatinine for renal function. Peak 45-60 min after infusion, Trough before next dose.",
+                                "Amikacin is a fluoroquinolone. Patient receives 500 mg q8h. IV infusion should be continuous. Wound culture after first dose. Similar to ciprofloxacin, amikacin preferred for broad spectrum. Hearing assessment for hepatotoxicity. Low urine output indicates dehydration, increase fluids. AST, ALT for renal function. Peak before infusion, Trough after infusion.",
+                                "Amikacin is a tetracycline. Patient receives 250 mg q8h. IV infusion should be rapid push. Wound culture not needed. Similar to doxycycline, amikacin preferred for oral use. Hearing assessment for GI upset. Low urine output indicates normal response, continue monitoring. CBC for renal function. Peak and Trough not required.",
+                                "Amikacin is a macrolide. Patient receives 1000 mg q8h. IV infusion should be slow push. Wound culture during infusion. Similar to azithromycin, amikacin preferred for less side effects. Hearing assessment for visual disturbances. Low urine output indicates superinfection, administer antifungals. Electrolytes for renal function. Peak and Trough at random times."
+                            ],
+                            correctAnswer: "Amikacin is an aminoglycoside. Patient receives 375 mg q8h. IV infusion should be intermittent. Wound culture before first dose. Similar to gentamicin in mechanism, amikacin preferred for resistance. Hearing assessment for ototoxicity. Low urine output indicates nephrotoxicity, stop infusion and notify HCP. BUN, creatinine for renal function. Peak 45-60 min after infusion, Trough before next dose.",
+                            explanation: `
+                                <p><strong>Rationale:</strong></p>
+                                <ol class="list-decimal list-inside space-y-2">
+                                    <li><strong>Drug Classification and Dosage:</strong> Amikacin is an <strong>aminoglycoside</strong>.
+                                        <ul>
+                                            <li>Patient weight: 165 lbs / 2.2 lbs/kg = 75 kg.</li>
+                                            <li>Total daily dose: 15 mg/kg/day * 75 kg = 1125 mg/day.</li>
+                                            <li>Dose every 8 hours (in three divided doses): 1125 mg / 3 = <strong>375 mg every 8 hours</strong>.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>IV Infusion Type and Flow Rate:</strong> IV infusion should be <strong>intermittent</strong>. The problem states "over 45 minutes," which is the infusion time, not the flow rate in mL/hr. To calculate flow rate: 100 mL / 45 min * 60 min/hr = 133.33 mL/hr.</li>
+                                    <li><strong>Wound Culture Timing:</strong> A wound culture should be obtained <strong>before administering the first dose</strong> of any antibacterial agent. This ensures that the causative organism is identified and its sensitivity to antibiotics is determined, guiding appropriate therapy.</li>
+                                    <li><strong>Similarities to Gentamicin and Preference:</strong> Amikacin is similar to gentamicin (both aminoglycosides) in their mechanism of action (inhibiting bacterial protein synthesis) and broad spectrum against gram-negative bacteria, including <em>P. aeruginosa</em>. Amikacin may be preferred over gentamicin when there is bacterial resistance to gentamicin and tobramycin, as indicated in the module content.</li>
+                                    <li><strong>Hearing Assessment:</strong> A hearing assessment should be included because aminoglycosides are known to cause <strong>ototoxicity</strong>, which can lead to permanent hearing loss.</li>
+                                    <li><strong>Urine Output and Nursing Action:</strong> A urine output of 125 mL in 8 hours (approx. 15.6 mL/hr) is significantly less than the minimum acceptable 30 mL/hr or 600 mL/day, indicating potential <strong>nephrotoxicity</strong> (kidney damage), a serious adverse effect of aminoglycosides. The nurse's priority action would be to <strong>stop the infusion and immediately notify the healthcare provider</strong>.</li>
+                                    <li><strong>Renal Function Lab Tests:</strong> Laboratory tests that monitor renal function include <strong>Blood Urea Nitrogen (BUN)</strong> and <strong>serum creatinine</strong>.</li>
+                                    <li><strong>Peak and Trough Levels:</strong>
+                                        <ul>
+                                            <li>Blood for <strong>peak serum level</strong> should be drawn <strong>45 to 60 minutes after the infusion is complete</strong>.</li>
+                                            <li>Blood for <strong>trough serum level</strong> should be drawn <strong>minutes before the next scheduled drug dose</strong>.</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            `
+                        }
+                    },
+                    {
+                        id: 'review-questions-ch28',
+                        title: 'Review Questions',
+                        type: 'quiz',
+                        questions: [
+                            {
+                                question: "A patient is receiving tetracycline. Which advice should the nurse include when teaching this patient about tetracycline?",
+                                options: ["Take sunscreen precautions when at the beach.", "Take an antacid with the drug to prevent severe gastrointestinal distress.", "Obtain frequent hearing tests for early detection of hearing loss.", "Obtain frequent eye checkups for early detection of retinal damage."],
+                                correctAnswer: "Take sunscreen precautions when at the beach."
+                            },
+                            {
+                                question: "A patient is taking levofloxacin. What does the nurse know to be true regarding this drug?",
+                                options: ["It is administered by intravenous only.", "Levofloxacin may cause hypertension.", "This drug is classified as an aminoglycoside.", "An adverse effect is tendon rupture."],
+                                correctAnswer: "An adverse effect is tendon rupture."
+                            },
+                            {
+                                question: "Which instruction(s) will the nurse include when teaching patients about gentamicin? (Select all that apply.)",
+                                options: ["Patients should report any hearing loss.", "Patients should use sunscreen when taking gentamicin.", "Intravenous gentamicin will be given over 20 minutes.", "Patients are monitored for mouth ulcers and vaginitis.", "Peak levels will be drawn 30 minutes before the intravenous dose.", "Patients should increase fluid intake."],
+                                correctAnswer: ["Patients should report any hearing loss.", "Patients should use sunscreen when taking gentamicin.", "Patients are monitored for mouth ulcers and vaginitis.", "Patients should increase fluid intake."]
+                            },
+                            {
+                                question: "Which nursing intervention(s) should the nurse consider for the patient taking ciprofloxacin? (Select all that apply.)",
+                                options: ["Obtain culture before drug administration.", "Tell the patient to avoid taking ciprofloxacin with antacids.", "Monitor the patient for tinnitus.", "Encourage fluids to prevent crystalluria.", "Infuse intravenous ciprofloxacin over 60 minutes.", "Monitor blood glucose because ciprofloxacin can decrease effects of oral hypoglycemics."],
+                                correctAnswer: ["Obtain culture before drug administration.", "Tell the patient to avoid taking ciprofloxacin with antacids.", "Encourage fluids to prevent crystalluria.", "Infuse intravenous ciprofloxacin over 60 minutes."]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'chapter-28-objectives',
+                        title: 'Chapter 28 Learning Objectives',
+                        type: 'text',
+                        content: `
+                            <h3>Chapter 28 Learning Objectives: Summary</h3>
+                            <p>Upon completion of this module, you should be able to:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li>Describe the side effects/adverse effects of erythromycin.</li>
+                                <li>Apply the Clinical Judgment [Nursing Process] for azithromycin, including patient teaching.</li>
+                                <li>Compare the similarities and differences between tetracyclines and glycylcyclines.</li>
+                                <li>Summarize the nurse’s role in detecting ototoxicity and nephrotoxicity associated with the administration of aminoglycosides.</li>
+                                <li>Explain the importance for ordering peak and trough concentration levels for aminoglycosides.</li>
+                                <li>Develop a teaching plan for a patient prescribed a fluoroquinolone (quinolone).</li>
+                                <li>Contrast the nursing interventions for each of the drug categories: tetracyclines, glycylcyclines, aminoglycosides, and fluoroquinolones.</li>
+                                <li>Apply the Clinical Judgment [Nursing Process] to the patient taking fluoroquinolones.</li>
+                            </ul>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Resource:</p>
+                                <p>For additional resources and interactive content, please visit: <a href="http://evolve.elsevier.com/McCuistion/pharmacology" target="_blank" class="text-blue-600 hover:underline">evolve.elsevier.com/McCuistion/pharmacology</a></p>
+                            </div>
+                        `
+                    },
+                ]
+            }
+        };
+
+        const preAssessmentQuizData = [
+            { moduleId: 'tetracyclines-glycylcyclines', question: "Which of the following is a common side effect of tetracyclines that requires patients to use sun protection?", options: ["Ototoxicity", "Photosensitivity", "Nephrotoxicity", "Hepatotoxicity"], correctAnswer: "Photosensitivity" },
+            { moduleId: 'aminoglycosides-group', question: "What is the primary reason for monitoring peak and trough levels when administering aminoglycosides?", options: ["To assess for allergic reactions.", "To ensure patient compliance with medication.", "To maintain therapeutic drug levels and minimize toxicity.", "To determine the drug's half-life."], correctAnswer: "To maintain therapeutic drug levels and minimize toxicity." },
+            { moduleId: 'fluoroquinolones-group', question: "Which serious adverse effect is associated with fluoroquinolones and has a Black Box Warning?", options: ["Red man syndrome", "Tendon rupture", "Dental discoloration", "Serotonin syndrome"], correctAnswer: "Tendon rupture" },
+            { moduleId: 'tetracyclines-glycylcyclines', question: "A nurse is teaching a parent that tetracycline should not be given to children younger than 8 years old due to the risk of:", options: ["Hearing loss", "Liver damage", "Irreversible tooth discoloration", "Kidney failure"], correctAnswer: "Irreversible tooth discoloration" },
+            { moduleId: 'aminoglycosides-group', question: "The nurse is monitoring a patient receiving an aminoglycoside. A decrease in urine output and elevated BUN/creatinine levels would indicate which adverse effect?", options: ["Ototoxicity", "Hepatotoxicity", "Nephrotoxicity", "Neurotoxicity"], correctAnswer: "Nephrotoxicity" },
+            { moduleId: 'fluoroquinolones-group', question: "Ciprofloxacin inhibits bacterial DNA synthesis by interfering with which enzyme?", options: ["RNA polymerase", "DNA gyrase", "Reverse transcriptase", "Peptidoglycan transpeptidase"], correctAnswer: "DNA gyrase" },
+        ];
+
+
+        const Quiz = ({ questions, onComplete, isPreAssessment = false }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState([]);
+            const [feedback, setFeedback] = useState(null);
+            const [answers, setAnswers] = useState([]);
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            const isSATA = Array.isArray(currentQuestion.correctAnswer);
+
+            const handleOptionSelect = (option) => {
+                if (feedback && !isPreAssessment) return;
+
+                if (isSATA) {
+                    setSelectedOption(prevSelected => {
+                        if (prevSelected.includes(option)) {
+                            return prevSelected.filter(item => item !== option);
+                        } else {
+                            return [...prevSelected, option];
+                        }
+                    });
+                } else {
+                    setSelectedOption(option);
+                }
+            };
+
+            const checkCorrectness = (userAnswers, correctAnswers) => {
+                if (Array.isArray(correctAnswers)) {
+                    const allCorrectSelected = correctAnswers.every(ans => userAnswers.includes(ans));
+                    const noIncorrectSelected = userAnswers.every(ans => correctAnswers.includes(ans));
+                    return allCorrectSelected && noIncorrectSelected && userAnswers.length > 0;
+                } else {
+                    return userAnswers.toLowerCase() === correctAnswers.toLowerCase();
+                }
+            }
+
+            const handleNext = () => {
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                
+                const updatedAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(updatedAnswers);
+
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]);
+                    setFeedback(null);
+                } else {
+                    const finalScore = updatedAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete(isPreAssessment ? updatedAnswers : { score: finalScore, total: questions.length });
+                }
+            };
+            
+            const handleRegularQuizSubmit = () => {
+                if (selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)) return;
+                
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                setFeedback(isCorrect ? 'correct' : 'incorrect');
+            };
+
+            const handleRegularQuizNext = () => {
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                const finalAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(finalAnswers);
+                
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]);
+                    setFeedback(null);
+                } else {
+                    const finalScore = finalAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete({ score: finalScore, total: questions.length });
+                }
+            };
+
+            const isSubmitDisabled = selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0);
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner animate-slide-in-up">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Quiz: {currentQuestionIndex + 1} of {questions.length}</h4>
+                    <p className="font-semibold text-gray-700 mb-3">{currentQuestion.question}</p>
+                    {isSATA && <p className="text-sm text-indigo-600 mb-4 font-medium">Select all that apply.</p>}
+                    <div className="space-y-2">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = Array.isArray(selectedOption) ? selectedOption.includes(option) : selectedOption === option;
+                            const isCorrectOption = Array.isArray(currentQuestion.correctAnswer)
+                                ? currentQuestion.correctAnswer.includes(option)
+                                : option.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                            
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+
+                            if (feedback && !isPreAssessment) {
+                                if (isCorrectOption) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800';
+                                } else if (isSelected && !isCorrectOption) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800';
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800';
+                            }
+
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handleOptionSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {isSATA ? (
+                                            <input 
+                                                type="checkbox" 
+                                                checked={isSelected} 
+                                                readOnly 
+                                                className="mr-3 text-indigo-600 rounded focus:ring-indigo-500"
+                                            />
+                                        ) : (
+                                            <span className={`w-4 h-4 rounded-full border-2 mr-3 ${isSelected ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-gray-400'}`}></span>
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                    {feedback && !isPreAssessment && (isCorrectOption || (isSelected && !isCorrectOption)) && (
+                                        <div className="ml-7 mt-1 text-sm font-semibold">
+                                            {isCorrectOption ? <span className="text-green-600">Correct Answer</span> : (isSelected && <span className="text-red-600">Incorrect Selection</span>)}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-6 text-center">
+                        {isPreAssessment ? (
+                            <button
+                                onClick={handleNext}
+                                disabled={isSubmitDisabled}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Assessment'}
+                            </button>
+                        ) : (
+                            <>
+                                {!feedback ? (
+                                    <button
+                                        onClick={handleRegularQuizSubmit}
+                                        disabled={isSubmitDisabled}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Submit Answer
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleRegularQuizNext}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                    >
+                                        {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'View Results'}
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const PreAssessmentQuiz = ({ onComplete, onExit }) => {
+            const [results, setResults] = useState(null);
+
+            const handleQuizComplete = (finalAnswers) => {
+                const moduleResults = {};
+                finalAnswers.forEach(answer => {
+                    const { moduleId } = answer.question;
+                    if (!moduleResults[moduleId]) {
+                        moduleResults[moduleId] = { correct: 0, total: 0 };
+                    }
+                    if (answer.isCorrect) {
+                        moduleResults[moduleId].correct++;
+                    }
+                    moduleResults[moduleId].total++;
+                });
+
+                const completedModules = [];
+                for (const moduleId in moduleResults) {
+                    if (moduleResults[moduleId].correct === moduleResults[moduleId].total && moduleResults[moduleId].total > 0) {
+                        completedModules.push(moduleId);
+                    }
+                }
+                setResults({ completedModules, total: finalAnswers.length, correct: finalAnswers.filter(a => a.isCorrect).length });
+                onComplete(completedModules);
+            };
+
+            if (results) {
+                return (
+                    <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4 animate-fade-in">
+                        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full text-center">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">Assessment Complete!</h2>
+                            <p className="text-lg text-gray-600 mb-6">
+                                You correctly answered {results.correct} out of {results.total} questions.
+                            </p>
+                            {results.completedModules.length > 0 ? (
+                                <>
+                                    <p className="text-green-600 font-semibold mb-4">You've tested out of the following modules:</p>
+                                    <ul class="list-disc list-inside text-left mb-6 bg-green-50 p-4 rounded-lg">
+                                        {results.completedModules.map(id => <li key={id}>{contentData[id].title}</li>)}
+                                    </ul>
+                                </>
+                            ) : (
+                                <p className="text-yellow-600 font-semibold mb-6">You haven't tested out of any modules. You can proceed to the main modules for learning.</p>
+                            )}
+                            <button
+                                onClick={onExit}
+                                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                            >
+                                Return to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
+                        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Diagnostic Quiz</h2>
+                        <Quiz questions={preAssessmentQuizData} onComplete={handleQuizComplete} isPreAssessment={true} />
+                    </div>
+                </div>
+            );
+        };
+
+
+        const Dashboard = ({ onSelectModule, progress, onResetProgress, onStartPreAssessment }) => {
+            let totalCompletedSteps = 0;
+            let totalPossibleSteps = 0;
+            let totalQuizCorrect = 0;
+            let totalQuizQuestions = 0;
+
+            Object.entries(contentData).forEach(([moduleId, module]) => {
+                totalPossibleSteps += module.steps.length;
+                const moduleProgress = progress[moduleId] || {};
+                
+                Object.values(moduleProgress).forEach(stepProgress => {
+                    if (stepProgress.completed) {
+                        totalCompletedSteps++;
+                    }
+                    if (stepProgress.score !== undefined) {
+                        totalQuizCorrect += stepProgress.score;
+                    }
+                });
+
+                module.steps.forEach(step => {
+                    if (step.type === 'quiz') {
+                        totalQuizQuestions += step.questions.length;
+                    }
+                });
+            });
+
+            const overallPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+
+            return (
+                <div className="p-4 sm:p-6 md:p-8 min-h-screen w-full flex flex-col">
+                    <div className="w-full">
+                        <header className="mb-8 text-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">ALM</span>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Antibiotics: Chapter 28</h1>
+                                <span className="bg-gray-200 text-gray-600 text-xs font-mono px-2.5 py-1 rounded-full">V:28.0</span>
+                            </div>
+                            <p className="text-lg text-gray-500 max-w-3xl mx-auto">Master the pharmacology of tetracyclines, glycylcyclines, aminoglycosides, and fluoroquinolones through interactive modules and assessments.</p>
+                        </header>
+
+                        <div className="mb-8 text-center">
+                            <button
+                                onClick={onStartPreAssessment}
+                                className="w-full max-w-md mx-auto px-6 py-4 bg-teal-500 text-white font-bold rounded-lg shadow-lg hover:bg-teal-600 transition-all duration-300 transform hover:scale-105"
+                            >
+                                <div className="text-xl">Skip Ahead: Take Diagnostic Quiz</div>
+                                <div className="text-sm font-normal">Test your knowledge and potentially skip modules.</div>
+                            </button>
+                        </div>
+
+                        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
+                           <div className="flex justify-between items-center mb-3">
+                                <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                                <button 
+                                    onClick={onResetProgress}
+                                    className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M4 2a1 1 0 011 1v2.101A7.002 7.002 0 0111.601 7.567a1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" />
+                                    </svg>
+                                    Reset Progress
+                                </button>
+                           </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div
+                                    className="bg-indigo-600 h-4 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-left text-sm text-gray-600 mt-2">
+                                    {totalQuizQuestions > 0 && `Quiz Performance: ${totalQuizCorrect} / ${totalQuizQuestions} correct`}
+                                </p>
+                                <p className="text-right text-sm text-gray-600 mt-2">{Math.round(overallPercentage)}% Completed</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                            {Object.entries(contentData).map(([id, module]) => {
+                                const moduleProgress = progress[id] || {};
+                                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                                const totalSteps = module.steps.length;
+                                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
+                                let statusText = "Not Started";
+                                let statusColor = "text-gray-500";
+                                if (completedCount === totalSteps) {
+                                    statusText = "Completed";
+                                    statusColor = "text-green-600";
+                                } else if (completedCount > 0) {
+                                    statusText = "In Progress";
+                                    statusColor = "text-yellow-600";
+                                }
+
+                                const quizStep = module.steps.find(step => step.type === 'quiz');
+                                const quizProgress = quizStep ? moduleProgress[quizStep.id] : null;
+
+                                return (
+                                    <div
+                                        key={id}
+                                        onClick={() => onSelectModule(id)}
+                                        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col animate-slide-in-up"
+                                    >
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className={cn("p-3 rounded-full bg-gradient-to-br", module.color, "w-10 h-10 flex items-center justify-center text-white text-lg font-bold shadow-md flex-shrink-0")}>
+                                                {module.title.split(' ').map(word => word.charAt(0)).join('')}
+                                            </div>
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <svg className="w-full h-full" viewBox="0 0 36 36">
+                                                    <path
+                                                        className="text-gray-200"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                    />
+                                                    <path
+                                                        className="text-indigo-500"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${percentage}, 100`}
+                                                        strokeLinecap="round"
+                                                        transform="rotate(-90 18 18)"
+                                                    />
+                                                </svg>
+                                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h3>
+                                        <p className="text-gray-500 text-sm mb-2 h-10">{module.description}</p>
+                                        <div className="mt-auto">
+                                            <p className={cn("text-sm font-semibold", statusColor)}>{statusText}</p>
+                                            {quizProgress && quizProgress.score !== undefined && (
+                                                <p className="text-sm text-gray-600 mt-1">Quiz Score: {quizProgress.score} / {quizStep.questions.length}</p>
+                                            )}
+                                            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700 mt-2">
+                                                Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const CaseStudy = ({ caseData, onComplete }) => {
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showExplanation, setShowExplanation] = useState(false);
+
+            const handleSelect = (option) => {
+                if (showExplanation) return; 
+
+                setSelectedAnswer(option);
+                setShowExplanation(true); 
+
+                if (option.toLowerCase() === caseData.correctAnswer.toLowerCase()) {
+                    onComplete({ completed: true }); 
+                }
+            };
+            
+            const renderHtmlContent = (content) => {
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: content }} />
+                );
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner animate-slide-in-up">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
+                    
+                    <div class="bg-blue-100 text-blue-800 p-4 rounded-md mb-4 text-sm font-medium">
+                        <h5 class="font-bold mb-2">Scenario:</h5>
+                        {renderHtmlContent(caseData.scenario)}
+                    </div>
+
+                    <p className="font-semibold text-gray-700 mb-4">{caseData.question}</p>
+                    <div className="space-y-3">
+                        {caseData.options.map(option => {
+                            const isSelected = selectedAnswer === option;
+                            const isCorrect = option.toLowerCase() === caseData.correctAnswer.toLowerCase();
+                            
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200 cursor-pointer'; 
+                            if (showExplanation) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800 cursor-default'; 
+                                } else if (isSelected) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800 cursor-default'; 
+                                } else {
+                                    optionClass = 'bg-gray-50 text-gray-500 border-gray-200 cursor-default'; 
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; 
+                            }
+
+                            return (
+                                <div
+                                    key={option}
+                                    onClick={() => handleSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {showExplanation && (
+                                            isCorrect ? <span className="text-green-600 mr-2">✓</span> : (isSelected && <span className="text-red-600 mr-2">✗</span>)
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    
+                    {showExplanation && ( 
+                        <div className="mt-6 p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-500 animate-fade-in">
+                            <h5 className="font-bold text-indigo-800">Explanation</h5>
+                            {renderHtmlContent(caseData.explanation)}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        const StaticContentStep = ({ step, onComplete }) => {
+            useEffect(() => {
+                onComplete();
+            }, []);
+
+            return (
+                <div className="prose max-w-none text-gray-700 leading-relaxed p-4 bg-white rounded-lg shadow-inner space-y-4 border border-gray-200 animate-slide-in-up">
+                   <div dangerouslySetInnerHTML={{ __html: step.content }} />
+                </div>
+            );
+        };
+
+        const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
+                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm"
+                            >
+                                Back to Dashboard
+                            </button>
+                            {hasNextModule && (
+                                <button
+                                    onClick={onNextModule}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Continue to Next Module
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
+            const initialActiveStep = useMemo(() => {
+                if (progress[module.id]) {
+                    const firstIncompleteIndex = module.steps.findIndex(step => !progress[module.id][step.id]?.completed);
+                    return firstIncompleteIndex !== -1 ? firstIncompleteIndex : 0;
+                }
+                return 0;
+            }, [module.id, module.steps, progress]);
+
+            const [activeStep, setActiveStep] = useState(initialActiveStep);
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+
+            const handleStepComplete = useCallback((stepId, data = {}) => {
+                onProgressUpdate(module.id, stepId, { completed: true, ...data });
+            }, [onProgressUpdate, module.id]);
+
+            const moduleProgress = progress[module.id] || {};
+            
+            const allStepsCompletedInModule = module.steps.every(step =>
+                moduleProgress[step.id] && moduleProgress[step.id].completed
+            );
+
+            const handleNextStep = () => {
+                if (activeStep === module.steps.length - 1) {
+                    if (allStepsCompletedInModule) {
+                        setIsCompletionModalOpen(true);
+                    }
+                } else {
+                    setActiveStep(activeStep + 1);
+                }
+            };
+
+            const handlePrevStep = () => {
+                if (activeStep > 0) {
+                    setActiveStep(activeStep - 1);
+                }
+            };
+            
+            if (!module || !module.steps) {
+                console.error("LearningModule received invalid module prop:", module);
+                return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
+            }
+
+            const currentStep = module.steps[activeStep];
+            
+            const renderStepContent = (step) => {
+                if (!step) return <p>Please select a step.</p>;
+
+                const onCompleteForStep = (data) => {
+                    if (step.type === 'quiz' && data.score !== undefined) {
+                        handleStepComplete(step.id, { score: data.score, total: data.total });
+                    } else if (step.type !== 'quiz' && step.type !== 'pre_assessment') {
+                        handleStepComplete(step.id);
+                    }
+                };
+
+                switch (step.type) {
+                    case 'text':
+                        return <StaticContentStep key={step.id} step={step} onComplete={onCompleteForStep} />;
+                    case 'case_study':
+                        return <CaseStudy key={step.id} caseData={step.case} onComplete={onCompleteForStep} />;
+                    case 'quiz':
+                        return <Quiz key={step.id} questions={step.questions} onComplete={onCompleteForStep} />;
+                    default:
+                        return <p key={step.id} className="text-red-600">Error: Content for this step type ({step.type}) is not available.</p>;
+                }
+            };
+
+            const handleModalClose = () => {
+                setIsCompletionModalOpen(false);
+                onBack();
+            };
+
+            const handleModalNextModule = () => {
+                setIsCompletionModalOpen(false);
+                onNextModule();
+            };
+
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
+                    <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
+                        <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            <span className="hidden sm:inline">Dashboard</span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                        </div>
+                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                    </header>
+                    {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
+                    <div className="flex flex-1 overflow-hidden">
+                        <aside className={cn(
+                            "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
+                            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        )}>
+                            <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
+                            <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
+                                {module.steps.map((step, index) => (
+                                    <button
+                                        key={step.id}
+                                        onClick={() => {
+                                            setActiveStep(index);
+                                            setIsSidebarOpen(false);
+                                        }}
+                                        className={cn(
+                                            'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
+                                            activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700'
+                                        )}
+                                    >
+                                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                            {moduleProgress[step.id]?.completed ? (
+                                                <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                            ) : (
+                                                <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                            )}
+                                        </div>
+                                        <span className="flex-1 text-sm">{step.title}</span>
+                                    </button>
+                                ))}
+                            </nav>
+                        </aside>
+
+                        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                            <div className="max-w-5xl mx-auto">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
+                                {renderStepContent(currentStep)}
+
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={handlePrevStep}
+                                        disabled={activeStep === 0}
+                                        className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <button
+                                        onClick={handleNextStep}
+                                        disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
+                                    >
+                                        {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
+                                    </button>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                    <CompletionModal
+                        isOpen={isCompletionModalOpen}
+                        onClose={handleModalClose}
+                        onNextModule={handleModalNextModule}
+                        hasNextModule={hasNextModule}
+                    />
+                </div>
+            );
+        };
+        
+        function App() {
+            const [currentModuleId, setCurrentModuleId] = useState(null);
+            const [isPreAssessmentActive, setIsPreAssessmentActive] = useState(false);
+            const [userId, setUserId] = useState(null);
+            const [progress, setProgress] = useState({});
+            const [isAuthReady, setIsAuthReady] = useState(false);
+
+            useEffect(() => {
+                const unsubscribe = mockAuth.onAuthStateChanged((user) => {
+                    if (user) setUserId(user.uid);
+                    setIsAuthReady(true);
+                });
+                return () => unsubscribe();
+            }, []);
+
+            useEffect(() => {
+                if (!isAuthReady || !userId) return;
+                const storedProgress = localStorage.getItem(`ch28-antibacterials-module-progress-${userId}`);
+                if (storedProgress) {
+                    try {
+                        setProgress(JSON.parse(storedProgress));
+                    } catch (e) {
+                        console.error("Failed to parse stored progress, resetting.", e);
+                        setProgress({});
+                    }
+                }
+            }, [isAuthReady, userId]);
+
+            const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
+                if (!isAuthReady || !userId) return;
+
+                setProgress(currentProgress => {
+                    const currentStepProgress = currentProgress[moduleId]?.[stepId] || {};
+                    const newStepProgress = { ...currentStepProgress, ...data };
+
+                    if (JSON.stringify(currentStepProgress) === JSON.stringify(newStepProgress)) {
+                        return currentProgress;
+                    }
+
+                    const newProgress = {
+                        ...currentProgress,
+                        [moduleId]: {
+                            ...(currentProgress[moduleId] || {}),
+                            [stepId]: newStepProgress
+                        }
+                    };
+
+                    localStorage.setItem(`ch28-antibacterials-module-progress-${userId}`, JSON.stringify(newProgress));
+                    return newProgress;
+                });
+            }, [isAuthReady, userId]);
+
+            const handlePreAssessmentComplete = (completedModuleIds) => {
+                const newProgress = { ...progress };
+                completedModuleIds.forEach(moduleId => {
+                    const module = contentData[moduleId];
+                    if (module) {
+                        newProgress[moduleId] = {};
+                        module.steps.forEach(step => {
+                            newProgress[moduleId][step.id] = { completed: true };
+                        });
+                    }
+                });
+                setProgress(newProgress);
+                localStorage.setItem(`ch28-antibacterials-module-progress-${userId}`, JSON.stringify(newProgress));
+            };
+            
+            const handleResetProgress = useCallback(() => {
+                if (!isAuthReady || !userId) return;
+                setProgress({});
+                localStorage.removeItem(`ch28-antibacterials-module-progress-${userId}`);
+            }, [isAuthReady, userId]);
+
+            const handleNextModule = useCallback(() => {
+                const moduleIds = Object.keys(contentData);
+                const currentIndex = moduleIds.indexOf(currentModuleId);
+                if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
+                    setCurrentModuleId(moduleIds[currentIndex + 1]);
+                } else {
+                    setCurrentModuleId(null);
+                }
+            }, [currentModuleId]);
+
+            const selectedModule = currentModuleId && contentData[currentModuleId]
+                                        ? { ...contentData[currentModuleId], id: currentModuleId }
+                                        : null;
+
+            const moduleIds = Object.keys(contentData);
+            const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
+            const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
+
+
+            return (
+                <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+                    {isPreAssessmentActive ? (
+                        <PreAssessmentQuiz 
+                            onComplete={handlePreAssessmentComplete} 
+                            onExit={() => setIsPreAssessmentActive(false)}
+                        />
+                    ) : selectedModule ? (
+                        <LearningModule
+                            key={selectedModule.id}
+                            module={selectedModule}
+                            onBack={() => setCurrentModuleId(null)}
+                            progress={progress}
+                            onProgressUpdate={handleProgressUpdate}
+                            onNextModule={handleNextModule}
+                            hasNextModule={hasNextModule}
+                        />
+                    ) : (
+                        <Dashboard 
+                            onSelectModule={setCurrentModuleId} 
+                            progress={progress} 
+                            onResetProgress={handleResetProgress}
+                            onStartPreAssessment={() => setIsPreAssessmentActive(true)}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        window.onload = function() {
+            const container = document.getElementById('root');
+            if (container) {
+                const root = ReactDOM.createRoot(container);
+                root.render(<App />);
+            } else {
+                console.error("Root element not found!");
+            }
+        };
+    </script>
+</body>
+</html>
