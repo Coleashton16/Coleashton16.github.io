@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sulfonamides & Nitroimidazoles Antibiotics Learning Module</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        'slide-in-up': {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out forwards',
+                        'slide-in-up': 'slide-in-up 0.4s ease-out forwards',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+        const mockAuth = {
+            onAuthStateChanged: (callback) => {
+                setTimeout(() => callback({ uid: 'standalone-ch29-user' }), 100);
+                return () => {};
+            },
+        };
+
+        const contentData = {
+            'introduction-ch29': {
+                title: 'Introduction to Chapter 29 Antibiotics',
+                color: 'from-blue-500 to-indigo-600',
+                description: 'Overview of Sulfonamides and Nitroimidazoles Antibiotics.',
+                steps: [
+                    {
+                        id: 'ch29-intro',
+                        title: 'Introduction to Chapter 29 Antibiotics',
+                        type: 'text',
+                        content: `
+                            <h3>Key Antibiotic Groups in Chapter 29</h3>
+                            <p>This chapter discusses two important groups of antibacterial agents: <strong>Sulfonamides</strong> and <strong>Nitroimidazoles</strong>.</p>
+                            <p><strong>Sulfonamides</strong>, introduced in 1935, are one of the oldest synthetic antibacterial agents used to combat infection. Their use has increased with newer formulations and combinations, such as trimethoprim-sulfamethoxazole (TMP-SMZ).</p>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-4">
+                                <p class="font-semibold">Learning Objectives for this Module:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>Explain the action of sulfonamides.</li>
+                                    <li>Explain the pharmacokinetics of the sulfonamides.</li>
+                                    <li>Formulate the Clinical Judgment [Nursing Process] to the patient taking trimethoprim-sulfamethoxazole.</li>
+                                    <li>Develop a teaching plan for a patient prescribed metronidazole.</li>
+                                    <li>Describe side effects/adverse effects for a patient taking quinupristin-dalfopristin.</li>
+                                </ul>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            'sulfonamides-group': {
+                title: 'Sulfonamides',
+                color: 'from-orange-400 to-red-500',
+                description: 'Detailed look at sulfonamide antibiotics, their uses, and considerations.',
+                steps: [
+                    {
+                        id: 'sulfonamides-overview',
+                        title: 'Sulfonamides: Overview and Mechanism',
+                        type: 'text',
+                        content: `
+                            <h3>Sulfonamides: History and Mechanism of Action</h3>
+                            <p>Sulfonamides were first isolated from a coal tar derivative compound in the early 1900s and produced for clinical use against coccal infections in 1935. They were the first group of drugs used against bacteria, though they are not classified as antibiotics because they were not obtained from biologic substances.</p>
+                            
+                            <h4 class="mt-4">Mechanism of Action</h4>
+                            <p>The sulfonamides are <strong>bacteriostatic</strong> because they inhibit bacterial synthesis of <strong>folic acid</strong>, which is essential for bacterial growth. Humans do not synthesize folic acid; rather, they acquire it through the diet. Therefore, sulfonamides selectively inhibit bacterial growth without affecting normal cells. Folic acid (folate) is required by cells for biosynthesis of RNA, DNA, and proteins.</p>
+
+                            <h4 class="mt-4">Clinical Uses and Limitations</h4>
+                            <p>The clinical usefulness of sulfonamides alone (not in combination) has decreased due to increased availability and effectiveness of penicillin and other antibiotics, and the development of bacterial resistance to some sulfonamides.</p>
+                            <p>However, sulfonamides are still valuable:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>May be used as an alternative drug for patients who are allergic to penicillin.</li>
+                                <li>Still used to treat urinary tract and ear infections.</li>
+                                <li>May be used for newborn eye prophylaxis.</li>
+                                <li>Approximately 90% effective against <em>E. coli</em>, making them a frequent preferred treatment for urinary tract infections (UTIs), which are often caused by <em>E. coli</em>.</li>
+                                <li>Useful in the treatment of meningococcal meningitis and against <em>Chlamydia</em> species and <em>Toxoplasma gondii</em>.</li>
+                                <li><strong>Not effective against viruses and fungi.</strong></li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'sulfonamides-pharmacokinetics-dynamics',
+                        title: 'Sulfonamides: Pharmacokinetics & Pharmacodynamics',
+                        type: 'text',
+                        content: `
+                            <h3>Sulfonamides: Pharmacokinetics (What the Body Does to the Drug)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Absorption:</strong> Sulfonamide drugs are well absorbed by the gastrointestinal (GI) tract.</li>
+                                <li><strong>Distribution:</strong> They are well distributed to body tissues and the brain.</li>
+                                <li><strong>Metabolism:</strong> The liver metabolizes the sulfonamide drug.</li>
+                                <li><strong>Excretion:</strong> The kidneys excrete it.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Sulfonamides: Pharmacodynamics (What the Drug Does to the Body)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Administration:</strong> Many sulfonamides are for oral administration due to ready GI absorption. They are also available in solution and as ointments for ophthalmic use and in cream form (silver sulfadiazine and mafenide acetate) for burns.</li>
+                                <li><strong>Protein Binding:</strong> Most of the early sulfonamides were highly protein bound and displaced other drugs by competing for protein sites.</li>
+                                <li><strong>Categorization:</strong> Sulfonamides are classified into two categories based on their duration of action:
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li><strong>Short-acting sulfonamides:</strong> Have a rapid absorption and excretion rate.</li>
+                                        <li><strong>Intermediate-acting sulfonamides:</strong> Have moderate to slow absorption and a slow excretion rate.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Sulfadiazine:</strong> Useful in prophylactic treatment of streptococcal infections in patients with rheumatic fever who are hypersensitive to penicillin.</li>
+                                <li><strong>Crystalluria Risk:</strong> Older sulfonamides such as sulfadiazine were poorly soluble in acid urine and could cause crystallization, which might damage the kidneys if fluid intake is insufficient. However, newer sulfonamides have greater water solubility, making crystal formations in the urine and renal damage unlikely.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'sulfonamides-side-effects',
+                        title: 'Sulfonamides: Side Effects and Adverse Reactions',
+                        type: 'text',
+                        content: `
+                            <h3>Sulfonamides: Side Effects and Adverse Reactions</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Allergic Response:</strong> May include skin rash and itching. Anaphylaxis is uncommon.</li>
+                                <li><strong>Blood Disorders (Blood Dyscrasias):</strong> Could result from prolonged use and high dosages. These include:
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Hemolytic anemia</li>
+                                        <li>Aplastic anemia</li>
+                                        <li>Low white blood cell (WBC) count (leukopenia)</li>
+                                        <li>Low platelet count (thrombocytopenia)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>GI Disturbances:</strong> Anorexia, nausea, and vomiting may also occur.</li>
+                                <li><strong>Crystalluria and Hematuria:</strong> Common problems with early sulfonamides, which were insoluble in acid urine. Increasing fluid intake dilutes the drug, which helps prevent crystalluria (crystals in the urine) and hematuria (blood in the urine).</li>
+                                <li><strong>Photosensitivity:</strong> An excessive reaction to direct sunlight or ultraviolet (UV) light that leads to redness and burning of the skin. Patients should avoid sunbathing and excess UV light.</li>
+                                <li><strong>Cross-Sensitivity:</strong> A sensitivity or allergy to one sulfonamide might lead to sensitivity to another sulfonamide. However, cross-sensitivity does not occur with other antibacterial drugs.</li>
+                                <li><strong>Pregnancy Contraindication:</strong> Sulfonamides should be avoided during pregnancy (especially the last trimester) to avoid congenital malformations, neural tube defects, and kernicterus (a type of brain damage that can result from high levels of bilirubin in a baby's blood).</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'trimethoprim-sulfamethoxazole',
+                        title: 'Trimethoprim-Sulfamethoxazole (TMP-SMZ)',
+                        type: 'text',
+                        content: `
+                            <h3>Trimethoprim-Sulfamethoxazole (TMP-SMZ): Synergistic Action</h3>
+                            <p><strong>TMP-SMZ</strong> contains one part trimethoprim and five parts sulfamethoxazole. This combination produces a <strong>synergistic effect</strong> that increases the desired drug response, meaning their combined effect is greater than the sum of their individual effects.</p>
+                            
+                            <h4 class="mt-4">Mechanism of Action</h4>
+                            <p>Both trimethoprim and sulfamethoxazole interfere with bacterial folic acid synthesis, but at different steps. This dual-blockade mechanism leads to a <strong>bactericidal effect</strong> and significantly slows the development of bacterial resistance compared to using either drug alone.</p>
+                            
+                            <h4 class="mt-4">Uses and Effectiveness</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Trimethoprim alone:</strong> Classified as a urinary tract antiinfective, it may be used alone for uncomplicated urinary tract infections. It is effective against the gram-negative bacteria <em>E. coli</em> and also <em>Proteus</em> and <em>Klebsiella</em> species.</li>
+                                <li><strong>TMP-SMZ combination:</strong> Effective in treating:
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Urinary, intestinal, lower respiratory tract, and middle ear (otitis media) infections</li>
+                                        <li>Prostatitis and gonorrhea</li>
+                                        <li>Used to prevent <em>Pneumocystis carinii</em> (now <em>Pneumocystis jirovecii</em>) pneumonia in patients with acquired immunodeficiency syndrome (AIDS).</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-4">
+                                <p class="font-semibold">Important Note:</p>
+                                <p>Increased fluid intake is strongly recommended to avoid complications such as crystalluria (crystal formation in the urine) with TMP-SMZ therapy.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'tmp-smz-prototype',
+                        title: 'Prototype Drug: Trimethoprim-Sulfamethoxazole (TMP-SMZ)',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Trimethoprim-Sulfamethoxazole (TMP-SMZ) (Antibacterial: Sulfonamide)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Drug Class & Therapeutic Uses</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Drug Class:</strong> Antibacterial: Sulfonamide (combination drug).</li>
+                                    <li><strong>Therapeutic Effects/Uses:</strong> For treating otitis media, traveler’s diarrhea, shigellosis, MRSA, and respiratory and urinary tract infections.</li>
+                                    <li><strong>Effectiveness:</strong> Effective against <em>Salmonella</em> and species of <em>Haemophilus, Staphylococcus</em>, and <em>Klebsiella</em>.</li>
+                                    <li><strong>Mechanism of Action:</strong> Inhibits folic acid synthesis and protein synthesis of nucleic acids; bactericidal effect.</li>
+                                </ul>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Dosage & Pharmacokinetics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Dosage (Acute exacerbation of chronic bronchitis):</strong> Adult: PO: TMP 160 mg, SMZ 800 mg q12h for 5–14 days.</li>
+                                        <li><strong>Absorption (PO):</strong> Well absorbed from the GI tract.</li>
+                                        <li><strong>Distribution:</strong> Protein Binding (PB): 44% for TMP; 70% for SMZ; crosses placenta.</li>
+                                        <li><strong>Metabolism:</strong> Half-life (t½): 8–10 hours for TMP, 6–12 hours for SMZ.</li>
+                                        <li><strong>Excretion:</strong> In urine as unchanged metabolites.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Pharmacodynamics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>PO:</strong> Onset: 2 hours. Peak: 1–4 hours. Duration: 12 hours.</li>
+                                        <li><strong>IV:</strong> Drug action is immediate. Peak: 30 minutes to 1 hour.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Side Effects & Adverse Reactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Side Effects:</strong> Anorexia, stomatitis (mouth inflammation), glossitis (tongue inflammation), nausea, vomiting, diarrhea, abdominal pain, weakness, ataxia, rash, depression, headache, insomnia, photosensitivity, tinnitus (ringing in ears), arthralgia (joint pain), myalgia (muscle pain).</li>
+                                    <li><strong>Adverse Reactions:</strong> Rhabdomyolysis (muscle breakdown), systemic lupus erythematosus, crystalluria.</li>
+                                    <li><strong>Life-threatening:</strong> Anaphylaxis, angioedema, seizures, myocarditis, leukopenia, thrombocytopenia, hemolytic anemia, aplastic anemia, agranulocytosis, eosinophilia, neutropenia, hyperkalemia, hyponatremia, hypoglycemia, CDAD (<em>Clostridium difficile</em>–associated diarrhea), Stevens-Johnson syndrome, renal/hepatic impairment.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Contraindications & Drug-Lab-Food Interactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Contraindications:</strong> Severe renal/hepatic disease, hypersensitivity to sulfonamides, infants (younger than 2 months).</li>
+                                    <li><strong>Caution:</strong> Diabetes mellitus, thyroid disorder, electrolyte imbalance, folate deficiency, bradycardia, hypertension, dysrhythmias, colitis, diarrhea, cardiac disease, alcohol use disorder, older adults, pregnancy, breastfeeding.</li>
+                                    <li><strong>Drug Interactions:</strong>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>Increased anticoagulant effect with warfarin.</li>
+                                            <li>Increased hypoglycemic effect with oral hypoglycemic drugs (sulfonylureas).</li>
+                                            <li>Increased potassium levels with ACE inhibitors and spironolactone.</li>
+                                            <li>Increased digoxin and sulfonylurea levels.</li>
+                                            <li>Increased phenytoin and methotrexate toxicity.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Lab Interactions:</strong> May increase BUN, serum creatinine, AST, ALT, and ALP.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'topical-ophthalmic-sulfonamides',
+                        title: 'Topical and Ophthalmic Sulfonamides',
+                        type: 'text',
+                        content: `
+                            <h3>Topical and Ophthalmic Sulfonamides</h3>
+                            <p>Sulfonamides can be administered for topical and ophthalmic uses, but because topical use of sulfonamides can cause hypersensitivity reactions, they are used infrequently for general skin infections.</p>
+                            
+                            <h4 class="mt-4">Specific Topical Uses for Burns:</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Mafenide acetate:</strong> A sulfonamide derivative prescribed to prevent sepsis in cases of second- and third-degree burns.</li>
+                                <li><strong>Silver sulfadiazine:</strong> Another topical sulfonamide commonly used to treat burns.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Sulfacetamide Sodium: Ophthalmic and Dermatologic Uses</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Ophthalmic Preparations:</strong> In liquid drops and ointments, sulfacetamide sodium is used to treat ocular infections. It is often used as prophylactic treatment after an eye injury or after removal of a foreign body.
+                                    <br><span class="font-semibold text-gray-700">Important:</span> Do not use ointment for the eye unless "ophthalmic" is printed on the drug label.</li>
+                                <li><strong>Topical Dermatologic Use:</strong> For the skin, sulfacetamide sodium is available as a cream, gel, lotion, or cleanser and is used to treat seborrheic dermatitis and acne. This dermatologic form is not used for the eye.</li>
+                            </ul>
+
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Patient Safety: Preventing Medication Errors</p>
+                                <ul class="list-disc list-inside">
+                                    <li>Do not confuse <strong>Septra</strong> (an antibacterial sulfonamide) with <strong>Sectral</strong> (a beta-adrenergic antagonist used to manage dysrhythmias).</li>
+                                    <li>Do not confuse <strong>Sulfadiazine</strong> (a short-acting antibacterial sulfonamide) with <strong>Sulfasalazine</strong> (an intermediate-acting antibacterial sulfonamide).</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                ]
+            },
+            'nitroimidazoles-group': {
+                title: 'Nitroimidazoles',
+                color: 'from-cyan-400 to-sky-600',
+                description: 'Explore nitroimidazole antibiotics, their mechanism, uses, and important considerations.',
+                steps: [
+                    {
+                        id: 'nitroimidazoles-overview',
+                        title: 'Nitroimidazoles: Overview and Uses',
+                        type: 'text',
+                        content: `
+                            <h3>Nitroimidazoles: Mechanism and Broad Effectiveness</h3>
+                            <p>Nitroimidazoles act by disrupting DNA and protein synthesis in susceptible bacteria and protozoa, leading to a <strong>bactericidal, amebicidal, and trichomonacidal</strong> effect.</p>
+                            
+                            <h4 class="mt-4">Effectiveness Against:</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><em>H. pylori</em></li>
+                                <li>Bacterial species: <em>Bacteroides, Clostridium, Gardnerella, Prevotella, Peptococcus</em></li>
+                                <li>Protozoa: <em>Trichomonas vaginalis, Giardia</em></li>
+                            </ul>
+
+                            <h4 class="mt-4">Therapeutic Uses:</h4>
+                            <p>Nitroimidazoles are used for:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Prophylaxis for surgical infections</li>
+                                <li>Treatment of <em>Clostridium difficile</em>–associated diarrhea (CDAD)</li>
+                                <li>Anaerobic infections</li>
+                                <li>Amebiasis, giardiasis, trichomoniasis</li>
+                                <li>Bacterial vaginosis</li>
+                                <li>Acne rosacea</li>
+                            </ul>
+                            <p><strong>Metronidazole</strong> and <strong>Tinidazole</strong> are two of the most effective drugs available to treat anaerobic bacterial infections. Both are used with other agents to treat <em>H. pylori</em> infections associated with peptic and duodenal ulcers.</p>
+                            <p>Metronidazole was FDA approved in 1963, and tinidazole was approved in 2004.</p>
+                        `
+                    },
+                    {
+                        id: 'nitroimidazoles-pharmacokinetics-dynamics',
+                        title: 'Nitroimidazoles: Pharmacokinetics & Pharmacodynamics',
+                        type: 'text',
+                        content: `
+                            <h3>Nitroimidazoles: Pharmacokinetics (What the Body Does to the Drug)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Absorption:</strong> Both metronidazole and tinidazole are well absorbed from the GI tract. They are usually not given parenterally unless the patient cannot tolerate oral medications.</li>
+                                <li><strong>Protein Binding (PB):</strong> Ranges from <5% to 20%.</li>
+                                <li><strong>Half-life (t½):</strong> 8 to 14 hours.</li>
+                                <li><strong>Excretion:</strong> These drugs are eliminated from the body via urine and feces.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Nitroimidazoles: Pharmacodynamics (What the Drug Does to the Body)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Mechanism of Action:</strong> Nitroimidazoles disrupt DNA and protein synthesis, becoming bactericidal, amebicidal, and trichomonacidal.</li>
+                                <li><strong>Administration Timing with Food:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>It is recommended that <strong>tinidazole</strong> be taken with food.</li>
+                                        <li><strong>Metronidazole</strong> can be given without regard to food.</li>
+                                        <li>When metronidazole is used in the extended-release form, it should be taken on an empty stomach.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Topical Absorption:</strong> The topical form is only minimally absorbed.</li>
+                                <li><strong>IV Administration:</strong> When metronidazole is given IV intermittently, it should be administered slowly over 30 to 60 minutes.</li>
+                                <li><strong>Peak Action:</strong> The peak action for both agents is 1 to 3 hours.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'nitroimidazoles-side-effects',
+                        title: 'Nitroimidazoles: Side Effects and Adverse Reactions',
+                        type: 'text',
+                        content: `
+                            <h3>Nitroimidazoles: Side Effects and Adverse Reactions</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Common Side Effects:</strong> Headache, dizziness, insomnia, weakness, dry mouth, dysgeusia (altered taste, often metallic taste), anorexia, nausea, vomiting, diarrhea, tongue/urine discoloration, candidiasis, vaginitis, vaginal discharge, and superinfection.</li>
+                                <li><strong>More Serious Adverse Reactions (Metronidazole and Tinidazole):</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Leukopenia (low WBC count)</li>
+                                        <li>Peripheral neuropathy</li>
+                                        <li>Seizures</li>
+                                        <li>Stevens-Johnson syndrome (severe skin reaction)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Disulfiram-like Reaction with Alcohol:</strong> A severe reaction may occur when metronidazole is taken with excessive amounts of alcohol.
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li><strong>Symptoms:</strong> Flushing, throbbing headache, visual disturbance, confusion, dyspnea (shortness of breath), nausea, vomiting, tachycardia, syncope (fainting), and circulatory collapse.</li>
+                                    </ul>
+                                    <div class="bg-red-50 border-l-4 border-red-400 text-red-800 p-4 rounded-md shadow-sm mt-4">
+                                        <p class="font-semibold">Warning:</p>
+                                        <p>Patients taking metronidazole must strictly avoid alcohol during therapy and for at least 3 days after discontinuation to prevent this severe reaction.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'nitroimidazoles-drug-interactions',
+                        title: 'Nitroimidazoles: Drug Interactions',
+                        type: 'text',
+                        content: `
+                            <h3>Nitroimidazoles: Drug Interactions</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Alcohol:</strong> As discussed, metronidazole can cause a disulfiram-like reaction with alcohol.</li>
+                                <li><strong>Milk Thistle:</strong> Milk thistle (a complementary and alternative therapy) may decrease the absorption of metronidazole, potentially reducing its effectiveness.</li>
+                                <li><strong>Warfarin:</strong> Metronidazole can increase the activity of oral anticoagulants like warfarin, increasing the risk of bleeding. Close monitoring of INR is necessary.</li>
+                            </ul>
+                        `
+                    },
+                ]
+            },
+            'miscellaneous-antibacterials': {
+                title: 'Miscellaneous Antibacterial Drugs',
+                color: 'from-green-500 to-teal-600',
+                description: 'Information on unclassified and newer antibacterial agents.',
+                steps: [
+                    {
+                        id: 'miscellaneous-drugs-overview',
+                        title: 'Miscellaneous Antibacterial Drugs',
+                        type: 'text',
+                        content: `
+                            <h3>Miscellaneous Antibacterial Drugs (from Table 29.3)</h3>
+                            <p>This section covers several antibacterial drugs that do not fit neatly into the previously discussed categories, or represent newer classifications.</p>
+
+                            <h4 class="mt-4">Chloramphenicol (Unclassified Drug)</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Discovered in 1947.</li>
+                                <li>Exerts its <strong>bacteriostatic</strong> action by inhibiting bacterial protein synthesis.</li>
+                                <li><strong>Due to toxic effects (especially blood dyscrasias related to bone marrow suppression), it is used only to treat serious infections.</strong></li>
+                                <li><strong>Spectrum:</strong> Effective against gram-negative and gram-positive bacteria, and many other microorganisms (e.g., rickettsiae, <em>Mycoplasma, H. influenzae</em>).</li>
+                                <li><strong>Uses (from Table 29.3):</strong> Treating only serious infections, such as bacteremia, salmonella, rickettsial infection, typhoid fever, and meningitis.</li>
+                                <li><strong>Pharmacokinetics (from Table 29.3):</strong> PB: 60%; t½: 4.1 hours.</li>
+                                <li><strong>TDM (from Table 29.3):</strong> Peak: 10–20 mcg/mL; Trough: 5–10 mcg/mL.</li>
+                                <li><strong>Side Effects (from Table 29.3):</strong> Headache, glossitis, confusion, depression, anemia, rash, nausea, vomiting, diarrhea, peripheral neuropathy, vitamin B12 deficiency, angioedema, nephritis.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Quinupristin-dalfopristin (Streptogramin Antibiotic)</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Class:</strong> Streptogramin antibiotics.</li>
+                                <li><strong>Mechanism:</strong> Acts by disrupting the protein synthesis of the organism.</li>
+                                <li><strong>Uses:</strong> Effective for treating vancomycin-resistant <em>Enterococcus faecium</em> (VREF) bacteremia and skin infections caused by <em>S. aureus</em> and <em>S. pyogenes</em>.</li>
+                                <li><strong>Administration:</strong> When administering the drug through a peripheral IV line, pain, edema, and phlebitis may occur.</li>
+                                <li><strong>Uses (from Table 29.3):</strong> Treating skin infections.</li>
+                                <li><strong>Pharmacokinetics (from Table 29.3):</strong> PB: 11%–19%; t½: 0.7–0.85 hours.</li>
+                                <li><strong>Side Effects (from Table 29.3):</strong> Infusion site reaction, rash, arthralgia, myalgia, CDAD, nausea, vomiting, diarrhea, hyperbilirubinemia, edema, and superinfection.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Obiltoxaximab (Monoclonal Antibody)</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>FDA approved in 2016 for prophylaxis and treatment of <strong>anthrax</strong>.</li>
+                                <li><strong>Mechanism:</strong> Prevents the lethal factor of anthrax from intracellular entry by inhibiting the binding of the protective antigen of <em>Bacillus anthracis</em> toxin to cellular receptors.</li>
+                                <li><strong>Administration:</strong> Administered IV as a single dose over 90 minutes.</li>
+                                <li><strong>Uses (from Table 29.3):</strong> Prophylaxis and treatment of anthrax.</li>
+                                <li><strong>Side Effects (from Table 29.3):</strong> Headache, cough, nasal congestion, vomiting, hematoma, superinfection, rash, pruritus, and injection site reaction.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Lefamulin (Pleuromutilin Antibiotic)</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>First in its class of pleuromutilin antibiotics.</li>
+                                <li><strong>Uses:</strong> Used for the treatment of community-acquired pneumonia.</li>
+                                <li><strong>Action:</strong> Can be bacteriostatic or bactericidal.</li>
+                                <li><strong>Mechanism:</strong> Inhibits bacterial protein synthesis.</li>
+                                <li><strong>Uses (from Table 29.3):</strong> Community-acquired pneumonia.</li>
+                                <li><strong>Pharmacokinetics (from Table 29.3):</strong> PB: 94.8%–97.1%; t½: 3–20 hours.</li>
+                                <li><strong>Side Effects (from Table 29.3):</strong> Headache, injection site reaction, nausea, vomiting, diarrhea, hypokalemia, CDAD, superinfection, and elevated hepatic enzymes.</li>
+                            </ul>
+                        `
+                    },
+                ]
+            },
+            'nursing-process-ch29': {
+                title: 'Clinical Judgment & Review',
+                color: 'from-purple-500 to-pink-500',
+                description: 'Apply nursing process and test your knowledge on Chapter 29 antibiotics.',
+                steps: [
+                    {
+                        id: 'nursing-process-sulfonamides',
+                        title: 'Clinical Judgment [Nursing Process]: Sulfonamides',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Concept: Infection (Applying the Nursing Process for Sulfonamides)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Recognize Cues (Assessment)</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Assess the patient’s renal function by checking urinary output (>600 mL/day), blood urea nitrogen (BUN; normal, 8 to 25 mg/dL), and serum creatinine (normal, 0.5 to 1.5 mg/dL).</li>
+                                    <li>Obtain a medical history from the patient. Sulfonamides such as trimethoprim-sulfamethoxazole (TMP-SMZ) are contraindicated for patients with severe renal or liver disease.</li>
+                                    <li>Determine whether the patient is hypersensitive to sulfonamides. An allergic reaction can include rash, skin eruptions, and itching. A severe hypersensitivity reaction includes erythema multiforme—an erythematous macular, papular, or vesicular eruption that can cover the entire body—or exfoliative dermatitis, characterized by desquamation, scaling, and itching of the skin.</li>
+                                    <li>Obtain a history of drugs the patient currently takes. Oral antidiabetic drugs (sulfonylureas) given with sulfonamides increase the hypoglycemic effect; use of warfarin with sulfonamides increases the anticoagulant effect.</li>
+                                    <li>Assess baseline laboratory results, especially complete blood count (CBC). Blood dyscrasias may occur as a result of high doses of sulfonamides over a continuous period, causing life-threatening conditions.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Analyze Cues and Prioritize Hypothesis (Patient Problems)</h4>
+                                <ul class="list-disc list-inside">
+                                    <li>Tissue injury (e.g., crystalluria, photosensitivity, severe skin reactions, blood dyscrasias)</li>
+                                    <li>Vomiting, Nausea (related to GI upset)</li>
+                                    <li>Risk for Fluid Volume Deficit (due to inadequate fluid intake)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Generate Solutions (Planning)</h4>
+                                <ul class="list-disc list-inside">
+                                    <li>The patient’s white blood cells (WBCs) will be within normal limits.</li>
+                                    <li>The patient will maintain adequate hydration and renal function.</li>
+                                    <li>The patient will not experience severe adverse reactions such as blood dyscrasias or severe skin reactions.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Take Action (Nursing Interventions)</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Administration:</strong> Administer sulfonamides with a full glass of water. Extra fluid intake can prevent crystalluria and kidney stone formation.</li>
+                                    <li><strong>Fluid Monitoring:</strong> Record intake and output. To decrease the risk of crystalluria, fluid intake should be at least 2000 mL/day, and urine output should be at least 1200 mL/day. Sulfonamide sulfadiazine is more likely to cause crystalluria than combination drugs.</li>
+                                    <li><strong>Vital Signs:</strong> Monitor vital signs. Note whether the patient’s temperature has gone down, indicating infection resolution.</li>
+                                    <li><strong>Hematologic Reactions:</strong> Observe the patient for hematologic reactions that may lead to life-threatening anemias. Early signs are sore throat, purpura (small red/purple spots), and decreasing WBC and platelet counts. Check CBC, and compare values with baseline findings.</li>
+                                    <li><strong>Superinfection:</strong> Check for signs and symptoms of superinfection: stomatitis (mouth ulcers), furry black tongue, anal or genital discharge, and itching.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Patient Teaching</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Fluid Intake:</strong> Encourage patients to drink several quarts of fluid daily while taking sulfonamides to avoid crystalluria.</li>
+                                    <li><strong>Pregnancy:</strong> Advise pregnant patients to avoid sulfonamides during the last 3 months of pregnancy.</li>
+                                    <li><strong>Antacids:</strong> Counsel patients not to take antacids with sulfonamides because antacids decrease the absorption rate of sulfonamide drugs.</li>
+                                    <li><strong>Cross-Sensitivity:</strong> Warn patients with an allergy to one sulfonamide that all sulfonamide preparations should be avoided (with health care provider’s approval) because of the possibility of cross-sensitivity. Observe the patient for rash or any skin eruptions.</li>
+                                    <li><strong>Self-Administration:</strong> Teach patients to take sulfonamides 1 hour before or 2 hours after meals with a full glass of water.</li>
+                                    <li><strong>Report Bruising/Bleeding:</strong> Direct patients to report bruising or bleeding that could be a result of a drug-induced blood disorder. Advise patients to have their blood cell count monitored on a regular basis.</li>
+                                    <li><strong>Photosensitivity:</strong> Warn patients to wear sunglasses, avoid direct sunlight, and use sun block and protective clothing to decrease the risk of photosensitive reactions.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                <h4 class="font-bold text-gray-800 mb-3">Evaluate Outcomes (Evaluation)</h4>
+                                <p>Evaluate the effectiveness of sulfonamide therapy by determining whether:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>The infection has been alleviated.</li>
+                                    <li>The blood cell count is within normal range.</li>
+                                    <li>No significant side effects or adverse reactions have occurred.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'critical-thinking-case-study-ch29',
+                        title: 'Critical Thinking Case Study',
+                        type: 'case_study',
+                        case: {
+                            scenario: `A 46-year-old female has a severe urinary tract infection. She takes trimethoprim-sulfamethoxazole 160 mg/800 mg every 6 hours.`,
+                            question: `Based on this scenario, answer the following questions:
+                                1. What are the similarities and differences between trimethoprim-sulfamethoxazole and sulfadiazine?
+                                2. Is the dose within the recommended drug dose and dosing interval?
+                                3. What is the required amount of daily fluid intake?
+                                4. What time of day should sulfonamides be taken?
+                                5. Why should bruising and bleeding be reported?
+                                6. What effect does trimethoprim-sulfamethoxazole have on warfarin?`,
+                            options: [
+                                "TMP-SMZ is a synergistic combo, sulfadiazine is single. Dose is outside range (q6h is too frequent). Fluid intake >2000 mL/day. Take 1-2 hours before or after meals. Report bruising/bleeding due to blood dyscrasias. TMP-SMZ increases warfarin effect.",
+                                "TMP-SMZ and sulfadiazine are identical. Dose is within range. Fluid intake 1000 mL/day. Take with food. Bruising/bleeding is normal. TMP-SMZ decreases warfarin effect.",
+                                "TMP-SMZ is bacteriostatic, sulfadiazine is bactericidal. Dose is too low. Fluid intake is irrelevant. Take at bedtime. Bruising/bleeding indicates dehydration. TMP-SMZ has no effect on warfarin.",
+                                "TMP-SMZ is an antibiotic, sulfadiazine is not. Dose is too high. Fluid intake 500 mL/day. Take with antacids. Bruising/bleeding indicates photosensitivity. TMP-SMZ causes warfarin toxicity."
+                            ],
+                            correctAnswer: "TMP-SMZ is a synergistic combo, sulfadiazine is single. Dose is outside range (q6h is too frequent). Fluid intake >2000 mL/day. Take 1-2 hours before or after meals. Report bruising/bleeding due to blood dyscrasias. TMP-SMZ increases warfarin effect.",
+                            explanation: `
+                                <p><strong>Rationale:</strong></p>
+                                <ol class="list-decimal list-inside space-y-2">
+                                    <li><strong>Similarities and Differences between TMP-SMZ and Sulfadiazine:</strong>
+                                        <ul>
+                                            <li><strong>Similarities:</strong> Both are sulfonamide-based antibacterials that inhibit bacterial folic acid synthesis. Both are used for UTIs.</li>
+                                            <li><strong>Differences:</strong> Sulfadiazine is an older, single sulfonamide drug. TMP-SMZ is a combination of trimethoprim and sulfamethoxazole, offering a synergistic effect and slower development of bacterial resistance. Sulfadiazine is more prone to crystalluria if fluid intake is insufficient.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Dose within Recommended Range:</strong> No, the dose of 160 mg/800 mg every 6 hours is <strong>outside the recommended dosing interval</strong>. The Prototype Drug Chart for TMP-SMZ states the adult dosage for acute exacerbation of chronic bronchitis (a common infection treated with TMP-SMZ) is TMP 160 mg, SMZ 800 mg <strong>q12h</strong> (every 12 hours) for 5–14 days. Taking it every 6 hours doubles the frequency and could lead to toxicity. The nurse should clarify this order with the healthcare provider.</li>
+                                    <li><strong>Required Daily Fluid Intake:</strong> Patients taking sulfonamides should have a fluid intake of <strong>at least 2000 mL/day</strong> (or several quarts daily) to prevent crystalluria and kidney stone formation.</li>
+                                    <li><strong>Time of Day for Sulfonamides:</strong> Sulfonamides should be taken <strong>1 hour before or 2 hours after meals</strong> with a full glass of water for optimal absorption. If GI upset occurs, they may be taken with non-dairy foods.</li>
+                                    <li><strong>Why Report Bruising and Bleeding:</strong> Bruising or bleeding should be reported because it could be a result of a drug-induced blood disorder, such as thrombocytopenia (low platelet count) or other blood dyscrasias, which are serious adverse effects of sulfonamides. Patients should have their blood cell count monitored regularly.</li>
+                                    <li><strong>Effect on Warfarin:</strong> Trimethoprim-sulfamethoxazole (TMP-SMZ) can <strong>increase the anticoagulant effect of warfarin</strong>, increasing the risk of bleeding. Close monitoring of INR (International Normalized Ratio) is essential when these drugs are taken concurrently.</li>
+                                </ol>
+                            `
+                        }
+                    },
+                    {
+                        id: 'review-questions-ch29',
+                        title: 'Review Questions',
+                        type: 'quiz',
+                        questions: [
+                            {
+                                question: "A patient is taking sulfasalazine. What should the nurse teach the patient to do?",
+                                options: ["Drink at least 10 glasses of fluid per day.", "Monitor blood glucose carefully to avoid hyperglycemia.", "Avoid operating a motor vehicle because this drug may cause drowsiness.", "Take this drug with an antacid to decrease the risk of gastrointestinal distress."],
+                                correctAnswer: "Drink at least 10 glasses of fluid per day."
+                            },
+                            {
+                                question: "The nurse is teaching a patient about sulfadiazine. Which instructions will the nurse include in the teaching?",
+                                options: ["Avoid caffeine during sulfonamide treatment.", "Administer in 50 mL of fluid over 30 minutes.", "Avoid sulfonamides during the third trimester of pregnancy.", "Use an ultraviolet light to enhance drug effectiveness."],
+                                correctAnswer: "Avoid sulfonamides during the third trimester of pregnancy."
+                            },
+                            {
+                                question: "A patient is ordered to take trimethoprim-sulfamethoxazole. The nurse knows to be aware of which adverse effect?",
+                                options: ["Bronchospasm", "Tendon rupture", "Red man syndrome", "Clostridium difficile–associated diarrhea"],
+                                correctAnswer: "Clostridium difficile–associated diarrhea"
+                            },
+                            {
+                                question: "The nurse is teaching a patient about trimethoprim-sulfamethoxazole. Which instructions will the nurse plan to include? (Select all that apply.)",
+                                options: ["Report any bruising or bleeding.", "Report any diarrhea or bloody stools.", "Report any fever, rash, or sore throat.", "Avoid unprotected exposure to sunlight.", "Report thirst and polyuria."],
+                                correctAnswer: ["Report any bruising or bleeding.", "Report any diarrhea or bloody stools.", "Report any fever, rash, or sore throat.", "Avoid unprotected exposure to sunlight."]
+                            },
+                            {
+                                question: "A patient is taking a sulfonamide for an acute urinary tract infection. Which medication does the nurse realize is a short-acting sulfonamide?",
+                                options: ["Sulfadiazine", "Sulfasalazine", "Secnidazole", "Trimethoprim-sulfamethoxazole"],
+                                correctAnswer: "Sulfadiazine"
+                            },
+                        ]
+                    },
+                    {
+                        id: 'chapter-29-objectives',
+                        title: 'Chapter 29 Learning Objectives',
+                        type: 'text',
+                        content: `
+                            <h3>Chapter 29 Learning Objectives: Summary</h3>
+                            <p>Upon completion of this module, you should be able to:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li>Explain the action of sulfonamides.</li>
+                                <li>Explain the pharmacokinetics of the sulfonamides.</li>
+                                <li>Formulate the Clinical Judgment [Nursing Process] to the patient taking trimethoprim-sulfamethoxazole.</li>
+                                <li>Develop a teaching plan for a patient prescribed metronidazole.</li>
+                                <li>Describe side effects/adverse effects for a patient taking quinupristin-dalfopristin.</li>
+                            </ul>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Resource:</p>
+                                <p>For additional resources and interactive content, please visit: <a href="http://evolve.elsevier.com/McCuistion/pharmacology" target="_blank" class="text-blue-600 hover:underline">evolve.elsevier.com/McCuistion/pharmacology</a></p>
+                            </div>
+                        `
+                    },
+                ]
+            }
+        };
+
+        const preAssessmentQuizData = [
+            { moduleId: 'sulfonamides-group', question: "What is the primary mechanism of action of sulfonamides?", options: ["Inhibiting bacterial cell wall synthesis", "Disrupting bacterial DNA and protein synthesis", "Inhibiting bacterial protein synthesis", "Inhibiting bacterial synthesis of folic acid"], correctAnswer: "Inhibiting bacterial synthesis of folic acid" },
+            { moduleId: 'sulfonamides-group', question: "A patient taking sulfonamides should be advised to increase fluid intake to prevent which adverse effect?", options: ["Hepatotoxicity", "Ototoxicity", "Crystalluria", "Photosensitivity"], correctAnswer: "Crystalluria" },
+            { moduleId: 'nitroimidazoles-group', question: "Which severe reaction can occur if metronidazole is taken with alcohol?", options: ["Red man syndrome", "Serotonin syndrome", "Disulfiram-like reaction", "Tendon rupture"], correctAnswer: "Disulfiram-like reaction" },
+            { moduleId: 'miscellaneous-antibacterials', question: "Which of the following is a key reason Chloramphenicol is used only for serious infections?", options: ["It causes severe GI upset.", "It is highly nephrotoxic.", "It can cause blood dyscrasias related to bone marrow suppression.", "It has a very short half-life."], correctAnswer: "It can cause blood dyscrasias related to bone marrow suppression." },
+            { moduleId: 'sulfonamides-group', question: "Trimethoprim-sulfamethoxazole (TMP-SMZ) is a combination drug that produces what kind of effect?", options: ["Antagonistic", "Additive", "Synergistic", "Potentiative"], correctAnswer: "Synergistic" },
+            { moduleId: 'nursing-process-ch29', question: "When teaching a patient about trimethoprim-sulfamethoxazole, which instruction is crucial regarding sunlight exposure?", options: ["Avoid direct sunlight due to photosensitivity.", "Increase sun exposure to enhance drug effectiveness.", "Sun exposure is not a concern with this drug.", "Use a tanning bed to improve skin tone."], correctAnswer: "Avoid direct sunlight due to photosensitivity." },
+        ];
+
+
+        const Quiz = ({ questions, onComplete, isPreAssessment = false }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState([]);
+            const [feedback, setFeedback] = useState(null);
+            const [answers, setAnswers] = useState([]);
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            const isSATA = Array.isArray(currentQuestion.correctAnswer);
+
+            const handleOptionSelect = (option) => {
+                if (feedback && !isPreAssessment) return;
+
+                if (isSATA) {
+                    setSelectedOption(prevSelected => {
+                        if (prevSelected.includes(option)) {
+                            return prevSelected.filter(item => item !== option);
+                        } else {
+                            return [...prevSelected, option];
+                        }
+                    });
+                } else {
+                    setSelectedOption(option);
+                }
+            };
+
+            const checkCorrectness = (userAnswers, correctAnswers) => {
+                if (Array.isArray(correctAnswers)) {
+                    const allCorrectSelected = correctAnswers.every(ans => userAnswers.includes(ans));
+                    const noIncorrectSelected = userAnswers.every(ans => correctAnswers.includes(ans));
+                    return allCorrectSelected && noIncorrectSelected && userAnswers.length > 0;
+                } else {
+                    return userAnswers.toLowerCase() === correctAnswers.toLowerCase();
+                }
+            }
+
+            const handleNext = () => {
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                
+                const updatedAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(updatedAnswers);
+
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]);
+                    setFeedback(null);
+                } else {
+                    const finalScore = updatedAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete(isPreAssessment ? updatedAnswers : { score: finalScore, total: questions.length });
+                }
+            };
+            
+            const handleRegularQuizSubmit = () => {
+                if (selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)) return;
+                
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                setFeedback(isCorrect ? 'correct' : 'incorrect');
+            };
+
+            const handleRegularQuizNext = () => {
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                const finalAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(finalAnswers);
+                
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]);
+                    setFeedback(null);
+                } else {
+                    const finalScore = finalAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete({ score: finalScore, total: questions.length });
+                }
+            };
+
+            const isSubmitDisabled = selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0);
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner animate-slide-in-up">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Quiz: {currentQuestionIndex + 1} of {questions.length}</h4>
+                    <p className="font-semibold text-gray-700 mb-3">{currentQuestion.question}</p>
+                    {isSATA && <p className="text-sm text-indigo-600 mb-4 font-medium">Select all that apply.</p>}
+                    <div className="space-y-2">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = Array.isArray(selectedOption) ? selectedOption.includes(option) : selectedOption === option;
+                            const isCorrectOption = Array.isArray(currentQuestion.correctAnswer)
+                                ? currentQuestion.correctAnswer.includes(option)
+                                : option.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                            
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+
+                            if (feedback && !isPreAssessment) {
+                                if (isCorrectOption) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800';
+                                } else if (isSelected && !isCorrectOption) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800';
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800';
+                            }
+
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handleOptionSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {isSATA ? (
+                                            <input 
+                                                type="checkbox" 
+                                                checked={isSelected} 
+                                                readOnly 
+                                                className="mr-3 text-indigo-600 rounded focus:ring-indigo-500"
+                                            />
+                                        ) : (
+                                            <span className={`w-4 h-4 rounded-full border-2 mr-3 ${isSelected ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-gray-400'}`}></span>
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                    {feedback && !isPreAssessment && (isCorrectOption || (isSelected && !isCorrectOption)) && (
+                                        <div className="ml-7 mt-1 text-sm font-semibold">
+                                            {isCorrectOption ? <span className="text-green-600">Correct Answer</span> : (isSelected && <span className="text-red-600">Incorrect Selection</span>)}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-6 text-center">
+                        {isPreAssessment ? (
+                            <button
+                                onClick={handleNext}
+                                disabled={isSubmitDisabled}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Assessment'}
+                            </button>
+                        ) : (
+                            <>
+                                {!feedback ? (
+                                    <button
+                                        onClick={handleRegularQuizSubmit}
+                                        disabled={isSubmitDisabled}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Submit Answer
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleRegularQuizNext}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                    >
+                                        {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'View Results'}
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const PreAssessmentQuiz = ({ onComplete, onExit }) => {
+            const [results, setResults] = useState(null);
+
+            const handleQuizComplete = (finalAnswers) => {
+                const moduleResults = {};
+                finalAnswers.forEach(answer => {
+                    const { moduleId } = answer.question;
+                    if (!moduleResults[moduleId]) {
+                        moduleResults[moduleId] = { correct: 0, total: 0 };
+                    }
+                    if (answer.isCorrect) {
+                        moduleResults[moduleId].correct++;
+                    }
+                    moduleResults[moduleId].total++;
+                });
+
+                const completedModules = [];
+                for (const moduleId in moduleResults) {
+                    if (moduleResults[moduleId].correct === moduleResults[moduleId].total && moduleResults[moduleId].total > 0) {
+                        completedModules.push(moduleId);
+                    }
+                }
+                setResults({ completedModules, total: finalAnswers.length, correct: finalAnswers.filter(a => a.isCorrect).length });
+                onComplete(completedModules);
+            };
+
+            if (results) {
+                return (
+                    <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4 animate-fade-in">
+                        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full text-center">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">Assessment Complete!</h2>
+                            <p className="text-lg text-gray-600 mb-6">
+                                You correctly answered {results.correct} out of {results.total} questions.
+                            </p>
+                            {results.completedModules.length > 0 ? (
+                                <>
+                                    <p class="text-green-600 font-semibold mb-4">You've tested out of the following modules:</p>
+                                    <ul class="list-disc list-inside text-left mb-6 bg-green-50 p-4 rounded-lg">
+                                        {results.completedModules.map(id => <li key={id}>{contentData[id].title}</li>)}
+                                    </ul>
+                                </>
+                            ) : (
+                                <p className="text-yellow-600 font-semibold mb-6">You haven't tested out of any modules. You can proceed to the main modules for learning.</p>
+                            )}
+                            <button
+                                onClick={onExit}
+                                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                            >
+                                Return to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
+                        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Diagnostic Quiz</h2>
+                        <Quiz questions={preAssessmentQuizData} onComplete={handleQuizComplete} isPreAssessment={true} />
+                    </div>
+                </div>
+            );
+        };
+
+
+        const Dashboard = ({ onSelectModule, progress, onResetProgress, onStartPreAssessment }) => {
+            let totalCompletedSteps = 0;
+            let totalPossibleSteps = 0;
+            let totalQuizCorrect = 0;
+            let totalQuizQuestions = 0;
+
+            Object.entries(contentData).forEach(([moduleId, module]) => {
+                totalPossibleSteps += module.steps.length;
+                const moduleProgress = progress[moduleId] || {};
+                
+                Object.values(moduleProgress).forEach(stepProgress => {
+                    if (stepProgress.completed) {
+                        totalCompletedSteps++;
+                    }
+                    if (stepProgress.score !== undefined) {
+                        totalQuizCorrect += stepProgress.score;
+                    }
+                });
+
+                module.steps.forEach(step => {
+                    if (step.type === 'quiz') {
+                        totalQuizQuestions += step.questions.length;
+                    }
+                });
+            });
+
+            const overallPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+
+            return (
+                <div className="p-4 sm:p-6 md:p-8 min-h-screen w-full flex flex-col">
+                    <div className="w-full">
+                        <header className="mb-8 text-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">ALM</span>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Antibiotics: Chapter 29</h1>
+                                <span className="bg-gray-200 text-gray-600 text-xs font-mono px-2.5 py-1 rounded-full">V:29.0</span>
+                            </div>
+                            <p className="text-lg text-gray-500 max-w-3xl mx-auto">Master the pharmacology of sulfonamides and nitroimidazoles through interactive modules and assessments.</p>
+                        </header>
+
+                        <div className="mb-8 text-center">
+                            <button
+                                onClick={onStartPreAssessment}
+                                className="w-full max-w-md mx-auto px-6 py-4 bg-teal-500 text-white font-bold rounded-lg shadow-lg hover:bg-teal-600 transition-all duration-300 transform hover:scale-105"
+                            >
+                                <div className="text-xl">Skip Ahead: Take Diagnostic Quiz</div>
+                                <div className="text-sm font-normal">Test your knowledge and potentially skip modules.</div>
+                            </button>
+                        </div>
+
+                        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
+                           <div className="flex justify-between items-center mb-3">
+                                <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                                <button 
+                                    onClick={onResetProgress}
+                                    className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M4 2a1 1 0 011 1v2.101A7.002 7.002 0 0111.601 7.567a1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" />
+                                    </svg>
+                                    Reset Progress
+                                </button>
+                           </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div
+                                    className="bg-indigo-600 h-4 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-left text-sm text-gray-600 mt-2">
+                                    {totalQuizQuestions > 0 && `Quiz Performance: ${totalQuizCorrect} / ${totalQuizQuestions} correct`}
+                                </p>
+                                <p className="text-right text-sm text-gray-600 mt-2">{Math.round(overallPercentage)}% Completed</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                            {Object.entries(contentData).map(([id, module]) => {
+                                const moduleProgress = progress[id] || {};
+                                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                                const totalSteps = module.steps.length;
+                                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
+                                let statusText = "Not Started";
+                                let statusColor = "text-gray-500";
+                                if (completedCount === totalSteps) {
+                                    statusText = "Completed";
+                                    statusColor = "text-green-600";
+                                } else if (completedCount > 0) {
+                                    statusText = "In Progress";
+                                    statusColor = "text-yellow-600";
+                                }
+
+                                const quizStep = module.steps.find(step => step.type === 'quiz');
+                                const quizProgress = quizStep ? moduleProgress[quizStep.id] : null;
+
+                                return (
+                                    <div
+                                        key={id}
+                                        onClick={() => onSelectModule(id)}
+                                        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col animate-slide-in-up"
+                                    >
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className={cn("p-3 rounded-full bg-gradient-to-br", module.color, "w-10 h-10 flex items-center justify-center text-white text-lg font-bold shadow-md flex-shrink-0")}>
+                                                {module.title.split(' ').map(word => word.charAt(0)).join('')}
+                                            </div>
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <svg className="w-full h-full" viewBox="0 0 36 36">
+                                                    <path
+                                                        className="text-gray-200"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                    />
+                                                    <path
+                                                        className="text-indigo-500"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${percentage}, 100`}
+                                                        strokeLinecap="round"
+                                                        transform="rotate(-90 18 18)"
+                                                    />
+                                                </svg>
+                                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h3>
+                                        <p className="text-gray-500 text-sm mb-2 h-10">{module.description}</p>
+                                        <div className="mt-auto">
+                                            <p className={cn("text-sm font-semibold", statusColor)}>{statusText}</p>
+                                            {quizProgress && quizProgress.score !== undefined && (
+                                                <p className="text-sm text-gray-600 mt-1">Quiz Score: {quizProgress.score} / {quizStep.questions.length}</p>
+                                            )}
+                                            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700 mt-2">
+                                                Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const CaseStudy = ({ caseData, onComplete }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Added for multi-question case studies
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showExplanation, setShowExplanation] = useState(false);
+            const [answers, setAnswers] = useState([]); // To store answers for multi-question case studies
+
+            const currentCase = Array.isArray(caseData) ? caseData[currentQuestionIndex] : caseData;
+            const isMultiQuestion = Array.isArray(caseData);
+
+            const handleSelect = (option) => {
+                if (showExplanation) return;
+                setSelectedAnswer(option);
+                setShowExplanation(true);
+                if (option.toLowerCase() === currentCase.correctAnswer.toLowerCase()) {
+                    setAnswers(prev => [...prev, { question: currentCase.question, isCorrect: true }]);
+                    onComplete({ completed: true }); // Mark step complete if single question or first correct
+                } else {
+                    setAnswers(prev => [...prev, { question: currentCase.question, isCorrect: false }]);
+                }
+            };
+
+            const handleNextQuestion = () => {
+                if (currentQuestionIndex < caseData.length - 1) {
+                    setCurrentQuestionIndex(prev => prev + 1);
+                    setSelectedAnswer(null);
+                    setFeedback(null);
+                    setShowExplanation(false);
+                } else {
+                    // All questions answered, now mark the step complete
+                    const allCorrect = answers.every(ans => ans.isCorrect);
+                    onComplete({ completed: allCorrect }); // Only mark complete if all are correct for multi-question
+                }
+            };
+            
+            const renderHtmlContent = (content) => {
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: content }} />
+                );
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner animate-slide-in-up">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Case Study Challenge {isMultiQuestion ? `: ${currentQuestionIndex + 1} of ${caseData.length}` : ''}</h4>
+                    
+                    <div class="bg-blue-100 text-blue-800 p-4 rounded-md mb-4 text-sm font-medium">
+                        <h5 class="font-bold mb-2">Scenario:</h5>
+                        {renderHtmlContent(currentCase.scenario)}
+                    </div>
+
+                    <p className="font-semibold text-gray-700 mb-4">{currentCase.question}</p>
+                    <div className="space-y-3">
+                        {currentCase.options.map(option => {
+                            const isSelected = selectedAnswer === option;
+                            const isCorrect = option.toLowerCase() === currentCase.correctAnswer.toLowerCase();
+                            
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200 cursor-pointer'; 
+                            if (showExplanation) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800 cursor-default'; 
+                                } else if (isSelected) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800 cursor-default'; 
+                                } else {
+                                    optionClass = 'bg-gray-50 text-gray-500 border-gray-200 cursor-default'; 
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; 
+                            }
+
+                            return (
+                                <div
+                                    key={option}
+                                    onClick={() => handleSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {showExplanation && (
+                                            isCorrect ? <span className="text-green-600 mr-2">✓</span> : (isSelected && <span className="text-red-600 mr-2">✗</span>)
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    
+                    {showExplanation && ( 
+                        <div className="mt-6 p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-500 animate-fade-in">
+                            <h5 className="font-bold text-indigo-800">Explanation</h5>
+                            {renderHtmlContent(currentCase.explanation)}
+                            {isMultiQuestion && (
+                                <button
+                                    onClick={handleNextQuestion}
+                                    className="mt-4 px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    {currentQuestionIndex < caseData.length - 1 ? 'Next Question' : 'Finish Case Study'}
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        const StaticContentStep = ({ step, onComplete }) => {
+            useEffect(() => {
+                onComplete();
+            }, []);
+
+            return (
+                <div className="prose max-w-none text-gray-700 leading-relaxed p-4 bg-white rounded-lg shadow-inner space-y-4 border border-gray-200 animate-slide-in-up">
+                   <div dangerouslySetInnerHTML={{ __html: step.content }} />
+                </div>
+            );
+        };
+
+        const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
+                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm"
+                            >
+                                Back to Dashboard
+                            </button>
+                            {hasNextModule && (
+                                <button
+                                    onClick={onNextModule}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Continue to Next Module
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
+            const initialActiveStep = useMemo(() => {
+                if (progress[module.id]) {
+                    const firstIncompleteIndex = module.steps.findIndex(step => !progress[module.id][step.id]?.completed);
+                    return firstIncompleteIndex !== -1 ? firstIncompleteIndex : 0;
+                }
+                return 0;
+            }, [module.id, module.steps, progress]);
+
+            const [activeStep, setActiveStep] = useState(initialActiveStep);
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+
+            const handleStepComplete = useCallback((stepId, data = {}) => {
+                onProgressUpdate(module.id, stepId, { completed: true, ...data });
+            }, [onProgressUpdate, module.id]);
+
+            const moduleProgress = progress[module.id] || {};
+            
+            const allStepsCompletedInModule = module.steps.every(step =>
+                moduleProgress[step.id] && moduleProgress[step.id].completed
+            );
+
+            const handleNextStep = () => {
+                if (activeStep === module.steps.length - 1) {
+                    if (allStepsCompletedInModule) {
+                        setIsCompletionModalOpen(true);
+                    }
+                } else {
+                    setActiveStep(activeStep + 1);
+                }
+            };
+
+            const handlePrevStep = () => {
+                if (activeStep > 0) {
+                    setActiveStep(activeStep - 1);
+                }
+            };
+            
+            if (!module || !module.steps) {
+                console.error("LearningModule received invalid module prop:", module);
+                return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
+            }
+
+            const currentStep = module.steps[activeStep];
+            
+            const renderStepContent = (step) => {
+                if (!step) return <p>Please select a step.</p>;
+
+                const onCompleteForStep = (data) => {
+                    if (step.type === 'quiz' && data.score !== undefined) {
+                        handleStepComplete(step.id, { score: data.score, total: data.total });
+                    } else if (step.type !== 'quiz' && step.type !== 'pre_assessment') {
+                        handleStepComplete(step.id);
+                    }
+                };
+
+                // Adjust for multi-question case study
+                if (step.type === 'case_study' && Array.isArray(step.case)) {
+                    return <CaseStudy key={step.id} caseData={step.case} onComplete={onCompleteForStep} />;
+                }
+
+
+                switch (step.type) {
+                    case 'text':
+                        return <StaticContentStep key={step.id} step={step} onComplete={onCompleteForStep} />;
+                    case 'case_study':
+                        return <CaseStudy key={step.id} caseData={step.case} onComplete={onCompleteForStep} />;
+                    case 'quiz':
+                        return <Quiz key={step.id} questions={step.questions} onComplete={onCompleteForStep} />;
+                    default:
+                        return <p key={step.id} className="text-red-600">Error: Content for this step type ({step.type}) is not available.</p>;
+                }
+            };
+
+            const handleModalClose = () => {
+                setIsCompletionModalOpen(false);
+                onBack();
+            };
+
+            const handleModalNextModule = () => {
+                setIsCompletionModalOpen(false);
+                onNextModule();
+            };
+
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
+                    <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
+                        <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            <span className="hidden sm:inline">Dashboard</span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                        </div>
+                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                    </header>
+                    {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
+                    <div className="flex flex-1 overflow-hidden">
+                        <aside className={cn(
+                            "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
+                            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        )}>
+                            <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
+                            <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
+                                {module.steps.map((step, index) => (
+                                    <button
+                                        key={step.id}
+                                        onClick={() => {
+                                            setActiveStep(index);
+                                            setIsSidebarOpen(false);
+                                        }}
+                                        className={cn(
+                                            'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
+                                            activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700'
+                                        )}
+                                    >
+                                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                            {moduleProgress[step.id]?.completed ? (
+                                                <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                            ) : (
+                                                <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                            )}
+                                        </div>
+                                        <span className="flex-1 text-sm">{step.title}</span>
+                                    </button>
+                                ))}
+                            </nav>
+                        </aside>
+
+                        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                            <div className="max-w-5xl mx-auto">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
+                                {renderStepContent(currentStep)}
+
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={handlePrevStep}
+                                        disabled={activeStep === 0}
+                                        className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <button
+                                        onClick={handleNextStep}
+                                        disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
+                                    >
+                                        {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
+                                    </button>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                    <CompletionModal
+                        isOpen={isCompletionModalOpen}
+                        onClose={handleModalClose}
+                        onNextModule={handleModalNextModule}
+                        hasNextModule={hasNextModule}
+                    />
+                </div>
+            );
+        };
+        
+        function App() {
+            const [currentModuleId, setCurrentModuleId] = useState(null);
+            const [isPreAssessmentActive, setIsPreAssessmentActive] = useState(false);
+            const [userId, setUserId] = useState(null);
+            const [progress, setProgress] = useState({});
+            const [isAuthReady, setIsAuthReady] = useState(false);
+
+            useEffect(() => {
+                const unsubscribe = mockAuth.onAuthStateChanged((user) => {
+                    if (user) setUserId(user.uid);
+                    setIsAuthReady(true);
+                });
+                return () => unsubscribe();
+            }, []);
+
+            useEffect(() => {
+                if (!isAuthReady || !userId) return;
+                const storedProgress = localStorage.getItem(`ch29-antibacterials-module-progress-${userId}`);
+                if (storedProgress) {
+                    try {
+                        setProgress(JSON.parse(storedProgress));
+                    } catch (e) {
+                        console.error("Failed to parse stored progress, resetting.", e);
+                        setProgress({});
+                    }
+                }
+            }, [isAuthReady, userId]);
+
+            const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
+                if (!isAuthReady || !userId) return;
+
+                setProgress(currentProgress => {
+                    const currentStepProgress = currentProgress[moduleId]?.[stepId] || {};
+                    const newStepProgress = { ...currentStepProgress, ...data };
+
+                    if (JSON.stringify(currentStepProgress) === JSON.stringify(newStepProgress)) {
+                        return currentProgress;
+                    }
+
+                    const newProgress = {
+                        ...currentProgress,
+                        [moduleId]: {
+                            ...(currentProgress[moduleId] || {}),
+                            [stepId]: newStepProgress
+                        }
+                    };
+
+                    localStorage.setItem(`ch29-antibacterials-module-progress-${userId}`, JSON.stringify(newProgress));
+                    return newProgress;
+                });
+            }, [isAuthReady, userId]);
+
+            const handlePreAssessmentComplete = (completedModuleIds) => {
+                const newProgress = { ...progress };
+                completedModuleIds.forEach(moduleId => {
+                    const module = contentData[moduleId];
+                    if (module) {
+                        newProgress[moduleId] = {};
+                        module.steps.forEach(step => {
+                            newProgress[moduleId][step.id] = { completed: true };
+                        });
+                    }
+                });
+                setProgress(newProgress);
+                localStorage.setItem(`ch29-antibacterials-module-progress-${userId}`, JSON.stringify(newProgress));
+            };
+            
+            const handleResetProgress = useCallback(() => {
+                if (!isAuthReady || !userId) return;
+                setProgress({});
+                localStorage.removeItem(`ch29-antibacterials-module-progress-${userId}`);
+            }, [isAuthReady, userId]);
+
+            const handleNextModule = useCallback(() => {
+                const moduleIds = Object.keys(contentData);
+                const currentIndex = moduleIds.indexOf(currentModuleId);
+                if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
+                    setCurrentModuleId(moduleIds[currentIndex + 1]);
+                } else {
+                    setCurrentModuleId(null);
+                }
+            }, [currentModuleId]);
+
+            const selectedModule = currentModuleId && contentData[currentModuleId]
+                                        ? { ...contentData[currentModuleId], id: currentModuleId }
+                                        : null;
+
+            const moduleIds = Object.keys(contentData);
+            const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
+            const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
+
+
+            return (
+                <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+                    {isPreAssessmentActive ? (
+                        <PreAssessmentQuiz 
+                            onComplete={handlePreAssessmentComplete} 
+                            onExit={() => setIsPreAssessmentActive(false)}
+                        />
+                    ) : selectedModule ? (
+                        <LearningModule
+                            key={selectedModule.id}
+                            module={selectedModule}
+                            onBack={() => setCurrentModuleId(null)}
+                            progress={progress}
+                            onProgressUpdate={handleProgressUpdate}
+                            onNextModule={handleNextModule}
+                            hasNextModule={hasNextModule}
+                        />
+                    ) : (
+                        <Dashboard 
+                            onSelectModule={setCurrentModuleId} 
+                            progress={progress} 
+                            onResetProgress={handleResetProgress}
+                            onStartPreAssessment={() => setIsPreAssessmentActive(true)}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        window.onload = function() {
+            const container = document.getElementById('root');
+            if (container) {
+                const root = ReactDOM.createRoot(container);
+                root.render(<App />);
+            } else {
+                console.error("Root element not found!");
+            }
+        };
+    </script>
+</body>
+</html>
