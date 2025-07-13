@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta-Lactam Antibacterials Learning Module</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind CSS configuration to use the Inter font and define animations.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        'slide-in-up': {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out forwards',
+                        'slide-in-up': 'slide-in-up 0.4s ease-out forwards',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- React and Library Setup ---
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        // Utility function for conditionally joining Tailwind CSS classes.
+        const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+        // --- Mock Authentication Setup for Standalone Demo ---
+        // Simulates user authentication for local storage tracking.
+        const mockAuth = {
+            onAuthStateChanged: (callback) => {
+                // Simulate a unique user ID for persistence
+                setTimeout(() => callback({ uid: 'standalone-beta-lactam-user' }), 100);
+                return () => {}; // Cleanup placeholder
+            },
+        };
+
+        // --- Content & Data Structure for the Learning Modules (Based on Chapter 26) ---
+        // This content has been updated for improved readability and digestion.
+        const contentData = {
+            'antibacterial-fundamentals': {
+                title: 'Fundamentals of Antibacterials',
+                color: 'from-blue-500 to-indigo-600',
+                description: 'Explore mechanisms, resistance, and general adverse reactions of antibacterial drugs.',
+                steps: [
+                    { 
+                        id: 'intro-pathophysiology', 
+                        title: 'Introduction & Pathophysiology', 
+                        type: 'text', 
+                        content: `
+                            <h3>Introduction to Antibacterials</h3>
+                            <p>Disease-producing microorganisms may be gram-positive or gram-negative bacteria, viruses, protozoans, or fungi. The degree to which they are pathogenic depends on the microorganism and its virulence.</p>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm">
+                                <p class="font-semibold">Key Distinction:</p>
+                                <ul>
+                                    <li><strong>Penicillins</strong> are primarily <strong>bacteriostatic</strong> (inhibit bacterial growth) but can be bactericidal (bacteria killing), depending on dose and serum level.</li>
+                                    <li><strong>Cephalosporins</strong> and other beta-lactams are generally <strong>bactericidal</strong> drugs (bacteria killing).</li>
+                                </ul>
+                            </div>
+                            
+                            <h3 class="mt-6">Pathophysiology of Bacterial Infections</h3>
+                            <p>Bacteria are prokaryotes (single-celled organisms lacking a true nucleus). They have rigid cell walls, and their shape (bacillus = rod-shaped, cocci = spherical) is used for classification. Cocci in clusters are <em>staphylococci</em>; in chains, they are <em>streptococci</em>.</p>
+                            
+                            <h4 class="mt-4">Gram Staining</h4>
+                            <p>Gram staining determines the bacterial cell wall's ability to retain a purple stain (Crystal violet). This is crucial for identifying bacteria and guiding antibiotic selection:</p>
+                            <ul>
+                                <li><strong>Gram-positive:</strong> Retain the purple stain (e.g., <em>Staphylococcus aureus, Streptococcus pneumoniae, Clostridium perfringens</em>).</li>
+                                <li><strong>Gram-negative:</strong> Do not retain the stain (e.g., <em>Neisseria meningitides, Escherichia coli, Haemophilus influenzae</em>).</li>
+                            </ul>
+                            <p>Bacteria produce toxins causing cell lysis. Many bacteria produce <strong>beta-lactamase</strong>, an enzyme that destroys beta-lactam antibiotics (penicillins and cephalosporins), leading to drug resistance.</p>
+                        ` 
+                    },
+                    { 
+                        id: 'antibacterial-definitions', 
+                        title: 'Antibacterials, Antimicrobials, and Antibiotics', 
+                        type: 'text', 
+                        content: `
+                            <h3>Understanding Key Terms</h3>
+                            <p>While often used interchangeably, there are subtle differences between these terms in pharmacology:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-semibold text-indigo-700 mb-2">Antibacterials / Antimicrobials</h4>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li>Substances that inhibit bacterial growth or kill bacteria and other microorganisms (viruses, fungi, protozoa, rickettsiae).</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-semibold text-indigo-700 mb-2">Antibiotic</h4>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li>Technically refers to chemicals produced by one kind of microorganism that inhibit the growth of or kill another.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <h3 class="mt-6">Holistic Approach to Infection Treatment</h3>
+                            <p>Antibacterial drugs do not act alone; natural body defenses, surgical procedures, and dressing changes may also be needed for effective treatment.</p>
+                            
+                            <h4 class="mt-4">Origin of Antibacterial Drugs</h4>
+                            <p>Antibacterial drugs are obtained from natural sources or manufactured:</p>
+                            <ul class="list-disc list-inside">
+                                <li>Historically, moldy bread was used for its antibacterial properties.</li>
+                                <li><strong>Alexander Fleming's</strong> discovery of penicillin from <em>Penicillium notatum</em> in 1928 revolutionized medicine.</li>
+                                <li>Penicillin was purified by <strong>Howard Florey</strong> in 1939 and widely used during World War II.</li>
+                            </ul>
+                        ` 
+                    },
+                    { 
+                        id: 'mechanisms-of-action', 
+                        title: 'Mechanisms of Antibacterial Action', 
+                        type: 'text', 
+                        content: `
+                            <h3>How Antibacterials Work: Five Key Mechanisms</h3>
+                            <p>Antibacterials inhibit the growth or destroy microorganisms through five primary mechanisms:</p>
+                            <ol class="list-decimal list-inside space-y-3 mt-4">
+                                <li>
+                                    <strong>Inhibition of bacterial cell wall synthesis:</strong>
+                                    <p class="ml-4">(Bactericidal effect) These drugs interfere with the formation of the bacterial cell wall, leading to cell death.</p>
+                                    <p class="ml-4 font-semibold text-gray-700">Examples: Penicillin, Cephalosporins, Bacitracin, Vancomycin.</p>
+                                </li>
+                                <li>
+                                    <strong>Alteration of membrane permeability:</strong>
+                                    <p class="ml-4">(Bacteriostatic or bactericidal effect) These drugs increase the permeability of the bacterial cell membrane, causing the cell to leak essential substances and undergo lysis.</p>
+                                    <p class="ml-4 font-semibold text-gray-700">Examples: Amphotericin B, Nystatin, Polymyxin, Colistin.</p>
+                                </li>
+                                <li>
+                                    <strong>Inhibition of protein synthesis:</strong>
+                                    <p class="ml-4">(Bacteriostatic or bactericidal effect) These drugs interfere with the bacteria's ability to produce essential proteins, without significantly affecting human cells.</p>
+                                    <p class="ml-4 font-semibold text-gray-700">Examples: Aminoglycosides, Tetracyclines, Erythromycin, Lincomycin.</p>
+                                </li>
+                                <li>
+                                    <strong>Inhibition of the synthesis of bacterial RNA and DNA:</strong>
+                                    <p class="ml-4">These drugs bind to or interfere with the nucleic acids and enzymes vital for bacterial genetic material synthesis.</p>
+                                    <p class="ml-4 font-semibold text-gray-700">Examples: Fluoroquinolones.</p>
+                                </li>
+                                <li>
+                                    <strong>Interference with cellular metabolism:</strong>
+                                    <p class="ml-4">(Bacteriostatic effect) These drugs disrupt specific metabolic pathways within bacterial cells, preventing their growth and reproduction.</p>
+                                    <p class="ml-4 font-semibold text-gray-700">Examples: Sulfonamides, Trimethoprim, Isoniazid, Nalidixic acid, Rifampin.</p>
+                                </li>
+                            </ol>
+                        ` 
+                    },
+                    { 
+                        id: 'pharmacokinetics-pharmacodynamics', 
+                        title: 'Pharmacokinetics & Pharmacodynamics', 
+                        type: 'text', 
+                        content: `
+                            <h3>Pharmacokinetics: What the Body Does to the Drug</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Antibacterial drugs must penetrate the bacterial cell wall and have an affinity for binding sites to be effective.</li>
+                                <li>Longer drug half-lives usually maintain greater concentration at the binding site, which can reduce the required dosing frequency.</li>
+                                <li>Most antibacterials are not highly protein bound (exceptions include oxacillin, ceftriaxone, and cefprozil).</li>
+                                <li>Drugs are mainly eliminated through urine; a steady state (where drug intake equals drug elimination) typically occurs after 4-5 half-lives.</li>
+                            </ul>
+                            
+                            <h3 class="mt-6">Pharmacodynamics: What the Drug Does to the Body</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Drug concentration and exposure time are crucial for bacterial eradication.</li>
+                                <li>Antibacterials are used to achieve the <strong>minimum effective concentration (MEC)</strong>, the lowest concentration of drug that inhibits visible bacterial growth.</li>
+                                <li>Maintaining a constant concentration above MEC during dosing intervals (e.g., via continuous infusion for severe infections) is often effective.</li>
+                                <li>Once- or twice-daily dosing can significantly improve patient adherence to the medication regimen.</li>
+                            </ul>
+                        ` 
+                    },
+                    { 
+                        id: 'body-defenses', 
+                        title: 'Body Defenses', 
+                        type: 'text', 
+                        content: `
+                            <h3>The Role of Body Defenses in Fighting Infection</h3>
+                            <p>Body defenses and antibacterial drugs work synergistically. The effectiveness of drug therapy is heavily influenced by the host’s defense mechanisms, which are impacted by several factors:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Age:</strong> Older adults often have diminished immune responses.</li>
+                                <li><strong>Nutrition:</strong> Undernourished individuals have less resistance to infections.</li>
+                                <li><strong>Immunoglobulins (IgG, IgM):</strong> These antibodies, crucial for immunity, may be depleted in individuals with poor nutritional status.</li>
+                                <li><strong>White Blood Cells (WBCs):</strong> Adequate WBC count and function are essential for fighting off pathogens.</li>
+                                <li><strong>Organ Function:</strong> Impaired liver or kidney function can affect drug metabolism and excretion, impacting both drug efficacy and potential toxicity.</li>
+                                <li><strong>Circulation:</strong> Impeded circulation can prevent proper drug distribution to the infected area, reducing its effectiveness.</li>
+                            </ul>
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Clinical Relevance:</p>
+                                <p>A comprehensive assessment of a patient's overall health, including nutritional status and organ function, is vital before and during antibacterial therapy to optimize outcomes.</p>
+                            </div>
+                        ` 
+                    },
+                    { 
+                        id: 'resistance-antibacterials', 
+                        title: 'Resistance to Antibacterials', 
+                        type: 'text', 
+                        content: `
+                            <h3>Understanding Bacterial Resistance</h3>
+                            <p>Bacterial resistance is a major global health problem, occurring when a pathogen continues to grow and multiply despite the administration of an antibacterial drug that was previously effective against it.</p>
+                            
+                            <h4 class="mt-4">Types of Resistance:</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-2">Inherent (Natural) Resistance</h5>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li>Occurs naturally without previous drug exposure.</li>
+                                        <li>The bacteria are naturally insensitive to the drug.</li>
+                                        <li><strong>Example:</strong> <em>Pseudomonas aeruginosa</em> is inherently resistant to penicillin G.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-2">Acquired Resistance</h5>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li>Develops due to prior exposure to the antibacterial.</li>
+                                        <li>Often results from mutations or transfer of genetic material.</li>
+                                        <li><strong>Example:</strong> <em>S. aureus</em> resistance to penicillin G due to penicillinase production.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h4 class="mt-6">Mechanisms of Resistance Development</h4>
+                            <p>Bacteria reproduce rapidly, and genetic mutations can lead to survival against drugs (e.g., developing thicker cell walls or enzymes that inactivate the drug). Bacteria can also transfer genetic resistance instructions (e.g., plasmids) to other bacterial species, spreading resistance rapidly.</p>
+                            
+                            <h4 class="mt-4">Health Care–Acquired Infections (HAIs)</h4>
+                            <p>Infections acquired in health care institutions often involve drug-resistant bacteria. These infections prolong hospitalization, increase treatment costs, and worsen patient outcomes.</p>
+                            
+                            <h4 class="mt-4">Major Resistant Strains:</h4>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>MRSA (Methicillin-Resistant <em>S. aureus</em>):</strong> Resistant to methicillin and all penicillins and cephalosporins.
+                                    <br><span class="font-semibold text-gray-700">Treatment of choice:</span> <strong>vancomycin</strong> (also linezolid, daptomycin, TMP-SMZ, doxycycline, clindamycin, telavancin).</li>
+                                <li><strong>VREF (Vancomycin-Resistant <em>Enterococcus faecium</em>):</strong> A serious resistance problem, especially in immune-compromised individuals.</li>
+                                <li><strong>VRSA (Vancomycin-Resistant <em>S. aureus</em>):</strong> Reported strains of MRSA that have developed resistance to vancomycin.</li>
+                            </ul>
+                            
+                            <h4 class="mt-4">Combating Resistance: Strategies and New Drugs</h4>
+                            <p>New drugs like the oxazolidinone <strong>linezolid</strong> are effective against MRSA and VREF. Other strategies include:</p>
+                            <ul class="list-disc list-inside">
+                                <li>Developing drugs that disable antibiotic-resistant mechanisms (often taken with existing antibiotics).</li>
+                                <li>Developing bacterial vaccines (e.g., pneumococcal vaccine) to prevent infections in the first place.</li>
+                            </ul>
+                        ` 
+                    },
+                    { 
+                        id: 'antibiotic-misuse', 
+                        title: 'Antibiotic Misuse and Cross-Resistance', 
+                        type: 'text', 
+                        content: `
+                            <h3>The Impact of Antibiotic Misuse</h3>
+                            <p>Inappropriate use of antibiotics significantly contributes to the development and spread of bacterial resistance. Common forms of misuse include:</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Taking antibiotics unnecessarily for viral infections (e.g., common cold, flu), against which they are ineffective.</li>
+                                <li>Skipping doses or not completing the full prescribed regimen, which allows stronger bacteria to survive and multiply.</li>
+                                <li>Using antibiotics for non-bacterial infections.</li>
+                            </ul>
+
+                            <div class="bg-red-50 border-l-4 border-red-400 text-red-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Important Warning: Cross-Resistance</p>
+                                <p><strong>Cross-resistance</strong> can occur among antibacterial drugs with similar chemical structures or mechanisms of action, such as penicillins and cephalosporins. If a bacterium develops resistance to one drug in a class, it may also be resistant to other drugs in that class.</p>
+                            </div>
+                            
+                            <h3 class="mt-6">Guiding Therapy: Culture and Sensitivity (C&S)</h3>
+                            <p><strong>Culture and Sensitivity (C&S)</strong>, also known as antibiotic susceptibility testing, is a crucial laboratory test performed to:</p>
+                            <ul class="list-disc list-inside">
+                                <li>Identify the specific infective microorganism causing the infection.</li>
+                                <li>Determine the most effective antibacterial drug(s) to treat that particular microorganism.</li>
+                            </ul>
+                            <p>Using multiantibiotic therapy (combining two or more antibiotics) can sometimes delay the development of resistance, especially in severe or mixed infections, but should always be guided by C&S results.</p>
+                        ` 
+                    },
+                    { 
+                        id: 'adverse-reactions', 
+                        title: 'General Adverse Reactions to Antibacterials', 
+                        type: 'text', 
+                        content: `
+                            <h3>Common Adverse Reactions to Antibacterial Therapy</h3>
+                            <p>Three major adverse reactions are commonly associated with antibacterial administration:</p>
+                            <ol class="list-decimal list-inside space-y-4 mt-4">
+                                <li>
+                                    <strong>Allergy or Hypersensitivity:</strong>
+                                    <p class="ml-4">Reactions can range from mild to severe:</p>
+                                    <ul class="list-disc list-inside ml-8">
+                                        <li><strong>Mild reactions:</strong> Rash, pruritus (itching), hives. These are typically treated with antihistamines.</li>
+                                        <li><strong>Severe reactions (Anaphylactic Shock):</strong> A life-threatening systemic allergic reaction characterized by vascular collapse, laryngeal edema (swelling of the voice box), bronchospasm (narrowing of airways), and cardiac arrest.
+                                            <br>Treatment requires immediate administration of epinephrine, bronchodilators, and antihistamines. Severe reactions often occur within 20 minutes of administration, with shortness of breath often being the first symptom.</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Superinfection:</strong>
+                                    <p class="ml-4">A secondary infection caused by the disturbance of the normal microbial flora (beneficial bacteria) during antibiotic therapy. When broad-spectrum antibiotics kill off beneficial bacteria, opportunistic pathogens can overgrow.</p>
+                                    <ul class="list-disc list-inside ml-8">
+                                        <li><strong>Common sites:</strong> Mouth (oral candidiasis), respiratory tract, intestine (e.g., <em>Clostridium difficile</em>-associated diarrhea - CDAD), genitourinary tract (e.g., vaginal yeast infections), skin.</li>
+                                        <li>More common with broad-spectrum antibiotics and rare if administered for less than 1 week.</li>
+                                        <li><strong>Treatment:</strong> Nystatin is often used for fungal infections of the mouth.</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Organ Toxicity:</strong>
+                                    <p class="ml-4">Damage to vital organs due to the drug's effects.</p>
+                                    <ul class="list-disc list-inside ml-8">
+                                        <li><strong>Examples:</strong> Damage to the liver (hepatotoxicity) and kidneys (nephrotoxicity). Aminoglycosides, for instance, are known to be both nephrotoxic and ototoxic (damaging to the ear, potentially causing hearing loss or balance issues).</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Nursing Implication:</p>
+                                <p>Always assess for signs of these adverse reactions, educate patients on what to report, and have emergency medications readily available for severe allergic reactions.</p>
+                            </div>
+                        ` 
+                    },
+                    { 
+                        id: 'combinations-spectrum', 
+                        title: 'Antibiotic Combinations and Spectrum', 
+                        type: 'text', 
+                        content: `
+                            <h3>Use of Antibiotic Combinations</h3>
+                            <p>Typically, a single antibiotic is sufficient for treating an infection. However, combinations of two or three antibiotics may be used in specific situations:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li>For severe infections of unknown origin (empiric therapy).</li>
+                                <li>For infections that are resistant to single antibiotics.</li>
+                                <li>To achieve a synergistic effect (enhanced antibacterial activity).</li>
+                            </ul>
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Clinical Rule:</p>
+                                <p>Always obtain a culture and sensitivity (C&S) sample before starting combination antibiotic therapy to ensure appropriate drug selection and prevent resistance.</p>
+                            </div>
+
+                            <h4 class="mt-6">Effects of Combined Antibiotics:</h4>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Additive effect:</strong> The combined effect is equal to the sum of the effects of the two individual antibiotics.</li>
+                                <li><strong>Potentiative effect:</strong> One antibiotic significantly increases the effectiveness of the second, leading to a greater-than-sum effect.</li>
+                                <li><strong>Antagonistic effect:</strong> Combining a bactericidal drug (e.g., penicillin) with a bacteriostatic drug (e.g., tetracycline) may greatly reduce the desired antibacterial effect, as the bacteriostatic drug can interfere with the bactericidal drug's mechanism.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Narrow-Spectrum vs. Broad-Spectrum Antibiotics</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-semibold text-indigo-700 mb-2">Narrow-Spectrum Antibiotics</h4>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li>Effective against only one type or a limited range of organisms.</li>
+                                        <li>More selective, targeting specific bacteria.</li>
+                                        <li><strong>Examples:</strong> Penicillin, Erythromycin (primarily for gram-positive bacteria).</li>
+                                        <li>Preferred when the specific pathogen is identified by C&S to minimize impact on normal flora and reduce resistance development.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-semibold text-indigo-700 mb-2">Broad-Spectrum Antibiotics</h4>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li>Effective against both gram-positive and gram-negative organisms.</li>
+                                        <li>Often used for empiric therapy when the offending microorganism is unidentified by C&S, or for severe infections where a wide range of pathogens might be involved.</li>
+                                        <li><strong>Examples:</strong> Tetracycline, third- and fifth-generation cephalosporins.</li>
+                                        <li>Can disrupt normal body flora more significantly, increasing the risk of superinfections.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        ` 
+                    },
+                ]
+            },
+            'penicillins': {
+                title: 'Penicillins',
+                color: 'from-orange-400 to-red-500',
+                description: 'A detailed look at the different categories of penicillin drugs and their clinical use.',
+                steps: [
+                    { 
+                        id: 'penicillins-intro', 
+                        title: 'Introduction to Penicillins', 
+                        type: 'text', 
+                        content: `
+                            <h3>Penicillins: The First True Antibiotics</h3>
+                            <p>Penicillin, a natural antibacterial agent derived from the mold genus <em>Penicillium</em>, was introduced during World War II and revolutionized medicine. It is often referred to as a <strong>beta-lactam antibiotic</strong> due to its characteristic beta-lactam ring structure, which is essential for its antibacterial activity.</p>
+                            
+                            <h4 class="mt-4">Mechanism of Action</h4>
+                            <p>Penicillins exert their effect by interfering with bacterial cell wall synthesis. Specifically, they inhibit the bacterial enzyme (transpeptidase, also known as penicillin-binding protein or PBP) necessary for the final steps of cell wall formation and cross-linking of peptidoglycan. This disruption leads to a weakened cell wall, causing bacteria to die by <strong>cell lysis</strong> (cell breakdown).</p>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-4">
+                                <p class="font-semibold">Note:</p>
+                                <p>Penicillins can be both bacteriostatic (inhibiting growth) and bactericidal (killing bacteria), depending on the specific drug, concentration, and susceptibility of the bacteria. <strong>Penicillin G</strong> is primarily bactericidal.</p>
+                            </div>
+
+                            <h4 class="mt-4">The Challenge of Penicillinase</h4>
+                            <p>A significant challenge with penicillin therapy is bacterial resistance. Many bacteria produce enzymes called <strong>beta-lactamases</strong>. When these enzymes specifically attack penicillins, they are called <strong>penicillinases</strong>. Penicillinases break open the beta-lactam ring of the penicillin molecule, inactivating the drug and rendering it ineffective.</p>
+                        `
+                    },
+                    { 
+                        id: 'penicillin-g-v', 
+                        title: 'Penicillin G and V', 
+                        type: 'text', 
+                        content: `
+                            <h3>Penicillin G: The Original</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Administration:</strong> The first penicillin administered orally and by injection.</li>
+                                <li><strong>Absorption:</strong> Only about one-third of the oral dose is absorbed due to stomach acid degradation; IV/IM administration is significantly more effective.</li>
+                                <li><strong>Duration of Action:</strong> Aqueous penicillin G has a short duration of action.</li>
+                                <li><strong>Painful Injections:</strong> Intramuscular (IM) injection of aqueous penicillin G can be very painful. <strong>Procaine penicillin</strong>, a longer-acting form containing an anesthetic, was developed to extend activity and decrease injection pain.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Penicillin V: Improved Oral Absorption</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Absorption:</strong> Absorbed better orally (two-thirds of the dose) than Penicillin G, making it more suitable for oral therapy.</li>
+                                <li><strong>Potency:</strong> Generally less potent than Penicillin G.</li>
+                                <li><strong>Uses:</strong> Effective against mild to moderate infections, including anthrax.</li>
+                                <li><strong>Food Interaction:</strong> Food does not significantly alter Penicillin V absorption, but it should ideally be taken after meals to minimize gastrointestinal upset. Amoxicillins are generally unaffected by food and can be taken without regard to meals.</li>
+                            </ul>
+
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Historical Note on Resistance:</p>
+                                <p>Early and widespread overuse of Penicillin G and V led to the rapid development of resistance in bacteria like <em>S. aureus</em>, primarily due to penicillinase production. This prompted the urgent development of new, broader-spectrum and penicillinase-resistant antibiotics.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'penicillin-categories',
+                        title: 'Penicillin Categories',
+                        type: 'text',
+                        content: `
+                            <h3>Categories of Penicillins</h3>
+                            <p>Penicillins have been modified and grouped into several categories based on their spectrum of activity and resistance to penicillinase:</p>
+
+                            <div class="space-y-6 mt-4">
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-semibold text-indigo-700 mb-3">1. Broad-Spectrum Penicillins (Aminopenicillins)</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Spectrum:</strong> Used to treat a wider range of infections, including both gram-positive and many gram-negative bacteria (e.g., <em>E. coli, H. influenzae, P. mirabilis</em>).</li>
+                                        <li><strong>Penicillinase Resistance:</strong> These are <strong>not</strong> penicillinase resistant, meaning they are ineffective against penicillinase-producing strains like many <em>S. aureus</em>.</li>
+                                        <li><strong>Examples:</strong> <strong>Ampicillin</strong> and <strong>Amoxicillin</strong> (the most frequently prescribed penicillin derivative).</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-semibold text-indigo-700 mb-3">2. Penicillinase-Resistant Penicillins (Antistaphylococcal Penicillins)</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Spectrum:</strong> Specifically developed to treat infections caused by penicillinase-producing <em>S. aureus</em>.</li>
+                                        <li><strong>Effectiveness:</strong> Not effective against gram-negative organisms; generally less effective than Penicillin G against non-penicillinase-producing gram-positive organisms.</li>
+                                        <li><strong>Examples:</strong> <strong>Dicloxacillin</strong> (oral), <strong>Nafcillin</strong>, and <strong>Oxacillin</strong> (IM/IV).</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-semibold text-indigo-700 mb-3">3. Extended-Spectrum Penicillins (Antipseudomonal Penicillins)</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Spectrum:</strong> These are very broad-spectrum antibiotics, highly effective against <em>P. aeruginosa</em> (a notoriously difficult-to-eradicate gram-negative bacterium) and many other gram-negative organisms.</li>
+                                        <li><strong>Penicillinase Resistance:</strong> These are <strong>not</strong> penicillinase resistant.</li>
+                                        <li><strong>Pharmacology:</strong> Their pharmacologic action is similar to aminoglycosides, but they are generally less toxic.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'beta-lactamase-inhibitors',
+                        title: 'Beta-Lactamase Inhibitors',
+                        type: 'text',
+                        content: `
+                            <h3>Beta-Lactamase Inhibitors: Protecting Penicillins</h3>
+                            <p>Beta-lactamase inhibitors are a special class of drugs that are combined with penicillinase-sensitive penicillins. Their primary role is to inhibit bacterial beta-lactamases (enzymes that destroy beta-lactam antibiotics), thereby extending the effectiveness of the penicillin they are paired with. They are <strong>never given alone</strong> as they have minimal antibacterial activity on their own.</p>
+                            
+                            <h4 class="mt-4">The Three Main Inhibitors:</h4>
+                            <ul class="list-disc list-inside">
+                                <li><strong>Clavulanic acid</strong></li>
+                                <li><strong>Sulbactam</strong></li>
+                                <li><strong>Tazobactam</strong></li>
+                            </ul>
+
+                            <h4 class="mt-4">Common Combination Drugs:</h4>
+                            <p>These inhibitors are formulated with specific penicillins to create powerful combination drugs:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Amoxicillin-clavulanic acid</strong> (oral, commonly known as Augmentin)</li>
+                                <li><strong>Ampicillin-sulbactam</strong> (parenteral, commonly known as Unasyn)</li>
+                                <li><strong>Piperacillin-tazobactam</strong> (parenteral, commonly known as Zosyn)</li>
+                            </ul>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Key Principle:</p>
+                                <p>These combinations are vital for treating infections caused by bacteria that produce beta-lactamase, as the inhibitor protects the penicillin from enzymatic degradation, allowing it to exert its antibacterial effect.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'amoxicillin-prototype',
+                        title: 'Prototype Drug: Amoxicillin',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Amoxicillin (Broad-spectrum penicillin)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Uses & Mechanism of Action</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Uses:</strong> Otitis media, tonsillitis, sinusitis, skin infections, respiratory tract infections, and urinary tract infections.</li>
+                                    <li><strong>Effectiveness:</strong> Effective against <em>H. pylori, E. coli</em>, and species of <em>Haemophilus, Enterococcus, Proteus, Staphylococcus, Streptococcus</em>.</li>
+                                    <li><strong>Mechanism of Action:</strong> Inhibits bacterial cell wall synthesis, leading to a bactericidal effect.</li>
+                                </ul>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Pharmacokinetics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Absorption (PO):</strong> >80% in the GI tract.</li>
+                                        <li><strong>Protein Binding (PB):</strong> 20%–25%</li>
+                                        <li><strong>Half-life (t½):</strong> 1–1.5 hours</li>
+                                        <li><strong>Excretion:</strong> 70% in urine.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Pharmacodynamics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Peak (PO):</strong> 1–2 hours</li>
+                                        <li><strong>Onset, Duration:</strong> Unknown.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Side Effects and Adverse Reactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Common:</strong> Nausea, vomiting, diarrhea, abdominal pain, dysphagia (difficulty swallowing), rash, dysgeusia (taste distortion), tongue and tooth discoloration, headache, dizziness, anxiety, confusion, candidiasis, insomnia, crystalluria (crystals in urine), dermatitis.</li>
+                                    <li><strong>Adverse/Life-threatening:</strong> Superinfection, prolonged bleeding time, Anaphylaxis (severe allergic reaction), angioedema (swelling beneath the skin), eosinophilia (increased eosinophils), leukopenia (low WBCs), thrombocytopenia (low platelets), CDAD (<em>Clostridium difficile</em>-associated diarrhea), seizures.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Contraindications and Interactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Contraindications:</strong> Allergy to penicillin or hypersensitivity; caution with cephalosporin hypersensitivity, renal impairment, asthma, IBD (inflammatory bowel disease), ulcerative colitis, older adults, pseudomembranous colitis, mononucleosis, GI disease, breastfeeding.</li>
+                                    <li><strong>Drug Interactions:</strong>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>Increased effect with aspirin, allopurinol, probenecid.</li>
+                                            <li>Increased bleeding with oral anticoagulants.</li>
+                                            <li>Increased effect of methotrexate.</li>
+                                            <li>Decreased effect with tetracycline, erythromycin.</li>
+                                            <li>Decreased effect with acidic fruits/juices.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Lab Interactions:</strong> Increased serum AST, ALT, BUN, and creatinine; increased PT, INR.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'geriatrics-penicillins',
+                        title: 'Geriatrics: Penicillins',
+                        type: 'text',
+                        content: `
+                            <h3>Geriatric Considerations for Penicillin Use</h3>
+                            <p>Most beta-lactam antibiotics, including penicillins, are primarily excreted via the kidneys. Therefore, for older adults, assessment of <strong>renal function</strong> is critically important.</p>
+                            <ul class="list-disc list-inside mt-4">
+                                <li><strong>Monitoring:</strong> Serum BUN (Blood Urea Nitrogen) and serum creatinine levels should be regularly monitored to assess kidney function.</li>
+                                <li><strong>Dose Adjustment:</strong> If decreased renal function is identified (e.g., elevated BUN/creatinine, reduced urine output), the antibiotic dose should be decreased to prevent drug accumulation and potential toxicity.</li>
+                            </ul>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Clinical Alert:</p>
+                                <p>Older adults may have age-related physiological changes that affect drug metabolism and excretion, making them more susceptible to adverse drug reactions. Always consider their renal status when prescribing or administering renally excreted medications.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'penicillins-adverse-reactions-interactions',
+                        title: 'Side Effects and Drug Interactions (Penicillins)',
+                        type: 'text',
+                        content: `
+                            <h3>Common Side Effects and Adverse Reactions of Penicillins</h3>
+                            <p>The most common adverse reactions to penicillin administration include hypersensitivity reactions (ranging from mild rash to severe anaphylaxis) and superinfections. Gastrointestinal (GI) distress is also very common:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>GI Distress:</strong> Anorexia, nausea, vomiting, and diarrhea are frequent. These symptoms may often be alleviated by taking the medication with food (though some penicillins are better absorbed on an empty stomach, so always check specific drug instructions).</li>
+                                <li><strong>Allergic Reactions:</strong> A rash indicates a mild allergic reaction. A severe reaction can rapidly progress to anaphylactic shock, which is a medical emergency.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Significant Drug Interactions with Penicillins</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Oral Contraceptives:</strong> Broad-spectrum penicillins (e.g., amoxicillin, ampicillin) may decrease the effectiveness of <strong>oral contraceptives</strong>. Patients should be advised to use an additional, non-hormonal form of birth control during and for at least one week after completing the antibiotic course.</li>
+                                <li><strong>Potassium Supplements:</strong> Taking potassium supplements with potassium penicillin G or V can increase serum potassium levels, potentially leading to hyperkalemia.</li>
+                                <li><strong>Aminoglycosides:</strong> It is critical that penicillin is <strong>NOT mixed with an aminoglycoside in the same IV solution</strong>. Penicillins can chemically inactivate aminoglycosides, rendering both drugs less effective. If both are prescribed, they must be administered separately.</li>
+                            </ul>
+                            <div class="bg-red-50 border-l-4 border-red-400 text-red-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Nursing Alert:</p>
+                                <p>Always review a patient's complete medication list for potential interactions before administering penicillins, especially concerning oral contraceptives and aminoglycosides.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'penicillins-quiz',
+                        title: 'Penicillins Quiz',
+                        type: 'quiz',
+                        questions: [
+                            { 
+                                question: "What is the primary mechanism of action of penicillin?", 
+                                options: ["Inhibition of bacterial protein synthesis", "Alteration of membrane permeability", "Inhibition of bacterial cell wall synthesis", "Interference with cellular metabolism"], 
+                                correctAnswer: "Inhibition of bacterial cell wall synthesis" 
+                            },
+                            { 
+                                question: "Which statement about Penicillin G is correct?", 
+                                options: ["It is primarily administered orally due to high GI absorption.", "It is only effective against gram-negative bacteria.", "It is a potent respiratory depressant.", "It has a short duration of action and IM injections can be painful."], 
+                                correctAnswer: "It has a short duration of action and IM injections can be painful." 
+                            },
+                            { 
+                                question: "A patient is taking amoxicillin. The nurse knows that amoxicillin falls under which penicillin category?", 
+                                options: ["Natural penicillin", "Broad-spectrum penicillin (Aminopenicillin)", "Penicillinase-resistant penicillin", "Extended-spectrum penicillin"], 
+                                correctAnswer: "Broad-spectrum penicillin (Aminopenicillin)" 
+                            },
+                            { 
+                                question: "Which of the following are common side effects of penicillin administration? (Select all that apply.)", 
+                                options: ["Anorexia", "Hypertension", "Diarrhea", "Increased platelet aggregation", "Nausea", "Vomiting"], 
+                                correctAnswer: ["Anorexia", "Diarrhea", "Nausea", "Vomiting"]
+                            },
+                            {
+                                question: "Which beta-lactamase inhibitor is often combined with amoxicillin for oral use?",
+                                options: ["Sulbactam", "Tazobactam", "Clavulanic acid", "Cilastatin"],
+                                correctAnswer: "Clavulanic acid"
+                            }
+                        ]
+                    }
+                ]
+            },
+            'other-beta-lactams-cephalosporins': {
+                title: 'Other Beta-Lactams & Cephalosporins',
+                color: 'from-cyan-400 to-sky-600',
+                description: 'Understand the generations and clinical applications of cephalosporins and related beta-lactams.',
+                steps: [
+                    {
+                        id: 'other-beta-lactams',
+                        title: 'Other Beta-Lactam Antibacterials',
+                        type: 'text',
+                        content: `
+                            <h3>Beyond Penicillins: Other Key Beta-Lactam Antibacterials</h3>
+                            <p>Similar to penicillins, these beta-lactam antibacterials bind to penicillin-binding proteins inside the bacterial cell wall, inhibiting cell wall synthesis, and are therefore <strong>bactericidal</strong>.</p>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Aztreonam:</strong> This monobactam is effective primarily against aerobic gram-negative infections. It has a unique structure that makes it less likely to cause allergic reactions in patients with penicillin allergies.</li>
+                                <li><strong>Imipenem/Cilastatin and Meropenem (Carbapenems):</strong> These are very broad-spectrum antibiotics, effective against a wide range of gram-positive and gram-negative bacteria, including many anaerobic organisms. They are often reserved for severe, multi-drug resistant infections.
+                                    <br><span class="font-semibold text-gray-700">Note:</span> Cilastatin is combined with imipenem to prevent its rapid breakdown by renal enzymes.</li>
+                                <li><strong>Nephrotoxicity:</strong> Generally, these drugs are less nephrotoxic compared to many other classes of antibacterials.</li>
+                            </ul>
+                            
+                            <h3 class="mt-6">Side Effects and Adverse Reactions</h3>
+                            <p>Common side effects associated with these other beta-lactam antibacterials include:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Headache, nausea, vomiting, diarrhea.</li>
+                                <li>Hematologic effects: Anemia, eosinophilia (increased eosinophils), and neutropenia (low neutrophils).</li>
+                                <li>Skin reactions: Rash may also occur.</li>
+                            </ul>
+                            <div class="bg-red-50 border-l-4 border-red-400 text-red-800 p-4 rounded-md shadow-sm mt-4">
+                                <p class="font-semibold">Life-Threatening Adverse Reactions:</p>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Anaphylaxis (severe allergic reaction)</li>
+                                    <li>Angioedema (swelling beneath the skin)</li>
+                                    <li>Seizures (especially with high doses or in patients with renal impairment)</li>
+                                    <li><em>Clostridium difficile</em>–associated diarrhea (CDAD), a severe form of colitis.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'cephalosporins-intro',
+                        title: 'Introduction to Cephalosporins',
+                        type: 'text',
+                        content: `
+                            <h3>Cephalosporins: A Major Antibiotic Class</h3>
+                            <p>Cephalosporins were first discovered in 1948 from a fungus (<em>Emericellopsis minimum</em>). They represent a major antibiotic group widely used in hospitals and health care settings due to their broad spectrum of activity against both gram-positive and gram-negative bacteria, and their increased resistance to bacterial beta-lactamase enzymes compared to older penicillins.</p>
+                            
+                            <h4 class="mt-4">Mechanism of Action</h4>
+                            <p>Like penicillins, cephalosporins possess a beta-lactam ring structure. Their mechanism of action is similar: they act by inhibiting the bacterial enzyme necessary for cell wall synthesis. This disruption leads to the weakening and eventual lysis (breakdown) of the bacterial cell wall, resulting in a <strong>bactericidal</strong> effect.</p>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-4">
+                                <p class="font-semibold">Key Feature:</p>
+                                <p>Cephalosporins are generally more stable against many beta-lactamases than penicillins, which contributes to their broader utility.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'cephalosporin-generations',
+                        title: 'Cephalosporin Generations',
+                        type: 'text',
+                        content: `
+                            <h3>Cephalosporin Generations: Evolving Spectrum and Potency</h3>
+                            <p>Five generations of cephalosporins have been developed, each generally offering improvements over the previous one. As you move from first to fifth generation, you typically see:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-4">
+                                <li>A broader spectrum of bacteria covered.</li>
+                                <li>Increased resistance to destruction by bacterial beta-lactamases.</li>
+                                <li>Increased ability to penetrate the cerebrospinal fluid (CSF), making them more effective for central nervous system infections.</li>
+                            </ul>
+
+                            <h4 class="mt-6">Generational Activity Summary:</h4>
+                            <div class="space-y-6 mt-4">
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-3">First Generation</h5>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Spectrum:</strong> Effective mostly against gram-positive bacteria (e.g., streptococci, staphylococci) and some gram-negative bacteria (e.g., <em>E. coli, Klebsiella, Proteus, Salmonella, Shigella</em>).</li>
+                                        <li><strong>Beta-Lactamase:</strong> Generally destroyed by beta-lactamases.</li>
+                                        <li><strong>Examples:</strong> Cefadroxil, Cefazolin, Cephalexin.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-3">Second Generation</h5>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Spectrum:</strong> Broader spectrum against gram-negative bacteria (e.g., <em>H. influenzae, N. gonorrhoeae, Enterobacter</em>) compared to first-generation.</li>
+                                        <li><strong>Beta-Lactamase:</strong> Not all are affected by beta-lactamases; some have improved stability.</li>
+                                        <li><strong>Examples:</strong> Cefaclor, Cefotetan, Cefoxitin.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-3">Third Generation</h5>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Spectrum:</strong> Broad-spectrum, including effectiveness against <em>P. aeruginosa</em> (a challenging gram-negative pathogen).</li>
+                                        <li><strong>Beta-Lactamase:</strong> Highly resistant to many beta-lactamases.</li>
+                                        <li><strong>CSF Penetration:</strong> Good penetration into the CSF.</li>
+                                        <li><strong>Examples:</strong> Cefdinir, Cefixime, Cefotaxime, Ceftriaxone.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-3">Fourth Generation</h5>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Spectrum:</strong> Similar to third-generation, with an even broader spectrum against both gram-positive and gram-negative bacteria.</li>
+                                        <li><strong>Beta-Lactamase:</strong> Highly resistant to most beta-lactamase-producing bacteria.</li>
+                                        <li><strong>CSF Penetration:</strong> Excellent penetration to CSF.</li>
+                                        <li><strong>Example:</strong> Cefepime.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-3">Fifth Generation</h5>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Spectrum:</strong> Broad-spectrum, notably the <strong>only cephalosporins effective against MRSA</strong> (Methicillin-Resistant <em>S. aureus</em>).</li>
+                                        <li><strong>Example:</strong> Ceftaroline fosamil.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-red-50 border-l-4 border-red-400 text-red-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Clinical Alert: Cross-Allergy</p>
+                                <p>Approximately 10% of patients who are allergic to penicillin are also allergic to cephalosporins. This is due to the similar beta-lactam ring structure shared by both drug classes. Always assess for penicillin allergy before administering cephalosporins.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'ceftriaxone-prototype',
+                        title: 'Prototype Drug: Ceftriaxone',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Ceftriaxone (Third-generation cephalosporin)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Uses & Mechanism of Action</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Uses:</strong> Otitis media, meningitis, gonorrhea, bacteremia, skin, respiratory, bone/joint, intraabdominal, and urinary tract infections.</li>
+                                    <li><strong>Effectiveness:</strong> Effective against a broad range of gram-positive and gram-negative bacteria, including <em>Klebsiella, E. coli, Neisseria, Proteus, Salmonella, Serratia, Staphylococcus, Haemophilus</em>, and <em>Clostridium</em>.</li>
+                                    <li><strong>Mechanism of Action:</strong> Inhibits bacterial cell wall synthesis, causing cell lysis; bactericidal effect.</li>
+                                </ul>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Pharmacokinetics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Administration:</strong> Intramuscular (IM), Intravenous (IV)</li>
+                                        <li><strong>Protein Binding (PB):</strong> 85%–95%</li>
+                                        <li><strong>Half-life (t½):</strong> 6–9 hours</li>
+                                        <li><strong>Excretion:</strong> Primarily in urine, with some biliary excretion.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Pharmacodynamics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>IV Onset:</strong> Immediate; Peak: 30 minutes.</li>
+                                        <li><strong>IM Peak:</strong> 1.5–4 hours.</li>
+                                        <li><strong>Duration:</strong> Unknown.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Side Effects and Adverse Reactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Common:</strong> Nausea, dyspepsia (indigestion), dysgeusia (taste distortion), stomatitis (mouth inflammation), glossitis (tongue inflammation), vomiting, diarrhea, abdominal cramps, flatulence, rash, flushing, diaphoresis (sweating), fever, pruritus (itching), headaches, dizziness, edema, injection site reaction, epistaxis (nosebleed), chills, vaginitis, azotemia (elevated nitrogenous waste products in blood), candidiasis, elevated hepatic enzymes.</li>
+                                    <li><strong>Adverse:</strong> Superinfection, bleeding, palpitations, biliary obstruction, cholelithiasis (gallstones), nephrolithiasis (kidney stones), jaundice, hyperbilirubinemia, anemia, hematuria (blood in urine), hypoprothrombinemia (low prothrombin).</li>
+                                    <li><strong>Life-threatening:</strong> Seizures, anaphylaxis, angioedema, bronchospasm, agranulocytosis (severe low WBCs), aplastic anemia, hemolytic anemia, leukopenia, thrombocytopenia, neutropenia, eosinophilia, renal failure, CDAD (<em>Clostridium difficile</em>-associated diarrhea), Stevens-Johnson syndrome (severe skin reaction), thrombocytosis (high platelets).</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Contraindications and Interactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Contraindications:</strong> Hypersensitivity to cephalosporins; caution with concurrent IV calcium administration (can form precipitates in neonates), penicillin hypersensitivity, vitamin K deficiency, concurrent use of anticoagulants, hepatic/renal dysfunction, pseudomembranous colitis, urinary tract obstruction, older adults.</li>
+                                    <li><strong>Drug Interactions:</strong>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>Increased nephrotoxicity with loop diuretics, aminoglycosides, calcium salts, and vancomycin.</li>
+                                            <li>Increased bleeding with anticoagulants (e.g., warfarin).</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Lab Interactions:</strong> May increase AST, ALT, ALP, LDH, PT, and INR.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'cephalosporin-pharmacology',
+                        title: 'Cephalosporin Pharmacology',
+                        type: 'text',
+                        content: `
+                            <h3>Pharmacokinetics & Pharmacodynamics of Cephalosporins</h3>
+                            <p>While some cephalosporins are administered orally (e.g., cephalexin, cefaclor, cefdinir, cefixime), most are administered via intramuscular (IM) or intravenous (IV) routes, especially for more severe infections.</p>
+                            
+                            <h4 class="mt-4">Pharmacokinetics (What the Body Does to the Drug)</h4>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Protein Binding:</strong> Cefazolin (IM/IV) generally has higher protein binding compared to cefaclor (PO).</li>
+                                <li><strong>Half-life:</strong> Both cefazolin and cefaclor have relatively short half-lives.</li>
+                                <li><strong>Excretion:</strong> A significant portion (60%–80%) of the drug is excreted unchanged in the urine, highlighting the importance of renal function.</li>
+                            </ul>
+
+                            <h4 class="mt-6">Pharmacodynamics (What the Drug Does to the Body)</h4>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Mechanism:</strong> Both cefazolin and cefaclor are bactericidal, meaning they actively kill bacteria by inhibiting bacterial cell wall synthesis.</li>
+                                <li><strong>Onset of Action:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>IV administration leads to an almost immediate onset of action.</li>
+                                        <li>Oral (PO) administration typically reaches peak concentration within 30–60 minutes.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'cephalosporins-adverse-reactions-interactions',
+                        title: 'Side Effects and Drug Interactions (Cephalosporins)',
+                        type: 'text',
+                        content: `
+                            <h3>Side Effects and Adverse Reactions of Cephalosporins</h3>
+                            <p>Common side effects associated with cephalosporins include:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Gastrointestinal Disturbances:</strong> Nausea, vomiting, and diarrhea are common.</li>
+                                <li><strong>Bleeding:</strong> Large doses can lead to an alteration in blood clotting time, increasing the risk of bleeding.</li>
+                                <li><strong>Nephrotoxicity:</strong> Kidney damage (nephrotoxicity) can occur, particularly in patients with pre-existing renal disorders.</li>
+                                <li><strong>Hypersensitivity:</strong> Allergic reactions, including rash and pruritus, are possible.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Significant Drug Interactions with Cephalosporins</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Cefotetan and Alcohol:</strong> Concomitant consumption of <strong>cefotetan</strong> and <strong>alcohol</strong> can cause a severe <strong>disulfiram-like reaction</strong>. Symptoms include flushing, dizziness, headache, nausea, vomiting, and muscular cramps.
+                                    <br><div class="bg-red-50 border-l-4 border-red-400 text-red-800 p-4 rounded-md shadow-sm mt-2">
+                                        <p class="font-semibold">Patient Teaching Alert:</p>
+                                        <p>Alcohol should be strictly avoided while taking cefotetan and for at least 2–3 days after discontinuation of the medication.</p>
+                                    </div>
+                                </li>
+                                <li><strong>Warfarin, Salicylates, and Aminoglycosides:</strong> Cefotetan may increase the effects of warfarin (an anticoagulant), salicylates (e.g., aspirin), and aminoglycosides, potentially leading to increased bleeding or enhanced toxicity.</li>
+                                <li><strong>Probenecid:</strong> This drug decreases the renal excretion of cefazolin and cefaclor, thereby increasing their drug action and potentially their side effects.</li>
+                                <li><strong>Tetracyclines or Erythromycin:</strong> These bacteriostatic antibiotics can decrease the effects of bactericidal cephalosporins like cefazolin and cefaclor if administered concurrently.</li>
+                            </ul>
+                            
+                            <h3 class="mt-6">Laboratory Test Interference</h3>
+                            <p>Cephalosporins can cause false-positive laboratory results for proteinuria (protein in urine) and glucosuria (glucose in urine), especially when administered in large doses. This is an important consideration for patients undergoing urine tests.</p>
+                        `
+                    },
+                    {
+                        id: 'cephalosporins-quiz',
+                        title: 'Other Beta-Lactams & Cephalosporins Quiz',
+                        type: 'quiz',
+                        questions: [
+                            {
+                                question: "Which generation of cephalosporins is the only one effective against MRSA?",
+                                options: ["First Generation", "Second Generation", "Third Generation", "Fourth Generation", "Fifth Generation"],
+                                correctAnswer: "Fifth Generation"
+                            },
+                            {
+                                question: "A patient taking cefotetan asks if they can have a glass of wine with dinner. What is the nurse's best response?",
+                                options: ["'Yes, there are no known interactions with alcohol.'", "'No, alcohol consumption can lead to a disulfiram-like reaction.'", "'Yes, but only a small amount of wine.'", "'No, alcohol will increase the risk of seizures with this medication.'"],
+                                correctAnswer: "'No, alcohol consumption can lead to a disulfiram-like reaction.'"
+                            },
+                            {
+                                question: "Which of the following is true about Imipenem/Cilastatin and Meropenem?",
+                                options: ["They are effective only against aerobic gram-positive infections.", "They are less nephrotoxic than many other antibacterials.", "They are bacteriostatic.", "They are primarily administered orally."],
+                                correctAnswer: "They are less nephrotoxic than many other antibacterials."
+                            },
+                            {
+                                question: "A nurse knows that which percentage of patients allergic to penicillin are also likely to be allergic to cephalosporins?",
+                                options: ["1%", "5%", "10%", "25%"],
+                                correctAnswer: "10%"
+                            }
+                        ]
+                    }
+                ]
+            },
+            'integrated-review': {
+                title: 'Integrated Review & Nursing Process',
+                color: 'from-purple-500 to-pink-500',
+                description: 'Apply the nursing process and critical thinking for beta-lactam antibacterial administration.',
+                steps: [
+                    {
+                        id: 'nursing-process-penicillins',
+                        title: 'Clinical Judgment [Nursing Process]: Penicillins',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Concept: Infection (Applying the Nursing Process for Penicillins)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">1. Recognize Cues (Assessment)</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Assess for any known allergy to penicillin or cephalosporins. This is a critical safety check.</li>
+                                    <li>Evaluate baseline and ongoing laboratory results, especially liver enzymes (ALP, ALT, AST). Report any elevated levels, which may indicate liver dysfunction.</li>
+                                    <li>Monitor and record urine output. If urine output is inadequate (&lt;30 mL/hour or &lt;600 mL/day), the drug or dosage may need to be adjusted due to renal excretion of penicillins.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">2. Analyze Cues and Prioritize Hypothesis (Patient Problems)</h4>
+                                <p>Based on assessment findings, potential patient problems may include:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>Risk for Tissue Injury (e.g., from injection, allergic reaction)</li>
+                                    <li>Imbalanced Nutrition: Less Than Body Requirements (due to vomiting, nausea, anorexia)</li>
+                                    <li>Risk for Fluid Volume Deficit (due to vomiting, diarrhea)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">3. Generate Solutions (Planning)</h4>
+                                <p>The primary goal of penicillin therapy is to resolve the infection. An expected outcome is:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>The patient’s white blood cell count (WBCs) will return to within normal limits, indicating resolution of infection.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">4. Take Action (Nursing Interventions)</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Before Administration:</strong> Obtain a sample for laboratory culture and antibiotic sensitivity testing (C&S) before initiating antibiotic therapy to ensure appropriate drug selection.</li>
+                                    <li><strong>Monitor for Superinfection:</strong> Observe for signs and symptoms of superinfection (e.g., stomatitis, genital discharge/itching), especially with high or prolonged doses of penicillin.</li>
+                                    <li><strong>Monitor for Allergic Reactions:</strong> Closely examine the patient for allergic reactions, particularly after the first and second doses. Have epinephrine readily available to counteract severe allergic reactions or anaphylaxis.</li>
+                                    <li><strong>IV Compatibility:</strong> Do not mix aminoglycosides with high-dose or extended-spectrum penicillin G in the same IV solution, as this may inactivate the aminoglycoside. Administer separately.</li>
+                                    <li><strong>Bleeding Risk:</strong> Assess for increased bleeding, especially if high doses of penicillin are given, as they may decrease platelet aggregation.</li>
+                                    <li><strong>Infection Monitoring:</strong> Monitor body temperature and the infected area for signs of improvement or worsening.</li>
+                                    <li><strong>IV Dilution:</strong> Dilute antibiotics for IV use strictly according to the package insert instructions.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">5. Patient Teaching</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Complete the Course:</strong> Emphasize the importance of taking the entire prescribed course of penicillin, even if symptoms improve or cease, to prevent the development of future drug resistance.</li>
+                                    <li><strong>Allergy Awareness:</strong> Advise patients with penicillin allergies to wear a medical alert bracelet or necklace and to notify all healthcare providers of their allergy.</li>
+                                    <li><strong>Safe Storage:</strong> Instruct patients to keep drugs out of reach of small children and to request childproof containers.</li>
+                                    <li><strong>Report Side Effects:</strong> Encourage patients to report any side effects or adverse reactions promptly to their healthcare provider.</li>
+                                    <li><strong>Fluid Intake:</strong> Advise increasing fluid intake to aid temperature regulation and drug excretion.</li>
+                                    <li><strong>Medication Administration:</strong>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>Chewable tablets must be chewed or crushed before swallowing.</li>
+                                            <li>Take medication with food if gastric irritation (nausea, upset stomach) occurs, unless otherwise specified.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Oral Contraceptives:</strong> Female patients of childbearing age should be advised to use an additional, non-hormonal form of birth control while taking penicillin and for at least 7 days after completing the course.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                <h4 class="font-bold text-gray-800 mb-3">6. Evaluate Outcomes (Evaluation)</h4>
+                                <p>Evaluate the effectiveness of penicillin therapy by determining if:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>The infection has resolved (e.g., normal WBC count, absence of fever, improved symptoms).</li>
+                                    <li>Significant side effects or superinfections have occurred.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'nursing-process-cephalosporins',
+                        title: 'Clinical Judgment [Nursing Process]: Cephalosporins',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Concept: Infection (Applying the Nursing Process for Cephalosporins)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">1. Recognize Cues (Assessment)</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Assess for any known allergy to cephalosporins or penicillins (due to potential cross-sensitivity).</li>
+                                    <li>Record baseline and ongoing vital signs (especially temperature) and urine output. Report elevated temperature or decreased urine output, which could indicate worsening infection or renal issues.</li>
+                                    <li>Evaluate renal and liver function laboratory results (BUN, serum creatinine, AST, ALT, ALP, bilirubin) for baseline and abnormal findings, as these organs are crucial for drug metabolism and excretion.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">2. Analyze Cues and Prioritize Hypothesis (Patient Problems)</h4>
+                                <p>Based on assessment findings, potential patient problems may include:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>Risk for Tissue Injury (e.g., from IV irritation, allergic reaction)</li>
+                                    <li>Imbalanced Nutrition: Less Than Body Requirements (due to GI upset)</li>
+                                    <li>Risk for Fluid Volume Deficit (due to diarrhea)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">3. Generate Solutions (Planning)</h4>
+                                <p>The primary goal of cephalosporin therapy is to resolve the infection. An expected outcome is:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>The patient’s white blood cell count (WBCs) will return to within normal limits, indicating resolution of infection.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">4. Take Action (Nursing Interventions)</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Before Administration:</strong> Obtain a culture from the infected area before starting cephalosporin therapy to identify the causative organism and guide treatment.</li>
+                                    <li><strong>IV Administration:</strong> Infuse all IV cephalosporins over 30 minutes or as specifically ordered by the healthcare provider to prevent pain, irritation, and phlebitis at the injection site.</li>
+                                    <li><strong>Monitor for Hypersensitivity:</strong> Closely observe the patient for signs of hypersensitivity reactions, especially during the initial doses.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">5. Patient Teaching</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Safe Storage:</strong> Instruct patients to keep drugs out of reach of children and to request childproof containers.</li>
+                                    <li><strong>Report Superinfection:</strong> Advise patients to report any signs of superinfection promptly (e.g., mouth ulcers, white patches in the mouth, unusual discharge from the anal or genital area, persistent diarrhea).</li>
+                                    <li><strong>Preventing Intestinal Superinfection:</strong> Suggest ingesting buttermilk, yogurt, or an acidophilus supplement to help prevent superinfection of the intestinal flora by replenishing beneficial bacteria.</li>
+                                    <li><strong>Complete the Course:</strong> Emphasize the importance of taking the complete course of medication, even if symptoms have ceased, to ensure complete eradication of the infection and prevent resistance.</li>
+                                    <li><strong>Report Side Effects:</strong> Instruct patients to report common side effects from oral drugs (e.g., anorexia, nausea, vomiting, headache, dizziness, itching, rash).</li>
+                                    <li><strong>Food and Administration:</strong> Advise taking the medication with food if gastric irritation occurs, unless otherwise specified by the healthcare provider.</li>
+                                    <li><strong>Fluid Intake:</strong> Encourage adequate fluid intake to avoid dehydration, especially if experiencing diarrhea.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                <h4 class="font-bold text-gray-800 mb-3">6. Evaluate Outcomes (Evaluation)</h4>
+                                <p>Evaluate the effectiveness of cephalosporin therapy by determining if:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>The infection has resolved (e.g., normal WBC count, absence of fever, improved symptoms).</li>
+                                    <li>Significant side effects or superinfections have occurred.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    { 
+                        id: 'case-study', 
+                        title: 'Critical Thinking Case Study', 
+                        type: 'case_study', 
+                        case: {
+                            scenario: `A child 6 years of age has otitis media. The health care provider ordered amoxicillin 250 mg every 8 hours. The nurse asks the child’s parent if he is allergic to any drugs, and the parent says that he is allergic to penicillin.`,
+                            question: `Given the patient's allergy to penicillin and the order for amoxicillin, what is the nurse's priority action?`,
+                            options: [
+                                "Administer the amoxicillin as ordered and monitor for side effects.", 
+                                "Administer the amoxicillin and have epinephrine ready in case of a severe reaction.",
+                                "Withhold the amoxicillin and notify the health care provider immediately.", 
+                                "Administer the amoxicillin in a reduced dose."
+                            ],
+                            correctAnswer: "Withhold the amoxicillin and notify the health care provider immediately.",
+                            explanation: `
+                                <p><strong>Rationale:</strong> Amoxicillin is a penicillin derivative. Patients who are allergic to penicillin should not receive amoxicillin due to the high risk of a severe allergic reaction (hypersensitivity) or anaphylaxis. The nurse must withhold the medication and report the allergy to the health care provider to obtain a different antibiotic order.</p>
+                                <p>Administering the medication, even with epinephrine ready or at a reduced dose, would put the patient at significant risk for a severe, potentially life-threatening allergic reaction. Monitoring for side effects after administration is not the priority; preventing the reaction is.</p>
+                            `
+                        }
+                    },
+                    { 
+                        id: 'review-quiz', 
+                        title: 'Review Questions', 
+                        type: 'quiz',
+                        questions: [
+                            { 
+                                question: "Amoxicillin is prescribed for a patient who has a respiratory infection. The nurse is teaching the patient about this medication and realizes that more teaching is needed when the patient makes which statement?", 
+                                options: ["This medication should not be taken with food.", "I will take my entire prescription of medication.", "I should report to the physician any genital itching.", "If I experience any excess bleeding, I will contact the health care provider."], 
+                                correctAnswer: "This medication should not be taken with food." 
+                            },
+                            { 
+                                question: "A patient is taking a cephalosporin. The nurse anticipates which appropriate nursing intervention(s) for this medication? (Select all that apply.)", 
+                                options: ["Monitoring renal function studies", "Monitoring liver function studies", "Infusing intravenous medication over 30 minutes", "Monitoring the patient for mouth ulcers", "Advising the patient to stop the medication when he or she feels better"], 
+                                correctAnswer: ["Monitoring renal function studies", "Monitoring liver function studies", "Infusing intravenous medication over 30 minutes", "Monitoring the patient for mouth ulcers"] 
+                            },
+                            { 
+                                question: "Penicillin G has been prescribed for a patient. Which nursing intervention(s) should the nurse perform for this patient? (Select all that apply.)", 
+                                options: ["Collect culture and sensitivity before the first dose.", "Monitor the patient for mouth ulcers.", "Instruct the patient to limit fluid intake to 1000 mL/day.", "Have epinephrine on hand for a potential severe allergic reaction.", "No particular interventions are required for this patient."], 
+                                correctAnswer: ["Collect culture and sensitivity before the first dose.", "Monitor the patient for mouth ulcers.", "Have epinephrine on hand for a potential severe allergic reaction."] 
+                            },
+                            { 
+                                question: "A patient is receiving amoxicillin. The nurse understands that the action of this drug is by which process?", 
+                                options: ["Inhibition of protein synthesis", "Alteration of membrane permeability", "Inhibition of bacterial cell wall synthesis", "Alteration of bacterial ribonucleic acid synthesis"], 
+                                correctAnswer: "Inhibition of bacterial cell wall synthesis" 
+                            },
+                            { 
+                                question: "A patient is prescribed dicloxacillin. For which adverse effect should the nurse monitor the patient?", 
+                                options: ["Constipation", "Tongue discoloration", "Hypertension", "Hemolytic anemia"], 
+                                correctAnswer: "Tongue discoloration" 
+                            },
+                            { 
+                                question: "A patient has been prescribed amoxicillin. What does the nurse know is true about this medication?", 
+                                options: ["It has a normal adult dose of 2 grams q6h.", "It has a common side effect of hypotension.", "It has an intramuscular administration route.", "It is used to treat respiratory infections."], 
+                                correctAnswer: "It is used to treat respiratory infections." 
+                            },
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- Pre-Assessment Quiz Data (Derived from Review Questions and Key Concepts) ---
+        const preAssessmentQuizData = [
+            // Question from Review Question 4
+            { moduleId: 'penicillins', question: "A patient is receiving amoxicillin. The nurse understands that the action of this drug is by which process?", options: ["Inhibition of protein synthesis", "Alteration of membrane permeability", "Inhibition of bacterial cell wall synthesis", "Alteration of bacterial ribonucleic acid synthesis"], correctAnswer: "Inhibition of bacterial cell wall synthesis" },
+            
+            // Question related to Beta-Lactamase Inhibitors
+            { moduleId: 'penicillins', question: "Which of the following beta-lactamase inhibitors is commonly combined with amoxicillin to increase its effectiveness?", options: ["Sulbactam", "Tazobactam", "Clavulanic acid", "Cilastatin"], correctAnswer: "Clavulanic acid" },
+
+            // Question related to Adverse Reactions (Module 1 content)
+            { moduleId: 'antibacterial-fundamentals', question: "A patient experiences vascular collapse and bronchospasm immediately after receiving an antibacterial injection. The nurse recognizes this as which type of adverse reaction?", options: ["Superinfection", "Organ toxicity", "Anaphylactic shock", "Hypersensitivity (mild)"], correctAnswer: "Anaphylactic shock" },
+
+            // Question related to Resistance (Module 1 content)
+            { moduleId: 'antibacterial-fundamentals', question: "Which term describes a bacterial resistance that occurs without previous exposure to the antibacterial drug?", options: ["Acquired resistance", "Cross-resistance", "Inherent resistance", "Drug tolerance"], correctAnswer: "Inherent resistance" },
+
+            // Question from Review Question 6
+            { moduleId: 'penicillins', question: "A patient has been prescribed amoxicillin. What does the nurse know is true about this medication?", options: ["It has a common side effect of hypotension.", "It is used to treat respiratory infections.", "It has an intramuscular administration route.", "It is only effective against gram-positive bacteria."], correctAnswer: "It is used to treat respiratory infections." },
+
+            // Question related to Cephalosporin Generations (Module 3 content)
+            { moduleId: 'other-beta-lactams-cephalosporins', question: "Which generation of cephalosporins is known for its effectiveness against MRSA?", options: ["First Generation", "Second Generation", "Third Generation", "Fourth Generation", "Fifth Generation"], correctAnswer: "Fifth Generation" },
+
+            // Question from Review Question 1
+            { moduleId: 'integrated-review', question: "Amoxicillin is prescribed for a patient who has a respiratory infection. The nurse is teaching the patient about this medication and realizes that more teaching is needed when the patient makes which statement?", options: ["This medication should not be taken with food.", "I will take my entire prescription of medication.", "I should report to the physician any genital itching.", "If I experience any excess bleeding, I will contact the health care provider."], correctAnswer: "This medication should not be taken with food." },
+
+            // Question from Review Question 5
+            { moduleId: 'penicillins', question: "A patient is prescribed dicloxacillin. For which adverse effect should the nurse monitor the patient?", options: ["Constipation", "Tongue discoloration", "Hypertension", "Hemolytic anemia"], correctAnswer: "Tongue discoloration" },
+        ];
+
+
+        // --- Child Components ---
+
+        /**
+         * Quiz component for interactive multiple-choice questions.
+         * Users answer questions and receive immediate feedback.
+         */
+        const Quiz = ({ questions, onComplete, isPreAssessment = false }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState([]); // Changed to array for multi-select (SATA)
+            const [feedback, setFeedback] = useState(null);
+            const [answers, setAnswers] = useState([]);
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            // Helper to determine if a question is SATA (Select All That Apply)
+            const isSATA = Array.isArray(currentQuestion.correctAnswer);
+
+            // Handle option selection for both single and multiple choice
+            const handleOptionSelect = (option) => {
+                if (feedback && !isPreAssessment) return; // Prevent changing answer after feedback in regular quiz
+
+                if (isSATA) {
+                    // Multi-select (SATA)
+                    setSelectedOption(prevSelected => {
+                        if (prevSelected.includes(option)) {
+                            return prevSelected.filter(item => item !== option);
+                        } else {
+                            return [...prevSelected, option];
+                        }
+                    });
+                } else {
+                    // Single select
+                    setSelectedOption(option);
+                }
+            };
+
+            // Logic to check correctness for both single and multi-select
+            const checkCorrectness = (userAnswers, correctAnswers) => {
+                if (Array.isArray(correctAnswers)) {
+                    // SATA: Correct if all correct answers are selected AND only the correct answers are selected.
+                    const allCorrectSelected = correctAnswers.every(ans => userAnswers.includes(ans));
+                    const noIncorrectSelected = userAnswers.every(ans => correctAnswers.includes(ans));
+                    return allCorrectSelected && noIncorrectSelected && userAnswers.length > 0;
+                } else {
+                    // Single Select
+                    return userAnswers.toLowerCase() === correctAnswers.toLowerCase();
+                }
+            }
+
+            const handleNext = () => {
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                
+                const updatedAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(updatedAnswers);
+
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]); // Reset for next question
+                    setFeedback(null);
+                } else {
+                    // Quiz completion for both pre-assessment and regular quiz
+                    const finalScore = updatedAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete(isPreAssessment ? updatedAnswers : { score: finalScore, total: questions.length });
+                }
+            };
+            
+            const handleRegularQuizSubmit = () => {
+                if (selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)) return;
+                
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                setFeedback(isCorrect ? 'correct' : 'incorrect');
+            };
+
+            const handleRegularQuizNext = () => {
+                // Ensure the current answer is recorded before moving to the next question
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                const finalAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(finalAnswers);
+                
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]); // Reset for next question
+                    setFeedback(null);
+                } else {
+                    const finalScore = finalAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete({ score: finalScore, total: questions.length });
+                }
+            };
+
+            const isSubmitDisabled = selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0);
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner animate-slide-in-up">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Quiz: {currentQuestionIndex + 1} of {questions.length}</h4>
+                    <p className="font-semibold text-gray-700 mb-3">{currentQuestion.question}</p>
+                    {isSATA && <p className="text-sm text-indigo-600 mb-4 font-medium">Select all that apply.</p>}
+                    <div className="space-y-2">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = Array.isArray(selectedOption) ? selectedOption.includes(option) : selectedOption === option;
+                            const isCorrectOption = Array.isArray(currentQuestion.correctAnswer)
+                                ? currentQuestion.correctAnswer.includes(option)
+                                : option.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                            
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+
+                            if (feedback && !isPreAssessment) {
+                                if (isCorrectOption) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800';
+                                } else if (isSelected && !isCorrectOption) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800';
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800';
+                            }
+
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handleOptionSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {isSATA ? (
+                                            <input 
+                                                type="checkbox" 
+                                                checked={isSelected} 
+                                                readOnly 
+                                                className="mr-3 text-indigo-600 rounded focus:ring-indigo-500"
+                                            />
+                                        ) : (
+                                            <span className={`w-4 h-4 rounded-full border-2 mr-3 ${isSelected ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-gray-400'}`}></span>
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                    {feedback && !isPreAssessment && (isCorrectOption || (isSelected && !isCorrectOption)) && (
+                                        <div className="ml-7 mt-1 text-sm font-semibold">
+                                            {isCorrectOption ? <span className="text-green-600">Correct Answer</span> : (isSelected && <span className="text-red-600">Incorrect Selection</span>)}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-6 text-center">
+                        {isPreAssessment ? (
+                            <button
+                                onClick={handleNext}
+                                disabled={isSubmitDisabled}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Assessment'}
+                            </button>
+                        ) : (
+                            <>
+                                {!feedback ? (
+                                    <button
+                                        onClick={handleRegularQuizSubmit}
+                                        disabled={isSubmitDisabled}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Submit Answer
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleRegularQuizNext}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                    >
+                                        {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'View Results'}
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        /**
+         * PreAssessmentQuiz component to handle the initial diagnostic quiz.
+         * Displays quiz questions and then results, allowing users to "test out" of modules.
+         */
+        const PreAssessmentQuiz = ({ onComplete, onExit }) => {
+            const [results, setResults] = useState(null);
+
+            const handleQuizComplete = (finalAnswers) => {
+                const moduleResults = {};
+                finalAnswers.forEach(answer => {
+                    const { moduleId } = answer.question;
+                    if (!moduleResults[moduleId]) {
+                        moduleResults[moduleId] = { correct: 0, total: 0 };
+                    }
+                    if (answer.isCorrect) {
+                        moduleResults[moduleId].correct++;
+                    }
+                    moduleResults[moduleId].total++;
+                });
+
+                const completedModules = [];
+                for (const moduleId in moduleResults) {
+                    // For pre-assessment, a module is "completed" if all its questions in the pre-assessment quiz were answered correctly.
+                    if (moduleResults[moduleId].correct === moduleResults[moduleId].total && moduleResults[moduleId].total > 0) {
+                        completedModules.push(moduleId);
+                    }
+                }
+                setResults({ completedModules, total: finalAnswers.length, correct: finalAnswers.filter(a => a.isCorrect).length });
+                onComplete(completedModules);
+            };
+
+            if (results) {
+                return (
+                    <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4 animate-fade-in">
+                        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full text-center">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">Assessment Complete!</h2>
+                            <p className="text-lg text-gray-600 mb-6">
+                                You correctly answered {results.correct} out of {results.total} questions.
+                            </p>
+                            {results.completedModules.length > 0 ? (
+                                <>
+                                    <p className="text-green-600 font-semibold mb-4">You've tested out of the following modules:</p>
+                                    <ul className="list-disc list-inside text-left mb-6 bg-green-50 p-4 rounded-lg">
+                                        {results.completedModules.map(id => <li key={id}>{contentData[id].title}</li>)}
+                                    </ul>
+                                </>
+                            ) : (
+                                <p className="text-yellow-600 font-semibold mb-6">You haven't tested out of any modules. You can proceed to the main modules for learning.</p>
+                            )}
+                            <button
+                                onClick={onExit}
+                                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                            >
+                                Return to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
+                        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Diagnostic Quiz</h2>
+                        <Quiz questions={preAssessmentQuizData} onComplete={handleQuizComplete} isPreAssessment={true} />
+                    </div>
+                </div>
+            );
+        };
+
+
+        /**
+         * Dashboard component to display the available learning modules.
+         * Shows progress for each module and overall.
+         */
+        const Dashboard = ({ onSelectModule, progress, onResetProgress, onStartPreAssessment }) => {
+            let totalCompletedSteps = 0;
+            let totalPossibleSteps = 0;
+            let totalQuizCorrect = 0;
+            let totalQuizQuestions = 0;
+
+            // Calculate overall progress and gather quiz scores
+            Object.entries(contentData).forEach(([moduleId, module]) => {
+                totalPossibleSteps += module.steps.length;
+                const moduleProgress = progress[moduleId] || {};
+                
+                Object.values(moduleProgress).forEach(stepProgress => {
+                    if (stepProgress.completed) {
+                        totalCompletedSteps++;
+                    }
+                    if (stepProgress.score !== undefined) {
+                        totalQuizCorrect += stepProgress.score;
+                    }
+                });
+
+                module.steps.forEach(step => {
+                    if (step.type === 'quiz') {
+                        totalQuizQuestions += step.questions.length;
+                    }
+                });
+            });
+
+            // Calculate overall percentage based on completed steps vs total steps.
+            const overallPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+
+            return (
+                <div className="p-4 sm:p-6 md:p-8 min-h-screen w-full flex flex-col">
+                    <div className="w-full">
+                        <header className="mb-8 text-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">ALM</span>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Antibiotics: Penicillins & Cephalosporins</h1>
+                                <span className="bg-gray-200 text-gray-600 text-xs font-mono px-2.5 py-1 rounded-full">V:26.0</span>
+                            </div>
+                            <p className="text-lg text-gray-500 max-w-3xl mx-auto">Master the pharmacology of penicillins, cephalosporins, and other beta-lactam antibacterials through interactive modules and assessments.</p>
+                        </header>
+
+                        {/* Skip Ahead Button */}
+                        <div className="mb-8 text-center">
+                            <button
+                                onClick={onStartPreAssessment}
+                                className="w-full max-w-md mx-auto px-6 py-4 bg-teal-500 text-white font-bold rounded-lg shadow-lg hover:bg-teal-600 transition-all duration-300 transform hover:scale-105"
+                            >
+                                <div className="text-xl">Skip Ahead: Take Diagnostic Quiz</div>
+                                <div className="text-sm font-normal">Test your knowledge and potentially skip modules.</div>
+                            </button>
+                        </div>
+
+                        {/* Overall Progress Bar & Reset Button */}
+                        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
+                           <div className="flex justify-between items-center mb-3">
+                                <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                                <button 
+                                    onClick={onResetProgress}
+                                    className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M4 2a1 1 0 011 1v2.101A7.002 7.002 0 0111.601 7.567a1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" />
+                                    </svg>
+                                    Reset Progress
+                                </button>
+                           </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div
+                                    className="bg-indigo-600 h-4 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-left text-sm text-gray-600 mt-2">
+                                    {totalQuizQuestions > 0 && `Quiz Performance: ${totalQuizCorrect} / ${totalQuizQuestions} correct`}
+                                </p>
+                                <p className="text-right text-sm text-gray-600 mt-2">{Math.round(overallPercentage)}% Completed</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                            {/* Iterate over all modules defined in contentData */}
+                            {Object.entries(contentData).map(([id, module]) => {
+                                const moduleProgress = progress[id] || {};
+                                // Calculate completion count for steps within the module.
+                                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                                const totalSteps = module.steps.length;
+                                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
+                                let statusText = "Not Started";
+                                let statusColor = "text-gray-500";
+                                if (completedCount === totalSteps) {
+                                    statusText = "Completed";
+                                    statusColor = "text-green-600";
+                                } else if (completedCount > 0) {
+                                    statusText = "In Progress";
+                                    statusColor = "text-yellow-600";
+                                }
+
+                                // Get quiz score for this module if available
+                                const quizStep = module.steps.find(step => step.type === 'quiz');
+                                const quizProgress = quizStep ? moduleProgress[quizStep.id] : null;
+
+                                return (
+                                    <div
+                                        key={id}
+                                        onClick={() => onSelectModule(id)}
+                                        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col animate-slide-in-up"
+                                    >
+                                        <div className="flex justify-between items-start mb-4">
+                                            {/* Placeholder for module icon: Displays the first letter of the module title. */}
+                                            <div className={cn("p-3 rounded-full bg-gradient-to-br", module.color, "w-10 h-10 flex items-center justify-center text-white text-lg font-bold shadow-md flex-shrink-0")}>
+                                                {module.title.split(' ').map(word => word.charAt(0)).join('')}
+                                            </div>
+                                            {/* Progress Circle */}
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <svg className="w-full h-full" viewBox="0 0 36 36">
+                                                    {/* Background circle for the progress bar. */}
+                                                    <path
+                                                        className="text-gray-200"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                    />
+                                                    {/* Foreground arc representing the completion percentage. */}
+                                                    <path
+                                                        className="text-indigo-500"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${percentage}, 100`}
+                                                        strokeLinecap="round"
+                                                        transform="rotate(-90 18 18)"
+                                                    />
+                                                </svg>
+                                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h3>
+                                        <p className="text-gray-500 text-sm mb-2 h-10">{module.description}</p>
+                                        <div className="mt-auto">
+                                            <p className={cn("text-sm font-semibold", statusColor)}>{statusText}</p>
+                                            {quizProgress && quizProgress.score !== undefined && (
+                                                <p className="text-sm text-gray-600 mt-1">Quiz Score: {quizProgress.score} / {quizStep.questions.length}</p>
+                                            )}
+                                            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700 mt-2">
+                                                Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        /**
+         * CaseStudy component for a multiple-choice case study challenge.
+         * Presents a scenario and a question with multiple options and provides feedback.
+         */
+        const CaseStudy = ({ caseData, onComplete }) => {
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showExplanation, setShowExplanation] = useState(false);
+
+            // Handle the selection of an answer option.
+            const handleSelect = (option) => {
+                if (showExplanation) return; 
+
+                setSelectedAnswer(option);
+                setShowExplanation(true); 
+
+                // Check if the selected answer is correct (case-insensitive comparison)
+                if (option.toLowerCase() === caseData.correctAnswer.toLowerCase()) {
+                    onComplete({ completed: true }); 
+                }
+            };
+            
+            // Render a multiline string with basic formatting (paragraphs)
+            const renderHtmlContent = (content) => {
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: content }} />
+                );
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner animate-slide-in-up">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
+                    
+                    {/* Scenario description */}
+                    <div class="bg-blue-100 text-blue-800 p-4 rounded-md mb-4 text-sm font-medium">
+                        <h5 class="font-bold mb-2">Scenario:</h5>
+                        {renderHtmlContent(caseData.scenario)}
+                    </div>
+
+                    <p className="font-semibold text-gray-700 mb-4">{caseData.question}</p>
+                    <div className="space-y-3">
+                        {caseData.options.map(option => {
+                            const isSelected = selectedAnswer === option;
+                            const isCorrect = option.toLowerCase() === caseData.correctAnswer.toLowerCase();
+                            
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200 cursor-pointer'; 
+                            if (showExplanation) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800 cursor-default'; 
+                                } else if (isSelected) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800 cursor-default'; 
+                                } else {
+                                    optionClass = 'bg-gray-50 text-gray-500 border-gray-200 cursor-default'; 
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; 
+                            }
+
+                            return (
+                                <div
+                                    key={option}
+                                    onClick={() => handleSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {showExplanation && (
+                                            isCorrect ? <span className="text-green-600 mr-2">✓</span> : (isSelected && <span className="text-red-600 mr-2">✗</span>)
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    
+                    {showExplanation && ( 
+                        <div className="mt-6 p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-500 animate-fade-in">
+                            <h5 className="font-bold text-indigo-800">Explanation</h5>
+                            {renderHtmlContent(caseData.explanation)}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        /**
+         * StaticContentStep component for displaying basic text content.
+         * Renders HTML content and marks itself as complete immediately on render.
+         */
+        const StaticContentStep = ({ step, onComplete }) => {
+            // For 'text' type steps, mark them as complete immediately upon rendering.
+            useEffect(() => {
+                onComplete();
+            }, []); // Empty dependency array ensures this runs only once.
+
+            // Using dangerouslySetInnerHTML to render HTML content (e.g., <strong> tags, lists, tables).
+            return (
+                <div className="prose max-w-none text-gray-700 leading-relaxed p-4 bg-white rounded-lg shadow-inner space-y-4 border border-gray-200 animate-slide-in-up">
+                   <div dangerouslySetInnerHTML={{ __html: step.content }} />
+                </div>
+            );
+        };
+
+        /**
+         * CompletionModal component displayed when a module is completed.
+         */
+        const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
+                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm"
+                            >
+                                Back to Dashboard
+                            </button>
+                            {hasNextModule && (
+                                <button
+                                    onClick={onNextModule}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Continue to Next Module
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        /**
+         * LearningModule component to manage steps within the selected module.
+         * Provides navigation between steps and renders the appropriate content for each.
+         */
+        const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
+            // Initialize active step. Check if a progress state exists for this module, if so, find the first incomplete step.
+            const initialActiveStep = useMemo(() => {
+                if (progress[module.id]) {
+                    const firstIncompleteIndex = module.steps.findIndex(step => !progress[module.id][step.id]?.completed);
+                    // If a step is incomplete, start there. Otherwise, start at the beginning (0) or the last step if all are complete.
+                    return firstIncompleteIndex !== -1 ? firstIncompleteIndex : 0;
+                }
+                return 0;
+            }, [module.id, module.steps, progress]);
+
+            const [activeStep, setActiveStep] = useState(initialActiveStep);
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+
+            // Callback function to update the completion status of a specific step.
+            const handleStepComplete = useCallback((stepId, data = {}) => {
+                onProgressUpdate(module.id, stepId, { completed: true, ...data });
+            }, [onProgressUpdate, module.id]);
+
+            const moduleProgress = progress[module.id] || {};
+            
+            // Check if all steps in the current module are completed
+            const allStepsCompletedInModule = module.steps.every(step =>
+                moduleProgress[step.id] && moduleProgress[step.id].completed
+            );
+
+            // Navigates to the next step, if available.
+            const handleNextStep = () => {
+                if (activeStep === module.steps.length - 1) {
+                    // If it's the last step and all steps in the module are completed, open the modal
+                    if (allStepsCompletedInModule) {
+                        setIsCompletionModalOpen(true);
+                    }
+                } else {
+                    setActiveStep(activeStep + 1);
+                }
+            };
+
+            // Navigates to the previous step, if available.
+            const handlePrevStep = () => {
+                if (activeStep > 0) {
+                    setActiveStep(activeStep - 1);
+                }
+            };
+            
+            // Ensure module and its steps are defined before accessing properties
+            if (!module || !module.steps) {
+                console.error("LearningModule received invalid module prop:", module);
+                return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
+            }
+
+            const currentStep = module.steps[activeStep];
+            
+            // Renders the appropriate content component based on the current step's type.
+            const renderStepContent = (step) => {
+                if (!step) return <p>Please select a step.</p>;
+
+                // We need to pass a callback function tailored to the type of step
+                const onCompleteForStep = (data) => {
+                    // If the step is a quiz, we pass the score data.
+                    if (step.type === 'quiz' && data.score !== undefined) {
+                        handleStepComplete(step.id, { score: data.score, total: data.total });
+                    } else if (step.type !== 'quiz' && step.type !== 'pre_assessment') {
+                        // For text/case study/interactive steps, just mark as complete.
+                        handleStepComplete(step.id);
+                    }
+                };
+
+                switch (step.type) {
+                    case 'text':
+                        return <StaticContentStep key={step.id} step={step} onComplete={onCompleteForStep} />;
+                    case 'case_study':
+                        return <CaseStudy key={step.id} caseData={step.case} onComplete={onCompleteForStep} />;
+                    case 'quiz':
+                        // We do not mark the step complete until the quiz is completed via the onComplete handler inside the Quiz component.
+                        return <Quiz key={step.id} questions={step.questions} onComplete={onCompleteForStep} />;
+                    default:
+                        // Fallback for unrecognized step types, ensuring robust error handling.
+                        return <p key={step.id} className="text-red-600">Error: Content for this step type ({step.type}) is not available.</p>;
+                }
+            };
+
+            const handleModalClose = () => {
+                setIsCompletionModalOpen(false);
+                onBack(); // Go back to dashboard when modal is closed
+            };
+
+            const handleModalNextModule = () => {
+                setIsCompletionModalOpen(false);
+                onNextModule(); // Proceed to next module
+            };
+
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
+                    {/* Header for the learning module, including back button and module title. */}
+                    <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
+                        <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            <span className="hidden sm:inline">Dashboard</span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                        </div>
+                        {/* Mobile sidebar toggle button */}
+                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                    </header>
+                    {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
+                    <div className="flex flex-1 overflow-hidden">
+                        {/* Sidebar for navigation steps within the module. */}
+                        <aside className={cn(
+                            "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
+                            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        )}>
+                            <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
+                            <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
+                                {module.steps.map((step, index) => (
+                                    <button
+                                        key={step.id}
+                                        onClick={() => {
+                                            setActiveStep(index);
+                                            setIsSidebarOpen(false); // Close sidebar on mobile after a step is selected.
+                                        }}
+                                        className={cn(
+                                            'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
+                                            activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700'
+                                        )}
+                                    >
+                                        {/* Step completion indicator */}
+                                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                            {moduleProgress[step.id]?.completed ? (
+                                                <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                            ) : (
+                                                <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                            )}
+                                        </div>
+                                        <span className="flex-1 text-sm">{step.title}</span>
+                                    </button>
+                                ))}
+                            </nav>
+                        </aside>
+
+                        {/* Main content area for the current step. */}
+                        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                            <div className="max-w-5xl mx-auto">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
+                                {renderStepContent(currentStep)}
+
+                                {/* Navigation buttons for moving between steps. */}
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={handlePrevStep}
+                                        disabled={activeStep === 0}
+                                        className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <button
+                                        onClick={handleNextStep}
+                                        disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
+                                    >
+                                        {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
+                                    </button>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                    <CompletionModal
+                        isOpen={isCompletionModalOpen}
+                        onClose={handleModalClose}
+                        onNextModule={handleModalNextModule}
+                        hasNextModule={hasNextModule}
+                    />
+                </div>
+            );
+        };
+        
+        // --- Main App Component ---
+        /**
+         * The root component of the application.
+         * Manages overall application state, including module selection, user ID, and progress.
+         */
+        function App() {
+            const [currentModuleId, setCurrentModuleId] = useState(null);
+            const [isPreAssessmentActive, setIsPreAssessmentActive] = useState(false);
+            const [userId, setUserId] = useState(null);
+            const [progress, setProgress] = useState({});
+            const [isAuthReady, setIsAuthReady] = useState(false);
+
+            // Effect hook for handling initial authentication and setting the user ID.
+            useEffect(() => {
+                const unsubscribe = mockAuth.onAuthStateChanged((user) => {
+                    if (user) setUserId(user.uid);
+                    setIsAuthReady(true); // Mark authentication as ready once user is determined.
+                });
+                return () => unsubscribe(); // Cleanup the auth state listener on component unmount.
+            }, []); // Empty dependency array ensures this runs only once on mount.
+
+            // Effect hook for loading user progress from localStorage after authentication is ready.
+            useEffect(() => {
+                if (!isAuthReady || !userId) return; // Only proceed if auth is ready and userId is available.
+                const storedProgress = localStorage.getItem(`antibiotics-module-progress-${userId}`);
+                if (storedProgress) {
+                    try {
+                        setProgress(JSON.parse(storedProgress)); // Attempt to parse and set stored progress.
+                    } catch (e) {
+                        console.error("Failed to parse stored progress, resetting.", e);
+                        setProgress({}); // Reset progress if parsing fails (e.g., corrupted data).
+                    }
+                }
+            }, [isAuthReady, userId]); // Reruns when auth status or userId changes.
+
+            // Callback function to update and persist the user's progress for a specific step.
+            const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
+                if (!isAuthReady || !userId) return;
+
+                setProgress(currentProgress => {
+                    const currentStepProgress = currentProgress[moduleId]?.[stepId] || {};
+                    const newStepProgress = { ...currentStepProgress, ...data };
+
+                    // Only update if data has changed to prevent infinite loops from useEffect in StaticContentStep
+                    if (JSON.stringify(currentStepProgress) === JSON.stringify(newStepProgress)) {
+                        return currentProgress;
+                    }
+
+                    const newProgress = {
+                        ...currentProgress,
+                        [moduleId]: {
+                            ...(currentProgress[moduleId] || {}),
+                            [stepId]: newStepProgress
+                        }
+                    };
+
+                    localStorage.setItem(`antibiotics-module-progress-${userId}`, JSON.stringify(newProgress));
+                    return newProgress;
+                });
+            }, [isAuthReady, userId]);
+
+            // Handles pre-assessment completion and marks tested-out modules as complete
+            const handlePreAssessmentComplete = (completedModuleIds) => {
+                const newProgress = { ...progress };
+                completedModuleIds.forEach(moduleId => {
+                    const module = contentData[moduleId];
+                    if (module) {
+                        // Mark all steps in the tested-out module as completed
+                        newProgress[moduleId] = {};
+                        module.steps.forEach(step => {
+                            newProgress[moduleId][step.id] = { completed: true };
+                        });
+                    }
+                });
+                setProgress(newProgress);
+                localStorage.setItem(`antibiotics-module-progress-${userId}`, JSON.stringify(newProgress));
+            };
+            
+            // Callback to reset all progress
+            const handleResetProgress = useCallback(() => {
+                if (!isAuthReady || !userId) return;
+                // Clear from state
+                setProgress({});
+                // Clear from localStorage
+                localStorage.removeItem(`antibiotics-module-progress-${userId}`);
+            }, [isAuthReady, userId]);
+
+            // Function to navigate to the next module in the sequence
+            const handleNextModule = useCallback(() => {
+                const moduleIds = Object.keys(contentData);
+                const currentIndex = moduleIds.indexOf(currentModuleId);
+                if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
+                    setCurrentModuleId(moduleIds[currentIndex + 1]);
+                } else {
+                    // If it's the last module, go back to the dashboard.
+                    setCurrentModuleId(null);
+                }
+            }, [currentModuleId]);
+
+            // Determine which module is currently selected based on `currentModuleId`.
+            const selectedModule = currentModuleId && contentData[currentModuleId]
+                                                ? { ...contentData[currentModuleId], id: currentModuleId }
+                                                : null;
+
+            const moduleIds = Object.keys(contentData);
+            const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
+            const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
+
+
+            // Render the main application based on the current state (Dashboard, Pre-assessment, or Learning Module)
+            return (
+                <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+                    {isPreAssessmentActive ? (
+                        <PreAssessmentQuiz 
+                            onComplete={handlePreAssessmentComplete} 
+                            onExit={() => setIsPreAssessmentActive(false)}
+                        />
+                    ) : selectedModule ? (
+                        <LearningModule
+                            key={selectedModule.id}
+                            module={selectedModule}
+                            onBack={() => setCurrentModuleId(null)}
+                            progress={progress}
+                            onProgressUpdate={handleProgressUpdate}
+                            onNextModule={handleNextModule}
+                            hasNextModule={hasNextModule}
+                        />
+                    ) : (
+                        <Dashboard 
+                            onSelectModule={setCurrentModuleId} 
+                            progress={progress} 
+                            onResetProgress={handleResetProgress}
+                            onStartPreAssessment={() => setIsPreAssessmentActive(true)}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        // --- Render the App into the DOM ---
+        // Wrapped in window.onload to ensure React, ReactDOM, and Babel are fully loaded before execution.
+        window.onload = function() {
+            const container = document.getElementById('root');
+            if (container) {
+                const root = ReactDOM.createRoot(container);
+                root.render(<App />);
+            } else {
+                console.error("Root element not found!");
+            }
+        };
+    </script>
+</body>
+</html>
