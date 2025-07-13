@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macrolides & Other Antibacterials Learning Module</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        'slide-in-up': {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out forwards',
+                        'slide-in-up': 'slide-in-up 0.4s ease-out forwards',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+        const mockAuth = {
+            onAuthStateChanged: (callback) => {
+                setTimeout(() => callback({ uid: 'standalone-macrolides-user' }), 100);
+                return () => {};
+            },
+        };
+
+        const contentData = {
+            'macrolides-group': {
+                title: 'Macrolides & Extended Macrolides',
+                color: 'from-purple-500 to-pink-500',
+                description: 'Explore the characteristics, uses, and nursing considerations for macrolide antibiotics.',
+                steps: [
+                    {
+                        id: 'intro-chapter-27',
+                        title: 'Introduction to Chapter 27 Antibacterials',
+                        type: 'text',
+                        content: `
+                            <h3>Introduction: Diverse Antibacterial Groups</h3>
+                            <p>Disease-producing microorganisms can be gram-positive or gram-negative bacteria, viruses, protozoans, or fungi. The degree to which they are pathogenic depends on the microorganism and its virulence.</p>
+                            <p>This chapter focuses on several important groups of antibacterials:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2">
+                                <li><strong>Macrolides:</strong> Erythromycin, Clarithromycin, Azithromycin</li>
+                                <li><strong>Oxazolidinones:</strong> Linezolid, Tedizolid</li>
+                                <li><strong>Lincosamides:</strong> Clindamycin, Lincomycin</li>
+                                <li><strong>Glycopeptides:</strong> Vancomycin, Oritavancin, Telavancin</li>
+                                <li><strong>Ketolides:</strong> Telithromycin</li>
+                                <li><strong>Lipopeptides:</strong> Daptomycin</li>
+                            </ul>
+
+                            <h4 class="mt-6">Bacteriostatic vs. Bactericidal Action</h4>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-4">
+                                <p class="font-semibold">Key Distinction:</p>
+                                <ul class="list-disc list-inside">
+                                    <li><strong>Primarily Bacteriostatic:</strong> Macrolides, Oxazolidinones, Lincosamides, and Ketolides. These drugs inhibit bacterial growth, but can be bactericidal depending on dose, serum level, and pathogen.</li>
+                                    <li><strong>Bactericidal:</strong> Glycopeptides and Lipopeptides. These drugs actively kill bacteria.</li>
+                                </ul>
+                            </div>
+
+                            <h4 class="mt-6">Penicillin Substitutes</h4>
+                            <p>Macrolides, oxazolidinones, lincosamides, glycopeptides, and ketolides are often discussed together because they have spectrums of antibiotic effectiveness similar to that of penicillin, despite differing in structure. Drugs from these groups are frequently used as penicillin substitutes, especially for individuals who are allergic to penicillin. For instance, <strong>Erythromycin</strong> is often the drug of choice if a patient has a hypersensitivity to penicillin.</p>
+                        `
+                    },
+                    {
+                        id: 'macrolides-overview',
+                        title: 'Macrolides: Characteristics and Uses',
+                        type: 'text',
+                        content: `
+                            <h3>Macrolide Antibiotics: An Overview</h3>
+                            <p>Macrolide antibiotics—which include <strong>azithromycin, clarithromycin, and erythromycin</strong>—are called broad-spectrum antibiotics.</p>
+                            
+                            <h4 class="mt-4">Erythromycin: The First Macrolide</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Derived from the fungus-like bacteria <em>Streptomyces erythreus</em>.</li>
+                                <li>First introduced in the early 1950s.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Mechanism of Action</h4>
+                            <p>Macrolides bind to the <strong>50S ribosomal subunits</strong> of bacteria, thereby inhibiting protein synthesis. This action prevents the bacteria from producing essential proteins needed for growth and reproduction.</p>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-4">
+                                <p class="font-semibold">Dose-Dependent Effect:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>At low to moderate drug doses, macrolides have a <strong>bacteriostatic</strong> effect (inhibit growth).</li>
+                                    <li>With high drug doses, their effect becomes <strong>bactericidal</strong> (bacteria killing).</li>
+                                </ul>
+                            </div>
+
+                            <h4 class="mt-4">Administration Considerations for Erythromycin</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Macrolides can be administered orally or by IV, but not intramuscularly (IM) because it is too painful.</li>
+                                <li>IV macrolides should be infused slowly to avoid unnecessary pain (phlebitis).</li>
+                                <li>Gastric acid destroys erythromycin in the stomach; therefore, acid-resistant salts are added (e.g., ethylsuccinate, stearate, estolate) to decrease breakdown into small particles (dissolution) in the stomach. This allows the drug to be absorbed in the intestine.</li>
+                                <li>Normally, food does not hamper the absorption of acid-resistant macrolides.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Therapeutic Uses of Macrolides</h4>
+                            <p>Macrolides are active against most gram-positive bacteria and are moderately active against some gram-negative bacteria, although resistant organisms may emerge during treatment.</p>
+                            <p>They are used to treat mild to moderate infections of the:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Respiratory tract</li>
+                                <li>Sinuses</li>
+                                <li>GI tract</li>
+                                <li>Skin and soft tissue</li>
+                            </ul>
+                            <p>In addition, macrolides are effective in treating:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Diphtheria</li>
+                                <li>Impetigo contagiosa</li>
+                                <li>Sexually transmitted infections (STIs)</li>
+                                <li><strong>Erythromycin</strong> is the drug of choice for <strong>mycoplasmal pneumonia</strong> and <strong>Legionnaires’ disease</strong>.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'macrolides-pharmacokinetics-dynamics',
+                        title: 'Macrolides: Pharmacokinetics & Pharmacodynamics',
+                        type: 'text',
+                        content: `
+                            <h3>Macrolides: Pharmacokinetics (What the Body Does to the Drug)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Absorption:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Clarithromycin and erythromycin are readily absorbed from the GI tract, mainly by the duodenum.</li>
+                                        <li>Azithromycin is incompletely absorbed from the GI tract, with only about 37% reaching systemic circulation.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Intravenous Administration:</strong> Azithromycin and erythromycin can be administered intravenously. Intermittent infusions should be diluted in normal saline (NS) or in 5% dextrose in water (D5W) to prevent phlebitis or burning sensations at the injection site.
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Azithromycin 500 mg should be diluted in 250 to 500 mL of fluid.</li>
+                                        <li>Erythromycin lactobionate 1 g should be diluted in 200 to 1000 mL.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Excretion:</strong> Macrolides are primarily excreted in bile and feces, with only a small amount excreted in urine. Therefore, renal insufficiency is generally not a contraindication for macrolide use.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Macrolides: Pharmacodynamics (What the Drug Does to the Body)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Mechanism:</strong> Macrolides suppress bacterial protein synthesis by binding to the 50S ribosomal subunit.</li>
+                                <li><strong>Erythromycin Oral Preparation:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Onset of action: 1 hour</li>
+                                        <li>Peak concentration time: 4 hours</li>
+                                        <li>Duration of action: 6 hours</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Newer Macrolides:</strong> Newer macrolides (e.g., azithromycin) have a longer half-life and are administered less frequently.
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Clarithromycin: Administered twice a day for immediate release; extended-release formulation is administered once a day.</li>
+                                        <li>Azithromycin: Has a long half-life of up to 68 hours, allowing for once-daily or less frequent dosing.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'macrolides-side-effects',
+                        title: 'Macrolides: Side Effects and Adverse Reactions',
+                        type: 'text',
+                        content: `
+                            <h3>Common Side Effects and Adverse Reactions to Macrolides</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Gastrointestinal (GI) Disturbances:</strong> Nausea, vomiting, diarrhea, and abdominal cramping are common side effects.</li>
+                                <li><strong><em>Clostridium difficile</em>–Associated Diarrhea (CDAD):</strong> Severe diarrhea can occur when antibacterials kill normal flora, allowing an overgrowth of <em>Clostridium difficile</em>. This superinfection is also known as pseudomembranous colitis.
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Release of bacterial toxins causes injury, inflammation, and bleeding in the colon lining.</li>
+                                        <li>Symptoms: Abdominal cramping, 5 to 10 watery diarrheal stools per day, and potentially bloody stools. Frequency of stools may increase to 20 per day in severe cases.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Conjunctivitis:</strong> May develop as a side effect of <strong>azithromycin</strong>. Patients should avoid wearing contact lenses if this occurs.</li>
+                                <li><strong>Allergic Reactions:</strong> Allergic reactions to erythromycin are rare.</li>
+                                <li><strong>Hepatotoxicity (Liver Toxicity):</strong> Can occur when erythromycin and azithromycin are taken in high doses, especially concurrently with other hepatotoxic drugs (e.g., high doses of acetaminophen, phenothiazines, sulfonamides). Liver damage is usually reversible upon drug discontinuation.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'macrolides-drug-interactions',
+                        title: 'Macrolides: Drug Interactions',
+                        type: 'text',
+                        content: `
+                            <h3>Significant Drug Interactions with Macrolides</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Increased Serum Levels of Other Drugs:</strong> Macrolides can increase serum levels of:
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li><strong>Theophylline</strong> (a bronchodilator)</li>
+                                        <li><strong>Carbamazepine</strong> (an anticonvulsant)</li>
+                                        <li><strong>Warfarin</strong> (an anticoagulant)</li>
+                                    </ul>
+                                    <p class="ml-4 mt-1">If these drugs are given concurrently with macrolides, their drug serum levels should be closely monitored to avoid toxicity.</p>
+                                </li>
+                                <li><strong>Avoid Concurrent Macrolide Use:</strong> To avoid severe toxic effects, erythromycin should generally not be used with other macrolides.</li>
+                                <li><strong>Antacids:</strong> Antacids may reduce azithromycin peak levels when taken at the same time. Advise patients to separate administration times.</li>
+                                <li><strong>Erythromycin and Cardiac Risk:</strong> When erythromycin is given concurrently with <strong>verapamil, diltiazem, clarithromycin, fluconazole, ketoconazole, and itraconazole</strong>, erythromycin blood concentration and the risk of sudden cardiac death may increase.</li>
+                                <li><strong>Competition for Receptor Sites:</strong> Erythromycin should not be taken with clindamycin or lincomycin because they compete for receptor sites, potentially reducing the effectiveness of one or both drugs.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'extended-macrolide-group',
+                        title: 'Extended Macrolide Group',
+                        type: 'text',
+                        content: `
+                            <h3>Extended Macrolide Group: Newer Generations</h3>
+                            <p>Derivatives of erythromycin have been developed that are effective in treating numerous organisms. Like erythromycin, these extended macrolides also inhibit protein synthesis.</p>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li>Many of these macrolides have a longer half-life, allowing for once-a-day administration, which can improve patient compliance.</li>
+                                <li>After erythromycin, <strong>clarithromycin</strong> was the first extended macrolide developed, proving effective against many bacterial infections.
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Clarithromycin is administered twice a day for its immediate-release form.</li>
+                                        <li>The extended-release formulation is given once a day for 7 days.</li>
+                                    </ul>
+                                </li>
+                                <li>Another key extended macrolide is <strong>azithromycin</strong>, known for its very long half-life of up to 68 hours.</li>
+                                <li><strong>Elimination:</strong> These drugs are primarily eliminated via bile and feces. Because only a small amount is excreted in urine, renal insufficiency is generally not a contraindication for their use.</li>
+                            </ul>
+
+                            <h4 class="mt-6">Common Uses of Extended Macrolides:</h4>
+                            <p><strong>Azithromycin</strong> is frequently prescribed for:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Upper and lower respiratory tract infections</li>
+                                <li>Sexually transmitted infections (STIs)</li>
+                                <li>Uncomplicated skin infections</li>
+                            </ul>
+                            <p>Common side effects of <strong>clarithromycin</strong> are nausea, diarrhea, and abdominal discomfort. With <strong>azithromycin</strong>, the side effects of nausea, diarrhea, and abdominal pain are common.</p>
+                        `
+                    },
+                    {
+                        id: 'azithromycin-prototype',
+                        title: 'Prototype Drug: Azithromycin',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Azithromycin (Antibacterial Macrolide)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Drug Class & Therapeutic Uses</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Drug Class:</strong> Antibacterial macrolide.</li>
+                                    <li><strong>Therapeutic Effects/Uses:</strong> For treating bacterial conjunctivitis, otitis media, tonsillitis, sinusitis, pelvic inflammatory disease (PID), sexually transmitted infections (STIs), and skin and respiratory infections. Often used for patients who are allergic to penicillin.</li>
+                                    <li><strong>Effectiveness:</strong> Effective against species of <em>Clostridium, Haemophilus, Chlamydia, Mycobacterium, Neisseria, Staphylococcus, and Streptococcus</em>.</li>
+                                    <li><strong>Mechanism of Action:</strong> Inhibits the steps of protein synthesis; bacteriostatic or bactericidal effect depending on concentration.</li>
+                                </ul>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Dosage & Pharmacokinetics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>Dosage (Chronic bronchitis exacerbation):</strong>
+                                            <ul class="list-disc list-inside ml-4">
+                                                <li>Immediate release (Adult): PO: 500 mg for 1 day, or 500 mg/day for 3 days, then follow with 250 mg/day for 4 days; max: 500 mg/day.</li>
+                                            </ul>
+                                        </li>
+                                        <li><strong>Absorption (PO):</strong> 38% absorbed.</li>
+                                        <li><strong>Distribution:</strong> Protein Binding (PB): 51%.</li>
+                                        <li><strong>Metabolism:</strong> Half-life (t½): 40–68 hours.</li>
+                                        <li><strong>Excretion:</strong> Primarily in bile, small amount in urine.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                    <h4 class="font-bold text-gray-800 mb-3">Pharmacodynamics</h4>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li><strong>PO:</strong> Onset, duration: Unknown. Peak: 2–3 hours.</li>
+                                        <li><strong>Extended release:</strong> Peak: 3–5 hours.</li>
+                                        <li><strong>IV:</strong> Onset, duration, peak: Unknown.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Side Effects & Adverse Reactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Side Effects:</strong> Blurred vision, ocular irritation/pain, photosensitivity, headache, tinnitus, edema, drowsiness, dizziness, fever, fatigue, tongue discoloration, dysgeusia (taste alteration), anorexia, nausea, vomiting, diarrhea, flatulence, abdominal cramps, pruritus, rash, injection site reaction, weakness, agitation, vaginitis, constipation.</li>
+                                    <li><strong>Adverse Reactions:</strong> Superinfection, hearing loss, angioedema (swelling), seizures, hyperbilirubinemia (jaundice), hypotension, azotemia (elevated nitrogenous waste), cholestasis (bile flow obstruction), myasthenia gravis exacerbation, hypo/hyperkalemia, hyponatremia.</li>
+                                    <li><strong>Life-threatening:</strong> Hepatotoxicity (liver damage), anemia, eosinophilia, anaphylaxis, bronchospasm, CDAD (<em>Clostridium difficile</em>–associated diarrhea), leukopenia, thrombocytopenia, Stevens-Johnson syndrome (severe skin reaction).</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Contraindications & Drug-Lab-Food Interactions</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>Contraindications:</strong> Hypersensitivity to macrolides, hepatitis, jaundice.</li>
+                                    <li><strong>Caution:</strong> Bradycardia, hypokalemia, hypomagnesemia, dysrhythmias, hepatic/renal dysfunction, diarrhea, CDAD, hypocalcemia, rheumatoid arthritis, cardiac disease, myasthenia gravis, thyroid disorder, breastfeeding, older adults.</li>
+                                    <li><strong>Drug Interactions:</strong>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>Increases effects of digoxin, cyclosporine, and warfarin.</li>
+                                            <li>Decreases effects of penicillins and clindamycin.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                ]
+            },
+            'other-antibacterials-group': {
+                title: 'Other Antibacterial Groups',
+                color: 'from-blue-500 to-indigo-600',
+                description: 'Detailed information on Oxazolidinones, Lincosamides, Glycopeptides, Ketolides, and Lipopeptides.',
+                steps: [
+                    {
+                        id: 'oxazolidinones',
+                        title: 'Oxazolidinones',
+                        type: 'text',
+                        content: `
+                            <h3>Oxazolidinones: Mechanism and Uses</h3>
+                            <p>Like macrolides, oxazolidinones inhibit protein synthesis by binding to the <strong>50S ribosomal subunit</strong> of bacteria. This action prevents the formation of the 70S initiation complex, which is necessary for bacterial reproduction.</p>
+                            <p><strong>Linezolid</strong> and <strong>Tedizolid</strong> are key examples of oxazolidinones.</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2">
+                                <li>Drugs in this antibacterial classification are <strong>bacteriostatic or bactericidal</strong> (depending on the specific drug and concentration).</li>
+                                <li>They are effective primarily against <strong>gram-positive infections</strong>, including resistant strains.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Oxazolidinones: Uses and Dosages (from Table 27.1)</h4>
+                            <div class="space-y-4">
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-2">Linezolid</h5>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li><strong>Route and Dosage (Nosocomial pneumonia):</strong> Adult: PO/IV: 600 mg q12h for at least 7 days; max: 1200 mg/day.</li>
+                                        <li><strong>Uses:</strong> Treating bacteremia, sepsis, MRSA, VREF, tuberculosis, and respiratory and skin infections.</li>
+                                        <li><strong>Pharmacokinetics:</strong> PB: 31%; t½: 4.26–5.4 hours.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-2">Tedizolid</h5>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li><strong>Route and Dosage (Skin infection):</strong> Adult: PO/IV: 200 mg/day for 6 days; max: 200 mg/day.</li>
+                                        <li><strong>Uses:</strong> Treating skin infections.</li>
+                                        <li><strong>Pharmacokinetics:</strong> PB: 70%–90%; t½: 12 hours.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h3 class="mt-6">Oxazolidinones: Side Effects and Adverse Reactions</h3>
+                            <ul class="list-disc list-inside space-y-1 mt-4">
+                                <li><strong>Common Side Effects:</strong> Headache, nausea, vomiting, diarrhea, anemia, and thrombocytopenia.</li>
+                                <li><strong>Severe Adverse Reactions:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li><strong>CDAD</strong> (<em>Clostridium difficile</em>–associated diarrhea)</li>
+                                        <li><strong>Serotonin syndrome</strong> (especially with concurrent serotonergic drugs)</li>
+                                        <li>Superinfection</li>
+                                        <li>For Tedizolid: Infusion-related/injection site reactions, phlebitis, erythema.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'lincosamides',
+                        title: 'Lincosamides',
+                        type: 'text',
+                        content: `
+                            <h3>Lincosamides: Mechanism and Uses</h3>
+                            <p>Like erythromycin, lincosamides inhibit bacterial protein synthesis and have both <strong>bacteriostatic and bactericidal</strong> actions, depending on drug dosage.</p>
+                            <p><strong>Clindamycin</strong> and <strong>Lincomycin</strong> are examples of lincosamides.</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2">
+                                <li><strong>Clindamycin</strong> is more widely prescribed than lincomycin.</li>
+                                <li>Clindamycin is active against most gram-positive organisms, including <em>S. aureus</em> and anaerobic organisms.</li>
+                                <li>It is <strong>not effective</strong> against gram-negative bacteria (e.g., <em>E. coli</em> and <em>Proteus</em> and <em>Pseudomonas</em> species).</li>
+                                <li>Clindamycin is absorbed better than lincomycin through the GI tract and maintains a higher serum drug concentration.</li>
+                                <li>Clindamycin is considered more effective than lincomycin and has fewer toxic effects.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Lincosamides: Uses and Dosages (from Table 27.1)</h4>
+                            <div class="space-y-4">
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-2">Clindamycin</h5>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li><strong>Route and Dosage (Lower respiratory infection):</strong> Adult: PO: 150–450 mg q6h for 7–21 days; max: 1800 mg/day. IM/IV: 300–600 mg q6–12h; max: 2700 mg/day IV, 2400 mg/day IM.</li>
+                                        <li><strong>Uses:</strong> Treating PID, acne, bacteremia, mastitis, MRSA, and respiratory, intraabdominal, skin, gynecologic, and bone/joint infections.</li>
+                                        <li><strong>Consideration:</strong> Should be taken with a full glass of water.</li>
+                                        <li><strong>Pharmacokinetics:</strong> PB: 80%–95%; t½: 2–3 hours.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-2">Lincomycin</h5>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li><strong>Route and Dosage:</strong> Adult: IM: 600 mg q12–24h; max: 1.2 g/day. IV: 600 mg-1 g q8–12h; max: 8 g/day.</li>
+                                        <li><strong>Uses:</strong> Treating severe infections.</li>
+                                        <li><strong>Pharmacokinetics:</strong> PB: 77%–82%; t½: 4.4–6.4 hours.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h3 class="mt-6">Lincosamides: Side Effects and Adverse Reactions</h3>
+                            <ul class="list-disc list-inside space-y-1 mt-4">
+                                <li><strong>Common Side Effects:</strong> GI irritation (nausea, vomiting), stomatitis, rash.</li>
+                                <li><strong>Severe Adverse Reactions:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li><strong>Colitis:</strong> Including <strong>CDAD</strong> (<em>Clostridium difficile</em>–associated diarrhea), which is a serious concern with lincosamides, especially clindamycin.</li>
+                                        <li><strong>Anaphylactic shock</strong> (severe allergic reaction).</li>
+                                        <li>For Clindamycin: Dry skin, erythema, pruritus, superinfection, headache, candidiasis, back pain.</li>
+                                        <li>For Lincomycin: Glossitis, headache, candidiasis, dizziness, superinfection, injection site reaction.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <h3 class="mt-6">Lincosamides: Drug Interactions</h3>
+                            <ul class="list-disc list-inside space-y-1 mt-4">
+                                <li>Clindamycin and lincomycin are <strong>incompatible</strong> with:
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Aminophylline</li>
+                                        <li>Phenytoin</li>
+                                        <li>Barbiturates</li>
+                                        <li>Ampicillin</li>
+                                    </ul>
+                                    <p class="ml-4 mt-1">These drugs should not be administered concurrently or mixed in the same IV solution.</p>
+                                </li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'glycopeptides',
+                        title: 'Glycopeptides',
+                        type: 'text',
+                        content: `
+                            <h3>Glycopeptides: Key Antibiotics for Resistant Infections</h3>
+                            <p><strong>Vancomycin</strong>, a glycopeptide bactericidal antibiotic, was widely used in the 1950s to treat staphylococcal infections. It remains crucial for drug-resistant <em>S. aureus</em> (MRSA) and for cardiac surgical prophylaxis in individuals with penicillin allergies.</p>
+                            <p><strong>Important Note:</strong> Serum vancomycin levels should be monitored closely to ensure therapeutic efficacy and minimize toxicity.</p>
+                            <p>Vancomycin has become ineffective for treating enterococci, and antibiotic-resistant enterococci can cause staphylococcal endocarditis.</p>
+                            
+                            <h4 class="mt-4">Newer Glycopeptides:</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Telavancin:</strong> A semisynthetic derivative of vancomycin with bactericidal action against MRSA. It treats selected gram-positive bacteria and skin infections, with the advantage of once-daily dosing.</li>
+                                <li><strong>Oritavancin:</strong> Offers the further advantage of being administered as a single dose for skin infections.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Glycopeptides: Uses and Dosages (from Table 27.1)</h4>
+                            <div class="space-y-4">
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-2">Vancomycin hydrochloride</h5>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li><strong>Route and Dosage (<em>Clostridium difficile</em> infection):</strong> Adult: PO: 125 mg qid for 10–14 days, then 125 mg bid for 1 week, then 125 mg qd for 1 week, then 125 mg q2–3d for 2–8 weeks; max: 2 g/day.</li>
+                                        <li><strong>Therapeutic Range (IV):</strong> Trough: 5–20 mcg/mL; Peak: 30–40 mcg/mL.</li>
+                                        <li><strong>Uses:</strong> Treating bacteremia, mastitis, endocarditis, enterocolitis due to <em>Staphylococcus aureus</em>, MRSA, CDAD, and respiratory, skin, and bone/joint infections.</li>
+                                        <li><strong>Pharmacokinetics:</strong> PB: 55%; t½: 4–6 hours.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-2">Oritavancin</h5>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li><strong>Route and Dosage (Skin infection):</strong> Adult: IV: 1200 mg as a single dose over 3 hours; max: 1200 mg.</li>
+                                        <li><strong>Uses:</strong> Treating skin infections.</li>
+                                        <li><strong>Pharmacokinetics:</strong> PB: 85%; t½: 245 hours.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                    <h5 class="font-semibold text-indigo-700 mb-2">Telavancin</h5>
+                                    <ul class="list-disc list-inside text-gray-700">
+                                        <li><strong>Route and Dosage (Respiratory infections):</strong> Adult: IV: 10 mg/kg/day over 60 min for 7–21 days; max: 10 mg/kg/day.</li>
+                                        <li><strong>Uses:</strong> Treating MRSA and respiratory and skin infections.</li>
+                                        <li><strong>Pharmacokinetics:</strong> PB: 93%; t½: 8–9 hours.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'glycopeptides-pharmacokinetics-dynamics',
+                        title: 'Glycopeptides: Pharmacokinetics & Pharmacodynamics',
+                        type: 'text',
+                        content: `
+                            <h3>Vancomycin: Pharmacokinetics (What the Body Does to the Drug)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Oral Administration:</strong> Given orally for treatment of staphylococcal enterocolitis and antibiotic-associated pseudomembranous colitis due to <em>C. difficile</em>. When given orally, vancomycin is not absorbed systemically and is excreted in the feces.</li>
+                                <li><strong>Intravenous Administration:</strong> Given intravenously for septicemia; for severe infections due to MRSA; and for bone, skin, and lower respiratory tract infections that do not respond or are resistant to other antibiotics.
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Intermittent vancomycin doses should be diluted in 100 mL for 500 mg and 200 mL for 1 g of D5W, NS, or lactated Ringer’s (LR).</li>
+                                        <li>Infusion should be administered over 60 to 90 minutes to prevent adverse reactions.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Excretion:</strong> Vancomycin is excreted in the urine when given by IV route.</li>
+                                <li><strong>Protein Binding (PB):</strong> 55%.</li>
+                                <li><strong>Half-life (t½):</strong> 4 to 6 hours.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Vancomycin: Pharmacodynamics (What the Drug Does to the Body)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Mechanism of Action:</strong> Vancomycin inhibits bacterial cell wall synthesis.</li>
+                                <li><strong>Spectrum:</strong> It is active against several gram-positive microorganisms.</li>
+                                <li><strong>Peak Action:</strong> The peak action is typically 30 minutes after the end of the infusion.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'glycopeptides-side-effects',
+                        title: 'Glycopeptides: Side Effects and Adverse Reactions',
+                        type: 'text',
+                        content: `
+                            <h3>Vancomycin: Side Effects and Adverse Reactions</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Nephrotoxicity:</strong> Damage to the kidneys.</li>
+                                <li><strong>Ototoxicity:</strong> Damage to the auditory or vestibular branch of cranial nerve VIII.
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Auditory branch damage: Can result in permanent hearing loss.</li>
+                                        <li>Vestibular branch damage: Can result in temporary or permanent loss of balance.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Common Side Effects:</strong> Headache, dizziness, fatigue, fever, nausea, vomiting, flatulence, abdominal pain, diarrhea, back pain, peripheral edema, and injection site reaction.</li>
+                                <li><strong>Vancomycin Infusion Reaction (Red Man Syndrome / Red Neck Syndrome):</strong> Occurs with too-rapid IV injection of vancomycin. This is a toxic effect, not an allergic reaction.
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li><strong>Characteristics:</strong> Red blotching of the face, neck, arms, upper body, and back.</li>
+                                        <li><strong>Other effects:</strong> Hypotension, tachycardia, wheezing, dyspnea, paresthesias, erythema, pruritus, and urticaria, and may lead to cardiac arrest.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Adverse Effects:</strong> Eosinophilia, neutropenia, phlebitis, CDAD, hypokalemia, renal failure, and Stevens-Johnson syndrome.</li>
+                            </ul>
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Nursing Role in Detecting Ototoxicity and Nephrotoxicity:</p>
+                                <p>The nurse must closely monitor patients receiving vancomycin for signs of ototoxicity (e.g., tinnitus, hearing changes, dizziness, vertigo) and nephrotoxicity (e.g., decreased urine output, elevated BUN/creatinine, fluid retention). Prompt reporting and intervention are crucial to prevent permanent damage.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'glycopeptides-drug-interactions',
+                        title: 'Glycopeptides: Drug Interactions',
+                        type: 'text',
+                        content: `
+                            <h3>Vancomycin: Drug Interactions</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Masking Ototoxicity:</strong> Dimenhydrinate can mask ototoxicity when taken concurrently with vancomycin, potentially delaying the detection of hearing or balance damage.</li>
+                                <li><strong>Potentiated Nephrotoxicity and Ototoxicity:</strong> The risk of both nephrotoxicity and ototoxicity may be significantly increased when vancomycin is taken with other drugs known to cause these effects:
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Furosemide</li>
+                                        <li>Aminoglycosides (e.g., gentamicin, tobramycin)</li>
+                                        <li>Amphotericin B</li>
+                                        <li>Colistin</li>
+                                        <li>Cisplatin</li>
+                                        <li>Cyclosporine</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Methotrexate Excretion:</strong> Vancomycin may inhibit methotrexate excretion, which can lead to increased methotrexate toxicity.</li>
+                                <li><strong>Decreased Oral Absorption:</strong> The absorption of oral vancomycin may be decreased when given with cholestyramine and colestipol.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'ketolides',
+                        title: 'Ketolides',
+                        type: 'text',
+                        content: `
+                            <h3>Ketolides: Characteristics and Uses</h3>
+                            <p>Ketolides are structurally related to macrolides but possess a greater bactericidal ability. The primary drug in this class is <strong>Telithromycin</strong>.</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2">
+                                <li><strong>Uses:</strong> Telithromycin is used for adults 18 years of age and older to treat mild to moderate <strong>community-acquired pneumonia (CAP)</strong>.</li>
+                                <li><strong>Common Causes of CAP:</strong> This disorder is usually caused by <em>S. pneumoniae</em> and <em>H. influenzae</em>.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Ketolides: Uses and Dosages (from Table 27.1)</h4>
+                            <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                <h5 class="font-semibold text-indigo-700 mb-2">Telithromycin</h5>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li><strong>Route and Dosage:</strong> Adult: PO: 800 mg/day for 7–10 days; max: 800 mg/day.</li>
+                                    <li><strong>Uses:</strong> Treating community-acquired pneumonia.</li>
+                                    <li><strong>Pharmacokinetics:</strong> PB: 60%–70%; t½: 10 hours.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'ketolides-pharmacokinetics-dynamics',
+                        title: 'Ketolides: Pharmacokinetics & Pharmacodynamics',
+                        type: 'text',
+                        content: `
+                            <h3>Telithromycin: Pharmacokinetics (What the Body Does to the Drug)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Administration:</strong> Telithromycin is given orally.</li>
+                                <li><strong>Absorption:</strong> It is well absorbed by the GI tract and is unaffected by food intake.</li>
+                                <li><strong>Excretion:</strong> Telithromycin is excreted in both feces and urine.</li>
+                                <li><strong>Protein Binding (PB):</strong> 60% to 70%.</li>
+                                <li><strong>Half-life (t½):</strong> 10 hours.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Telithromycin: Pharmacodynamics (What the Drug Does to the Body)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Mechanism of Action:</strong> Telithromycin inhibits protein synthesis in microorganisms by binding to the bacterial ribosomal RNA site of the 50S subunit, which ultimately results in bacterial cell death.</li>
+                                <li><strong>Peak Action:</strong> The peak action is typically 1 hour after administration.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'ketolides-side-effects',
+                        title: 'Ketolides: Side Effects and Adverse Reactions',
+                        type: 'text',
+                        content: `
+                            <h3>Telithromycin: Side Effects and Adverse Reactions</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Common Side Effects:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Visual disturbances (blurred vision and diplopia - double vision)</li>
+                                        <li>Dizziness</li>
+                                        <li>Altered taste</li>
+                                        <li>Abdominal pain, nausea, vomiting, diarrhea</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Severe Adverse Reactions:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Anaphylaxis (severe allergic reaction)</li>
+                                        <li>Liver failure (hepatotoxicity)</li>
+                                        <li>Exacerbation of myasthenia gravis (a neuromuscular disorder), which can be life-threatening.</li>
+                                        <li>CDAD (<em>Clostridium difficile</em>–associated diarrhea)</li>
+                                        <li>Superinfection</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'ketolides-drug-interactions',
+                        title: 'Ketolides: Drug Interactions',
+                        type: 'text',
+                        content: `
+                            <h3>Telithromycin: Drug Interactions</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Increased Telithromycin Levels:</strong> Telithromycin levels are increased when taken concurrently with:
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Antilipidemics (statins such as simvastatin, lovastatin, and atorvastatin)</li>
+                                        <li>Itraconazole, ketoconazole</li>
+                                        <li>Benzodiazepines</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Life-Threatening Dysrhythmias:</strong> Concurrent use with Class 1A or Class III antidysrhythmics may lead to life-threatening dysrhythmias.</li>
+                                <li><strong>Decreased Telithromycin Levels:</strong> Blood levels of telithromycin are decreased when taken with:
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Rifampin</li>
+                                        <li>Phenytoin</li>
+                                        <li>Carbamazepine</li>
+                                        <li>Phenobarbital</li>
+                                    </ul>
+                                    <p class="ml-4 mt-1">This can lead to a subtherapeutic drug level, making the antibiotic ineffective.</p>
+                                </li>
+                                <li><strong>Increased Toxicity of Other Drugs (Contraindicated Combinations):</strong> Telithromycin can increase levels of:
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li><strong>Cisapride</strong> and <strong>Pimozide</strong>, which can lead to severe toxicity. These two drugs are therefore <strong>contraindicated</strong> for patients taking telithromycin.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Increased Levels of Other Drugs:</strong> Digoxin, metoprolol, midazolam, ritonavir, sirolimus, and tacrolimus levels are increased when taken concurrently with telithromycin.</li>
+                                <li><strong>Ergot Toxicity:</strong> Concurrent use of telithromycin with ergot alkaloid derivatives leads to <strong>ergot toxicity</strong> (characterized by severe peripheral vasospasm and impaired sensation).</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'lipopeptides',
+                        title: 'Lipopeptides',
+                        type: 'text',
+                        content: `
+                            <h3>Lipopeptides: Mechanism and Indications</h3>
+                            <p><strong>Daptomycin</strong> is a US Food and Drug Administration (FDA)-approved antibiotic categorized as a lipopeptide.</p>
+                            
+                            <h4 class="mt-4">Mechanism of Action:</h4>
+                            <p>Daptomycin acts by binding to the bacterial membrane and causing rapid depolarization of its membrane potential. This disruption inhibits protein, DNA, and RNA synthesis, ultimately leading to bacterial cell death.</p>
+                            
+                            <h4 class="mt-4">Indications for Daptomycin:</h4>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Complicated skin infections due to gram-positive microorganisms.</li>
+                                <li>Septicemia due to <em>S. aureus</em> infection.</li>
+                                <li>Infective endocarditis due to MRSA infection.</li>
+                            </ul>
+
+                            <h4 class="mt-4">Lipopeptides: Uses and Dosages (from Table 27.1)</h4>
+                            <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                <h5 class="font-semibold text-indigo-700 mb-2">Daptomycin</h5>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li><strong>Route and Dosage (Skin infection):</strong> Adult: IV: 4 mg/kg/day for 7–14 days; max: 6 mg/kg/day.</li>
+                                    <li><strong>Uses:</strong> Treating endocarditis, bacteremia, and skin infections.</li>
+                                    <li><strong>Pharmacokinetics:</strong> PB: 90%–93%; t½: 8–9 hours.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'lipopeptides-pharmacokinetics-dynamics',
+                        title: 'Lipopeptides: Pharmacokinetics & Pharmacodynamics',
+                        type: 'text',
+                        content: `
+                            <h3>Daptomycin: Pharmacokinetics (What the Body Does to the Drug)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Administration:</strong> Daptomycin is administered by IV at a dose of 4 mg/kg daily.</li>
+                                <li><strong>Dilution & Infusion:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Each 500-mg vial of the medication is diluted in 10 mL of NS 0.9% and allowed to stand for 10 minutes.</li>
+                                        <li>After gentle rotation of the vial to ensure dilution, further dilute in 50 to 100 mL of NS.</li>
+                                        <li>Administer over 30 minutes.</li>
+                                        <li><strong>Important:</strong> Drug should not be mixed with dextrose-containing diluents.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Protein Binding (PB):</strong> 90% to 93%.</li>
+                                <li><strong>Half-life (t½):</strong> Averages 8 to 9 hours.</li>
+                                <li><strong>Excretion:</strong> Daptomycin is primarily excreted by the kidneys.</li>
+                            </ul>
+
+                            <h3 class="mt-6">Daptomycin: Pharmacodynamics (What the Drug Does to the Body)</h3>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Mechanism of Action:</strong> Daptomycin binds to the bacterial membrane and causes cell death.</li>
+                                <li><strong>Trough Concentration:</strong> An effective trough concentration of 5.9 mcg/mL is usually achieved by the third dose.</li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'lipopeptides-side-effects',
+                        title: 'Lipopeptides: Side Effects and Adverse Reactions',
+                        type: 'text',
+                        content: `
+                            <h3>Daptomycin: Side Effects and Adverse Reactions</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Common Side Effects:</strong> Hypertension, hypotension, dizziness, insomnia, nausea, vomiting, and diarrhea.</li>
+                                <li><strong>More Serious Adverse Effects:</strong>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>Chest pain</li>
+                                        <li>Anemia</li>
+                                        <li>Peripheral neuropathy</li>
+                                        <li>Anaphylaxis (severe allergic reaction)</li>
+                                        <li><strong>Rhabdomyolysis</strong> (breakdown of muscle tissue, leading to release of muscle fiber contents into the blood)</li>
+                                        <li>Angioedema (swelling beneath the skin)</li>
+                                        <li><em>Clostridium difficile</em>–associated diarrhea (CDAD)</li>
+                                        <li>Stevens-Johnson syndrome (severe skin reaction)</li>
+                                        <li>Renal failure</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        `
+                    },
+                    {
+                        id: 'lipopeptides-drug-interactions',
+                        title: 'Lipopeptides: Drug Interactions',
+                        type: 'text',
+                        content: `
+                            <h3>Daptomycin: Drug Interactions</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li><strong>Increased Risk of Rhabdomyolysis:</strong> When daptomycin is given with <strong>HMG-CoA reductase inhibitors (statins, such as simvastatin or atorvastatin)</strong>, the risk of rhabdomyolysis and elevated levels of creatine phosphokinase (CPK) is increased.</li>
+                                <li><strong>Increased Daptomycin Toxicity:</strong> Daptomycin toxicity may be increased when given concurrently with <strong>tobramycin</strong>.</li>
+                                <li><strong>Increased Bleeding Risk:</strong> <strong>Warfarin</strong> may lead to increased bleeding when taken concurrently with daptomycin.</li>
+                            </ul>
+                        `
+                    },
+                ]
+            },
+            'integrated-review-ch27': {
+                title: 'Integrated Review & Objectives',
+                color: 'from-green-500 to-teal-600',
+                description: 'Apply nursing judgment, critical thinking, and review key learning objectives for Chapter 27.',
+                steps: [
+                    {
+                        id: 'nursing-process-macrolides',
+                        title: 'Clinical Judgment [Nursing Process]: Macrolides',
+                        type: 'text',
+                        content: `
+                            <h3 class="font-bold text-lg text-indigo-700 mb-4">Concept: Infection (Applying the Nursing Process for Macrolides)</h3>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Recognize Cues (Assessment)</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Assess vital signs and urine output. Report any abnormal findings.</li>
+                                    <li>Check baseline and periodic laboratory tests, especially liver enzyme values (ALP, ALT, AST, bilirubin) to determine liver function. Order liver enzyme tests periodically for patients taking large doses of azithromycin for a continuous period.</li>
+                                    <li>Obtain a comprehensive history of all drugs the patient currently takes to identify potential drug interactions. Note that the peak level of azithromycin may be decreased by antacids.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Analyze Cues and Prioritize Hypothesis (Patient Problems)</h4>
+                                <ul class="list-disc list-inside">
+                                    <li>Tissue injury (e.g., phlebitis from IV infusion, hepatotoxicity)</li>
+                                    <li>Nausea, Vomiting, Diarrhea (related to GI upset)</li>
+                                    <li>Risk for Fluid Volume Deficit (due to severe diarrhea)</li>
+                                    <li>Risk for Superinfection (e.g., CDAD, candidiasis)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Generate Solutions (Planning)</h4>
+                                <ul class="list-disc list-inside">
+                                    <li>The patient’s white blood cells (WBCs) will be within normal limits, indicating resolution of infection.</li>
+                                    <li>The patient will experience minimal gastrointestinal distress.</li>
+                                    <li>The patient will not develop superinfection or signs of organ toxicity.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Take Action (Nursing Interventions)</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Culture & Sensitivity (C&S):</strong> Obtain a sample from the infected area and send it to the laboratory for C&S testing before starting azithromycin therapy. Antibiotic therapy can be initiated after obtaining the culture sample.</li>
+                                    <li><strong>Monitoring:</strong> Monitor vital signs, urine output, and laboratory values, especially liver enzymes (ALP, ALT, AST, and bilirubin).</li>
+                                    <li><strong>Liver Damage:</strong> Monitor the patient for signs of liver damage resulting from prolonged use and high dosage of macrolides such as azithromycin. Signs of liver dysfunction include elevated liver enzyme levels and jaundice.</li>
+                                    <li><strong>Oral Administration (Azithromycin):</strong>
+                                        <ul class="list-disc list-inside ml-4">
+                                            <li>Administer oral azithromycin 1 hour before or 2 hours after meals.</li>
+                                            <li>Give with a full glass of water, not fruit juice (which can decrease absorption).</li>
+                                            <li>Give the drug with food if gastrointestinal (GI) upset occurs (adjust timing if necessary for absorption).</li>
+                                            <li>Chewable tablets should be chewed, not swallowed whole.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Intravenous (IV) Administration (Azithromycin):</strong> Dilute in an appropriate amount of solution as indicated in the drug circular (e.g., 250-500 mL for 500mg) for IV azithromycin. Infuse slowly to prevent phlebitis.</li>
+                                    <li><strong>Antacid Administration:</strong> Administer antacids either 2 hours before or 2 hours after azithromycin to prevent reduced peak levels.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-6">
+                                <h4 class="font-bold text-gray-800 mb-3">Patient Teaching</h4>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Complete the Course:</strong> Instruct patients to take the full course of the antibacterial agent as prescribed. Emphasize that drug compliance is most important for all antibacterials (antibiotics) to prevent resistance.</li>
+                                    <li><strong>Report Side Effects:</strong> Encourage patients to report common side effects, including adverse reactions (nausea, vomiting, diarrhea, abdominal cramps, itching).</li>
+                                    <li><strong>Superinfection:</strong> Teach patients to report any evidence of superinfection, a secondary infection resulting from drug therapy; for some patients, stomatitis (mouth sores) or vaginitis (vaginal inflammation/itching) may occur.</li>
+                                    <li><strong>Diarrhea:</strong> Tell patients to report the onset of loose stools or diarrhea. <em>Clostridium difficile</em>–associated diarrhea (CDAD) should be ruled out, especially if severe or bloody.</li>
+                                    <li><strong>Conjunctivitis (Azithromycin):</strong> Advise patients taking azithromycin to avoid wearing contact lenses if conjunctivitis develops.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                                <h4 class="font-bold text-gray-800 mb-3">Evaluate Outcomes (Evaluation)</h4>
+                                <p>Evaluate the effectiveness of azithromycin by determining whether:</p>
+                                <ul class="list-disc list-inside">
+                                    <li>The infection has been controlled or has ceased (e.g., normal WBC count, resolution of symptoms).</li>
+                                    <li>No significant side effects, including superinfection or organ toxicity, have occurred.</li>
+                                </ul>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'critical-thinking-case-study',
+                        title: 'Critical Thinking Case Study',
+                        type: 'case_study',
+                        case: {
+                            scenario: `A 54-year-old male is ordered clarithromycin 250 mg every 12 hours for his newly developed chronic bronchitis.`,
+                            question: `Given the patient's prescription, answer the following questions:
+                                1. Is the dose within normal dosage range? Explain your answer.
+                                2. What side effects should the nurse teach the patient about?
+                                3. What are some adverse effects that the patient should report to the health care provider?`,
+                            options: [
+                                "The dose is within range; common side effects include headache, rash, GI upset; adverse effects include CDAD, elevated liver enzymes, superinfection.",
+                                "The dose is too high; common side effects include dizziness, constipation; adverse effects include seizures, anaphylaxis.",
+                                "The dose is too low; common side effects include dry mouth, blurred vision; adverse effects include ototoxicity, nephrotoxicity.",
+                                "The dose is within range; common side effects include increased appetite, insomnia; adverse effects include serotonin syndrome, rhabdomyolysis."
+                            ],
+                            correctAnswer: "The dose is within range; common side effects include headache, rash, GI upset; adverse effects include CDAD, elevated liver enzymes, superinfection.",
+                            explanation: `
+                                <p><strong>Rationale:</strong></p>
+                                <p>1. <strong>Dose Range:</strong> According to Table 27.1, for skin infections (which chronic bronchitis treatment would align with in terms of dosage for clarithromycin), the regular release dose is 250 mg q12h. This dose is within the normal range for clarithromycin. While the table specifically mentions "Skin infections", clarithromycin is also used for respiratory infections, and the dosage aligns.</p>
+                                <p>2. <strong>Side Effects to Teach:</strong> Common side effects listed for clarithromycin in Table 27.1 include headache, rash, dysgeusia, dyspepsia, nausea, vomiting, diarrhea, flatulence, and abdominal pain. The nurse should teach the patient about these common GI disturbances and general discomforts.</p>
+                                <p>3. <strong>Adverse Effects to Report:</strong> Adverse effects listed for clarithromycin include CDAD (<em>Clostridium difficile</em>–associated diarrhea), elevated hepatic enzymes (indicating potential liver issues), and superinfection. These are more serious and should be reported to the healthcare provider immediately.</p>
+                            `
+                        }
+                    },
+                    {
+                        id: 'review-questions',
+                        title: 'Review Questions',
+                        type: 'quiz',
+                        questions: [
+                            {
+                                question: "A patient is prescribed daptomycin. Which action(s) should the nurse implement? (Select all that apply.)",
+                                options: ["Monitor blood values for toxicity.", "Dilute in 50 to 100 mL of normal saline and administer intravenously over 30 minutes.", "Monitor the patient for allergic reactions such as rhabdomyolysis.", "Advise the patient to take the medication on an empty stomach, even if gastrointestinal distress occurs.", "Culture the infected area before administering the first dose."],
+                                correctAnswer: ["Monitor blood values for toxicity.", "Dilute in 50 to 100 mL of normal saline and administer intravenously over 30 minutes.", "Monitor the patient for allergic reactions such as rhabdomyolysis.", "Culture the infected area before administering the first dose."]
+                            },
+                            {
+                                question: "A patient is taking azithromycin. Which nursing intervention(s) would the nurse plan to implement for this patient? (Select all that apply.)",
+                                options: ["Monitor periodic liver function tests.", "Dilute with 50 mL of 5% dextrose in water for intravenous administration.", "Instruct the patient to report any loose stools or diarrhea.", "Instruct the patient to report evidence of superinfection.", "Teach the patient to take oral drug 1 hour before or 2 hours after meals.", "Advise the patient to avoid antacids from 2 hours before 2 hours after administration."],
+                                correctAnswer: ["Monitor periodic liver function tests.", "Instruct the patient to report any loose stools or diarrhea.", "Instruct the patient to report evidence of superinfection.", "Teach the patient to take oral drug 1 hour before or 2 hours after meals.", "Advise the patient to avoid antacids from 2 hours before 2 hours after administration."]
+                            },
+                            {
+                                question: "For which serious adverse effect should the nurse closely monitor a patient who is taking lincosamides?",
+                                options: ["Seizures", "Ototoxicity", "Hepatotoxicity", "Clostridium difficile–associated diarrhea"],
+                                correctAnswer: "Clostridium difficile–associated diarrhea"
+                            },
+                            {
+                                question: "The nurse enters a patient’s room to find that his heart rate is 120, his blood pressure is 70/50, and he has red blotching of his face and neck. Vancomycin is running intravenous piggyback. The nurse believes that this patient is experiencing a severe adverse effect called red man syndrome. What action will the nurse take?",
+                                options: ["Stop the infusion and call the health care provider.", "Reduce the infusion to 10 mg/minute.", "Encourage the patient to drink more fluids, up to 2 L/day.", "Report onset of Stevens-Johnson syndrome to the health care provider."],
+                                correctAnswer: "Stop the infusion and call the health care provider."
+                            }
+                        ]
+                    },
+                    {
+                        id: 'learning-objectives',
+                        title: 'Learning Objectives',
+                        type: 'text',
+                        content: `
+                            <h3>Chapter 27 Learning Objectives</h3>
+                            <p>Upon completion of this module, you should be able to:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-4">
+                                <li>Describe the side effects/adverse effects of erythromycin.</li>
+                                <li>Apply the Clinical Judgment [Nursing Process] for azithromycin, including patient teaching.</li>
+                                <li>Compare the side effects/adverse effects of oxazolidinones, lincosamides, ketolides, and lipopeptides.</li>
+                                <li>Summarize the nurse’s role in detecting ototoxicity and nephrotoxicity associated with the administration of vancomycin.</li>
+                            </ul>
+                            <div class="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md shadow-sm mt-6">
+                                <p class="font-semibold">Resource:</p>
+                                <p>For additional resources and interactive content, please visit: <a href="http://evolve.elsevier.com/McCuistion/pharmacology" target="_blank" class="text-blue-600 hover:underline">evolve.elsevier.com/McCuistion/pharmacology</a></p>
+                            </div>
+                        `
+                    },
+                ]
+            }
+        };
+
+        const preAssessmentQuizData = [
+            { moduleId: 'macrolides-group', question: "Which of the following is considered the drug of choice for mycoplasmal pneumonia and Legionnaires’ disease?", options: ["Azithromycin", "Clarithromycin", "Erythromycin", "Fidaxomicin"], correctAnswer: "Erythromycin" },
+            { moduleId: 'other-antibacterials-group', question: "For which serious adverse effect should the nurse closely monitor a patient who is taking lincosamides?", options: ["Seizures", "Ototoxicity", "Hepatotoxicity", "Clostridium difficile–associated diarrhea"], correctAnswer: "Clostridium difficile–associated diarrhea" },
+            { moduleId: 'macrolides-group', question: "Macrolides bind to which ribosomal subunit to inhibit protein synthesis?", options: ["30S", "40S", "50S", "60S"], correctAnswer: "50S" },
+            { moduleId: 'other-antibacterials-group', question: "A patient is prescribed daptomycin. Which action(s) should the nurse implement? (Select all that apply.)", options: ["Monitor blood values for toxicity.", "Dilute in 50 to 100 mL of normal saline and administer intravenously over 30 minutes.", "Monitor the patient for allergic reactions such as rhabdomyolysis.", "Advise the patient to take the medication on an empty stomach, even if gastrointestinal distress occurs.", "Culture the infected area before administering the first dose."], correctAnswer: ["Monitor blood values for toxicity.", "Dilute in 50 to 100 mL of normal saline and administer intravenously over 30 minutes.", "Monitor the patient for allergic reactions such as rhabdomyolysis.", "Culture the infected area before administering the first dose."] },
+            { moduleId: 'other-antibacterials-group', question: "Which glycopeptide antibiotic is known for causing 'red man syndrome' if infused too rapidly?", options: ["Oritavancin", "Telavancin", "Vancomycin", "Daptomycin"], correctAnswer: "Vancomycin" },
+            { moduleId: 'macrolides-group', question: "A patient is taking azithromycin. Which nursing intervention(s) would the nurse plan to implement for this patient? (Select all that apply.)", options: ["Monitor periodic liver function tests.", "Dilute with 50 mL of 5% dextrose in water for intravenous administration.", "Instruct the patient to report any loose stools or diarrhea.", "Instruct the patient to report evidence of superinfection.", "Teach the patient to take oral drug 1 hour before or 2 hours after meals.", "Advise the patient to avoid antacids from 2 hours before 2 hours after administration."], correctAnswer: ["Monitor periodic liver function tests.", "Instruct the patient to report any loose stools or diarrhea.", "Instruct the patient to report evidence of superinfection.", "Teach the patient to take oral drug 1 hour before or 2 hours after meals.", "Advise the patient to avoid antacids from 2 hours before 2 hours after administration."] },
+        ];
+
+
+        const Quiz = ({ questions, onComplete, isPreAssessment = false }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState([]);
+            const [feedback, setFeedback] = useState(null);
+            const [answers, setAnswers] = useState([]);
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            const isSATA = Array.isArray(currentQuestion.correctAnswer);
+
+            const handleOptionSelect = (option) => {
+                if (feedback && !isPreAssessment) return;
+
+                if (isSATA) {
+                    setSelectedOption(prevSelected => {
+                        if (prevSelected.includes(option)) {
+                            return prevSelected.filter(item => item !== option);
+                        } else {
+                            return [...prevSelected, option];
+                        }
+                    });
+                } else {
+                    setSelectedOption(option);
+                }
+            };
+
+            const checkCorrectness = (userAnswers, correctAnswers) => {
+                if (Array.isArray(correctAnswers)) {
+                    const allCorrectSelected = correctAnswers.every(ans => userAnswers.includes(ans));
+                    const noIncorrectSelected = userAnswers.every(ans => correctAnswers.includes(ans));
+                    return allCorrectSelected && noIncorrectSelected && userAnswers.length > 0;
+                } else {
+                    return userAnswers.toLowerCase() === correctAnswers.toLowerCase();
+                }
+            }
+
+            const handleNext = () => {
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                
+                const updatedAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(updatedAnswers);
+
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]);
+                    setFeedback(null);
+                } else {
+                    const finalScore = updatedAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete(isPreAssessment ? updatedAnswers : { score: finalScore, total: questions.length });
+                }
+            };
+            
+            const handleRegularQuizSubmit = () => {
+                if (selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)) return;
+                
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                setFeedback(isCorrect ? 'correct' : 'incorrect');
+            };
+
+            const handleRegularQuizNext = () => {
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                const finalAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(finalAnswers);
+                
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]);
+                    setFeedback(null);
+                } else {
+                    const finalScore = finalAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete({ score: finalScore, total: questions.length });
+                }
+            };
+
+            const isSubmitDisabled = selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0);
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner animate-slide-in-up">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Quiz: {currentQuestionIndex + 1} of {questions.length}</h4>
+                    <p className="font-semibold text-gray-700 mb-3">{currentQuestion.question}</p>
+                    {isSATA && <p className="text-sm text-indigo-600 mb-4 font-medium">Select all that apply.</p>}
+                    <div className="space-y-2">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = Array.isArray(selectedOption) ? selectedOption.includes(option) : selectedOption === option;
+                            const isCorrectOption = Array.isArray(currentQuestion.correctAnswer)
+                                ? currentQuestion.correctAnswer.includes(option)
+                                : option.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                            
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+
+                            if (feedback && !isPreAssessment) {
+                                if (isCorrectOption) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800';
+                                } else if (isSelected && !isCorrectOption) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800';
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800';
+                            }
+
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handleOptionSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {isSATA ? (
+                                            <input 
+                                                type="checkbox" 
+                                                checked={isSelected} 
+                                                readOnly 
+                                                className="mr-3 text-indigo-600 rounded focus:ring-indigo-500"
+                                            />
+                                        ) : (
+                                            <span className={`w-4 h-4 rounded-full border-2 mr-3 ${isSelected ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-gray-400'}`}></span>
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                    {feedback && !isPreAssessment && (isCorrectOption || (isSelected && !isCorrectOption)) && (
+                                        <div className="ml-7 mt-1 text-sm font-semibold">
+                                            {isCorrectOption ? <span className="text-green-600">Correct Answer</span> : (isSelected && <span className="text-red-600">Incorrect Selection</span>)}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-6 text-center">
+                        {isPreAssessment ? (
+                            <button
+                                onClick={handleNext}
+                                disabled={isSubmitDisabled}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Assessment'}
+                            </button>
+                        ) : (
+                            <>
+                                {!feedback ? (
+                                    <button
+                                        onClick={handleRegularQuizSubmit}
+                                        disabled={isSubmitDisabled}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Submit Answer
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleRegularQuizNext}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                    >
+                                        {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'View Results'}
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const PreAssessmentQuiz = ({ onComplete, onExit }) => {
+            const [results, setResults] = useState(null);
+
+            const handleQuizComplete = (finalAnswers) => {
+                const moduleResults = {};
+                finalAnswers.forEach(answer => {
+                    const { moduleId } = answer.question;
+                    if (!moduleResults[moduleId]) {
+                        moduleResults[moduleId] = { correct: 0, total: 0 };
+                    }
+                    if (answer.isCorrect) {
+                        moduleResults[moduleId].correct++;
+                    }
+                    moduleResults[moduleId].total++;
+                });
+
+                const completedModules = [];
+                for (const moduleId in moduleResults) {
+                    if (moduleResults[moduleId].correct === moduleResults[moduleId].total && moduleResults[moduleId].total > 0) {
+                        completedModules.push(moduleId);
+                    }
+                }
+                setResults({ completedModules, total: finalAnswers.length, correct: finalAnswers.filter(a => a.isCorrect).length });
+                onComplete(completedModules);
+            };
+
+            if (results) {
+                return (
+                    <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4 animate-fade-in">
+                        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full text-center">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">Assessment Complete!</h2>
+                            <p className="text-lg text-gray-600 mb-6">
+                                You correctly answered {results.correct} out of {results.total} questions.
+                            </p>
+                            {results.completedModules.length > 0 ? (
+                                <>
+                                    <p className="text-green-600 font-semibold mb-4">You've tested out of the following modules:</p>
+                                    <ul className="list-disc list-inside text-left mb-6 bg-green-50 p-4 rounded-lg">
+                                        {results.completedModules.map(id => <li key={id}>{contentData[id].title}</li>)}
+                                    </ul>
+                                </>
+                            ) : (
+                                <p className="text-yellow-600 font-semibold mb-6">You haven't tested out of any modules. You can proceed to the main modules for learning.</p>
+                            )}
+                            <button
+                                onClick={onExit}
+                                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                            >
+                                Return to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
+                        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Diagnostic Quiz</h2>
+                        <Quiz questions={preAssessmentQuizData} onComplete={handleQuizComplete} isPreAssessment={true} />
+                    </div>
+                </div>
+            );
+        };
+
+
+        const Dashboard = ({ onSelectModule, progress, onResetProgress, onStartPreAssessment }) => {
+            let totalCompletedSteps = 0;
+            let totalPossibleSteps = 0;
+            let totalQuizCorrect = 0;
+            let totalQuizQuestions = 0;
+
+            Object.entries(contentData).forEach(([moduleId, module]) => {
+                totalPossibleSteps += module.steps.length;
+                const moduleProgress = progress[moduleId] || {};
+                
+                Object.values(moduleProgress).forEach(stepProgress => {
+                    if (stepProgress.completed) {
+                        totalCompletedSteps++;
+                    }
+                    if (stepProgress.score !== undefined) {
+                        totalQuizCorrect += stepProgress.score;
+                    }
+                });
+
+                module.steps.forEach(step => {
+                    if (step.type === 'quiz') {
+                        totalQuizQuestions += step.questions.length;
+                    }
+                });
+            });
+
+            const overallPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+
+            return (
+                <div className="p-4 sm:p-6 md:p-8 min-h-screen w-full flex flex-col">
+                    <div className="w-full">
+                        <header className="mb-8 text-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">ALM</span>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Antibiotics: Macrolides & Other Groups</h1>
+                                <span className="bg-gray-200 text-gray-600 text-xs font-mono px-2.5 py-1 rounded-full">V:27.0</span>
+                            </div>
+                            <p className="text-lg text-gray-500 max-w-3xl mx-auto">Master the pharmacology of macrolides, oxazolidinones, lincosamides, glycopeptides, ketolides, and lipopeptides through interactive modules and assessments.</p>
+                        </header>
+
+                        <div className="mb-8 text-center">
+                            <button
+                                onClick={onStartPreAssessment}
+                                className="w-full max-w-md mx-auto px-6 py-4 bg-teal-500 text-white font-bold rounded-lg shadow-lg hover:bg-teal-600 transition-all duration-300 transform hover:scale-105"
+                            >
+                                <div className="text-xl">Skip Ahead: Take Diagnostic Quiz</div>
+                                <div className="text-sm font-normal">Test your knowledge and potentially skip modules.</div>
+                            </button>
+                        </div>
+
+                        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
+                           <div className="flex justify-between items-center mb-3">
+                                <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                                <button 
+                                    onClick={onResetProgress}
+                                    className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M4 2a1 1 0 011 1v2.101A7.002 7.002 0 0111.601 7.567a1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" />
+                                    </svg>
+                                    Reset Progress
+                                </button>
+                           </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div
+                                    className="bg-indigo-600 h-4 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-left text-sm text-gray-600 mt-2">
+                                    {totalQuizQuestions > 0 && `Quiz Performance: ${totalQuizCorrect} / ${totalQuizQuestions} correct`}
+                                </p>
+                                <p className="text-right text-sm text-gray-600 mt-2">{Math.round(overallPercentage)}% Completed</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                            {Object.entries(contentData).map(([id, module]) => {
+                                const moduleProgress = progress[id] || {};
+                                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                                const totalSteps = module.steps.length;
+                                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
+                                let statusText = "Not Started";
+                                let statusColor = "text-gray-500";
+                                if (completedCount === totalSteps) {
+                                    statusText = "Completed";
+                                    statusColor = "text-green-600";
+                                } else if (completedCount > 0) {
+                                    statusText = "In Progress";
+                                    statusColor = "text-yellow-600";
+                                }
+
+                                const quizStep = module.steps.find(step => step.type === 'quiz');
+                                const quizProgress = quizStep ? moduleProgress[quizStep.id] : null;
+
+                                return (
+                                    <div
+                                        key={id}
+                                        onClick={() => onSelectModule(id)}
+                                        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col animate-slide-in-up"
+                                    >
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className={cn("p-3 rounded-full bg-gradient-to-br", module.color, "w-10 h-10 flex items-center justify-center text-white text-lg font-bold shadow-md flex-shrink-0")}>
+                                                {module.title.split(' ').map(word => word.charAt(0)).join('')}
+                                            </div>
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <svg className="w-full h-full" viewBox="0 0 36 36">
+                                                    <path
+                                                        className="text-gray-200"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                    />
+                                                    <path
+                                                        className="text-indigo-500"
+                                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${percentage}, 100`}
+                                                        strokeLinecap="round"
+                                                        transform="rotate(-90 18 18)"
+                                                    />
+                                                </svg>
+                                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h3>
+                                        <p className="text-gray-500 text-sm mb-2 h-10">{module.description}</p>
+                                        <div className="mt-auto">
+                                            <p className={cn("text-sm font-semibold", statusColor)}>{statusText}</p>
+                                            {quizProgress && quizProgress.score !== undefined && (
+                                                <p className="text-sm text-gray-600 mt-1">Quiz Score: {quizProgress.score} / {quizStep.questions.length}</p>
+                                            )}
+                                            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700 mt-2">
+                                                Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const CaseStudy = ({ caseData, onComplete }) => {
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showExplanation, setShowExplanation] = useState(false);
+
+            const handleSelect = (option) => {
+                if (showExplanation) return; 
+
+                setSelectedAnswer(option);
+                setShowExplanation(true); 
+
+                if (option.toLowerCase() === caseData.correctAnswer.toLowerCase()) {
+                    onComplete({ completed: true }); 
+                }
+            };
+            
+            const renderHtmlContent = (content) => {
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: content }} />
+                );
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner animate-slide-in-up">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
+                    
+                    <div class="bg-blue-100 text-blue-800 p-4 rounded-md mb-4 text-sm font-medium">
+                        <h5 class="font-bold mb-2">Scenario:</h5>
+                        {renderHtmlContent(caseData.scenario)}
+                    </div>
+
+                    <p className="font-semibold text-gray-700 mb-4">{caseData.question}</p>
+                    <div className="space-y-3">
+                        {caseData.options.map(option => {
+                            const isSelected = selectedAnswer === option;
+                            const isCorrect = option.toLowerCase() === caseData.correctAnswer.toLowerCase();
+                            
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200 cursor-pointer'; 
+                            if (showExplanation) {
+                                if (isCorrect) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800 cursor-default'; 
+                                } else if (isSelected) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800 cursor-default'; 
+                                } else {
+                                    optionClass = 'bg-gray-50 text-gray-500 border-gray-200 cursor-default'; 
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; 
+                            }
+
+                            return (
+                                <div
+                                    key={option}
+                                    onClick={() => handleSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {showExplanation && (
+                                            isCorrect ? <span className="text-green-600 mr-2">✓</span> : (isSelected && <span className="text-red-600 mr-2">✗</span>)
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    
+                    {showExplanation && ( 
+                        <div className="mt-6 p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-500 animate-fade-in">
+                            <h5 className="font-bold text-indigo-800">Explanation</h5>
+                            {renderHtmlContent(caseData.explanation)}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        const StaticContentStep = ({ step, onComplete }) => {
+            useEffect(() => {
+                onComplete();
+            }, []);
+
+            return (
+                <div className="prose max-w-none text-gray-700 leading-relaxed p-4 bg-white rounded-lg shadow-inner space-y-4 border border-gray-200 animate-slide-in-up">
+                   <div dangerouslySetInnerHTML={{ __html: step.content }} />
+                </div>
+            );
+        };
+
+        const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
+                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm"
+                            >
+                                Back to Dashboard
+                            </button>
+                            {hasNextModule && (
+                                <button
+                                    onClick={onNextModule}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Continue to Next Module
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
+            const initialActiveStep = useMemo(() => {
+                if (progress[module.id]) {
+                    const firstIncompleteIndex = module.steps.findIndex(step => !progress[module.id][step.id]?.completed);
+                    return firstIncompleteIndex !== -1 ? firstIncompleteIndex : 0;
+                }
+                return 0;
+            }, [module.id, module.steps, progress]);
+
+            const [activeStep, setActiveStep] = useState(initialActiveStep);
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+
+            const handleStepComplete = useCallback((stepId, data = {}) => {
+                onProgressUpdate(module.id, stepId, { completed: true, ...data });
+            }, [onProgressUpdate, module.id]);
+
+            const moduleProgress = progress[module.id] || {};
+            
+            const allStepsCompletedInModule = module.steps.every(step =>
+                moduleProgress[step.id] && moduleProgress[step.id].completed
+            );
+
+            const handleNextStep = () => {
+                if (activeStep === module.steps.length - 1) {
+                    if (allStepsCompletedInModule) {
+                        setIsCompletionModalOpen(true);
+                    }
+                } else {
+                    setActiveStep(activeStep + 1);
+                }
+            };
+
+            const handlePrevStep = () => {
+                if (activeStep > 0) {
+                    setActiveStep(activeStep - 1);
+                }
+            };
+            
+            if (!module || !module.steps) {
+                console.error("LearningModule received invalid module prop:", module);
+                return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
+            }
+
+            const currentStep = module.steps[activeStep];
+            
+            const renderStepContent = (step) => {
+                if (!step) return <p>Please select a step.</p>;
+
+                const onCompleteForStep = (data) => {
+                    if (step.type === 'quiz' && data.score !== undefined) {
+                        handleStepComplete(step.id, { score: data.score, total: data.total });
+                    } else if (step.type !== 'quiz' && step.type !== 'pre_assessment') {
+                        handleStepComplete(step.id);
+                    }
+                };
+
+                switch (step.type) {
+                    case 'text':
+                        return <StaticContentStep key={step.id} step={step} onComplete={onCompleteForStep} />;
+                    case 'case_study':
+                        return <CaseStudy key={step.id} caseData={step.case} onComplete={onCompleteForStep} />;
+                    case 'quiz':
+                        return <Quiz key={step.id} questions={step.questions} onComplete={onCompleteForStep} />;
+                    default:
+                        return <p key={step.id} className="text-red-600">Error: Content for this step type ({step.type}) is not available.</p>;
+                }
+            };
+
+            const handleModalClose = () => {
+                setIsCompletionModalOpen(false);
+                onBack();
+            };
+
+            const handleModalNextModule = () => {
+                setIsCompletionModalOpen(false);
+                onNextModule();
+            };
+
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
+                    <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
+                        <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            <span className="hidden sm:inline">Dashboard</span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                        </div>
+                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                    </header>
+                    {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
+                    <div className="flex flex-1 overflow-hidden">
+                        <aside className={cn(
+                            "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
+                            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        )}>
+                            <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
+                            <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
+                                {module.steps.map((step, index) => (
+                                    <button
+                                        key={step.id}
+                                        onClick={() => {
+                                            setActiveStep(index);
+                                            setIsSidebarOpen(false);
+                                        }}
+                                        className={cn(
+                                            'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
+                                            activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700'
+                                        )}
+                                    >
+                                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                            {moduleProgress[step.id]?.completed ? (
+                                                <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                            ) : (
+                                                <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                            )}
+                                        </div>
+                                        <span className="flex-1 text-sm">{step.title}</span>
+                                    </button>
+                                ))}
+                            </nav>
+                        </aside>
+
+                        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                            <div className="max-w-5xl mx-auto">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
+                                {renderStepContent(currentStep)}
+
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={handlePrevStep}
+                                        disabled={activeStep === 0}
+                                        className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <button
+                                        onClick={handleNextStep}
+                                        disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
+                                    >
+                                        {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
+                                    </button>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                    <CompletionModal
+                        isOpen={isCompletionModalOpen}
+                        onClose={handleModalClose}
+                        onNextModule={handleModalNextModule}
+                        hasNextModule={hasNextModule}
+                    />
+                </div>
+            );
+        };
+        
+        function App() {
+            const [currentModuleId, setCurrentModuleId] = useState(null);
+            const [isPreAssessmentActive, setIsPreAssessmentActive] = useState(false);
+            const [userId, setUserId] = useState(null);
+            const [progress, setProgress] = useState({});
+            const [isAuthReady, setIsAuthReady] = useState(false);
+
+            useEffect(() => {
+                const unsubscribe = mockAuth.onAuthStateChanged((user) => {
+                    if (user) setUserId(user.uid);
+                    setIsAuthReady(true);
+                });
+                return () => unsubscribe();
+            }, []);
+
+            useEffect(() => {
+                if (!isAuthReady || !userId) return;
+                const storedProgress = localStorage.getItem(`macrolides-module-progress-${userId}`);
+                if (storedProgress) {
+                    try {
+                        setProgress(JSON.parse(storedProgress));
+                    } catch (e) {
+                        console.error("Failed to parse stored progress, resetting.", e);
+                        setProgress({});
+                    }
+                }
+            }, [isAuthReady, userId]);
+
+            const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
+                if (!isAuthReady || !userId) return;
+
+                setProgress(currentProgress => {
+                    const currentStepProgress = currentProgress[moduleId]?.[stepId] || {};
+                    const newStepProgress = { ...currentStepProgress, ...data };
+
+                    if (JSON.stringify(currentStepProgress) === JSON.stringify(newStepProgress)) {
+                        return currentProgress;
+                    }
+
+                    const newProgress = {
+                        ...currentProgress,
+                        [moduleId]: {
+                            ...(currentProgress[moduleId] || {}),
+                            [stepId]: newStepProgress
+                        }
+                    };
+
+                    localStorage.setItem(`macrolides-module-progress-${userId}`, JSON.stringify(newProgress));
+                    return newProgress;
+                });
+            }, [isAuthReady, userId]);
+
+            const handlePreAssessmentComplete = (completedModuleIds) => {
+                const newProgress = { ...progress };
+                completedModuleIds.forEach(moduleId => {
+                    const module = contentData[moduleId];
+                    if (module) {
+                        newProgress[moduleId] = {};
+                        module.steps.forEach(step => {
+                            newProgress[moduleId][step.id] = { completed: true };
+                        });
+                    }
+                });
+                setProgress(newProgress);
+                localStorage.setItem(`macrolides-module-progress-${userId}`, JSON.stringify(newProgress));
+            };
+            
+            const handleResetProgress = useCallback(() => {
+                if (!isAuthReady || !userId) return;
+                setProgress({});
+                localStorage.removeItem(`macrolides-module-progress-${userId}`);
+            }, [isAuthReady, userId]);
+
+            const handleNextModule = useCallback(() => {
+                const moduleIds = Object.keys(contentData);
+                const currentIndex = moduleIds.indexOf(currentModuleId);
+                if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
+                    setCurrentModuleId(moduleIds[currentIndex + 1]);
+                } else {
+                    setCurrentModuleId(null);
+                }
+            }, [currentModuleId]);
+
+            const selectedModule = currentModuleId && contentData[currentModuleId]
+                                        ? { ...contentData[currentModuleId], id: currentModuleId }
+                                        : null;
+
+            const moduleIds = Object.keys(contentData);
+            const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
+            const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
+
+
+            return (
+                <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+                    {isPreAssessmentActive ? (
+                        <PreAssessmentQuiz 
+                            onComplete={handlePreAssessmentComplete} 
+                            onExit={() => setIsPreAssessmentActive(false)}
+                        />
+                    ) : selectedModule ? (
+                        <LearningModule
+                            key={selectedModule.id}
+                            module={selectedModule}
+                            onBack={() => setCurrentModuleId(null)}
+                            progress={progress}
+                            onProgressUpdate={handleProgressUpdate}
+                            onNextModule={handleNextModule}
+                            hasNextModule={hasNextModule}
+                        />
+                    ) : (
+                        <Dashboard 
+                            onSelectModule={setCurrentModuleId} 
+                            progress={progress} 
+                            onResetProgress={handleResetProgress}
+                            onStartPreAssessment={() => setIsPreAssessmentActive(true)}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        window.onload = function() {
+            const container = document.getElementById('root');
+            if (container) {
+                const root = ReactDOM.createRoot(container);
+                root.render(<App />);
+            } else {
+                console.error("Root element not found!");
+            }
+        };
+    </script>
+</body>
+</html>
