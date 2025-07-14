@@ -70,423 +70,624 @@
         };
 
         // --- Data Structure for all Learning Content ---
-        const contentData = {
-            'infection-concept': {
-                title: 'Concept 23: Infection',
-                color: 'from-blue-500 to-indigo-600',
-                icon: (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V5m0 14v-1M9 12l-2 2 2 2m6-4l2 2-2 2" />
-                    </svg>
-                ),
-                description: 'An overview of the infection concept, including definitions, scope, physiological processes, and risk factors.',
-                steps: [
-                    {
-                        id: 'introduction',
-                        title: 'Introduction',
-                        type: 'text',
-                        content: `<p>Microorganisms are found throughout the environment. As a consequence, humans are constantly exposed to a multitude of microorganisms at every moment. Although many microorganisms do not pose a health threat to humans, some cause human disease and are known as pathogens. Our bodies are constantly confronted with pathogens in the forms of bacteria, viruses, parasites, or fungi. These pathogens are routinely found on the skin; the mucous membranes; the linings of the respiratory, gastrointestinal, and urinary tracts; and the mouth and eyes. Typically, an individual’s immune system is able to rid the body of pathogens without developing an infection. An infection occurs when a susceptible host is invaded by a pathogen that multiplies and causes disease. This concept presentation provides an overview of the infection concept, including identifying individuals most at risk, recognizing signs and symptoms of infection, and understanding ways to treat or manage an infection.</p>`
-                    },
-                    {
-                        id: 'definition',
-                        title: 'Definition',
-                        type: 'text',
-                        content: `<p>For the purposes of this concept presentation, infection is defined as the invasion and multiplication of microorganisms in body tissues, which may be clinically unapparent or result in local cellular injury due to competitive metabolism, toxins, intracellular replication, or antigen–antibody response. Several additional terms are important to understand.</p><ul class="list-disc list-inside space-y-2"><li><strong>Acute Infection:</strong> Resolving in a few days or weeks.</li><li><strong>Chronic Infection:</strong> An infection that typically lasts longer than 12 weeks and, in some cases, is incurable.</li><li><strong>Localized Infection:</strong> Limited to a specific body area.</li><li><strong>Disseminated:</strong> A spread of infection from an initial site to other areas of the body.</li><li><strong>Systemic:</strong> An infection that affects the body as a whole or has spread throughout the body.</li><li><strong>Sepsis:</strong> A common type of systemic infection, is the presence of pathogens in the blood or other tissues throughout the body.</li></ul><h4 class="mt-4">Epidemic vs. Pandemic</h4><p>Two additional terms that are significant to the concept of Infection are epidemic and pandemic.</p><ul class="list-disc list-inside space-y-2"><li><strong>Epidemic:</strong> A situation in which there are more cases of an infectious disease than is normal for the population or geographic area.</li><li><strong>Pandemic:</strong> A worldwide epidemic of a disease, such as that of the COVID-19 pandemic.</li></ul><p class="mt-2">The global nature of our modern world presents challenges because people with asymptomatic infections can travel from home to nearly anywhere in the world in less than 24 hours. Professional conferences, worldwide sporting events, and gatherings for various types of entertainment can bring large numbers of people together from all over the world. People with asymptomatic infections often travel to and from the events in confined airplanes and participate in events in close proximity to others. Exposure to infection can lead to the spread of disease before returning to their homes.</p>`
-                    },
-                    {
-                        id: 'scope',
-                        title: 'Scope of Infection',
-                        type: 'text',
-                        content: `<p>Infections may be categorized in several ways, including on the basis of the multiple variables involved such as mode of transmission, trajectory of illness, and body systems affected. The most common way to categorize and discuss infections is based on the classification of the causative microorganism.</p><div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg"><strong class="block text-gray-700">FIG. 23.1 Scope of Concept: Infection.</strong><p class="text-sm text-gray-600">This figure illustrates the scope of infection, categorized by the causative microorganism: Bacterial, Viral, Fungal, and Parasitic/Protozoan.</p></div><p>The most common microorganisms initiating an infection are bacteria, viruses, fungi, and parasites or protozoa. The type of invading organism influences the immune response. B lymphocytes and T lymphocytes take “leadership” roles depending on whether it is a bacterial or viral invasion. The complement system is always present to enhance the immune response, and dendritic cells help modulate the immune response.</p><h4>Bacterial Infections</h4><p>Bacteria are one-celled organisms without a true nucleus or cellular organelles. They synthesize DNA, RNA, and proteins and can reproduce independently, but they require a host as a suitable environment for multiplication. Bacteria cause cellular injury by releasing exotoxins (enzymes released by gram-positive bacteria) or endotoxins (part of the cell wall of gram-negative bacteria).</p><h4>Viral Infections</h4><p>A virus is a pathogen with a nucleic acid within a protein shell and requires a host for replication. An invading virus may immediately cause disease or may remain dormant for years. The virus causes cellular injury by blocking the host cell’s protein synthesis and using the host cell’s metabolic processes for its own reproduction.</p><h4>Fungal Infections</h4><p>A fungus includes yeasts, molds, and mushrooms. In healthy individuals, fungi are often contained by natural flora. Fungi causing disease are termed fungi imperfecti and can be deadly in immunocompromised individuals. Other fungal infections, like athlete's foot, can develop in healthy individuals.</p><h4>Protozoa/Parasitic Infections</h4><p>Protozoa generally infect individuals with compromised immune responses. They are found in dead material in water and soil and are spread by the fecal-oral route. Disease can develop when spores invade organs and stimulate an immune response.</p><h4>Other Types of Infections</h4><p>Sometimes an infection will begin as one type and a secondary infection occurs. For example, a fungal infection may develop after antibiotic treatment for a bacterial infection. There is also a concern about emerging and reemerging infections, such as Methicillin-resistant Staphylococcus aureus (MRSA), Clostridioides difficile (C. difficile), and vancomycin-resistant Enterococci (VRE).</p>`
-                    },
-                    {
-                        id: 'physiology',
-                        title: 'Normal Physiological Process',
-                        type: 'text',
-                        content: `<p>Pathogens may be highly virulent (causing disease with small numbers) or weakly virulent (requiring a large number or a weakened host). Opportunistic infections cause disease when the host immune system is severely compromised.</p><p>Some diseases are communicable before symptoms are evident, while others remain communicable after symptoms subside. The "iceberg" concept of infectious disease suggests three levels: (1) a large asymptomatic carrier population, (2) a smaller group with less severe symptoms, and (3) the smallest group with classical clinical symptoms.</p><h4>Infection Process</h4><p>The process of infection requires six elements: a pathogen, a susceptible host, a reservoir, a portal of exit, a mode of transmission, and a portal of entry.</p><div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg"><strong class="block text-gray-700">FIG. 23.2 Process of Infection: Interactions of Host, Pathogens, and the Environment.</strong><p class="text-sm text-gray-600">This figure depicts the chain of infection, showing the interaction between the host, pathogen, and environment, including the reservoir, portals of exit and entry, and mode of transmission.</p></div><h4>Pathogen Invasion</h4><p>When a pathogen invades, the immune system responds. B lymphocytes produce antibodies, T lymphocytes directly kill invaders, and macrophages initiate phagocytosis. The complement system enhances this response. Tissue damage can occur from endotoxins or exotoxins released by the pathogen, leading to symptoms like fever, chills, and weakness, or more severe outcomes like shock.</p><h4>Age-Related Differences</h4><p>Infants and young children have immature immune systems, increasing their susceptibility. Older adults may have a diminished immune response, leading to muted symptoms like the absence of fever. Instead, they might present with confusion, dizziness, or fatigue. Comorbidities also alter the body's response to infection.</p>`
-                    },
-                    {
-                        id: 'consequences',
-                        title: 'Consequences of Uncontrolled Infection',
-                        type: 'text',
-                        content: `<p>Severe, untreated, or poorly responding infections can lead to septic shock syndrome and multiorgan dysfunction syndrome (MODS), also known as multisystem organ failure (MSOF). Symptoms may include hypotension, tachycardia, tachypnea, oliguria, hypoxia, hypercapnia, seizures, or coma.</p><div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg"><strong class="block text-gray-700">FIG. 23.3 Pathophysiological Process of Septic Shock.</strong><p class="text-sm text-gray-600">This diagram illustrates the progression from a bacterial infection to septic shock, highlighting the roles of toxins, inflammatory responses, and compensatory mechanisms leading to organ failure.</p></div><h4>Vascular, Renal, and Nervous System Compensation</h4><p>An inflammatory response increases vascular permeability, leading to hypovolemia and hypotension. The nervous system compensates with vasoconstriction. The renal system attempts to maintain filtration but eventually, continued hypoperfusion leads to decreased urine output.</p><h4>Respiratory Compensation</h4><p>The respiratory system compensates for hypoxemia by increasing the rate of respiration. This can be hampered by cardiovascular decompensation, leading to pulmonary edema, hypoxia, and hypercapnia.</p><h4>Multisystem Failure</h4><p>Without effective treatment, the combination of inadequate tissue perfusion, overextended compensatory mechanisms, and cell damage results in irreversible organ failure and death.</p>`
-                    },
-                    {
-                        id: 'risk-factors',
-                        title: 'Risk Factors',
-                        type: 'text',
-                        content: `<h4>Populations at Risk</h4><p>While infectious diseases can affect anyone, certain populations are at higher risk. The very young (infants) and older adults are more vulnerable. Low socioeconomic status is a significant risk factor, as it can lead to insufficient preventive care, lack of resources for treatment, and inadequate nutrition.</p><h4>Individual Risk Factors</h4><ul class="list-disc list-inside space-y-2"><li><strong>Compromised Host (Immunodeficiency):</strong> Individuals who are very young, elderly, or immunocompromised due to genetics, malnutrition, pre-existing infections (like HIV), stress, or immunosuppressive medications are at high risk.</li><li><strong>Compromised Host (Chronic Illness):</strong> Chronic diseases like diabetes, cancer, and respiratory disorders challenge the immune system. Treatments such as invasive lines, surgery, and mechanical ventilation provide entry points for pathogens.</li><li><strong>Environmental Conditions:</strong> Unsanitary or crowded living conditions, lack of clean food and water, and poor air ventilation increase susceptibility to infection.</li></ul>`
-                    },
-                    {
-                        id: 'assessment',
-                        title: 'Assessment',
-                        type: 'text',
-                        content: `<h4>History</h4><p>A thorough health history is crucial. Ask about injuries, known exposures, prior infections, recent surgeries, travel history, and use of immunosuppressant medications. Assess for symptoms like pain, swelling, redness, fatigue, and malaise.</p><h4>Examination Findings</h4><p>Key physical findings include fever, swelling, chills, redness, drainage from wounds, pain, and respiratory congestion. In older adults, look for confusion or fatigue. For suspected C. difficile or parasitic infections, assess for watery diarrhea and abdominal pain.</p><h4>Diagnostic Tests</h4><p><strong>Laboratory Tests:</strong></p><ul class="list-disc list-inside space-y-2"><li><strong>Complete Blood Count (CBC) with Differential:</strong> Elevated WBCs (neutrophils, lymphocytes) indicate infection. Elevated eosinophils and basophils can suggest a parasitic infection.</li><li><strong>Culture and Sensitivity (C&S):</strong> Identifies the specific pathogen and the most effective antimicrobial. Can be performed on any body fluid or tissue.</li><li><strong>Other Labs:</strong> C-reactive protein (CRP), erythrocyte sedimentation rate (ESR), and serologic tests for specific antibodies (e.g., for HIV, Hepatitis) are also used.</li></ul><p><strong>Radiographic Tests:</strong></p><p>Tests like chest x-rays, CT scans, and MRIs help visualize tissues to determine the extent and location of an infection.</p>`
-                    },
-                    {
-                        id: 'management',
-                        title: 'Clinical Management',
-                        type: 'text',
-                        content: `<p>Success in treating infections has been dramatic due to antibiotics, sanitation, and immunizations. However, challenges remain due to antimicrobial resistance (e.g., MRSA, VRE), emerging infections, and global travel.</p><h4>Primary Prevention</h4><ul class="list-disc list-inside space-y-2"><li><strong>Hand Hygiene and Standard Precautions:</strong> The most effective methods to block transmission. Includes thorough hand washing and use of alcohol-based rubs.</li><li><strong>Immunizations:</strong> A critical measure to prevent diseases like polio, measles, mumps, rubella, HPV, and hepatitis.</li></ul><h4>Secondary Prevention (Screening)</h4><p>Screening is less effective for general infection control but is crucial for identifying specific infections early, such as sexually transmitted diseases (e.g., HIV, Chlamydia, HPV).</p><h4>Collaborative Interventions</h4><p>The goal is to eradicate the infection and support affected body systems.</p><ul class="list-disc list-inside space-y-2"><li><strong>Antimicrobial Therapy:</strong> Includes antibiotics, antivirals, and antifungals. It's vital to complete the full course of therapy to prevent resistance.</li><li><strong>Nutrition and Fluids:</strong> Crucial for supporting the immune system, especially in the presence of fever, vomiting, or diarrhea.</li></ul>`
-                    },
-                ]
+const contentData = {
+    'infection-concept': {
+        title: 'Concept 23: Infection',
+        color: 'from-blue-500 to-indigo-600',
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V5m0 14v-1M9 12l-2 2 2 2m6-4l2 2-2 2" />
+            </svg>
+        ),
+        description: 'An overview of the infection concept, including definitions, scope, physiological processes, and risk factors.',
+        steps: [
+            {
+                id: 'introduction',
+                title: 'Introduction',
+                type: 'text',
+                content: `<p>Microorganisms are found throughout the environment. As a consequence, humans are constantly exposed to a multitude of microorganisms at every moment. Although many microorganisms do not pose a health threat to humans, some cause human disease and are known as pathogens. Our bodies are constantly confronted with pathogens in the forms of bacteria, viruses, parasites, or fungi. These pathogens are routinely found on the skin; the mucous membranes; the linings of the respiratory, gastrointestinal, and urinary tracts; and the mouth and eyes. Typically, an individual’s immune system is able to rid the body of pathogens without developing an infection. An infection occurs when a susceptible host is invaded by a pathogen that multiplies and causes disease. This concept presentation provides an overview of the infection concept, including identifying individuals most at risk, recognizing signs and symptoms of infection, and understanding ways to treat or manage an infection.</p>`
             },
-            'uti-exemplar': { // Changed id from cystitis-exemplar to uti-exemplar
-                title: 'Exemplar: Urinary Tract Infections (UTIs)', // Updated title
-                color: 'from-amber-500 to-orange-600',
-                icon: (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                    </svg>
-                ),
-                description: 'An in-depth look at Urinary Tract Infections (UTIs), including pathophysiology, risk factors, assessment, and management strategies.', // Updated description
-                steps: [
+            {
+                id: 'definition',
+                title: 'Definition',
+                type: 'text',
+                content: `<p>For the purposes of this concept presentation, infection is defined as the invasion and multiplication of microorganisms in body tissues, which may be clinically unapparent or result in local cellular injury due to competitive metabolism, toxins, intracellular replication, or antigen–antibody response. Several additional terms are important to understand.</p><ul class="list-disc list-inside space-y-2"><li><strong>Acute Infection:</strong> Resolving in a few days or weeks.</li><li><strong>Chronic Infection:</strong> An infection that typically lasts longer than 12 weeks and, in some cases, is incurable.</li><li><strong>Localized Infection:</strong> Limited to a specific body area.</li><li><strong>Disseminated:</strong> A spread of infection from an initial site to other areas of the body.</li><li><strong>Systemic:</strong> An infection that affects the body as a whole or has spread throughout the body.</li><li><strong>Sepsis:</strong> A common type of systemic infection, is the presence of pathogens in the blood or other tissues throughout the body.</li></ul><h4 class="mt-4">Epidemic vs. Pandemic</h4><p>Two additional terms that are significant to the concept of Infection are epidemic and pandemic.</p><ul class="list-disc list-inside space-y-2"><li><strong>Epidemic:</strong> A situation in which there are more cases of an infectious disease than is normal for the population or geographic area.</li><li><strong>Pandemic:</strong> A worldwide epidemic of a disease, such as that of the COVID-19 pandemic.</li></ul><p class="mt-2">The global nature of our modern world presents challenges because people with asymptomatic infections can travel from home to nearly anywhere in the world in less than 24 hours. Professional conferences, worldwide sporting events, and gatherings for various types of entertainment can bring large numbers of people together from all over the world. People with asymptomatic infections often travel to and from the events in confined airplanes and participate in events in close proximity to others. Exposure to infection can lead to the spread of disease before returning to their homes.</p>`
+            },
+            {
+                id: 'scope',
+                title: 'Scope of Infection',
+                type: 'text',
+                content: `<p>Infections may be categorized in several ways, including on the basis of the multiple variables involved such as mode of transmission, trajectory of illness, and body systems affected. The most common way to categorize and discuss infections is based on the classification of the causative microorganism.</p><div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg"><strong class="block text-gray-700">FIG. 23.1 Scope of Concept: Infection.</strong><p class="text-sm text-gray-600">This figure illustrates the scope of infection, categorized by the causative microorganism: Bacterial, Viral, Fungal, and Parasitic/Protozoan.</p></div><p>The most common microorganisms initiating an infection are bacteria, viruses, fungi, and parasites or protozoa. The type of invading organism influences the immune response. B lymphocytes and T lymphocytes take “leadership” roles depending on whether it is a bacterial or viral invasion. The complement system is always present to enhance the immune response, and dendritic cells help modulate the immune response.</p><h4>Bacterial Infections</h4><p>Bacteria are one-celled organisms without a true nucleus or cellular organelles. They synthesize DNA, RNA, and proteins and can reproduce independently, but they require a host as a suitable environment for multiplication. Bacteria cause cellular injury by releasing exotoxins (enzymes released by gram-positive bacteria) or endotoxins (part of the cell wall of gram-negative bacteria).</p><h4>Viral Infections</h4><p>A virus is a pathogen with a nucleic acid within a protein shell and requires a host for replication. An invading virus may immediately cause disease or may remain dormant for years. The virus causes cellular injury by blocking the host cell’s protein synthesis and using the host cell’s metabolic processes for its own reproduction.</p><h4>Fungal Infections</h4><p>A fungus includes yeasts, molds, and mushrooms. In healthy individuals, fungi are often contained by natural flora. Fungi causing disease are termed fungi imperfecti and can be deadly in immunocompromised individuals. Other fungal infections, like athlete's foot, can develop in healthy individuals.</p><h4>Protozoa/Parasitic Infections</h4><p>Protozoa generally infect individuals with compromised immune responses. They are found in dead material in water and soil and are spread by the fecal-oral route. Disease can develop when spores invade organs and stimulate an immune response.</p><h4>Other Types of Infections</h4><p>Sometimes an infection will begin as one type and a secondary infection occurs. For example, a fungal infection may develop after antibiotic treatment for a bacterial infection. There is also a concern about emerging and reemerging infections, such as Methicillin-resistant Staphylococcus aureus (MRSA), Clostridioides difficile (C. difficile), and vancomycin-resistant Enterococci (VRE).</p>`
+            },
+            {
+                id: 'physiology',
+                title: 'Normal Physiological Process',
+                type: 'text',
+                content: `<p>Pathogens may be highly virulent (causing disease with small numbers) or weakly virulent (requiring a large number or a weakened host). Opportunistic infections cause disease when the host immune system is severely compromised.</p><p>Some diseases are communicable before symptoms are evident, while others remain communicable after symptoms subside. The "iceberg" concept of infectious disease suggests three levels: (1) a large asymptomatic carrier population, (2) a smaller group with less severe symptoms, and (3) the smallest group with classical clinical symptoms.</p><h4>Infection Process</h4><p>The process of infection requires six elements: a pathogen, a susceptible host, a reservoir, a portal of exit, a mode of transmission, and a portal of entry.</p><div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg"><strong class="block text-gray-700">FIG. 23.2 Process of Infection: Interactions of Host, Pathogens, and the Environment.</strong><p class="text-sm text-gray-600">This figure depicts the chain of infection, showing the interaction between the host, pathogen, and environment, including the reservoir, portals of exit and entry, and mode of transmission.</p></div><h4>Pathogen Invasion</h4><p>When a pathogen invades, the immune system responds. B lymphocytes produce antibodies, T lymphocytes directly kill invaders, and macrophages initiate phagocytosis. The complement system enhances this response. Tissue damage can occur from endotoxins or exotoxins released by the pathogen, leading to symptoms like fever, chills, and weakness, or more severe outcomes like shock.</p><h4>Age-Related Differences</h4><p>Infants and young children have immature immune systems, increasing their susceptibility. Older adults may have a diminished immune response, leading to muted symptoms like the absence of fever. Instead, they might present with confusion, dizziness, or fatigue. Comorbidities also alter the body's response to infection.</p>`
+            },
+            {
+                id: 'consequences',
+                title: 'Consequences of Uncontrolled Infection',
+                type: 'text',
+                content: `<p>Severe, untreated, or poorly responding infections can lead to septic shock syndrome and multiorgan dysfunction syndrome (MODS), also known as multisystem organ failure (MSOF). Symptoms may include hypotension, tachycardia, tachypnea, oliguria, hypoxia, hypercapnia, seizures, or coma.</p><div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg"><strong class="block text-gray-700">FIG. 23.3 Pathophysiological Process of Septic Shock.</strong><p class="text-sm text-gray-600">This diagram illustrates the progression from a bacterial infection to septic shock, highlighting the roles of toxins, inflammatory responses, and compensatory mechanisms leading to organ failure.</p></div><h4>Vascular, Renal, and Nervous System Compensation</h4><p>An inflammatory response increases vascular permeability, leading to hypovolemia and hypotension. The nervous system compensates with vasoconstriction. The renal system attempts to maintain filtration but eventually, continued hypoperfusion leads to decreased urine output.</p><h4>Respiratory Compensation</h4><p>The respiratory system compensates for hypoxemia by increasing the rate of respiration. This can be hampered by cardiovascular decompensation, leading to pulmonary edema, hypoxia, and hypercapnia.</p><h4>Multisystem Failure</h4><p>Without effective treatment, the combination of inadequate tissue perfusion, overextended compensatory mechanisms, and cell damage results in irreversible organ failure and death.</p>`
+            },
+            {
+                id: 'risk-factors',
+                title: 'Risk Factors',
+                type: 'text',
+                content: `<h4>Populations at Risk</h4><p>While infectious diseases can affect anyone, certain populations are at higher risk. The very young (infants) and older adults are more vulnerable. Low socioeconomic status is a significant risk factor, as it can lead to insufficient preventive care, lack of resources for treatment, and inadequate nutrition.</p><h4>Individual Risk Factors</h4><ul class="list-disc list-inside space-y-2"><li><strong>Compromised Host (Immunodeficiency):</strong> Individuals who are very young, elderly, or immunocompromised due to genetics, malnutrition, pre-existing infections (like HIV), stress, or immunosuppressive medications are at high risk.</li><li><strong>Compromised Host (Chronic Illness):</strong> Chronic diseases like diabetes, cancer, and respiratory disorders challenge the immune system. Treatments such as invasive lines, surgery, and mechanical ventilation provide entry points for pathogens.</li><li><strong>Environmental Conditions:</strong> Unsanitary or crowded living conditions, lack of clean food and water, and poor air ventilation increase susceptibility to infection.</li></ul>`
+            },
+            {
+                id: 'assessment',
+                title: 'Assessment',
+                type: 'text',
+                content: `<h4>History</h4><p>A thorough health history is crucial. Ask about injuries, known exposures, prior infections, recent surgeries, travel history, and use of immunosuppressant medications. Assess for symptoms like pain, swelling, redness, fatigue, and malaise.</p><h4>Examination Findings</h4><p>Key physical findings include fever, swelling, chills, redness, drainage from wounds, pain, and respiratory congestion. In older adults, look for confusion or fatigue. For suspected C. difficile or parasitic infections, assess for watery diarrhea and abdominal pain.</p><h4>Diagnostic Tests</h4><p><strong>Laboratory Tests:</strong></p><ul class="list-disc list-inside space-y-2"><li><strong>Complete Blood Count (CBC) with Differential:</strong> Elevated WBCs (neutrophils, lymphocytes) indicate infection. Elevated eosinophils and basophils can suggest a parasitic infection.</li><li><strong>Culture and Sensitivity (C&S):</strong> Identifies the specific pathogen and the most effective antimicrobial. Can be performed on any body fluid or tissue.</li><li><strong>Other Labs:</strong> C-reactive protein (CRP), erythrocyte sedimentation rate (ESR), and serologic tests for specific antibodies (e.g., for HIV, Hepatitis) are also used.</li></ul><p><strong>Radiographic Tests:</strong></p><p>Tests like chest x-rays, CT scans, and MRIs help visualize tissues to determine the extent and location of an infection.</p>`
+            },
+            {
+                id: 'management',
+                title: 'Clinical Management',
+                type: 'text',
+                content: `<p>Success in treating infections has been dramatic due to antibiotics, sanitation, and immunizations. However, challenges remain due to antimicrobial resistance (e.g., MRSA, VRE), emerging infections, and global travel.</p><h4>Primary Prevention</h4><ul class="list-disc list-inside space-y-2"><li><strong>Hand Hygiene and Standard Precautions:</strong> The most effective methods to block transmission. Includes thorough hand washing and use of alcohol-based rubs.</li><li><strong>Immunizations:</strong> A critical measure to prevent diseases like polio, measles, mumps, rubella, HPV, and hepatitis.</li></ul><h4>Secondary Prevention (Screening)</h4><p>Screening is less effective for general infection control but is crucial for identifying specific infections early, such as sexually transmitted diseases (e.g., HIV, Chlamydia, HPV).</p><h4>Collaborative Interventions</h4><p>The goal is to eradicate the infection and support affected body systems.</p><ul class="list-disc list-inside space-y-2"><li><strong>Antimicrobial Therapy:</strong> Includes antibiotics, antivirals, and antifungals. It's vital to complete the full course of therapy to prevent resistance.</li><li><strong>Nutrition and Fluids:</strong> Crucial for supporting the immune system, especially in the presence of fever, vomiting, or diarrhea.</li></ul>`
+            },
+        ]
+    },
+    'sepsis-exemplar': {
+        title: 'Exemplar: Sepsis',
+        color: 'from-purple-600 to-pink-600',
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+        ),
+        description: 'A critical review of Sepsis, including its progression from infection to septic shock, risk factors, assessment, and emergency management.',
+        steps: [
+            {
+                id: 'sepsis-pathophysiology',
+                title: 'Pathophysiology of Sepsis',
+                type: 'text',
+                content: `
+                    <p><strong>Sepsis</strong> is a life-threatening organ dysfunction caused by a dysregulated host response to infection. It is not an infection itself, but rather the body's overwhelming and life-threatening response to an infection.</p>
+                    <p>When an infection occurs, the immune system normally mounts a localized response to eliminate the pathogen. In sepsis, this response becomes uncontrolled and systemic, leading to widespread inflammation and microvascular dysfunction. This systemic inflammatory response can damage tissues and organs far from the original site of infection.</p>
+                    <h4>Progression from Infection to Septic Shock:</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Infection:</strong> Invasion of a normally sterile tissue by pathogenic microorganisms.</li>
+                        <li><strong>Sepsis:</strong> Infection leading to life-threatening organ dysfunction. Diagnosed clinically by a suspected or confirmed infection PLUS an acute increase of 2 points or more in the Sequential Organ Failure Assessment (SOFA) score.</li>
+                        <li><strong>Septic Shock:</strong> A subset of sepsis with profound circulatory, cellular, and metabolic abnormalities, associated with a greater risk of mortality. Defined by persistent hypotension requiring vasopressors to maintain MAP ≥65 mmHg AND a serum lactate level >2 mmol/L (18 mg/dL) despite adequate fluid resuscitation.</li>
+                    </ul>
+                    <div class="p-4 my-4 bg-red-50 border-l-4 border-red-400">
+                        <h4 class="font-bold text-red-800">Key Concept: Dysregulated Host Response</h4>
+                        <p>The danger in sepsis is not the pathogen itself, but the body's uncontrolled and harmful immune reaction to it. This leads to widespread inflammation, coagulation abnormalities, and impaired tissue perfusion, resulting in organ dysfunction.</p>
+                    </div>
+                    <p>The inflammatory cascade involves pro-inflammatory and anti-inflammatory mediators. Endothelial cell damage is central, leading to increased capillary permeability, vasodilation, and microthrombi formation. These events impair oxygen delivery to tissues, resulting in cellular hypoxia and anaerobic metabolism (leading to lactic acidosis).</p>
+                `
+            },
+            {
+                id: 'sepsis-etiology-risk-factors',
+                title: 'Etiology and Risk Factors',
+                type: 'text',
+                content: `
+                    <p>Any type of infection can lead to sepsis. Common sources include pneumonia, urinary tract infections (UTIs), abdominal infections, and skin/soft tissue infections. The causative organisms are usually bacteria, but fungi, viruses, and parasites can also trigger sepsis.</p>
+                    <h4>Populations at Highest Risk:</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Elderly:</strong> Weakened immune systems, multiple comorbidities, and often atypical presentation of infection.</li>
+                        <li><strong>Infants and Young Children:</strong> Immature immune systems.</li>
+                        <li><strong>Immunocompromised Individuals:</strong> Patients with cancer, HIV/AIDS, organ transplant recipients, or those on immunosuppressive medications.</li>
+                        <li><strong>Chronic Medical Conditions:</strong> Diabetes, chronic kidney disease, chronic lung disease, heart failure, cirrhosis.</li>
+                        <li><strong>Hospitalized Patients:</strong> Exposure to multi-drug resistant organisms, invasive procedures, and indwelling medical devices (e.g., catheters, IV lines).</li>
+                    </ul>
+                    <h4>Individual Risk Factors:</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Recent Surgery or Invasive Procedures:</strong> Provides portals of entry for pathogens.</li>
+                        <li><strong>Indwelling Catheters or Tubes:</strong> Urinary catheters, central venous catheters, endotracheal tubes.</li>
+                        <li><strong>Previous Sepsis Episode:</strong> Increases risk of future episodes.</li>
+                        <li><strong>Malnutrition:</strong> Impairs immune function.</li>
+                        <li><strong>Genetic Predisposition:</strong> Some individuals may be genetically more susceptible to severe inflammatory responses.</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'sepsis-assessment',
+                title: 'Assessment of Sepsis',
+                type: 'text',
+                content: `
+                    <p>Early recognition of sepsis is critical for improving patient outcomes. A high index of suspicion is required, especially in at-risk populations.</p>
+                    <h4>History and Subjective Data:</h4>
+                    <p>Look for any signs of recent or current infection. Ask about:</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Recent illness (e.g., cold, flu, UTI symptoms)</li>
+                        <li>Recent surgeries, hospitalizations, or invasive procedures</li>
+                        <li>Presence of indwelling devices (catheters, IVs)</li>
+                        <li>Changes in mental status (confusion, disorientation, especially in older adults)</li>
+                        <li>New or worsening pain</li>
+                        <li>General feeling of malaise, extreme fatigue, or "feeling terrible"</li>
+                    </ul>
+                    <h4>Physical Examination Findings (SIRS Criteria & Organ Dysfunction):</h4>
+                    <p>The initial signs of sepsis can be subtle and mimic other conditions. Nurses should assess for signs of Systemic Inflammatory Response Syndrome (SIRS) and, more importantly, signs of organ dysfunction.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>General:</strong> Fever (>100.4°F / 38°C) or hypothermia (<96.8°F / 36°C), tachycardia (>90 bpm), tachypnea (>20 breaths/min or PaCO2 <32 mmHg), altered mental status.</li>
+                        <li><strong>Cardiovascular:</strong> Hypotension (SBP <90 mmHg, MAP <65 mmHg, or decrease in SBP >40 mmHg from baseline), capillary refill delay (>2 seconds), mottling.</li>
+                        <li><strong>Respiratory:</strong> Increased respiratory rate, dyspnea, hypoxemia, crackles, use of accessory muscles.</li>
+                        <li><strong>Renal:</strong> Oliguria (urine output <0.5 mL/kg/hr for >2 hours despite fluid resuscitation), acute kidney injury.</li>
+                        <li><strong>Gastrointestinal:</strong> Nausea, vomiting, diarrhea, paralytic ileus.</li>
+                        <li><strong>Neurologic:</strong> Altered level of consciousness, confusion, disorientation, agitation, somnolence (especially in elderly).</li>
+                        <li><strong>Skin:</strong> Warm, flushed skin (early sepsis); cool, clammy, mottled skin (late septic shock). Petechiae or purpura (disseminated intravascular coagulation - DIC).</li>
+                    </ul>
+                    <div class="p-4 my-4 bg-blue-50 border-l-4 border-blue-400">
+                        <h4 class="font-bold text-blue-800">Quick SOFA (qSOFA) Score</h4>
+                        <p>A quick bedside tool to identify patients at risk for poor outcomes from sepsis. A score of ≥2 points from the following indicates high risk:</p>
+                        <ul class="list-inside list-circle">
+                            <li><strong>R</strong>espiratory rate ≥22/min</li>
+                            <li><strong>A</strong>ltered mentation (GCS <15)</li>
+                            <li><strong>L</strong>ow blood pressure (SBP ≤100 mmHg)</li>
+                        </ul>
+                    </div>
+                    <h4>Diagnostic Tests:</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Blood Cultures:</strong> Obtain *before* antibiotic administration if possible. Two sets (aerobic and anaerobic) from two different sites.</li>
+                        <li><strong>Lactate Level:</strong> Elevated serum lactate (>2 mmol/L) is a key indicator of hypoperfusion and anaerobic metabolism. Re-measure to assess response to therapy.</li>
+                        <li><strong>Complete Blood Count (CBC):</strong> Leukocytosis or leukopenia, thrombocytopenia (low platelets).</li>
+                        <li><strong>Coagulation Studies:</strong> Prolonged PT/INR, PTT, decreased fibrinogen (indicating DIC).</li>
+                        <li><strong>Metabolic Panel:</strong> Elevated creatinine, BUN (renal dysfunction), abnormal electrolytes, hyperglycemia or hypoglycemia.</li>
+                        <li><strong>Liver Function Tests (LFTs):</strong> Elevated bilirubin, ALT, AST (liver dysfunction).</li>
+                        <li><strong>Procalcitonin:</strong> A biomarker that typically rises in bacterial infections and sepsis. Used to guide antibiotic therapy.</li>
+                        <li><strong>C-reactive Protein (CRP) / Erythrocyte Sedimentation Rate (ESR):</strong> Non-specific inflammatory markers.</li>
+                        <li><strong>Urinalysis and Urine Culture:</strong> To identify UTI as a source.</li>
+                        <li><strong>Chest X-ray / CT Scan:</strong> To identify pneumonia or other sources of infection (e.g., abdominal abscess).</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'sepsis-interventions',
+                title: 'Interventions and Management',
+                type: 'text',
+                content: `
+                    <p>Management of sepsis is an emergency and involves rapid recognition, initiation of broad-spectrum antibiotics, and aggressive fluid resuscitation, often referred to as the "Sepsis Bundle." Time is critical.</p>
+                    <h4>The "Sepsis Bundle" (Within 1 Hour of Sepsis Recognition):</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Measure Lactate Level:</strong> And remeasure if initial lactate >2 mmol/L.</li>
+                        <li><strong>Obtain Blood Cultures:</strong> Before administering antibiotics.</li>
+                        <li><strong>Administer Broad-Spectrum Antibiotics:</strong> As quickly as possible, ideally within 1 hour, after cultures are drawn. The choice of antibiotics will depend on the suspected source of infection and local resistance patterns.</li>
+                        <li><strong>Administer Rapid Administration of Crystalloid Fluids:</strong> For hypotension or lactate >2 mmol/L, give 30 mL/kg of IV crystalloid fluid (e.g., normal saline or Lactated Ringer's) within the first 3 hours. Monitor closely for signs of fluid overload.</li>
+                        <li><strong>Apply Vasopressors:</strong> If hypotension persists despite adequate fluid resuscitation, vasopressors (e.g., norepinephrine) should be started to maintain a Mean Arterial Pressure (MAP) of ≥65 mmHg.</li>
+                    </ul>
+                    <div class="p-4 my-4 bg-orange-50 border-l-4 border-orange-400">
+                        <h4 class="font-bold text-orange-800">Nursing Priority: Early Recognition and Rapid Intervention</h4>
+                        <p>Nurses are often the first to identify subtle changes indicative of sepsis. Timely notification of the healthcare provider and initiation of the sepsis bundle can significantly impact patient survival.</p>
+                    </div>
+                    <h4>Ongoing Management:</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Fluid and Hemodynamic Management:</strong> Continue fluid resuscitation as needed, guided by patient response. May require central venous pressure (CVP) and/or central venous oxygen saturation (ScvO2) monitoring.</li>
+                        <li><strong>Source Control:</strong> Identify and eliminate the source of infection (e.g., draining an abscess, removing an infected catheter, debriding infected tissue).</li>
+                        <li><strong>Glucose Control:</strong> Maintain blood glucose levels between 140-180 mg/dL.</li>
+                        <li><strong>Corticosteroids:</strong> May be considered for patients in septic shock who are still hypotensive despite fluids and vasopressors.</li>
+                        <li><strong>Nutrition:</strong> Initiate enteral nutrition early if possible.</li>
+                        <li><strong>Ventilatory Support:</strong> For patients with acute respiratory distress syndrome (ARDS).</li>
+                        <li><strong>Renal Replacement Therapy:</strong> For acute kidney injury.</li>
+                        <li><strong>Thromboprophylaxis and Stress Ulcer Prophylaxis:</strong> To prevent common complications in critically ill patients.</li>
+                    </ul>
+                    <div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400">
+                        <h4 class="font-bold text-yellow-800">Patient Safety: Preventing Nosocomial Infections</h4>
+                        <p>Strict adherence to infection control practices (hand hygiene, aseptic technique for invasive lines, timely removal of catheters) is paramount in preventing healthcare-associated infections that can lead to sepsis.</p>
+                    </div>
+                    <p>Supportive care, close monitoring of vital signs, fluid balance, and laboratory results are ongoing nursing responsibilities.</p>
+                `
+            },
+            {
+                id: 'sepsis-quiz',
+                title: 'Review Questions',
+                type: 'quiz',
+                questions: [
                     {
-                        id: 'uti-pathophysiology', // Renamed step ID
-                        title: 'Pathophysiology of UTIs', // Updated title
-                        type: 'text',
-                        content: `
-                            <p>A <strong>Urinary Tract Infection (UTI)</strong> is an infection involving any part of the urinary system, which includes the kidneys, ureters, bladder, and urethra. While commonly referring to lower urinary tract infections (e.g., cystitis), UTIs can also affect the upper urinary tract (e.g., pyelonephritis).</p>
-                            <p>Normally, the urinary tract is sterile above the urethra. The primary mechanism of infection is the ascent of bacteria from the urethra into the bladder, and potentially further into the kidneys. The most common causative microorganism is <strong><em>Escherichia coli (E. coli)</em></strong>, which originates from the gastrointestinal tract. Other less common pathogens include <em>Klebsiella pneumoniae</em>, <em>Proteus mirabilis</em>, <em>Pseudomonas aeruginosa</em>, and fungal infections like <em>Candida albicans</em> (especially in immunocompromised individuals or those with prolonged antibiotic use).</p>
-                            <h4>Protective Mechanisms:</h4>
-                            <p>The body has several natural defenses against UTIs:</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Urine Flow:</strong> Regular and complete emptying of the bladder helps flush out bacteria.</li>
-                                <li><strong>Urine Acidity:</strong> The acidic pH of urine inhibits bacterial growth.</li>
-                                <li><strong>Ureteral Peristalsis:</strong> Peristaltic waves in the ureters move urine from the kidneys to the bladder, preventing backflow.</li>
-                                <li><strong>Ureterovesical Junction:</strong> A one-way valve at the junction of the ureter and bladder prevents reflux of urine into the kidneys.</li>
-                                <li><strong>Mucosal Lining:</strong> The bladder's mucosal lining possesses antibacterial properties.</li>
-                            </ul>
-                            <p>When these defense mechanisms are compromised, bacteria can adhere to the urinary tract epithelium, colonize, and multiply, leading to an infection and inflammatory response.</p>
-                            <p><strong>Cystitis</strong> specifically refers to inflammation of the bladder, most commonly due to a bacterial UTI, but can also be caused by chemical irritants, radiation, or autoimmune conditions. If left untreated, lower UTIs can ascend to cause <strong>pyelonephritis</strong> (kidney infection), which is a more serious condition that can lead to renal damage or <strong>urosepsis</strong> (systemic infection originating from the urinary tract), a life-threatening form of sepsis.</p>
-                        `
+                        question: "Which of the following is the most accurate definition of Sepsis?",
+                        options: [
+                            "An infection caused by bacteria.",
+                            "A localized inflammatory response to infection.",
+                            "Life-threatening organ dysfunction caused by a dysregulated host response to infection.",
+                            "Any severe infection requiring hospitalization."
+                        ],
+                        correctAnswer: "Life-threatening organ dysfunction caused by a dysregulated host response to infection."
                     },
                     {
-                        id: 'uti-etiology-risk-factors', // Renamed step ID
-                        title: 'Etiology and Risk Factors', // Updated title
-                        type: 'text',
-                        content: `
-                            <p>While UTIs can affect anyone, certain factors significantly increase susceptibility:</p>
-                            <h4>Primary Etiology: Ascending Infection</h4>
-                            <p>The most common route of infection is via the urethra, with bacteria migrating upwards from the perineal area. This explains why <em>E. coli</em>, a common gut bacterium, is the predominant pathogen.</p>
-                            <h4>Gender-Specific Risk Factors:</h4>
-                            <div class="p-4 my-4 bg-blue-50 border-l-4 border-blue-400">
-                                <h4 class="font-bold text-blue-800">Gender Health: UTIs</h4>
-                                <p><strong>Women are significantly more prone to UTIs than men</strong> (approximately 30 times more likely) due to:</p>
-                                <ul class="list-disc list-inside">
-                                    <li><strong>Shorter Urethra:</strong> The female urethra is considerably shorter (3-4 cm vs. 20 cm in males), providing a shorter distance for bacteria to travel to the bladder.</li>
-                                    <li><strong>Proximity to Anus:</strong> The female urethra's close proximity to the anus facilitates the transfer of fecal bacteria.</li>
-                                    <li><strong>Sexual Activity:</strong> Intercourse can introduce bacteria into the urethra.</li>
-                                    <li><strong>Use of Diaphragms/Spermicides:</strong> Can alter vaginal flora, increasing UTI risk.</li>
-                                    <li><strong>Hormonal Changes:</strong> Estrogen deficiency post-menopause can lead to atrophy of the vaginal and urethral tissues, making them more susceptible to infection.</li>
-                                </ul>
-                            </div>
-                            <h4>General Risk Factors:</h4>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Urinary Stasis:</strong> Any condition that impedes the flow of urine and allows it to sit in the bladder (e.g., prostatic hypertrophy, urinary tract calculi, strictures, neurogenic bladder, incomplete bladder emptying).</li>
-                                <li><strong>Catheterization (CAUTIs):</strong> Urinary catheters provide a direct route for bacteria into the bladder and are a major source of healthcare-associated infections. The longer a catheter is in place, the higher the risk.</li>
-                                <li><strong>Compromised Immunity:</strong> Diabetes mellitus (poor glucose control provides a favorable environment for bacterial growth), HIV/AIDS, immunosuppressant medications, and chronic illnesses weaken the immune response.</li>
-                                <li><strong>Advanced Age:</strong> Older adults may have reduced bladder tone, incomplete emptying, comorbidities, and suppressed immune responses. Atypical presentations (e.g., confusion instead of classic symptoms) are common.</li>
-                                <li><strong>Sexual Activity:</strong> Especially in women, frequent or intense sexual activity can increase risk.</li>
-                                <li><strong>Poor Personal Hygiene:</strong> Inadequate perineal hygiene.</li>
-                                <li><strong>Pregnancy:</strong> Hormonal changes and pressure from the growing uterus can cause urinary stasis.</li>
-                                <li><strong>Prior UTIs:</strong> A history of recurrent UTIs increases future risk.</li>
-                            </ul>
-                        `
-                    },
-                    {
-                        id: 'uti-health-promotion', // Renamed step ID
-                        title: 'Health Promotion and Prevention of UTIs', // Updated title
-                        type: 'text',
-                        content: `
-                            <p>Nurses play a critical role in educating patients on strategies to prevent UTIs, particularly in high-risk populations.</p>
-                            <h4>Key Prevention Strategies:</h4>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Adequate Fluid Intake:</strong> Encourage daily fluid intake of 2-3 liters (unless contraindicated by other health conditions). This helps dilute urine and promotes frequent voiding, flushing bacteria from the urinary tract.</li>
-                                <li><strong>Frequent Voiding:</strong> Advise patients to empty their bladder regularly, typically every 3-4 hours during the day, and completely empty it. Avoid "holding" urine for extended periods.</li>
-                                <li><strong>Proper Perineal Hygiene (for women):</strong>
-                                    <ul class="list-circle list-inside ml-4">
-                                        <li>Wipe from <strong>front to back</strong> after urination and defecation to prevent fecal contamination of the urethra.</li>
-                                        <li>Cleanse the perineal area before and after sexual intercourse.</li>
-                                        <li>Void immediately after sexual intercourse to flush out any bacteria that may have entered the urethra.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Avoid Irritants:</strong> Advise against the use of irritating feminine hygiene products such as douches, perfumed sanitary napkins, scented toilet paper, and harsh soaps in the perineal area. These can disrupt natural flora and irritate the urethra.</li>
-                                <li><strong>Cranberry Products:</strong> While evidence is mixed for active treatment, some studies suggest that cranberry products (juice, supplements) may help prevent recurrent UTIs by inhibiting bacterial adherence to the urinary tract walls.</li>
-                                <li><strong>Cotton Underwear:</strong> Recommend breathable cotton underwear instead of synthetic materials, as cotton helps keep the perineal area dry and inhibits bacterial growth.</li>
-                                <li><strong>Avoiding Bubble Baths:</strong> For children and adults, bubble baths can irritate the urethra.</li>
-                            </ul>
-                            <h4>Preventing Catheter-Associated Urinary Tract Infections (CAUTIs):</h4>
-                            <div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400">
-                                <h4 class="font-bold text-yellow-800">Nursing Safety Priority: Preventing CAUTIs</h4>
-                                <p>CAUTIs are preventable. Nurses must adhere to strict protocols:</p>
-                                <ul class="list-disc list-inside">
-                                    <li><strong>Aseptic Technique:</strong> Use strict sterile technique during catheter insertion.</li>
-                                    <li><strong>Appropriate Use:</strong> Only insert catheters when medically necessary, following established guidelines (e.g., for acute urinary retention, critical illness requiring strict I&O, perioperative use).</li>
-                                    <li><strong>Early Removal:</strong> Discontinue urinary catheters as early as clinically possible. Do not allow catheters to remain in place for staff convenience or simply for patient monitoring if alternatives are available.</li>
-                                    <li><strong>Maintenance:</strong> Maintain a closed drainage system, ensure the collection bag is below the level of the bladder, and prevent kinking of tubing. Perform regular perineal and catheter care.</li>
-                                </ul>
-                            </div>
-                        `
-                    },
-                    {
-                        id: 'uti-assessment', // Retained step ID
-                        title: 'Assessment of UTIs', // Updated title
-                        type: 'text',
-                        content: `
-                            <p>A thorough assessment is crucial for diagnosing UTIs and differentiating them from other conditions. Nurses should gather both subjective and objective data.</p>
-                            <h4>History and Subjective Data:</h4>
-                            <p>Ask about the presence and characteristics of urinary symptoms. The hallmark symptoms of uncomplicated lower UTIs are often referred to as "irritative voiding symptoms":</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Frequency:</strong> Urinating more often than usual.</li>
-                                <li><strong>Dysuria:</strong> Painful or difficult urination, often described as burning or stinging.</li>
-                                <li><strong>Urgency:</strong> A sudden, compelling need to urinate that is difficult to defer.</li>
-                                <li><strong>Nocturia:</strong> Waking up at night to urinate.</li>
-                                <li><strong>Suprapubic Discomfort:</strong> Pain or pressure in the lower abdomen, just above the pubic bone.</li>
-                                <li><strong>Hematuria:</strong> Blood in the urine, which may make urine appear pink, red, or rusty (gross hematuria), or only detectable microscopically.</li>
-                                <li><strong>Foul-Smelling Urine:</strong> Urine may have an unusually strong or unpleasant odor.</li>
-                                <li><strong>Cloudy Urine:</strong> Due to the presence of white blood cells and bacteria.</li>
-                            </ul>
-                            <p>For potential upper UTIs (pyelonephritis), inquire about:</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Flank Pain:</strong> Pain in the side, back, or groin, often unilateral.</li>
-                                <li><strong>Fever and Chills:</strong> Systemic symptoms indicating a more widespread infection.</li>
-                                <li><strong>Nausea and Vomiting:</strong> May accompany fever and flank pain.</li>
-                                <li><strong>Malaise/Fatigue:</strong> General feeling of unwellness.</li>
-                            </ul>
-                            <h4>Physical Examination Findings:</h4>
-                            <p>Focus on abdominal and perineal assessment.</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Lower Abdominal Tenderness:</strong> Especially in the suprapubic area, upon palpation.</li>
-                                <li><strong>Costovertebral Angle (CVA) Tenderness:</strong> Elicited by gently tapping over the kidney area on the back (at the angle between the last rib and the vertebral column). This is a key sign of pyelonephritis.</li>
-                                <li><strong>Fever:</strong> May be present, especially with pyelonephritis or systemic infection. Older adults may be afebrile.</li>
-                                <li><strong>Mental Status Changes in Older Adults:</strong> A critical point for nursing students. Older adults often present with atypical or non-specific symptoms such as acute confusion, altered mental status, new onset incontinence, dizziness, or generalized fatigue, rather than classic urinary symptoms. Always consider UTI in older adults with sudden unexplained changes in cognition or function.</li>
-                            </ul>
-                            <h4>Diagnostic Tests:</h4>
-                            <p><strong>Laboratory Assessment:</strong></p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Urinalysis (UA):</strong> This is the initial screening test. Key findings indicative of UTI include:
-                                    <ul class="list-circle list-inside ml-4">
-                                        <li><strong>Leukocyte Esterase:</strong> Indicates the presence of white blood cells (WBCs), suggesting inflammation/infection.</li>
-                                        <li><strong>Nitrites:</strong> Produced by gram-negative bacteria (like <em>E. coli</em>) when they convert urinary nitrates. Highly specific for bacterial infection.</li>
-                                        <li><strong>White Blood Cells (WBCs) / Pyuria:</strong> Presence of WBCs in urine.</li>
-                                        <li><strong>Red Blood Cells (RBCs) / Hematuria:</strong> May indicate irritation or inflammation.</li>
-                                        <li><strong>Protein:</strong> Small amounts may be present due to inflammation.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Urine Culture and Sensitivity (C&S):</strong>
-                                    <ul class="list-circle list-inside ml-4">
-                                        <li><strong>Culture:</strong> Identifies the specific causative microorganism. A colony count of >10<sup>5</sup> colony-forming units (CFU)/mL is typically diagnostic for infection in clean-catch midstream urine. Lower counts may be significant in symptomatic patients or those with catheterization.</li>
-                                        <li><strong>Sensitivity:</strong> Determines which antibiotics are effective against the identified pathogen, guiding appropriate treatment.</li>
-                                        <li><strong>Collection:</strong> Emphasize proper clean-catch midstream urine collection technique to avoid contamination. For catheterized patients, collect from the catheter port after clamping the tubing below the port for 15-30 minutes.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Blood Tests (for suspected pyelonephritis or urosepsis):</strong>
-                                    <ul class="list-circle list-inside ml-4">
-                                        <li><strong>Complete Blood Count (CBC):</strong> May show leukocytosis (elevated WBCs) with a shift to the left (increased immature neutrophils), indicating an acute bacterial infection.</li>
-                                        <li><strong>Blood Cultures:</strong> Performed if urosepsis is suspected (fever, chills, systemic symptoms) to identify bacteria in the bloodstream.</li>
-                                        <li><strong>C-reactive protein (CRP) and Erythrocyte Sedimentation Rate (ESR):</strong> Non-specific markers of inflammation that may be elevated.</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <p><strong>Imaging Studies (for recurrent or complicated UTIs, or suspected obstruction):</strong></p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Kidney, Ureter, Bladder (KUB) X-ray:</strong> Basic imaging to identify large stones.</li>
-                                <li><strong>Computed Tomography (CT) Scan:</strong> Can detect stones, obstructions, abscesses, or anatomical abnormalities.</li>
-                                <li><strong>Ultrasound of Kidneys and Bladder:</strong> Non-invasive imaging to assess for hydronephrosis, stones, or bladder issues.</li>
-                                <li><strong>Cystoscopy:</strong> Direct visualization of the bladder and urethra with a scope. Used for recurrent UTIs, hematuria, or suspected structural abnormalities; usually performed by a urologist.</li>
-                            </ul>
-                        `
-                    },
-                    {
-                        id: 'uti-interventions', // Retained step ID
-                        title: 'Interventions and Management of UTIs', // Updated title
-                        type: 'text',
-                        content: `
-                            <p>Management of UTIs focuses on eradicating the infection, managing symptoms, preventing complications, and educating the patient on preventive measures.</p>
-                            <h4>Nonsurgical Management:</h4>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Drug Therapy (Antimicrobials):</strong>
-                                    <ul class="list-circle list-inside ml-4">
-                                        <li><strong>First-line Agents for Uncomplicated UTIs:</strong> Commonly prescribed oral antibiotics include:
-                                            <ul class="list-square list-inside ml-4">
-                                                <li><strong>Trimethoprim/Sulfamethoxazole (Bactrim, Septra):</strong> Often a first choice due to effectiveness and cost.</li>
-                                                <li><strong>Nitrofurantoin (Macrodantin, Macrobid):</strong> Concentrates well in urine; effective for lower UTIs.</li>
-                                                <li><strong>Fosfomycin (Monurol):</strong> Single-dose treatment option.</li>
-                                            </ul>
-                                        </li>
-                                        <li><strong>Fluoroquinolones (Ciprofloxacin, Levofloxacin):</strong> Often used for complicated UTIs or when resistance to first-line agents is present. Due to increasing resistance and potential side effects, they are generally reserved for specific cases.</li>
-                                        <li><strong>Beta-lactam Antibiotics (Amoxicillin, Cephalexin):</strong> May be used, but resistance can be an issue.</li>
-                                        <li><strong>Antifungal Agents (Fluconazole):</strong> Used for fungal UTIs, typically in patients with indwelling catheters or those on long-term antibiotics.</li>
-                                        <li><strong>Important Nursing Consideration:</strong> Emphasize the importance of completing the entire prescribed course of antibiotics, even if symptoms improve, to ensure complete eradication of bacteria and prevent the development of antimicrobial resistance.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Urinary Analgesics:</strong>
-                                    <ul class="list-circle list-inside ml-4">
-                                        <li><strong>Phenazopyridine (Pyridium):</strong> Prescribed to relieve discomfort, burning, frequency, and urgency. It does NOT treat the infection.
-                                            <div class="p-4 my-4 bg-orange-50 border-l-4 border-orange-400">
-                                                <h4 class="font-bold text-orange-800">Patient Education: Phenazopyridine</h4>
-                                                <p>Inform patients that phenazopyridine will turn urine a harmless bright orange or reddish-brown color, which can stain clothing. Advise them to wear sanitary pads to protect clothing.</p>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li><strong>Increased Fluid Intake:</strong> Reinforce the importance of liberal fluid intake (water is best) to help flush bacteria from the urinary tract.</li>
-                                <li><strong>Comfort Measures:</strong>
-                                    <ul class="list-circle list-inside ml-4">
-                                        <li>Apply a warm sitz bath or warm compress to the suprapubic area for pain relief.</li>
-                                        <li>Encourage rest as needed.</li>
-                                        <li>Avoid bladder irritants like caffeine, alcohol, highly spiced foods, and artificial sweeteners during acute infection.</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <h4>Surgical Management:</h4>
-                            <p>Surgery is typically reserved for treating underlying structural or functional abnormalities that contribute to recurrent UTIs or complications, such as:</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li>Removal of urinary tract calculi (stones).</li>
-                                <li>Repair of anatomical abnormalities (e.g., vesicoureteral reflux, strictures).</li>
-                                <li>Correction of prostatic hypertrophy if it causes significant urinary obstruction.</li>
-                                <li>Drainage of abscesses related to severe pyelonephritis.</li>
-                            </ul>
-                            <p>For recurrent UTIs, long-term low-dose prophylactic antibiotics may be prescribed, or post-coital dosing for sexually active women.</p>
-                        `
-                    },
-                    {
-                        id: 'uti-quiz',
-                        title: 'Review Questions',
-                        type: 'quiz',
-                        questions: [
-                            {
-                                question: "A female patient complains of painful urination, frequent urges to void, and suprapubic discomfort. Which of the following is the most likely diagnosis?",
-                                options: ["Pyelonephritis", "Urolithiasis", "Cystitis", "Glomerulonephritis"],
-                                correctAnswer: "Cystitis"
-                            },
-                            {
-                                question: "Which instruction is most important for the nurse to teach a female patient to prevent future urinary tract infections?",
-                                options: ["Increase intake of dairy products.", "Wipe from back to front after bowel movements.", "Void immediately after sexual intercourse.", "Avoid using public restrooms."],
-                                correctAnswer: "Void immediately after sexual intercourse."
-                            },
-                            {
-                                question: "The nurse is reviewing a urinalysis report for a patient with suspected UTI. Which findings would support this diagnosis? (Select all that apply.)",
-                                options: ["Presence of nitrites", "Negative leukocyte esterase", "Presence of white blood cells (pyuria)", "Urine specific gravity of 1.010", "Red blood cells (hematuria)"],
-                                correctAnswer: ["Presence of nitrites", "Presence of white blood cells (pyuria)", "Red blood cells (hematuria)"]
-                            },
-                             {
-                                question: "An elderly patient with a UTI presents with sudden confusion and generalized weakness but no fever or dysuria. What is the most appropriate nursing action?",
-                                options: ["Administer an antipyretic for potential hidden fever.", "Focus only on urinary symptoms as primary indicators.", "Recognize these as atypical UTI symptoms in older adults and proceed with diagnostic workup.", "Advise the family that confusion is a normal part of aging."],
-                                correctAnswer: "Recognize these as atypical UTI symptoms in older adults and proceed with diagnostic workup."
-                            }
+                        question: "A patient is diagnosed with sepsis. The nurse knows to prioritize which interventions within the first hour? (Select all that apply.)",
+                        options: [
+                            "Administer broad-spectrum antibiotics.",
+                            "Measure lactate level.",
+                            "Begin blood transfusion immediately.",
+                            "Obtain blood cultures.",
+                            "Administer rapid crystalloid fluids for hypotension."
+                        ],
+                        correctAnswer: [
+                            "Administer broad-spectrum antibiotics.",
+                            "Measure lactate level.",
+                            "Obtain blood cultures.",
+                            "Administer rapid crystalloid fluids for hypotension."
                         ]
-                    }
-                ]
-            },
-            'hepatitis-exemplar': {
-                title: 'Exemplar: Hepatitis',
-                color: 'from-teal-500 to-emerald-600',
-                icon: (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                ),
-                description: 'A detailed examination of viral hepatitis (A, B, C, D, E), covering pathophysiology, transmission, prevention, and treatment.',
-                steps: [
-                    {
-                        id: 'hepatitis-patho',
-                        title: 'Pathophysiology Review',
-                        type: 'text',
-                        content: `<p>Hepatitis is the widespread inflammation and infection of liver cells. Viral hepatitis is the most common type, caused by one of five viruses (A, B, C, D, E). The liver becomes enlarged and congested, leading to right upper quadrant pain. As the disease progresses, liver cell necrosis and distortion of the liver's architecture can increase portal pressure and cause obstructive jaundice. Chronic hepatitis (lasting >6 months), usually from HBV or HCV, can lead to cirrhosis and liver cancer.</p>`
                     },
                     {
-                        id: 'hepatitis-etiology',
-                        title: 'Etiology and Genetic Risk',
-                        type: 'text',
-                        content: `<h4>Hepatitis A (HAV)</h4><p>An RNA virus transmitted via the fecal-oral route (contaminated food/water). Usually a mild, flu-like illness. Incubation is 15-50 days. Vaccination is available.</p><h4>Hepatitis B (HBV)</h4><p>A DNA virus transmitted through blood and body fluids (sexual contact, shared needles, birth). Incubation is 25-180 days. Most adults recover, but some become chronic carriers, at high risk for cirrhosis and liver cancer. Vaccination is available.</p><h4>Hepatitis C (HCV)</h4><p>An RNA virus transmitted blood-to-blood (primarily illicit IV drug use). Most people are unaware of infection and develop chronic disease over decades, leading to cirrhosis. No vaccine is available, but effective antiviral treatments exist.</p><h4>Hepatitis D (HDV)</h4><p>A defective RNA virus that requires HBV to replicate. Transmitted parenterally. It usually develops into chronic disease.</p><h4>Hepatitis E (HEV)</h4><p>A waterborne virus transmitted via the fecal-oral route, common in areas with poor sanitation. It is self-limiting.</p>`
+                        question: "An 82-year-old patient presents with new onset confusion, a respiratory rate of 24 breaths/min, and a systolic blood pressure of 98 mmHg. The nurse should suspect a high risk for sepsis based on these findings, which are components of what assessment tool?",
+                        options: [
+                            "Glasgow Coma Scale (GCS)",
+                            "Sequential Organ Failure Assessment (SOFA) score",
+                            "Systemic Inflammatory Response Syndrome (SIRS) criteria",
+                            "Quick SOFA (qSOFA) score"
+                        ],
+                        correctAnswer: "Quick SOFA (qSOFA) score"
                     },
                     {
-                        id: 'hepatitis-prevention',
-                        title: 'Health Promotion/Prevention',
-                        type: 'text',
-                        content: `<p>Vaccines for HAV and HBV are highly effective. Prevention measures include:</p><ul class="list-disc list-inside"><li><strong>Hepatitis A:</strong> Proper handwashing, avoiding contaminated food/water, and vaccination.</li><li><strong>Hepatitis B:</strong> Vaccination, safe sex practices, not sharing needles, and screening of blood products.</li><li><strong>Hepatitis C:</strong> Avoiding needle sharing and using Standard Precautions. Screening is recommended for "baby boomers" (born 1945-1965).</li></ul><div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400"><h4 class="font-bold text-yellow-800">Best Practice: Prevention for Healthcare Workers</h4><p>Use Standard Precautions, utilize needleless systems, and receive the hepatitis B vaccine series.</p></div>`
-                    },
-                    {
-                        id: 'hepatitis-assessment',
-                        title: 'Assessment',
-                        type: 'text',
-                        content: `<p><strong>History:</strong> Ask about exposure to infected persons, risk factors (travel, drug use, sexual history).</p><p><strong>Physical Assessment:</strong> Symptoms include abdominal pain, jaundice (yellowish skin/sclera), arthralgia, myalgia, diarrhea/constipation, dark urine, and clay-colored stools. Palpate for liver tenderness in the right upper quadrant.</p><p><strong>Psychosocial Assessment:</strong> Patients may feel sick, fatigued, depressed, or guilty. Social stigma can lead to isolation. Financial burdens from lost work can cause anxiety.</p><p><strong>Laboratory Assessment:</strong></p><ul class="list-disc list-inside"><li><strong>Liver Enzymes:</strong> ALT and AST levels can rise into the thousands.</li><li><strong>Serologic Markers:</strong> Specific antibodies (e.g., anti-HAV IgM, HBsAg, anti-HCV) confirm the type of hepatitis.</li></ul><p><strong>Other Diagnostics:</strong> Liver biopsy can confirm the diagnosis and establish the stage of liver damage.</p>`
-                    },
-                    {
-                        id: 'hepatitis-interventions',
-                        title: 'Interventions',
-                        type: 'text',
-                        content: `<p>Care focuses on resting the liver, promoting regeneration, and strengthening immunity.</p><ul class="list-disc list-inside space-y-2"><li><strong>Promoting Nutrition:</strong> A high-carbohydrate, high-calorie diet with moderate fat and protein is recommended. Small, frequent meals are often better tolerated.</li><li><strong>Managing Fatigue:</strong> Rest is essential to reduce the liver's metabolic demands. Alternate rest periods with light activity.</li><li><strong>Drug Therapy:</strong> Drugs are used sparingly in acute hepatitis. For chronic HBV and HCV, antiviral and immunomodulating drugs are used (e.g., tenofovir for HBV; direct-acting antivirals like glecaprevir for HCV).</li></ul><div class="p-4 my-4 bg-red-50 border-l-4 border-red-400"><h4 class="font-bold text-red-800">Action Alert</h4><p>Teach patients to avoid alcohol and check with their provider before taking any medication, vitamin, or herbal preparation.</p></div>`
-                    }
-                ]
-            },
-            'hiv-exemplar': {
-                title: 'Exemplar: HIV Infection',
-                color: 'from-rose-500 to-red-600',
-                icon: (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                ),
-                description: 'A comprehensive guide to Human Immunodeficiency Virus (HIV), including its stages, pathophysiology, transmission, prevention, and management.',
-                steps: [
-                    {
-                        id: 'hiv-overview',
-                        title: 'Overview and Stages',
-                        type: 'text',
-                        content: `<p>Human immunodeficiency virus (HIV) causes a chronic infection that impairs immunity. The disease progresses along a continuum of three stages:</p><ol class="list-decimal list-inside space-y-2"><li><strong>Stage I: Acute HIV Infection:</strong> Begins within 4 weeks of infection. Symptoms are flu-like (fever, sore throat, rash). The viral load is high, and transmission is very possible.</li><li><strong>Stage II: Chronic HIV Infection:</strong> Can be treated as a chronic disorder with drug therapy. Patients can have undetectable viral loads and live for decades.</li><li><strong>Stage III: Acquired Immunodeficiency Syndrome (AIDS):</strong> Characterized by profoundly reduced immunity. Diagnosed when CD4+ T-cell count is <200 cells/mm³ or when specific opportunistic infections (OIs) are present.</li></ol><p>OIs are caused by organisms that are normally kept in check by a healthy immune system, such as <em>Candida albicans</em>, <em>Pneumocystis jirovecii</em> pneumonia (PCP), and tuberculosis (TB). Common cancers in Stage III include Kaposi sarcoma (KS) and certain lymphomas.</p>`
-                    },
-                    {
-                        id: 'hiv-patho',
-                        title: 'Pathophysiology Review',
-                        type: 'text',
-                        content: `<p>HIV is a retrovirus, meaning it uses RNA as its genetic material. It uses the enzyme reverse transcriptase to convert its RNA into DNA, which is then integrated into the host cell's DNA. This allows the virus to take over the cell's machinery to produce more viral particles.</p><h4>The HIV Life Cycle:</h4><ol class="list-decimal list-inside space-y-1"><li><strong>Binding:</strong> HIV attaches to CD4 cell receptors.</li><li><strong>Fusion:</strong> HIV enters the CD4 cell.</li><li><strong>Reverse Transcription:</strong> HIV RNA is converted to HIV DNA.</li><li><strong>Integration:</strong> HIV DNA is inserted into the host cell's DNA.</li><li><strong>Replication:</strong> The host cell makes long chains of HIV proteins.</li><li><strong>Assembly:</strong> New, immature HIV particles are assembled.</li><li><strong>Budding:</strong> Immature HIV pushes out of the cell and matures into an infectious virus.</li></ol><p>Antiretroviral drugs interrupt this life cycle at various stages.</p>`
-                    },
-                    {
-                        id: 'hiv-prevention',
-                        title: 'Health Promotion/Prevention',
-                        type: 'text',
-                        content: `<p>HIV is found in all body fluids but is transmitted most often through sexual contact, parenteral exposure (sharing needles), and perinatally (mother to child). It is NOT transmitted by casual contact.</p><h4>Sexual Transmission</h4><p>Safer sex practices are crucial. This includes consistent use of condoms for all types of intercourse and using water-based lubricants.</p><h4>Parenteral Transmission</h4><p>Preventive practices include using syringe services programs (SSPs) to obtain sterile needles and teaching proper cleaning techniques for those who reuse needles.</p><h4>Prophylactic Prevention</h4><ul class="list-disc list-inside space-y-2"><li><strong>Preexposure Prophylaxis (PrEP):</strong> Antiretroviral drugs taken by an HIV-negative person at high risk to prevent infection. Reduces risk from sex by about 99%.</li><li><strong>Postexposure Prophylaxis (PEP):</strong> Antiretroviral treatment used in emergencies after a potential exposure. Must be started within 72 hours.</li><li><strong>Treatment as Prevention (TasP):</strong> An HIV-positive person takes medication to achieve an undetectable viral load, which greatly reduces the risk of sexual transmission.</li></ul><div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400"><h4 class="font-bold text-yellow-800">Drug Alert</h4><p>PrEP and TasP do not replace standard safer sex practices. Adherence to an every-3-month HIV testing schedule is crucial for those on PrEP.</p></div>`
-                    },
-                    {
-                        id: 'hiv-assessment',
-                        title: 'Assessment',
-                        type: 'text',
-                        content: `<h4>History</h4><p>A thorough and confidential history is essential. Ask about risk factors, sexual practices (using the "5 Ps": Partners, Practices, Protection, Past history, Prevention of pregnancy), and any current symptoms.</p><h4>Physical Assessment</h4><p>Assess for opportunistic infections (see Table 17.3 in original text), such as oral candidiasis, skin lesions (Kaposi sarcoma), and respiratory issues (PCP, TB). Monitor for neurologic changes, GI issues (diarrhea, weight loss), and other systemic symptoms.</p><h4>Laboratory Assessment</h4><ul class="list-disc list-inside space-y-2"><li><strong>Serologic/Virologic Testing:</strong> Rapid tests, antigen/antibody combo assays, and home kits are available. A 3-week "seroconversion window" can produce false negatives.</li><li><strong>Lymphocyte Counts:</strong> Patients often have leukopenia (WBC < 4000) and lymphopenia.</li><li><strong>CD4+ T-cell Count:</strong> A key indicator of immune function. Normal is 600-1500 cells/mm³. A count <200 indicates Stage III (AIDS).</li><li><strong>Viral Load Testing (HIV RNA):</strong> Measures the amount of virus in the blood. An undetectable viral load is the goal of therapy.</li></ul>`
-                    },
-                    {
-                        id: 'hiv-interventions',
-                        title: 'Interventions',
-                        type: 'text',
-                        content: `<h4>Preventing Transmission</h4><p>Patient education on safer sex, not sharing needles, and the importance of TasP is a priority.</p><h4>Preventing Infections & Complications</h4><p>Management focuses on supporting immunity with combination antiretroviral therapy (cART) and preventing/treating opportunistic infections.</p><p><strong>Drug Therapy (cART):</strong> Uses multiple drugs from different classes (NRTIs, NNRTIs, Protease Inhibitors, etc.) to suppress viral replication. Adherence is critical to prevent drug resistance.</p><div class="p-4 my-4 bg-red-50 border-l-4 border-red-400"><h4 class="font-bold text-red-800">Drug Alert</h4><p>Teach patients the importance of taking cART drugs exactly as prescribed. Ongoing missed doses can promote drug resistance.</p></div><p><strong>Immune Reconstitution Inflammatory Syndrome (IRIS):</strong> An inflammatory reaction that can occur after starting cART as the immune system begins to recover and recognizes underlying opportunistic infections. It is usually treated with short-term corticosteroids.</p><p><strong>Management of Complications:</strong> Interventions are tailored to the specific opportunistic infection or complication, such as facilitating gas exchange for PCP, managing pain from neuropathy, enhancing nutrition to combat wasting syndrome, and preserving skin integrity from lesions like Kaposi sarcoma.</p>`
-                    },
-                    {
-                        id: 'hiv-quiz',
-                        title: 'Review Questions',
-                        type: 'quiz',
-                        questions: [
-                            {
-                                question: "A patient with HIV has a CD4+ T-cell count of 180 cells/mm³. This finding corresponds to which stage of HIV infection?",
-                                options: ["Stage I: Acute Infection", "Stage II: Chronic Infection", "Stage III: AIDS", "Stage 0: Pre-infection"],
-                                correctAnswer: "Stage III: AIDS"
-                            },
-                            {
-                                question: "Which statement by a patient indicates a correct understanding of how to prevent Hepatitis A infection?",
-                                options: ["I will get the Hepatitis B vaccine.", "I need to make sure I use clean needles.", "I should always wash my hands thoroughly after using the bathroom.", "I will use condoms during sexual intercourse."],
-                                correctAnswer: "I should always wash my hands thoroughly after using the bathroom."
-                            },
-                            {
-                                question: "What are the hallmark signs of a typical, uncomplicated urinary tract infection (UTI)? (Select all that apply.)",
-                                options: ["High fever and chills", "Urinary frequency", "Painful urination (dysuria)", "Jaundice", "Urinary urgency"],
-                                correctAnswer: ["Urinary frequency", "Painful urination (dysuria)", "Urinary urgency"]
-                            },
-                        ]
+                        question: "Which of the following laboratory findings is a key indicator of tissue hypoperfusion in a patient with sepsis?",
+                        options: [
+                            "Elevated White Blood Cell (WBC) count",
+                            "Decreased blood glucose",
+                            "Elevated serum lactate level",
+                            "Normal C-reactive protein (CRP)"
+                        ],
+                        correctAnswer: "Elevated serum lactate level"
                     }
                 ]
             }
-        };
+        ]
+    },
+    'uti-exemplar': { // Changed id from cystitis-exemplar to uti-exemplar
+        title: 'Exemplar: Urinary Tract Infections (UTIs)', // Updated title
+        color: 'from-amber-500 to-orange-600',
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+        ),
+        description: 'An in-depth look at Urinary Tract Infections (UTIs), including pathophysiology, risk factors, assessment, and management strategies.', // Updated description
+        steps: [
+            {
+                id: 'uti-pathophysiology', // Renamed step ID
+                title: 'Pathophysiology of UTIs', // Updated title
+                type: 'text',
+                content: `
+                    <p>A <strong>Urinary Tract Infection (UTI)</strong> is an infection involving any part of the urinary system, which includes the kidneys, ureters, bladder, and urethra. While commonly referring to lower urinary tract infections (e.g., cystitis), UTIs can also affect the upper urinary tract (e.g., pyelonephritis).</p>
+                    <p>Normally, the urinary tract is sterile above the urethra. The primary mechanism of infection is the ascent of bacteria from the urethra into the bladder, and potentially further into the kidneys. The most common causative microorganism is <strong><em>Escherichia coli (E. coli)</em></strong>, which originates from the gastrointestinal tract. Other less common pathogens include <em>Klebsiella pneumoniae</em>, <em>Proteus mirabilis</em>, <em>Pseudomonas aeruginosa</em>, and fungal infections like <em>Candida albicans</em> (especially in immunocompromised individuals or those with prolonged antibiotic use).</p>
+                    <h4>Protective Mechanisms:</h4>
+                    <p>The body has several natural defenses against UTIs:</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Urine Flow:</strong> Regular and complete emptying of the bladder helps flush out bacteria.</li>
+                        <li><strong>Urine Acidity:</strong> The acidic pH of urine inhibits bacterial growth.</li>
+                        <li><strong>Ureteral Peristalsis:</strong> Peristaltic waves in the ureters move urine from the kidneys to the bladder, preventing backflow.</li>
+                        <li><strong>Ureterovesical Junction:</strong> A one-way valve at the junction of the ureter and bladder prevents reflux of urine into the kidneys.</li>
+                        <li><strong>Mucosal Lining:</strong> The bladder's mucosal lining possesses antibacterial properties.</li>
+                    </ul>
+                    <p>When these defense mechanisms are compromised, bacteria can adhere to the urinary tract epithelium, colonize, and multiply, leading to an infection and inflammatory response.</p>
+                    <p><strong>Cystitis</strong> specifically refers to inflammation of the bladder, most commonly due to a bacterial UTI, but can also be caused by chemical irritants, radiation, or autoimmune conditions. If left untreated, lower UTIs can ascend to cause <strong>pyelonephritis</strong> (kidney infection), which is a more serious condition that can lead to renal damage or <strong>urosepsis</strong> (systemic infection originating from the urinary tract), a life-threatening form of sepsis.</p>
+                `
+            },
+            {
+                id: 'uti-etiology-risk-factors', // Renamed step ID
+                title: 'Etiology and Risk Factors', // Updated title
+                type: 'text',
+                content: `
+                    <p>While UTIs can affect anyone, certain factors significantly increase susceptibility:</p>
+                    <h4>Primary Etiology: Ascending Infection</h4>
+                    <p>The most common route of infection is via the urethra, with bacteria migrating upwards from the perineal area. This explains why <em>E. coli</em>, a common gut bacterium, is the predominant pathogen.</p>
+                    <h4>Gender-Specific Risk Factors:</h4>
+                    <div class="p-4 my-4 bg-blue-50 border-l-4 border-blue-400">
+                        <h4 class="font-bold text-blue-800">Gender Health: UTIs</h4>
+                        <p><strong>Women are significantly more prone to UTIs than men</strong> (approximately 30 times more likely) due to:</p>
+                        <ul class="list-disc list-inside">
+                            <li><strong>Shorter Urethra:</strong> The female urethra is considerably shorter (3-4 cm vs. 20 cm in males), providing a shorter distance for bacteria to travel to the bladder.</li>
+                            <li><strong>Proximity to Anus:</strong> The female urethra's close proximity to the anus facilitates the transfer of fecal bacteria.</li>
+                            <li><strong>Sexual Activity:</strong> Intercourse can introduce bacteria into the urethra.</li>
+                            <li><strong>Use of Diaphragms/Spermicides:</strong> Can alter vaginal flora, increasing UTI risk.</li>
+                            <li><strong>Hormonal Changes:</strong> Estrogen deficiency post-menopause can lead to atrophy of the vaginal and urethral tissues, making them more susceptible to infection.</li>
+                        </ul>
+                    </div>
+                    <h4>General Risk Factors:</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Urinary Stasis:</strong> Any condition that impedes the flow of urine and allows it to sit in the bladder (e.g., prostatic hypertrophy, urinary tract calculi, strictures, neurogenic bladder, incomplete bladder emptying).</li>
+                        <li><strong>Catheterization (CAUTIs):</strong> Urinary catheters provide a direct route for bacteria into the bladder and are a major source of healthcare-associated infections. The longer a catheter is in place, the higher the risk.</li>
+                        <li><strong>Compromised Immunity:</strong> Diabetes mellitus (poor glucose control provides a favorable environment for bacterial growth), HIV/AIDS, immunosuppressant medications, and chronic illnesses weaken the immune response.</li>
+                        <li><strong>Advanced Age:</strong> Older adults may have reduced bladder tone, incomplete emptying, comorbidities, and suppressed immune responses. Atypical presentations (e.g., confusion instead of classic symptoms) are common.</li>
+                        <li><strong>Sexual Activity:</strong> Especially in women, frequent or intense sexual activity can increase risk.</li>
+                        <li><strong>Poor Personal Hygiene:</strong> Inadequate perineal hygiene.</li>
+                        <li><strong>Pregnancy:</strong> Hormonal changes and pressure from the growing uterus can cause urinary stasis.</li>
+                        <li><strong>Prior UTIs:</strong> A history of recurrent UTIs increases future risk.</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'uti-health-promotion', // Renamed step ID
+                title: 'Health Promotion and Prevention of UTIs', // Updated title
+                type: 'text',
+                content: `
+                    <p>Nurses play a critical role in educating patients on strategies to prevent UTIs, particularly in high-risk populations.</p>
+                    <h4>Key Prevention Strategies:</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Adequate Fluid Intake:</strong> Encourage daily fluid intake of 2-3 liters (unless contraindicated by other health conditions). This helps dilute urine and promotes frequent voiding, flushing bacteria from the urinary tract.</li>
+                        <li><strong>Frequent Voiding:</strong> Advise patients to empty their bladder regularly, typically every 3-4 hours during the day, and completely empty it. Avoid "holding" urine for extended periods.</li>
+                        <li><strong>Proper Perineal Hygiene (for women):</strong>
+                            <ul class="list-circle list-inside ml-4">
+                                <li>Wipe from <strong>front to back</strong> after urination and defecation to prevent fecal contamination of the urethra.</li>
+                                <li>Cleanse the perineal area before and after sexual intercourse.</li>
+                                <li>Void immediately after sexual intercourse to flush out any bacteria that may have entered the urethra.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Avoid Irritants:</strong> Advise against the use of irritating feminine hygiene products such as douches, perfumed sanitary napkins, scented toilet paper, and harsh soaps in the perineal area. These can disrupt natural flora and irritate the urethra.</li>
+                        <li><strong>Cranberry Products:</strong> While evidence is mixed for active treatment, some studies suggest that cranberry products (juice, supplements) may help prevent recurrent UTIs by inhibiting bacterial adherence to the urinary tract walls.</li>
+                        <li><strong>Cotton Underwear:</strong> Recommend breathable cotton underwear instead of synthetic materials, as cotton helps keep the perineal area dry and inhibits bacterial growth.</li>
+                        <li><strong>Avoiding Bubble Baths:</strong> For children and adults, bubble baths can irritate the urethra.</li>
+                    </ul>
+                    <h4>Preventing Catheter-Associated Urinary Tract Infections (CAUTIs):</h4>
+                    <div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400">
+                        <h4 class="font-bold text-yellow-800">Nursing Safety Priority: Preventing CAUTIs</h4>
+                        <p>CAUTIs are preventable. Nurses must adhere to strict protocols:</p>
+                        <ul class="list-disc list-inside">
+                            <li><strong>Aseptic Technique:</strong> Use strict sterile technique during catheter insertion.</li>
+                            <li><strong>Appropriate Use:</strong> Only insert catheters when medically necessary, following established guidelines (e.g., for acute urinary retention, critical illness requiring strict I&O, perioperative use).</li>
+                            <li><strong>Early Removal:</strong> Discontinue urinary catheters as early as clinically possible. Do not allow catheters to remain in place for staff convenience or simply for patient monitoring if alternatives are available.</li>
+                            <li><strong>Maintenance:</strong> Maintain a closed drainage system, ensure the collection bag is below the level of the bladder, and prevent kinking of tubing. Perform regular perineal and catheter care.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                id: 'uti-assessment', // Retained step ID
+                title: 'Assessment of UTIs', // Updated title
+                type: 'text',
+                content: `
+                    <p>A thorough assessment is crucial for diagnosing UTIs and differentiating them from other conditions. Nurses should gather both subjective and objective data.</p>
+                    <h4>History and Subjective Data:</h4>
+                    <p>Ask about the presence and characteristics of urinary symptoms. The hallmark symptoms of uncomplicated lower UTIs are often referred to as "irritative voiding symptoms":</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Frequency:</strong> Urinating more often than usual.</li>
+                        <li><strong>Dysuria:</strong> Painful or difficult urination, often described as burning or stinging.</li>
+                        <li><strong>Urgency:</strong> A sudden, compelling need to urinate that is difficult to defer.</li>
+                        <li><strong>Nocturia:</strong> Waking up at night to urinate.</li>
+                        <li><strong>Suprapubic Discomfort:</strong> Pain or pressure in the lower abdomen, just above the pubic bone.</li>
+                        <li><strong>Hematuria:</strong> Blood in the urine, which may make urine appear pink, red, or rusty (gross hematuria), or only detectable microscopically.</li>
+                        <li><strong>Foul-Smelling Urine:</strong> Urine may have an unusually strong or unpleasant odor.</li>
+                        <li><strong>Cloudy Urine:</strong> Due to the presence of white blood cells and bacteria.</li>
+                    </ul>
+                    <p>For potential upper UTIs (pyelonephritis), inquire about:</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Flank Pain:</strong> Pain in the side, back, or groin, often unilateral.</li>
+                        <li><strong>Fever and Chills:</strong> Systemic symptoms indicating a more widespread infection.</li>
+                        <li><strong>Nausea and Vomiting:</strong> May accompany fever and flank pain.</li>
+                        <li><strong>Malaise/Fatigue:</strong> General feeling of unwellness.</li>
+                    </ul>
+                    <h4>Physical Examination Findings:</h4>
+                    <p>Focus on abdominal and perineal assessment.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Lower Abdominal Tenderness:</strong> Especially in the suprapubic area, upon palpation.</li>
+                        <li><strong>Costovertebral Angle (CVA) Tenderness:</strong> Elicited by gently tapping over the kidney area on the back (at the angle between the last rib and the vertebral column). This is a key sign of pyelonephritis.</li>
+                        <li><strong>Fever:</strong> May be present, especially with pyelonephritis or systemic infection. Older adults may be afebrile.</li>
+                        <li><strong>Mental Status Changes in Older Adults:</strong> A critical point for nursing students. Older adults often present with atypical or non-specific symptoms such as acute confusion, altered mental status, new onset incontinence, dizziness, or generalized fatigue, rather than classic urinary symptoms. Always consider UTI in older adults with sudden unexplained changes in cognition or function.</li>
+                    </ul>
+                    <h4>Diagnostic Tests:</h4>
+                    <p><strong>Laboratory Assessment:</strong></p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Urinalysis (UA):</strong> This is the initial screening test. Key findings indicative of UTI include:
+                            <ul class="list-circle list-inside ml-4">
+                                <li><strong>Leukocyte Esterase:</strong> Indicates the presence of white blood cells (WBCs), suggesting inflammation/infection.</li>
+                                <li><strong>Nitrites:</strong> Produced by gram-negative bacteria (like <em>E. coli</em>) when they convert urinary nitrates. Highly specific for bacterial infection.</li>
+                                <li><strong>White Blood Cells (WBCs) / Pyuria:</strong> Presence of WBCs in urine.</li>
+                                <li><strong>Red Blood Cells (RBCs) / Hematuria:</strong> May indicate irritation or inflammation.</li>
+                                <li><strong>Protein:</strong> Small amounts may be present due to inflammation.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Urine Culture and Sensitivity (C&S):</strong>
+                            <ul class="list-circle list-inside ml-4">
+                                <li><strong>Culture:</strong> Identifies the specific causative microorganism. A colony count of >10<sup>5</sup> colony-forming units (CFU)/mL is typically diagnostic for infection in clean-catch midstream urine. Lower counts may be significant in symptomatic patients or those with catheterization.</li>
+                                <li><strong>Sensitivity:</strong> Determines which antibiotics are effective against the identified pathogen, guiding appropriate treatment.</li>
+                                <li><strong>Collection:</strong> Emphasize proper clean-catch midstream urine collection technique to avoid contamination. For catheterized patients, collect from the catheter port after clamping the tubing below the port for 15-30 minutes.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Blood Tests (for suspected pyelonephritis or urosepsis):</strong>
+                            <ul class="list-circle list-inside ml-4">
+                                <li><strong>Complete Blood Count (CBC):</strong> May show leukocytosis (elevated WBCs) with a shift to the left (increased immature neutrophils), indicating an acute bacterial infection.</li>
+                                <li><strong>Blood Cultures:</strong> Performed if urosepsis is suspected (fever, chills, systemic symptoms) to identify bacteria in the bloodstream.</li>
+                                <li><strong>C-reactive protein (CRP) and Erythrocyte Sedimentation Rate (ESR):</strong> Non-specific markers of inflammation that may be elevated.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>Imaging Studies (for recurrent or complicated UTIs, or suspected obstruction):</strong></p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Kidney, Ureter, Bladder (KUB) X-ray:</strong> Basic imaging to identify large stones.</li>
+                        <li><strong>Computed Tomography (CT) Scan:</strong> Can detect stones, obstructions, abscesses, or anatomical abnormalities.</li>
+                        <li><strong>Ultrasound of Kidneys and Bladder:</strong> Non-invasive imaging to assess for hydronephrosis, stones, or bladder issues.</li>
+                        <li><strong>Cystoscopy:</strong> Direct visualization of the bladder and urethra with a scope. Used for recurrent UTIs, hematuria, or suspected structural abnormalities; usually performed by a urologist.</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'uti-interventions', // Retained step ID
+                title: 'Interventions and Management of UTIs', // Updated title
+                type: 'text',
+                content: `
+                    <p>Management of UTIs focuses on eradicating the infection, managing symptoms, preventing complications, and educating the patient on preventive measures.</p>
+                    <h4>Nonsurgical Management:</h4>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Drug Therapy (Antimicrobials):</strong>
+                            <ul class="list-circle list-inside ml-4">
+                                <li><strong>First-line Agents for Uncomplicated UTIs:</strong> Commonly prescribed oral antibiotics include:
+                                    <ul class="list-square list-inside ml-4">
+                                        <li><strong>Trimethoprim/Sulfamethoxazole (Bactrim, Septra):</strong> Often a first choice due to effectiveness and cost.</li>
+                                        <li><strong>Nitrofurantoin (Macrodantin, Macrobid):</strong> Concentrates well in urine; effective for lower UTIs.</li>
+                                        <li><strong>Fosfomycin (Monurol):</strong> Single-dose treatment option.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Fluoroquinolones (Ciprofloxacin, Levofloxacin):</strong> Often used for complicated UTIs or when resistance to first-line agents is present. Due to increasing resistance and potential side effects, they are generally reserved for specific cases.</li>
+                                <li><strong>Beta-lactam Antibiotics (Amoxicillin, Cephalexin):</strong> May be used, but resistance can be an issue.</li>
+                                <li><strong>Antifungal Agents (Fluconazole):</strong> Used for fungal UTIs, typically in patients with indwelling catheters or those on long-term antibiotics.</li>
+                                <li><strong>Important Nursing Consideration:</strong> Emphasize the importance of completing the entire prescribed course of antibiotics, even if symptoms improve, to ensure complete eradication of bacteria and prevent the development of antimicrobial resistance.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Urinary Analgesics:</strong>
+                            <ul class="list-circle list-inside ml-4">
+                                <li><strong>Phenazopyridine (Pyridium):</strong> Prescribed to relieve discomfort, burning, frequency, and urgency. It does NOT treat the infection.
+                                    <div class="p-4 my-4 bg-orange-50 border-l-4 border-orange-400">
+                                        <h4 class="font-bold text-orange-800">Patient Education: Phenazopyridine</h4>
+                                        <p>Inform patients that phenazopyridine will turn urine a harmless bright orange or reddish-brown color, which can stain clothing. Advise them to wear sanitary pads to protect clothing.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><strong>Increased Fluid Intake:</strong> Reinforce the importance of liberal fluid intake (water is best) to help flush bacteria from the urinary tract.</li>
+                        <li><strong>Comfort Measures:</strong>
+                            <ul class="list-circle list-inside ml-4">
+                                <li>Apply a warm sitz bath or warm compress to the suprapubic area for pain relief.</li>
+                                <li>Encourage rest as needed.</li>
+                                <li>Avoid bladder irritants like caffeine, alcohol, highly spiced foods, and artificial sweeteners during acute infection.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4>Surgical Management:</h4>
+                    <p>Surgery is typically reserved for treating underlying structural or functional abnormalities that contribute to recurrent UTIs or complications, such as:</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Removal of urinary tract calculi (stones).</li>
+                        <li>Repair of anatomical abnormalities (e.g., vesicoureteral reflux, strictures).</li>
+                        <li>Correction of prostatic hypertrophy if it causes significant urinary obstruction.</li>
+                        <li>Drainage of abscesses related to severe pyelonephritis.</li>
+                    </ul>
+                    <p>For recurrent UTIs, long-term low-dose prophylactic antibiotics may be prescribed, or post-coital dosing for sexually active women.</p>
+                `
+            },
+            {
+                id: 'uti-quiz',
+                title: 'Review Questions',
+                type: 'quiz',
+                questions: [
+                    {
+                        question: "A female patient complains of painful urination, frequent urges to void, and suprapubic discomfort. Which of the following is the most likely diagnosis?",
+                        options: ["Pyelonephritis", "Urolithiasis", "Cystitis", "Glomerulonephritis"],
+                        correctAnswer: "Cystitis"
+                    },
+                    {
+                        question: "Which instruction is most important for the nurse to teach a female patient to prevent future urinary tract infections?",
+                        options: ["Increase intake of dairy products.", "Wipe from back to front after bowel movements.", "Void immediately after sexual intercourse.", "Avoid using public restrooms."],
+                        correctAnswer: "Void immediately after sexual intercourse."
+                    },
+                    {
+                        question: "The nurse is reviewing a urinalysis report for a patient with suspected UTI. Which findings would support this diagnosis? (Select all that apply.)",
+                        options: ["Presence of nitrites", "Negative leukocyte esterase", "Presence of white blood cells (pyuria)", "Urine specific gravity of 1.010", "Red blood cells (hematuria)"],
+                        correctAnswer: ["Presence of nitrites", "Presence of white blood cells (pyuria)", "Red blood cells (hematuria)"]
+                    },
+                    {
+                        question: "An elderly patient with a UTI presents with sudden confusion and generalized weakness but no fever or dysuria. What is the most appropriate nursing action?",
+                        options: ["Administer an antipyretic for potential hidden fever.", "Focus only on urinary symptoms as primary indicators.", "Recognize these as atypical UTI symptoms in older adults and proceed with diagnostic workup.", "Advise the family that confusion is a normal part of aging."],
+                        correctAnswer: "Recognize these as atypical UTI symptoms in older adults and proceed with diagnostic workup."
+                    }
+                ]
+            }
+        ]
+    },
+    'hepatitis-exemplar': {
+        title: 'Exemplar: Hepatitis',
+        color: 'from-teal-500 to-emerald-600',
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+        ),
+        description: 'A detailed examination of viral hepatitis (A, B, C, D, E), covering pathophysiology, transmission, prevention, and treatment.',
+        steps: [
+            {
+                id: 'hepatitis-patho',
+                title: 'Pathophysiology Review',
+                type: 'text',
+                content: `<p>Hepatitis is the widespread inflammation and infection of liver cells. Viral hepatitis is the most common type, caused by one of five viruses (A, B, C, D, E). The liver becomes enlarged and congested, leading to right upper quadrant pain. As the disease progresses, liver cell necrosis and distortion of the liver's architecture can increase portal pressure and cause obstructive jaundice. Chronic hepatitis (lasting >6 months), usually from HBV or HCV, can lead to cirrhosis and liver cancer.</p>`
+            },
+            {
+                id: 'hepatitis-etiology',
+                title: 'Etiology and Genetic Risk',
+                type: 'text',
+                content: `<h4>Hepatitis A (HAV)</h4><p>An RNA virus transmitted via the fecal-oral route (contaminated food/water). Usually a mild, flu-like illness. Incubation is 15-50 days. Vaccination is available.</p><h4>Hepatitis B (HBV)</h4><p>A DNA virus transmitted through blood and body fluids (sexual contact, shared needles, birth). Incubation is 25-180 days. Most adults recover, but some become chronic carriers, at high risk for cirrhosis and liver cancer. Vaccination is available.</p><h4>Hepatitis C (HCV)</h4><p>An RNA virus transmitted blood-to-blood (primarily illicit IV drug use). Most people are unaware of infection and develop chronic disease over decades, leading to cirrhosis. No vaccine is available, but effective antiviral treatments exist.</p><h4>Hepatitis D (HDV)</h4><p>A defective RNA virus that requires HBV to replicate. Transmitted parenterally. It usually develops into chronic disease.</p><h4>Hepatitis E (HEV)</h4><p>A waterborne virus transmitted via the fecal-oral route, common in areas with poor sanitation. It is self-limiting.</p>`
+            },
+            {
+                id: 'hepatitis-prevention',
+                title: 'Health Promotion/Prevention',
+                type: 'text',
+                content: `<p>Vaccines for HAV and HBV are highly effective. Prevention measures include:</p><ul class="list-disc list-inside"><li><strong>Hepatitis A:</strong> Proper handwashing, avoiding contaminated food/water, and vaccination.</li><li><strong>Hepatitis B:</strong> Vaccination, safe sex practices, not sharing needles, and screening of blood products.</li><li><strong>Hepatitis C:</strong> Avoiding needle sharing and using Standard Precautions. Screening is recommended for "baby boomers" (born 1945-1965).</li></ul><div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400"><h4 class="font-bold text-yellow-800">Best Practice: Prevention for Healthcare Workers</h4><p>Use Standard Precautions, utilize needleless systems, and receive the hepatitis B vaccine series.</p></div>`
+            },
+            {
+                id: 'hepatitis-assessment',
+                title: 'Assessment',
+                type: 'text',
+                content: `<p><strong>History:</strong> Ask about exposure to infected persons, risk factors (travel, drug use, sexual history).</p><p><strong>Physical Assessment:</strong> Symptoms include abdominal pain, jaundice (yellowish skin/sclera), arthralgia, myalgia, diarrhea/constipation, dark urine, and clay-colored stools. Palpate for liver tenderness in the right upper quadrant.</p><p><strong>Psychosocial Assessment:</strong> Patients may feel sick, fatigued, depressed, or guilty. Social stigma can lead to isolation. Financial burdens from lost work can cause anxiety.</p><p><strong>Laboratory Assessment:</strong></p><ul class="list-disc list-inside"><li><strong>Liver Enzymes:</strong> ALT and AST levels can rise into the thousands.</li><li><strong>Serologic Markers:</strong> Specific antibodies (e.g., anti-HAV IgM, HBsAg, anti-HCV) confirm the type of hepatitis.</li></ul><p><strong>Other Diagnostics:</strong> Liver biopsy can confirm the diagnosis and establish the stage of liver damage.</p>`
+            },
+            {
+                id: 'hepatitis-interventions',
+                title: 'Interventions',
+                type: 'text',
+                content: `<p>Care focuses on resting the liver, promoting regeneration, and strengthening immunity.</p><ul class="list-disc list-inside space-y-2"><li><strong>Promoting Nutrition:</strong> A high-carbohydrate, high-calorie diet with moderate fat and protein is recommended. Small, frequent meals are often better tolerated.</li><li><strong>Managing Fatigue:</strong> Rest is essential to reduce the liver's metabolic demands. Alternate rest periods with light activity.</li><li><strong>Drug Therapy:</strong> Drugs are used sparingly in acute hepatitis. For chronic HBV and HCV, antiviral and immunomodulating drugs are used (e.g., tenofovir for HBV; direct-acting antivirals like glecaprevir for HCV).</li></ul><div class="p-4 my-4 bg-red-50 border-l-4 border-red-400"><h4 class="font-bold text-red-800">Action Alert</h4><p>Teach patients to avoid alcohol and check with their provider before taking any medication, vitamin, or herbal preparation.</p></div>`
+            }
+        ]
+    },
+    'hiv-exemplar': {
+        title: 'Exemplar: HIV Infection',
+        color: 'from-rose-500 to-red-600',
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+        ),
+        description: 'A comprehensive guide to Human Immunodeficiency Virus (HIV), including its stages, pathophysiology, transmission, prevention, and management.',
+        steps: [
+            {
+                id: 'hiv-overview',
+                title: 'Overview and Stages',
+                type: 'text',
+                content: `<p>Human immunodeficiency virus (HIV) causes a chronic infection that impairs immunity. The disease progresses along a continuum of three stages:</p><ol class="list-decimal list-inside space-y-2"><li><strong>Stage I: Acute HIV Infection:</strong> Begins within 4 weeks of infection. Symptoms are flu-like (fever, sore throat, rash). The viral load is high, and transmission is very possible.</li><li><strong>Stage II: Chronic HIV Infection:</strong> Can be treated as a chronic disorder with drug therapy. Patients can have undetectable viral loads and live for decades.</li><li><strong>Stage III: Acquired Immunodeficiency Syndrome (AIDS):</strong> Characterized by profoundly reduced immunity. Diagnosed when CD4+ T-cell count is <200 cells/mm³ or when specific opportunistic infections (OIs) are present.</li></ol><p>OIs are caused by organisms that are normally kept in check by a healthy immune system, such as <em>Candida albicans</em>, <em>Pneumocystis jirovecii</em> pneumonia (PCP), and tuberculosis (TB). Common cancers in Stage III include Kaposi sarcoma (KS) and certain lymphomas.</p>`
+            },
+            {
+                id: 'hiv-patho',
+                title: 'Pathophysiology Review',
+                type: 'text',
+                content: `<p>HIV is a retrovirus, meaning it uses RNA as its genetic material. It uses the enzyme reverse transcriptase to convert its RNA into DNA, which is then integrated into the host cell's DNA. This allows the virus to take over the cell's machinery to produce more viral particles.</p><h4>The HIV Life Cycle:</h4><ol class="list-decimal list-inside space-y-1"><li><strong>Binding:</strong> HIV attaches to CD4 cell receptors.</li><li><strong>Fusion:</strong> HIV enters the CD4 cell.</li><li><strong>Reverse Transcription:</strong> HIV RNA is converted to HIV DNA.</li><li><strong>Integration:</strong> HIV DNA is inserted into the host cell's DNA.</li><li><strong>Replication:</strong> The host cell makes long chains of HIV proteins.</li><li><strong>Assembly:</strong> New, immature HIV particles are assembled.</li><li><strong>Budding:</strong> Immature HIV pushes out of the cell and matures into an infectious virus.</li></ol><p>Antiretroviral drugs interrupt this life cycle at various stages.</p>`
+            },
+            {
+                id: 'hiv-prevention',
+                title: 'Health Promotion/Prevention',
+                type: 'text',
+                content: `<p>HIV is found in all body fluids but is transmitted most often through sexual contact, parenteral exposure (sharing needles), and perinatally (mother to child). It is NOT transmitted by casual contact.</p><h4>Sexual Transmission</h4><p>Safer sex practices are crucial. This includes consistent use of condoms for all types of intercourse and using water-based lubricants.</p><h4>Parenteral Transmission</h4><p>Preventive practices include using syringe services programs (SSPs) to obtain sterile needles and teaching proper cleaning techniques for those who reuse needles.</p><h4>Prophylactic Prevention</h4><ul class="list-disc list-inside space-y-2"><li><strong>Preexposure Prophylaxis (PrEP):</strong> Antiretroviral drugs taken by an HIV-negative person at high risk to prevent infection. Reduces risk from sex by about 99%.</li><li><strong>Postexposure Prophylaxis (PEP):</strong> Antiretroviral treatment used in emergencies after a potential exposure. Must be started within 72 hours.</li><li><strong>Treatment as Prevention (TasP):</strong> An HIV-positive person takes medication to achieve an undetectable viral load, which greatly reduces the risk of sexual transmission.</li></ul><div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400"><h4 class="font-bold text-yellow-800">Drug Alert</h4><p>PrEP and TasP do not replace standard safer sex practices. Adherence to an every-3-month HIV testing schedule is crucial for those on PrEP.</p></div>`
+            },
+            {
+                id: 'hiv-assessment',
+                title: 'Assessment',
+                type: 'text',
+                content: `<h4>History</h4><p>A thorough and confidential history is essential. Ask about risk factors, sexual practices (using the "5 Ps": Partners, Practices, Protection, Past history, Prevention of pregnancy), and any current symptoms.</p><h4>Physical Assessment</h4><p>Assess for opportunistic infections (see Table 17.3 in original text), such as oral candidiasis, skin lesions (Kaposi sarcoma), and respiratory issues (PCP, TB). Monitor for neurologic changes, GI issues (diarrhea, weight loss), and other systemic symptoms.</p><h4>Laboratory Assessment</h4><ul class="list-disc list-inside space-y-2"><li><strong>Serologic/Virologic Testing:</strong> Rapid tests, antigen/antibody combo assays, and home kits are available. A 3-week "seroconversion window" can produce false negatives.</li><li><strong>Lymphocyte Counts:</strong> Patients often have leukopenia (WBC < 4000) and lymphopenia.</li><li><strong>CD4+ T-cell Count:</strong> A key indicator of immune function. Normal is 600-1500 cells/mm³. A count <200 indicates Stage III (AIDS).</li><li><strong>Viral Load Testing (HIV RNA):</strong> Measures the amount of virus in the blood. An undetectable viral load is the goal of therapy.</li></ul>`
+            },
+            {
+                id: 'hiv-interventions',
+                title: 'Interventions',
+                type: 'text',
+                content: `<h4>Preventing Transmission</h4><p>Patient education on safer sex, not sharing needles, and the importance of TasP is a priority.</p><h4>Preventing Infections & Complications</h4><p>Management focuses on supporting immunity with combination antiretroviral therapy (cART) and preventing/treating opportunistic infections.</p><p><strong>Drug Therapy (cART):</strong> Uses multiple drugs from different classes (NRTIs, NNRTIs, Protease Inhibitors, etc.) to suppress viral replication. Adherence is critical to prevent drug resistance.</p><div class="p-4 my-4 bg-red-50 border-l-4 border-red-400"><h4 class="font-bold text-red-800">Drug Alert</h4><p>Teach patients the importance of taking cART drugs exactly as prescribed. Ongoing missed doses can promote drug resistance.</p></div><p><strong>Immune Reconstitution Inflammatory Syndrome (IRIS):</strong> An inflammatory reaction that can occur after starting cART as the immune system begins to recover and recognizes underlying opportunistic infections. It is usually treated with short-term corticosteroids.</p><p><strong>Management of Complications:</strong> Interventions are tailored to the specific opportunistic infection or complication, such as facilitating gas exchange for PCP, managing pain from neuropathy, enhancing nutrition to combat wasting syndrome, and preserving skin integrity from lesions like Kaposi sarcoma.</p>`
+            },
+            {
+                id: 'hiv-quiz',
+                title: 'Review Questions',
+                type: 'quiz',
+                questions: [
+                    {
+                        question: "A patient with HIV has a CD4+ T-cell count of 180 cells/mm³. This finding corresponds to which stage of HIV infection?",
+                        options: ["Stage I: Acute Infection", "Stage II: Chronic Infection", "Stage III: AIDS", "Stage 0: Pre-infection"],
+                        correctAnswer: "Stage III: AIDS"
+                    },
+                    {
+                        question: "Which statement by a patient indicates a correct understanding of how to prevent Hepatitis A infection?",
+                        options: ["I will get the Hepatitis B vaccine.", "I need to make sure I use clean needles.", "I should always wash my hands thoroughly after using the bathroom.", "I will use condoms during sexual intercourse."],
+                        correctAnswer: "I should always wash my hands thoroughly after using the bathroom."
+                    },
+                    {
+                        question: "What are the hallmark signs of a typical, uncomplicated urinary tract infection (UTI)? (Select all that apply.)",
+                        options: ["High fever and chills", "Urinary frequency", "Painful urination (dysuria)", "Jaundice", "Urinary urgency"],
+                        correctAnswer: ["Urinary frequency", "Painful urination (dysuria)", "Urinary urgency"]
+                    },
+                    {
+                        question: "An elderly patient with a UTI presents with sudden confusion and generalized weakness but no fever or dysuria. What is the most appropriate nursing action?",
+                        options: ["Administer an antipyretic for potential hidden fever.", "Focus only on urinary symptoms as primary indicators.", "Recognize these as atypical UTI symptoms in older adults and proceed with diagnostic workup.", "Advise the family that confusion is a normal part of aging."],
+                        correctAnswer: "Recognize these as atypical UTI symptoms in older adults and proceed with diagnostic workup."
+                    }
+                ]
+            }
+        ]
+    }
+};
         
         // Data for the initial diagnostic quiz
         const preAssessmentQuizData = [
