@@ -131,45 +131,252 @@
                     },
                 ]
             },
-            'cystitis-exemplar': {
-                title: 'Exemplar: Cystitis (UTI)',
+            'uti-exemplar': { // Changed id from cystitis-exemplar to uti-exemplar
+                title: 'Exemplar: Urinary Tract Infections (UTIs)', // Updated title
                 color: 'from-amber-500 to-orange-600',
                 icon: (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                     </svg>
                 ),
-                description: 'An in-depth look at cystitis, including pathophysiology, risk factors, assessment, and management strategies.',
+                description: 'An in-depth look at Urinary Tract Infections (UTIs), including pathophysiology, risk factors, assessment, and management strategies.', // Updated description
                 steps: [
                     {
-                        id: 'cystitis-patho',
-                        title: 'Pathophysiology Review',
+                        id: 'uti-pathophysiology', // Renamed step ID
+                        title: 'Pathophysiology of UTIs', // Updated title
                         type: 'text',
-                        content: `<p>Cystitis is an inflammatory condition of the bladder, commonly from an infection (UTI), but can also be caused by chemicals, radiation, or irritants. It can be uncomplicated or complicated. Complicated UTIs involve factors like pregnancy, diabetes, or obstruction.</p><p>Bacteriuria (bacteria in urine) may be asymptomatic (ABU), especially in older adults. Normally, the urinary tract is sterile, protected by mucin, urine pH, and frequent voiding.</p>`
+                        content: `
+                            <p>A <strong>Urinary Tract Infection (UTI)</strong> is an infection involving any part of the urinary system, which includes the kidneys, ureters, bladder, and urethra. While commonly referring to lower urinary tract infections (e.g., cystitis), UTIs can also affect the upper urinary tract (e.g., pyelonephritis).</p>
+                            <p>Normally, the urinary tract is sterile above the urethra. The primary mechanism of infection is the ascent of bacteria from the urethra into the bladder, and potentially further into the kidneys. The most common causative microorganism is <strong><em>Escherichia coli (E. coli)</em></strong>, which originates from the gastrointestinal tract. Other less common pathogens include <em>Klebsiella pneumoniae</em>, <em>Proteus mirabilis</em>, <em>Pseudomonas aeruginosa</em>, and fungal infections like <em>Candida albicans</em> (especially in immunocompromised individuals or those with prolonged antibiotic use).</p>
+                            <h4>Protective Mechanisms:</h4>
+                            <p>The body has several natural defenses against UTIs:</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Urine Flow:</strong> Regular and complete emptying of the bladder helps flush out bacteria.</li>
+                                <li><strong>Urine Acidity:</strong> The acidic pH of urine inhibits bacterial growth.</li>
+                                <li><strong>Ureteral Peristalsis:</strong> Peristaltic waves in the ureters move urine from the kidneys to the bladder, preventing backflow.</li>
+                                <li><strong>Ureterovesical Junction:</strong> A one-way valve at the junction of the ureter and bladder prevents reflux of urine into the kidneys.</li>
+                                <li><strong>Mucosal Lining:</strong> The bladder's mucosal lining possesses antibacterial properties.</li>
+                            </ul>
+                            <p>When these defense mechanisms are compromised, bacteria can adhere to the urinary tract epithelium, colonize, and multiply, leading to an infection and inflammatory response.</p>
+                            <p><strong>Cystitis</strong> specifically refers to inflammation of the bladder, most commonly due to a bacterial UTI, but can also be caused by chemical irritants, radiation, or autoimmune conditions. If left untreated, lower UTIs can ascend to cause <strong>pyelonephritis</strong> (kidney infection), which is a more serious condition that can lead to renal damage or <strong>urosepsis</strong> (systemic infection originating from the urinary tract), a life-threatening form of sepsis.</p>
+                        `
                     },
                     {
-                        id: 'cystitis-etiology',
-                        title: 'Etiology and Risk Factors',
+                        id: 'uti-etiology-risk-factors', // Renamed step ID
+                        title: 'Etiology and Risk Factors', // Updated title
                         type: 'text',
-                        content: `<p>Infectious cystitis is typically caused by pathogens from the bowel, with <em>Escherichia coli</em> being the most common. Catheter-associated UTIs (CAUTIs) are a major concern in healthcare settings. Fungal infections (like <em>Candida</em>) can occur after long-term antibiotic use. Noninfectious cystitis can result from chemical exposure or autoimmune issues like lupus. Interstitial cystitis is a chronic, non-infectious inflammation.</p><p>Untreated UTIs can lead to pyelonephritis and urosepsis, a life-threatening complication.</p><div class="p-4 my-4 bg-blue-50 border-l-4 border-blue-400"><h4 class="font-bold text-blue-800">Gender Health: UTIs</h4><p>Women are 30 times more likely to have a UTI than men due to a shorter urethra that is closer to the anus.</p></div>`
+                        content: `
+                            <p>While UTIs can affect anyone, certain factors significantly increase susceptibility:</p>
+                            <h4>Primary Etiology: Ascending Infection</h4>
+                            <p>The most common route of infection is via the urethra, with bacteria migrating upwards from the perineal area. This explains why <em>E. coli</em>, a common gut bacterium, is the predominant pathogen.</p>
+                            <h4>Gender-Specific Risk Factors:</h4>
+                            <div class="p-4 my-4 bg-blue-50 border-l-4 border-blue-400">
+                                <h4 class="font-bold text-blue-800">Gender Health: UTIs</h4>
+                                <p><strong>Women are significantly more prone to UTIs than men</strong> (approximately 30 times more likely) due to:</p>
+                                <ul class="list-disc list-inside">
+                                    <li><strong>Shorter Urethra:</strong> The female urethra is considerably shorter (3-4 cm vs. 20 cm in males), providing a shorter distance for bacteria to travel to the bladder.</li>
+                                    <li><strong>Proximity to Anus:</strong> The female urethra's close proximity to the anus facilitates the transfer of fecal bacteria.</li>
+                                    <li><strong>Sexual Activity:</strong> Intercourse can introduce bacteria into the urethra.</li>
+                                    <li><strong>Use of Diaphragms/Spermicides:</strong> Can alter vaginal flora, increasing UTI risk.</li>
+                                    <li><strong>Hormonal Changes:</strong> Estrogen deficiency post-menopause can lead to atrophy of the vaginal and urethral tissues, making them more susceptible to infection.</li>
+                                </ul>
+                            </div>
+                            <h4>General Risk Factors:</h4>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Urinary Stasis:</strong> Any condition that impedes the flow of urine and allows it to sit in the bladder (e.g., prostatic hypertrophy, urinary tract calculi, strictures, neurogenic bladder, incomplete bladder emptying).</li>
+                                <li><strong>Catheterization (CAUTIs):</strong> Urinary catheters provide a direct route for bacteria into the bladder and are a major source of healthcare-associated infections. The longer a catheter is in place, the higher the risk.</li>
+                                <li><strong>Compromised Immunity:</strong> Diabetes mellitus (poor glucose control provides a favorable environment for bacterial growth), HIV/AIDS, immunosuppressant medications, and chronic illnesses weaken the immune response.</li>
+                                <li><strong>Advanced Age:</strong> Older adults may have reduced bladder tone, incomplete emptying, comorbidities, and suppressed immune responses. Atypical presentations (e.g., confusion instead of classic symptoms) are common.</li>
+                                <li><strong>Sexual Activity:</strong> Especially in women, frequent or intense sexual activity can increase risk.</li>
+                                <li><strong>Poor Personal Hygiene:</strong> Inadequate perineal hygiene.</li>
+                                <li><strong>Pregnancy:</strong> Hormonal changes and pressure from the growing uterus can cause urinary stasis.</li>
+                                <li><strong>Prior UTIs:</strong> A history of recurrent UTIs increases future risk.</li>
+                            </ul>
+                        `
                     },
                     {
-                        id: 'cystitis-prevention',
-                        title: 'Health Promotion/Prevention',
+                        id: 'uti-health-promotion', // Renamed step ID
+                        title: 'Health Promotion and Prevention of UTIs', // Updated title
                         type: 'text',
-                        content: `<p>Preventing UTIs involves sterile technique for catheter insertion, adequate fluid intake (2-3 L daily), and proper hygiene. For women, this includes wiping from front to back and emptying the bladder before and after intercourse. Avoiding irritating products like douches is also recommended.</p><div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400"><h4 class="font-bold text-yellow-800">Nursing Safety Priority</h4><p>Ensuring that urinary catheters are used appropriately and discontinued as early as possible is required. Do not allow catheters to remain in place for staff convenience.</p></div>`
+                        content: `
+                            <p>Nurses play a critical role in educating patients on strategies to prevent UTIs, particularly in high-risk populations.</p>
+                            <h4>Key Prevention Strategies:</h4>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Adequate Fluid Intake:</strong> Encourage daily fluid intake of 2-3 liters (unless contraindicated by other health conditions). This helps dilute urine and promotes frequent voiding, flushing bacteria from the urinary tract.</li>
+                                <li><strong>Frequent Voiding:</strong> Advise patients to empty their bladder regularly, typically every 3-4 hours during the day, and completely empty it. Avoid "holding" urine for extended periods.</li>
+                                <li><strong>Proper Perineal Hygiene (for women):</strong>
+                                    <ul class="list-circle list-inside ml-4">
+                                        <li>Wipe from <strong>front to back</strong> after urination and defecation to prevent fecal contamination of the urethra.</li>
+                                        <li>Cleanse the perineal area before and after sexual intercourse.</li>
+                                        <li>Void immediately after sexual intercourse to flush out any bacteria that may have entered the urethra.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Avoid Irritants:</strong> Advise against the use of irritating feminine hygiene products such as douches, perfumed sanitary napkins, scented toilet paper, and harsh soaps in the perineal area. These can disrupt natural flora and irritate the urethra.</li>
+                                <li><strong>Cranberry Products:</strong> While evidence is mixed for active treatment, some studies suggest that cranberry products (juice, supplements) may help prevent recurrent UTIs by inhibiting bacterial adherence to the urinary tract walls.</li>
+                                <li><strong>Cotton Underwear:</strong> Recommend breathable cotton underwear instead of synthetic materials, as cotton helps keep the perineal area dry and inhibits bacterial growth.</li>
+                                <li><strong>Avoiding Bubble Baths:</strong> For children and adults, bubble baths can irritate the urethra.</li>
+                            </ul>
+                            <h4>Preventing Catheter-Associated Urinary Tract Infections (CAUTIs):</h4>
+                            <div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400">
+                                <h4 class="font-bold text-yellow-800">Nursing Safety Priority: Preventing CAUTIs</h4>
+                                <p>CAUTIs are preventable. Nurses must adhere to strict protocols:</p>
+                                <ul class="list-disc list-inside">
+                                    <li><strong>Aseptic Technique:</strong> Use strict sterile technique during catheter insertion.</li>
+                                    <li><strong>Appropriate Use:</strong> Only insert catheters when medically necessary, following established guidelines (e.g., for acute urinary retention, critical illness requiring strict I&O, perioperative use).</li>
+                                    <li><strong>Early Removal:</strong> Discontinue urinary catheters as early as clinically possible. Do not allow catheters to remain in place for staff convenience or simply for patient monitoring if alternatives are available.</li>
+                                    <li><strong>Maintenance:</strong> Maintain a closed drainage system, ensure the collection bag is below the level of the bladder, and prevent kinking of tubing. Perform regular perineal and catheter care.</li>
+                                </ul>
+                            </div>
+                        `
                     },
                     {
-                        id: 'cystitis-assessment',
-                        title: 'Assessment',
+                        id: 'uti-assessment', // Retained step ID
+                        title: 'Assessment of UTIs', // Updated title
                         type: 'text',
-                        content: `<p>The hallmark symptoms of UTI are <strong>frequency</strong>, <strong>dysuria</strong> (painful urination), and <strong>urgency</strong>. Urine may be cloudy, foul-smelling, or blood-tinged. In older adults, symptoms might be atypical, such as confusion or falls, but diagnosis should be based on urinary symptoms.</p><p><strong>Laboratory Assessment:</strong></p><ul class="list-disc list-inside"><li><strong>Urinalysis:</strong> Looks for leukocyte esterase, nitrites, WBCs, and RBCs.</li><li><strong>Urine Culture:</strong> Confirms the organism and guides antibiotic choice. A colony count of >10<sup>5</sup> CFU/mL is diagnostic.</li></ul><p><strong>Other Diagnostics:</strong> Cystoscopy may be used for recurrent UTIs to check for structural abnormalities.</p>`
+                        content: `
+                            <p>A thorough assessment is crucial for diagnosing UTIs and differentiating them from other conditions. Nurses should gather both subjective and objective data.</p>
+                            <h4>History and Subjective Data:</h4>
+                            <p>Ask about the presence and characteristics of urinary symptoms. The hallmark symptoms of uncomplicated lower UTIs are often referred to as "irritative voiding symptoms":</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Frequency:</strong> Urinating more often than usual.</li>
+                                <li><strong>Dysuria:</strong> Painful or difficult urination, often described as burning or stinging.</li>
+                                <li><strong>Urgency:</strong> A sudden, compelling need to urinate that is difficult to defer.</li>
+                                <li><strong>Nocturia:</strong> Waking up at night to urinate.</li>
+                                <li><strong>Suprapubic Discomfort:</strong> Pain or pressure in the lower abdomen, just above the pubic bone.</li>
+                                <li><strong>Hematuria:</strong> Blood in the urine, which may make urine appear pink, red, or rusty (gross hematuria), or only detectable microscopically.</li>
+                                <li><strong>Foul-Smelling Urine:</strong> Urine may have an unusually strong or unpleasant odor.</li>
+                                <li><strong>Cloudy Urine:</strong> Due to the presence of white blood cells and bacteria.</li>
+                            </ul>
+                            <p>For potential upper UTIs (pyelonephritis), inquire about:</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Flank Pain:</strong> Pain in the side, back, or groin, often unilateral.</li>
+                                <li><strong>Fever and Chills:</strong> Systemic symptoms indicating a more widespread infection.</li>
+                                <li><strong>Nausea and Vomiting:</strong> May accompany fever and flank pain.</li>
+                                <li><strong>Malaise/Fatigue:</strong> General feeling of unwellness.</li>
+                            </ul>
+                            <h4>Physical Examination Findings:</h4>
+                            <p>Focus on abdominal and perineal assessment.</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Lower Abdominal Tenderness:</strong> Especially in the suprapubic area, upon palpation.</li>
+                                <li><strong>Costovertebral Angle (CVA) Tenderness:</strong> Elicited by gently tapping over the kidney area on the back (at the angle between the last rib and the vertebral column). This is a key sign of pyelonephritis.</li>
+                                <li><strong>Fever:</strong> May be present, especially with pyelonephritis or systemic infection. Older adults may be afebrile.</li>
+                                <li><strong>Mental Status Changes in Older Adults:</strong> A critical point for nursing students. Older adults often present with atypical or non-specific symptoms such as acute confusion, altered mental status, new onset incontinence, dizziness, or generalized fatigue, rather than classic urinary symptoms. Always consider UTI in older adults with sudden unexplained changes in cognition or function.</li>
+                            </ul>
+                            <h4>Diagnostic Tests:</h4>
+                            <p><strong>Laboratory Assessment:</strong></p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Urinalysis (UA):</strong> This is the initial screening test. Key findings indicative of UTI include:
+                                    <ul class="list-circle list-inside ml-4">
+                                        <li><strong>Leukocyte Esterase:</strong> Indicates the presence of white blood cells (WBCs), suggesting inflammation/infection.</li>
+                                        <li><strong>Nitrites:</strong> Produced by gram-negative bacteria (like <em>E. coli</em>) when they convert urinary nitrates. Highly specific for bacterial infection.</li>
+                                        <li><strong>White Blood Cells (WBCs) / Pyuria:</strong> Presence of WBCs in urine.</li>
+                                        <li><strong>Red Blood Cells (RBCs) / Hematuria:</strong> May indicate irritation or inflammation.</li>
+                                        <li><strong>Protein:</strong> Small amounts may be present due to inflammation.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Urine Culture and Sensitivity (C&S):</strong>
+                                    <ul class="list-circle list-inside ml-4">
+                                        <li><strong>Culture:</strong> Identifies the specific causative microorganism. A colony count of >10<sup>5</sup> colony-forming units (CFU)/mL is typically diagnostic for infection in clean-catch midstream urine. Lower counts may be significant in symptomatic patients or those with catheterization.</li>
+                                        <li><strong>Sensitivity:</strong> Determines which antibiotics are effective against the identified pathogen, guiding appropriate treatment.</li>
+                                        <li><strong>Collection:</strong> Emphasize proper clean-catch midstream urine collection technique to avoid contamination. For catheterized patients, collect from the catheter port after clamping the tubing below the port for 15-30 minutes.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Blood Tests (for suspected pyelonephritis or urosepsis):</strong>
+                                    <ul class="list-circle list-inside ml-4">
+                                        <li><strong>Complete Blood Count (CBC):</strong> May show leukocytosis (elevated WBCs) with a shift to the left (increased immature neutrophils), indicating an acute bacterial infection.</li>
+                                        <li><strong>Blood Cultures:</strong> Performed if urosepsis is suspected (fever, chills, systemic symptoms) to identify bacteria in the bloodstream.</li>
+                                        <li><strong>C-reactive protein (CRP) and Erythrocyte Sedimentation Rate (ESR):</strong> Non-specific markers of inflammation that may be elevated.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <p><strong>Imaging Studies (for recurrent or complicated UTIs, or suspected obstruction):</strong></p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Kidney, Ureter, Bladder (KUB) X-ray:</strong> Basic imaging to identify large stones.</li>
+                                <li><strong>Computed Tomography (CT) Scan:</strong> Can detect stones, obstructions, abscesses, or anatomical abnormalities.</li>
+                                <li><strong>Ultrasound of Kidneys and Bladder:</strong> Non-invasive imaging to assess for hydronephrosis, stones, or bladder issues.</li>
+                                <li><strong>Cystoscopy:</strong> Direct visualization of the bladder and urethra with a scope. Used for recurrent UTIs, hematuria, or suspected structural abnormalities; usually performed by a urologist.</li>
+                            </ul>
+                        `
                     },
                     {
-                        id: 'cystitis-interventions',
-                        title: 'Interventions',
+                        id: 'uti-interventions', // Retained step ID
+                        title: 'Interventions and Management of UTIs', // Updated title
                         type: 'text',
-                        content: `<h4>Nonsurgical Management</h4><p>Management focuses on drug therapy, fluid intake, and comfort measures.</p><ul class="list-disc list-inside"><li><strong>Drug Therapy:</strong> Antibiotics like nitrofurantoin or trimethoprim/sulfamethoxazole are first-line treatments. Fluconazole is used for fungal infections. Urinary analgesics like phenazopyridine can relieve pain but don't treat the infection (and turn urine orange-red).</li><li><strong>Fluid Intake:</strong> Encourage liberal fluid intake to dilute urine and flush bacteria. Cranberry products may help by preventing bacterial adherence.</li><li><strong>Comfort Measures:</strong> Warm sitz baths can provide relief.</li></ul><h4>Surgical Management</h4><p>Surgery is reserved for treating underlying conditions that cause recurrent UTIs, such as removing obstructions or repairing vesicoureteral reflux.</p>`
+                        content: `
+                            <p>Management of UTIs focuses on eradicating the infection, managing symptoms, preventing complications, and educating the patient on preventive measures.</p>
+                            <h4>Nonsurgical Management:</h4>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Drug Therapy (Antimicrobials):</strong>
+                                    <ul class="list-circle list-inside ml-4">
+                                        <li><strong>First-line Agents for Uncomplicated UTIs:</strong> Commonly prescribed oral antibiotics include:
+                                            <ul class="list-square list-inside ml-4">
+                                                <li><strong>Trimethoprim/Sulfamethoxazole (Bactrim, Septra):</strong> Often a first choice due to effectiveness and cost.</li>
+                                                <li><strong>Nitrofurantoin (Macrodantin, Macrobid):</strong> Concentrates well in urine; effective for lower UTIs.</li>
+                                                <li><strong>Fosfomycin (Monurol):</strong> Single-dose treatment option.</li>
+                                            </ul>
+                                        </li>
+                                        <li><strong>Fluoroquinolones (Ciprofloxacin, Levofloxacin):</strong> Often used for complicated UTIs or when resistance to first-line agents is present. Due to increasing resistance and potential side effects, they are generally reserved for specific cases.</li>
+                                        <li><strong>Beta-lactam Antibiotics (Amoxicillin, Cephalexin):</strong> May be used, but resistance can be an issue.</li>
+                                        <li><strong>Antifungal Agents (Fluconazole):</strong> Used for fungal UTIs, typically in patients with indwelling catheters or those on long-term antibiotics.</li>
+                                        <li><strong>Important Nursing Consideration:</strong> Emphasize the importance of completing the entire prescribed course of antibiotics, even if symptoms improve, to ensure complete eradication of bacteria and prevent the development of antimicrobial resistance.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Urinary Analgesics:</strong>
+                                    <ul class="list-circle list-inside ml-4">
+                                        <li><strong>Phenazopyridine (Pyridium):</strong> Prescribed to relieve discomfort, burning, frequency, and urgency. It does NOT treat the infection.
+                                            <div class="p-4 my-4 bg-orange-50 border-l-4 border-orange-400">
+                                                <h4 class="font-bold text-orange-800">Patient Education: Phenazopyridine</h4>
+                                                <p>Inform patients that phenazopyridine will turn urine a harmless bright orange or reddish-brown color, which can stain clothing. Advise them to wear sanitary pads to protect clothing.</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><strong>Increased Fluid Intake:</strong> Reinforce the importance of liberal fluid intake (water is best) to help flush bacteria from the urinary tract.</li>
+                                <li><strong>Comfort Measures:</strong>
+                                    <ul class="list-circle list-inside ml-4">
+                                        <li>Apply a warm sitz bath or warm compress to the suprapubic area for pain relief.</li>
+                                        <li>Encourage rest as needed.</li>
+                                        <li>Avoid bladder irritants like caffeine, alcohol, highly spiced foods, and artificial sweeteners during acute infection.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <h4>Surgical Management:</h4>
+                            <p>Surgery is typically reserved for treating underlying structural or functional abnormalities that contribute to recurrent UTIs or complications, such as:</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Removal of urinary tract calculi (stones).</li>
+                                <li>Repair of anatomical abnormalities (e.g., vesicoureteral reflux, strictures).</li>
+                                <li>Correction of prostatic hypertrophy if it causes significant urinary obstruction.</li>
+                                <li>Drainage of abscesses related to severe pyelonephritis.</li>
+                            </ul>
+                            <p>For recurrent UTIs, long-term low-dose prophylactic antibiotics may be prescribed, or post-coital dosing for sexually active women.</p>
+                        `
+                    },
+                    {
+                        id: 'uti-quiz',
+                        title: 'Review Questions',
+                        type: 'quiz',
+                        questions: [
+                            {
+                                question: "A female patient complains of painful urination, frequent urges to void, and suprapubic discomfort. Which of the following is the most likely diagnosis?",
+                                options: ["Pyelonephritis", "Urolithiasis", "Cystitis", "Glomerulonephritis"],
+                                correctAnswer: "Cystitis"
+                            },
+                            {
+                                question: "Which instruction is most important for the nurse to teach a female patient to prevent future urinary tract infections?",
+                                options: ["Increase intake of dairy products.", "Wipe from back to front after bowel movements.", "Void immediately after sexual intercourse.", "Avoid using public restrooms."],
+                                correctAnswer: "Void immediately after sexual intercourse."
+                            },
+                            {
+                                question: "The nurse is reviewing a urinalysis report for a patient with suspected UTI. Which findings would support this diagnosis? (Select all that apply.)",
+                                options: ["Presence of nitrites", "Negative leukocyte esterase", "Presence of white blood cells (pyuria)", "Urine specific gravity of 1.010", "Red blood cells (hematuria)"],
+                                correctAnswer: ["Presence of nitrites", "Presence of white blood cells (pyuria)", "Red blood cells (hematuria)"]
+                            },
+                             {
+                                question: "An elderly patient with a UTI presents with sudden confusion and generalized weakness but no fever or dysuria. What is the most appropriate nursing action?",
+                                options: ["Administer an antipyretic for potential hidden fever.", "Focus only on urinary symptoms as primary indicators.", "Recognize these as atypical UTI symptoms in older adults and proceed with diagnostic workup.", "Advise the family that confusion is a normal part of aging."],
+                                correctAnswer: "Recognize these as atypical UTI symptoms in older adults and proceed with diagnostic workup."
+                            }
+                        ]
                     }
                 ]
             },
@@ -284,7 +491,7 @@
         // Data for the initial diagnostic quiz
         const preAssessmentQuizData = [
             { moduleId: 'infection-concept', question: "What is the term for a worldwide epidemic of a disease?", options: ["Localized", "Systemic", "Epidemic", "Pandemic"], correctAnswer: "Pandemic" },
-            { moduleId: 'cystitis-exemplar', question: "What is the most common pathogen causing infectious cystitis (UTI)?", options: ["Candida albicans", "Staphylococcus aureus", "Escherichia coli", "Streptococcus"], correctAnswer: "Escherichia coli" },
+            { moduleId: 'uti-exemplar', question: "What is the most common pathogen causing infectious urinary tract infections (UTIs)?", options: ["Candida albicans", "Staphylococcus aureus", "Escherichia coli", "Streptococcus"], correctAnswer: "Escherichia coli" }, // Updated moduleId and question
             { moduleId: 'hepatitis-exemplar', question: "Which type of hepatitis is primarily transmitted through the blood-to-blood route, such as sharing needles?", options: ["Hepatitis A", "Hepatitis B", "Hepatitis C", "Hepatitis E"], correctAnswer: "Hepatitis C" },
             { moduleId: 'hiv-exemplar', question: "Which medication strategy involves an HIV-negative person taking antiretroviral drugs to prevent infection?", options: ["PEP (Postexposure Prophylaxis)", "TasP (Treatment as Prevention)", "cART (Combination Antiretroviral Therapy)", "PrEP (Preexposure Prophylaxis)"], correctAnswer: "PrEP (Preexposure Prophylaxis)" },
         ];
@@ -336,13 +543,13 @@
                              onComplete({ score: updatedAnswers.filter(a=>a.isCorrect).length, total: questions.length });
                         }
                     } else {
-                         if (currentQuestionIndex < questions.length - 1) {
-                            setCurrentQuestionIndex(prev => prev + 1);
-                            setSelectedOption([]);
-                            setFeedback(null);
-                        } else {
-                            onComplete({ score: updatedAnswers.filter(a=>a.isCorrect).length, total: questions.length });
-                        }
+                           if (currentQuestionIndex < questions.length - 1) {
+                               setCurrentQuestionIndex(prev => prev + 1);
+                               setSelectedOption([]);
+                               setFeedback(null);
+                           } else {
+                               onComplete({ score: updatedAnswers.filter(a=>a.isCorrect).length, total: questions.length });
+                           }
                     }
                 }
             };
@@ -573,14 +780,14 @@
             return (
                 <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
                     <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
-                         <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
-                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                             <span className="hidden sm:inline">Dashboard</span>
-                         </button>
-                         <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
-                         <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                         </button>
+                           <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                               <span className="hidden sm:inline">Dashboard</span>
+                           </button>
+                           <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                           </button>
                     </header>
                     {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
                     <div className="flex flex-1 overflow-hidden">
@@ -610,7 +817,7 @@
                             </div>
                         </main>
                     </div>
-                     <CompletionModal isOpen={isCompletionModalOpen} onClose={() => { setIsCompletionModalOpen(false); onBack(); }} onNextModule={() => { setIsCompletionModalOpen(false); onNextModule(); }} hasNextModule={hasNextModule} />
+                    <CompletionModal isOpen={isCompletionModalOpen} onClose={() => { setIsCompletionModalOpen(false); onBack(); }} onNextModule={() => { setIsCompletionModalOpen(false); onNextModule(); }} hasNextModule={hasNextModule} />
                 </div>
             );
         };
