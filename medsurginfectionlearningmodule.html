@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infection Concept Learning Module</title>
 
-    <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         // Custom Tailwind CSS configuration
@@ -37,11 +35,9 @@
         };
     </script>
     
-    <!-- React Libraries -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     
-    <!-- Babel for JSX transpilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -60,14 +56,20 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useCallback } = React;
+        const { useState, useEffect, useCallback, useMemo } = React;
 
         // Utility function to conditionally join class names
         const cn = (...classes) => classes.filter(Boolean).join(' ');
 
+        // Mock authentication to simulate a user session for progress saving
+        const mockAuth = {
+            onAuthStateChanged: (callback) => {
+                setTimeout(() => callback({ uid: 'infection-concept-user' }), 100);
+                return () => {};
+            },
+        };
+
         // --- Data Structure for all Learning Content ---
-        // The provided text is parsed and organized into a structured JavaScript object.
-        // This makes the content manageable and allows React to render it dynamically.
         const contentData = {
             'infection-concept': {
                 title: 'Concept 23: Infection',
@@ -82,155 +84,50 @@
                     {
                         id: 'introduction',
                         title: 'Introduction',
-                        content: `
-                            <p>Microorganisms are found throughout the environment. As a consequence, humans are constantly exposed to a multitude of microorganisms at every moment. Although many microorganisms do not pose a health threat to humans, some cause human disease and are known as pathogens. Our bodies are constantly confronted with pathogens in the forms of bacteria, viruses, parasites, or fungi. These pathogens are routinely found on the skin; the mucous membranes; the linings of the respiratory, gastrointestinal, and urinary tracts; and the mouth and eyes. Typically, an individual’s immune system is able to rid the body of pathogens without developing an infection. An infection occurs when a susceptible host is invaded by a pathogen that multiplies and causes disease. This concept presentation provides an overview of the infection concept, including identifying individuals most at risk, recognizing signs and symptoms of infection, and understanding ways to treat or manage an infection.</p>
-                        `
+                        type: 'text',
+                        content: `<p>Microorganisms are found throughout the environment. As a consequence, humans are constantly exposed to a multitude of microorganisms at every moment. Although many microorganisms do not pose a health threat to humans, some cause human disease and are known as pathogens. Our bodies are constantly confronted with pathogens in the forms of bacteria, viruses, parasites, or fungi. These pathogens are routinely found on the skin; the mucous membranes; the linings of the respiratory, gastrointestinal, and urinary tracts; and the mouth and eyes. Typically, an individual’s immune system is able to rid the body of pathogens without developing an infection. An infection occurs when a susceptible host is invaded by a pathogen that multiplies and causes disease. This concept presentation provides an overview of the infection concept, including identifying individuals most at risk, recognizing signs and symptoms of infection, and understanding ways to treat or manage an infection.</p>`
                     },
                     {
                         id: 'definition',
                         title: 'Definition',
-                        content: `
-                            <p>For the purposes of this concept presentation, infection is defined as the invasion and multiplication of microorganisms in body tissues, which may be clinically unapparent or result in local cellular injury due to competitive metabolism, toxins, intracellular replication, or antigen–antibody response. Several additional terms are important to understand.</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Acute Infection:</strong> Resolving in a few days or weeks.</li>
-                                <li><strong>Chronic Infection:</strong> An infection that typically lasts longer than 12 weeks and, in some cases, is incurable.</li>
-                                <li><strong>Localized Infection:</strong> Limited to a specific body area.</li>
-                                <li><strong>Disseminated:</strong> A spread of infection from an initial site to other areas of the body.</li>
-                                <li><strong>Systemic:</strong> An infection that affects the body as a whole or has spread throughout the body.</li>
-                                <li><strong>Sepsis:</strong> A common type of systemic infection, is the presence of pathogens in the blood or other tissues throughout the body.</li>
-                            </ul>
-                            <h4 class="mt-4">Epidemic vs. Pandemic</h4>
-                            <p>Two additional terms that are significant to the concept of Infection are epidemic and pandemic.</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Epidemic:</strong> A situation in which there are more cases of an infectious disease than is normal for the population or geographic area.</li>
-                                <li><strong>Pandemic:</strong> A worldwide epidemic of a disease, such as that of the COVID-19 pandemic.</li>
-                            </ul>
-                            <p class="mt-2">The global nature of our modern world presents challenges because people with asymptomatic infections can travel from home to nearly anywhere in the world in less than 24 hours. Professional conferences, worldwide sporting events, and gatherings for various types of entertainment can bring large numbers of people together from all over the world. People with asymptomatic infections often travel to and from the events in confined airplanes and participate in events in close proximity to others. Exposure to infection can lead to the spread of disease before returning to their homes.</p>
-                        `
+                        type: 'text',
+                        content: `<p>For the purposes of this concept presentation, infection is defined as the invasion and multiplication of microorganisms in body tissues, which may be clinically unapparent or result in local cellular injury due to competitive metabolism, toxins, intracellular replication, or antigen–antibody response. Several additional terms are important to understand.</p><ul class="list-disc list-inside space-y-2"><li><strong>Acute Infection:</strong> Resolving in a few days or weeks.</li><li><strong>Chronic Infection:</strong> An infection that typically lasts longer than 12 weeks and, in some cases, is incurable.</li><li><strong>Localized Infection:</strong> Limited to a specific body area.</li><li><strong>Disseminated:</strong> A spread of infection from an initial site to other areas of the body.</li><li><strong>Systemic:</strong> An infection that affects the body as a whole or has spread throughout the body.</li><li><strong>Sepsis:</strong> A common type of systemic infection, is the presence of pathogens in the blood or other tissues throughout the body.</li></ul><h4 class="mt-4">Epidemic vs. Pandemic</h4><p>Two additional terms that are significant to the concept of Infection are epidemic and pandemic.</p><ul class="list-disc list-inside space-y-2"><li><strong>Epidemic:</strong> A situation in which there are more cases of an infectious disease than is normal for the population or geographic area.</li><li><strong>Pandemic:</strong> A worldwide epidemic of a disease, such as that of the COVID-19 pandemic.</li></ul><p class="mt-2">The global nature of our modern world presents challenges because people with asymptomatic infections can travel from home to nearly anywhere in the world in less than 24 hours. Professional conferences, worldwide sporting events, and gatherings for various types of entertainment can bring large numbers of people together from all over the world. People with asymptomatic infections often travel to and from the events in confined airplanes and participate in events in close proximity to others. Exposure to infection can lead to the spread of disease before returning to their homes.</p>`
                     },
                     {
                         id: 'scope',
                         title: 'Scope of Infection',
-                        content: `
-                            <p>Infections may be categorized in several ways, including on the basis of the multiple variables involved such as mode of transmission, trajectory of illness, and body systems affected. The most common way to categorize and discuss infections is based on the classification of the causative microorganism.</p>
-                            <div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg">
-                                <strong class="block text-gray-700">FIG. 23.1 Scope of Concept: Infection.</strong>
-                                <p class="text-sm text-gray-600">This figure illustrates the scope of infection, categorized by the causative microorganism: Bacterial, Viral, Fungal, and Parasitic/Protozoan.</p>
-                            </div>
-                            <p>The most common microorganisms initiating an infection are bacteria, viruses, fungi, and parasites or protozoa. The type of invading organism influences the immune response. B lymphocytes and T lymphocytes take “leadership” roles depending on whether it is a bacterial or viral invasion. The complement system is always present to enhance the immune response, and dendritic cells help modulate the immune response.</p>
-                            
-                            <h4>Bacterial Infections</h4>
-                            <p>Bacteria are one-celled organisms without a true nucleus or cellular organelles. They synthesize DNA, RNA, and proteins and can reproduce independently, but they require a host as a suitable environment for multiplication. Bacteria cause cellular injury by releasing exotoxins (enzymes released by gram-positive bacteria) or endotoxins (part of the cell wall of gram-negative bacteria).</p>
-
-                            <h4>Viral Infections</h4>
-                            <p>A virus is a pathogen with a nucleic acid within a protein shell and requires a host for replication. An invading virus may immediately cause disease or may remain dormant for years. The virus causes cellular injury by blocking the host cell’s protein synthesis and using the host cell’s metabolic processes for its own reproduction.</p>
-
-                            <h4>Fungal Infections</h4>
-                            <p>A fungus includes yeasts, molds, and mushrooms. In healthy individuals, fungi are often contained by natural flora. Fungi causing disease are termed fungi imperfecti and can be deadly in immunocompromised individuals. Other fungal infections, like athlete's foot, can develop in healthy individuals.</p>
-
-                            <h4>Protozoa/Parasitic Infections</h4>
-                            <p>Protozoa generally infect individuals with compromised immune responses. They are found in dead material in water and soil and are spread by the fecal-oral route. Disease can develop when spores invade organs and stimulate an immune response.</p>
-
-                            <h4>Other Types of Infections</h4>
-                            <p>Sometimes an infection will begin as one type and a secondary infection occurs. For example, a fungal infection may develop after antibiotic treatment for a bacterial infection. There is also a concern about emerging and reemerging infections, such as Methicillin-resistant Staphylococcus aureus (MRSA), Clostridioides difficile (C. difficile), and vancomycin-resistant Enterococci (VRE).</p>
-                        `
+                        type: 'text',
+                        content: `<p>Infections may be categorized in several ways, including on the basis of the multiple variables involved such as mode of transmission, trajectory of illness, and body systems affected. The most common way to categorize and discuss infections is based on the classification of the causative microorganism.</p><div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg"><strong class="block text-gray-700">FIG. 23.1 Scope of Concept: Infection.</strong><p class="text-sm text-gray-600">This figure illustrates the scope of infection, categorized by the causative microorganism: Bacterial, Viral, Fungal, and Parasitic/Protozoan.</p></div><p>The most common microorganisms initiating an infection are bacteria, viruses, fungi, and parasites or protozoa. The type of invading organism influences the immune response. B lymphocytes and T lymphocytes take “leadership” roles depending on whether it is a bacterial or viral invasion. The complement system is always present to enhance the immune response, and dendritic cells help modulate the immune response.</p><h4>Bacterial Infections</h4><p>Bacteria are one-celled organisms without a true nucleus or cellular organelles. They synthesize DNA, RNA, and proteins and can reproduce independently, but they require a host as a suitable environment for multiplication. Bacteria cause cellular injury by releasing exotoxins (enzymes released by gram-positive bacteria) or endotoxins (part of the cell wall of gram-negative bacteria).</p><h4>Viral Infections</h4><p>A virus is a pathogen with a nucleic acid within a protein shell and requires a host for replication. An invading virus may immediately cause disease or may remain dormant for years. The virus causes cellular injury by blocking the host cell’s protein synthesis and using the host cell’s metabolic processes for its own reproduction.</p><h4>Fungal Infections</h4><p>A fungus includes yeasts, molds, and mushrooms. In healthy individuals, fungi are often contained by natural flora. Fungi causing disease are termed fungi imperfecti and can be deadly in immunocompromised individuals. Other fungal infections, like athlete's foot, can develop in healthy individuals.</p><h4>Protozoa/Parasitic Infections</h4><p>Protozoa generally infect individuals with compromised immune responses. They are found in dead material in water and soil and are spread by the fecal-oral route. Disease can develop when spores invade organs and stimulate an immune response.</p><h4>Other Types of Infections</h4><p>Sometimes an infection will begin as one type and a secondary infection occurs. For example, a fungal infection may develop after antibiotic treatment for a bacterial infection. There is also a concern about emerging and reemerging infections, such as Methicillin-resistant Staphylococcus aureus (MRSA), Clostridioides difficile (C. difficile), and vancomycin-resistant Enterococci (VRE).</p>`
                     },
                     {
                         id: 'physiology',
                         title: 'Normal Physiological Process',
-                        content: `
-                            <p>Pathogens may be highly virulent (causing disease with small numbers) or weakly virulent (requiring a large number or a weakened host). Opportunistic infections cause disease when the host immune system is severely compromised.</p>
-                            <p>Some diseases are communicable before symptoms are evident, while others remain communicable after symptoms subside. The "iceberg" concept of infectious disease suggests three levels: (1) a large asymptomatic carrier population, (2) a smaller group with less severe symptoms, and (3) the smallest group with classical clinical symptoms.</p>
-                            
-                            <h4>Infection Process</h4>
-                            <p>The process of infection requires six elements: a pathogen, a susceptible host, a reservoir, a portal of exit, a mode of transmission, and a portal of entry.</p>
-                            <div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg">
-                                <strong class="block text-gray-700">FIG. 23.2 Process of Infection: Interactions of Host, Pathogens, and the Environment.</strong>
-                                <p class="text-sm text-gray-600">This figure depicts the chain of infection, showing the interaction between the host, pathogen, and environment, including the reservoir, portals of exit and entry, and mode of transmission.</p>
-                            </div>
-                            
-                            <h4>Pathogen Invasion</h4>
-                            <p>When a pathogen invades, the immune system responds. B lymphocytes produce antibodies, T lymphocytes directly kill invaders, and macrophages initiate phagocytosis. The complement system enhances this response. Tissue damage can occur from endotoxins or exotoxins released by the pathogen, leading to symptoms like fever, chills, and weakness, or more severe outcomes like shock.</p>
-                            
-                            <h4>Age-Related Differences</h4>
-                            <p>Infants and young children have immature immune systems, increasing their susceptibility. Older adults may have a diminished immune response, leading to muted symptoms like the absence of fever. Instead, they might present with confusion, dizziness, or fatigue. Comorbidities also alter the body's response to infection.</p>
-                        `
+                        type: 'text',
+                        content: `<p>Pathogens may be highly virulent (causing disease with small numbers) or weakly virulent (requiring a large number or a weakened host). Opportunistic infections cause disease when the host immune system is severely compromised.</p><p>Some diseases are communicable before symptoms are evident, while others remain communicable after symptoms subside. The "iceberg" concept of infectious disease suggests three levels: (1) a large asymptomatic carrier population, (2) a smaller group with less severe symptoms, and (3) the smallest group with classical clinical symptoms.</p><h4>Infection Process</h4><p>The process of infection requires six elements: a pathogen, a susceptible host, a reservoir, a portal of exit, a mode of transmission, and a portal of entry.</p><div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg"><strong class="block text-gray-700">FIG. 23.2 Process of Infection: Interactions of Host, Pathogens, and the Environment.</strong><p class="text-sm text-gray-600">This figure depicts the chain of infection, showing the interaction between the host, pathogen, and environment, including the reservoir, portals of exit and entry, and mode of transmission.</p></div><h4>Pathogen Invasion</h4><p>When a pathogen invades, the immune system responds. B lymphocytes produce antibodies, T lymphocytes directly kill invaders, and macrophages initiate phagocytosis. The complement system enhances this response. Tissue damage can occur from endotoxins or exotoxins released by the pathogen, leading to symptoms like fever, chills, and weakness, or more severe outcomes like shock.</p><h4>Age-Related Differences</h4><p>Infants and young children have immature immune systems, increasing their susceptibility. Older adults may have a diminished immune response, leading to muted symptoms like the absence of fever. Instead, they might present with confusion, dizziness, or fatigue. Comorbidities also alter the body's response to infection.</p>`
                     },
                     {
                         id: 'consequences',
                         title: 'Consequences of Uncontrolled Infection',
-                        content: `
-                            <p>Severe, untreated, or poorly responding infections can lead to septic shock syndrome and multiorgan dysfunction syndrome (MODS), also known as multisystem organ failure (MSOF). Symptoms may include hypotension, tachycardia, tachypnea, oliguria, hypoxia, hypercapnia, seizures, or coma.</p>
-                            <div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg">
-                                <strong class="block text-gray-700">FIG. 23.3 Pathophysiological Process of Septic Shock.</strong>
-                                <p class="text-sm text-gray-600">This diagram illustrates the progression from a bacterial infection to septic shock, highlighting the roles of toxins, inflammatory responses, and compensatory mechanisms leading to organ failure.</p>
-                            </div>
-                            <h4>Vascular, Renal, and Nervous System Compensation</h4>
-                            <p>An inflammatory response increases vascular permeability, leading to hypovolemia and hypotension. The nervous system compensates with vasoconstriction. The renal system attempts to maintain filtration but eventually, continued hypoperfusion leads to decreased urine output.</p>
-                            <h4>Respiratory Compensation</h4>
-                            <p>The respiratory system compensates for hypoxemia by increasing the rate of respiration. This can be hampered by cardiovascular decompensation, leading to pulmonary edema, hypoxia, and hypercapnia.</p>
-                            <h4>Multisystem Failure</h4>
-                            <p>Without effective treatment, the combination of inadequate tissue perfusion, overextended compensatory mechanisms, and cell damage results in irreversible organ failure and death.</p>
-                        `
+                        type: 'text',
+                        content: `<p>Severe, untreated, or poorly responding infections can lead to septic shock syndrome and multiorgan dysfunction syndrome (MODS), also known as multisystem organ failure (MSOF). Symptoms may include hypotension, tachycardia, tachypnea, oliguria, hypoxia, hypercapnia, seizures, or coma.</p><div class="p-4 my-4 border-l-4 border-gray-300 bg-gray-100 rounded-r-lg"><strong class="block text-gray-700">FIG. 23.3 Pathophysiological Process of Septic Shock.</strong><p class="text-sm text-gray-600">This diagram illustrates the progression from a bacterial infection to septic shock, highlighting the roles of toxins, inflammatory responses, and compensatory mechanisms leading to organ failure.</p></div><h4>Vascular, Renal, and Nervous System Compensation</h4><p>An inflammatory response increases vascular permeability, leading to hypovolemia and hypotension. The nervous system compensates with vasoconstriction. The renal system attempts to maintain filtration but eventually, continued hypoperfusion leads to decreased urine output.</p><h4>Respiratory Compensation</h4><p>The respiratory system compensates for hypoxemia by increasing the rate of respiration. This can be hampered by cardiovascular decompensation, leading to pulmonary edema, hypoxia, and hypercapnia.</p><h4>Multisystem Failure</h4><p>Without effective treatment, the combination of inadequate tissue perfusion, overextended compensatory mechanisms, and cell damage results in irreversible organ failure and death.</p>`
                     },
                     {
                         id: 'risk-factors',
                         title: 'Risk Factors',
-                        content: `
-                            <h4>Populations at Risk</h4>
-                            <p>While infectious diseases can affect anyone, certain populations are at higher risk. The very young (infants) and older adults are more vulnerable. Low socioeconomic status is a significant risk factor, as it can lead to insufficient preventive care, lack of resources for treatment, and inadequate nutrition.</p>
-                            
-                            <h4>Individual Risk Factors</h4>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Compromised Host (Immunodeficiency):</strong> Individuals who are very young, elderly, or immunocompromised due to genetics, malnutrition, pre-existing infections (like HIV), stress, or immunosuppressive medications are at high risk.</li>
-                                <li><strong>Compromised Host (Chronic Illness):</strong> Chronic diseases like diabetes, cancer, and respiratory disorders challenge the immune system. Treatments such as invasive lines, surgery, and mechanical ventilation provide entry points for pathogens.</li>
-                                <li><strong>Environmental Conditions:</strong> Unsanitary or crowded living conditions, lack of clean food and water, and poor air ventilation increase susceptibility to infection.</li>
-                            </ul>
-                        `
+                        type: 'text',
+                        content: `<h4>Populations at Risk</h4><p>While infectious diseases can affect anyone, certain populations are at higher risk. The very young (infants) and older adults are more vulnerable. Low socioeconomic status is a significant risk factor, as it can lead to insufficient preventive care, lack of resources for treatment, and inadequate nutrition.</p><h4>Individual Risk Factors</h4><ul class="list-disc list-inside space-y-2"><li><strong>Compromised Host (Immunodeficiency):</strong> Individuals who are very young, elderly, or immunocompromised due to genetics, malnutrition, pre-existing infections (like HIV), stress, or immunosuppressive medications are at high risk.</li><li><strong>Compromised Host (Chronic Illness):</strong> Chronic diseases like diabetes, cancer, and respiratory disorders challenge the immune system. Treatments such as invasive lines, surgery, and mechanical ventilation provide entry points for pathogens.</li><li><strong>Environmental Conditions:</strong> Unsanitary or crowded living conditions, lack of clean food and water, and poor air ventilation increase susceptibility to infection.</li></ul>`
                     },
                     {
                         id: 'assessment',
                         title: 'Assessment',
-                        content: `
-                            <h4>History</h4>
-                            <p>A thorough health history is crucial. Ask about injuries, known exposures, prior infections, recent surgeries, travel history, and use of immunosuppressant medications. Assess for symptoms like pain, swelling, redness, fatigue, and malaise.</p>
-                            
-                            <h4>Examination Findings</h4>
-                            <p>Key physical findings include fever, swelling, chills, redness, drainage from wounds, pain, and respiratory congestion. In older adults, look for confusion or fatigue. For suspected C. difficile or parasitic infections, assess for watery diarrhea and abdominal pain.</p>
-                            
-                            <h4>Diagnostic Tests</h4>
-                            <p><strong>Laboratory Tests:</strong></p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Complete Blood Count (CBC) with Differential:</strong> Elevated WBCs (neutrophils, lymphocytes) indicate infection. Elevated eosinophils and basophils can suggest a parasitic infection.</li>
-                                <li><strong>Culture and Sensitivity (C&S):</strong> Identifies the specific pathogen and the most effective antimicrobial. Can be performed on any body fluid or tissue.</li>
-                                <li><strong>Other Labs:</strong> C-reactive protein (CRP), erythrocyte sedimentation rate (ESR), and serologic tests for specific antibodies (e.g., for HIV, Hepatitis) are also used.</li>
-                            </ul>
-                            <p><strong>Radiographic Tests:</strong></p>
-                            <p>Tests like chest x-rays, CT scans, and MRIs help visualize tissues to determine the extent and location of an infection.</p>
-                        `
+                        type: 'text',
+                        content: `<h4>History</h4><p>A thorough health history is crucial. Ask about injuries, known exposures, prior infections, recent surgeries, travel history, and use of immunosuppressant medications. Assess for symptoms like pain, swelling, redness, fatigue, and malaise.</p><h4>Examination Findings</h4><p>Key physical findings include fever, swelling, chills, redness, drainage from wounds, pain, and respiratory congestion. In older adults, look for confusion or fatigue. For suspected C. difficile or parasitic infections, assess for watery diarrhea and abdominal pain.</p><h4>Diagnostic Tests</h4><p><strong>Laboratory Tests:</strong></p><ul class="list-disc list-inside space-y-2"><li><strong>Complete Blood Count (CBC) with Differential:</strong> Elevated WBCs (neutrophils, lymphocytes) indicate infection. Elevated eosinophils and basophils can suggest a parasitic infection.</li><li><strong>Culture and Sensitivity (C&S):</strong> Identifies the specific pathogen and the most effective antimicrobial. Can be performed on any body fluid or tissue.</li><li><strong>Other Labs:</strong> C-reactive protein (CRP), erythrocyte sedimentation rate (ESR), and serologic tests for specific antibodies (e.g., for HIV, Hepatitis) are also used.</li></ul><p><strong>Radiographic Tests:</strong></p><p>Tests like chest x-rays, CT scans, and MRIs help visualize tissues to determine the extent and location of an infection.</p>`
                     },
                     {
                         id: 'management',
                         title: 'Clinical Management',
-                        content: `
-                            <p>Success in treating infections has been dramatic due to antibiotics, sanitation, and immunizations. However, challenges remain due to antimicrobial resistance (e.g., MRSA, VRE), emerging infections, and global travel.</p>
-                            
-                            <h4>Primary Prevention</h4>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Hand Hygiene and Standard Precautions:</strong> The most effective methods to block transmission. Includes thorough hand washing and use of alcohol-based rubs.</li>
-                                <li><strong>Immunizations:</strong> A critical measure to prevent diseases like polio, measles, mumps, rubella, HPV, and hepatitis.</li>
-                            </ul>
-                            
-                            <h4>Secondary Prevention (Screening)</h4>
-                            <p>Screening is less effective for general infection control but is crucial for identifying specific infections early, such as sexually transmitted diseases (e.g., HIV, Chlamydia, HPV).</p>
-                            
-                            <h4>Collaborative Interventions</h4>
-                            <p>The goal is to eradicate the infection and support affected body systems.</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Antimicrobial Therapy:</strong> Includes antibiotics, antivirals, and antifungals. It's vital to complete the full course of therapy to prevent resistance.</li>
-                                <li><strong>Nutrition and Fluids:</strong> Crucial for supporting the immune system, especially in the presence of fever, vomiting, or diarrhea.</li>
-                            </ul>
-                        `
+                        type: 'text',
+                        content: `<p>Success in treating infections has been dramatic due to antibiotics, sanitation, and immunizations. However, challenges remain due to antimicrobial resistance (e.g., MRSA, VRE), emerging infections, and global travel.</p><h4>Primary Prevention</h4><ul class="list-disc list-inside space-y-2"><li><strong>Hand Hygiene and Standard Precautions:</strong> The most effective methods to block transmission. Includes thorough hand washing and use of alcohol-based rubs.</li><li><strong>Immunizations:</strong> A critical measure to prevent diseases like polio, measles, mumps, rubella, HPV, and hepatitis.</li></ul><h4>Secondary Prevention (Screening)</h4><p>Screening is less effective for general infection control but is crucial for identifying specific infections early, such as sexually transmitted diseases (e.g., HIV, Chlamydia, HPV).</p><h4>Collaborative Interventions</h4><p>The goal is to eradicate the infection and support affected body systems.</p><ul class="list-disc list-inside space-y-2"><li><strong>Antimicrobial Therapy:</strong> Includes antibiotics, antivirals, and antifungals. It's vital to complete the full course of therapy to prevent resistance.</li><li><strong>Nutrition and Fluids:</strong> Crucial for supporting the immune system, especially in the presence of fever, vomiting, or diarrhea.</li></ul>`
                     },
                 ]
             },
@@ -247,61 +144,32 @@
                     {
                         id: 'cystitis-patho',
                         title: 'Pathophysiology Review',
-                        content: `
-                            <p>Cystitis is an inflammatory condition of the bladder, commonly from an infection (UTI), but can also be caused by chemicals, radiation, or irritants. It can be uncomplicated or complicated. Complicated UTIs involve factors like pregnancy, diabetes, or obstruction.</p>
-                            <p>Bacteriuria (bacteria in urine) may be asymptomatic (ABU), especially in older adults. Normally, the urinary tract is sterile, protected by mucin, urine pH, and frequent voiding.</p>
-                        `
+                        type: 'text',
+                        content: `<p>Cystitis is an inflammatory condition of the bladder, commonly from an infection (UTI), but can also be caused by chemicals, radiation, or irritants. It can be uncomplicated or complicated. Complicated UTIs involve factors like pregnancy, diabetes, or obstruction.</p><p>Bacteriuria (bacteria in urine) may be asymptomatic (ABU), especially in older adults. Normally, the urinary tract is sterile, protected by mucin, urine pH, and frequent voiding.</p>`
                     },
                     {
                         id: 'cystitis-etiology',
                         title: 'Etiology and Risk Factors',
-                        content: `
-                            <p>Infectious cystitis is typically caused by pathogens from the bowel, with <em>Escherichia coli</em> being the most common. Catheter-associated UTIs (CAUTIs) are a major concern in healthcare settings. Fungal infections (like <em>Candida</em>) can occur after long-term antibiotic use. Noninfectious cystitis can result from chemical exposure or autoimmune issues like lupus. Interstitial cystitis is a chronic, non-infectious inflammation.</p>
-                            <p>Untreated UTIs can lead to pyelonephritis and urosepsis, a life-threatening complication.</p>
-                            <div class="p-4 my-4 bg-blue-50 border-l-4 border-blue-400">
-                                <h4 class="font-bold text-blue-800">Gender Health: UTIs</h4>
-                                <p>Women are 30 times more likely to have a UTI than men due to a shorter urethra that is closer to the anus.</p>
-                            </div>
-                        `
+                        type: 'text',
+                        content: `<p>Infectious cystitis is typically caused by pathogens from the bowel, with <em>Escherichia coli</em> being the most common. Catheter-associated UTIs (CAUTIs) are a major concern in healthcare settings. Fungal infections (like <em>Candida</em>) can occur after long-term antibiotic use. Noninfectious cystitis can result from chemical exposure or autoimmune issues like lupus. Interstitial cystitis is a chronic, non-infectious inflammation.</p><p>Untreated UTIs can lead to pyelonephritis and urosepsis, a life-threatening complication.</p><div class="p-4 my-4 bg-blue-50 border-l-4 border-blue-400"><h4 class="font-bold text-blue-800">Gender Health: UTIs</h4><p>Women are 30 times more likely to have a UTI than men due to a shorter urethra that is closer to the anus.</p></div>`
                     },
                     {
                         id: 'cystitis-prevention',
                         title: 'Health Promotion/Prevention',
-                        content: `
-                            <p>Preventing UTIs involves sterile technique for catheter insertion, adequate fluid intake (2-3 L daily), and proper hygiene. For women, this includes wiping from front to back and emptying the bladder before and after intercourse. Avoiding irritating products like douches is also recommended.</p>
-                            <div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400">
-                                <h4 class="font-bold text-yellow-800">Nursing Safety Priority</h4>
-                                <p>Ensuring that urinary catheters are used appropriately and discontinued as early as possible is required. Do not allow catheters to remain in place for staff convenience.</p>
-                            </div>
-                        `
+                        type: 'text',
+                        content: `<p>Preventing UTIs involves sterile technique for catheter insertion, adequate fluid intake (2-3 L daily), and proper hygiene. For women, this includes wiping from front to back and emptying the bladder before and after intercourse. Avoiding irritating products like douches is also recommended.</p><div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400"><h4 class="font-bold text-yellow-800">Nursing Safety Priority</h4><p>Ensuring that urinary catheters are used appropriately and discontinued as early as possible is required. Do not allow catheters to remain in place for staff convenience.</p></div>`
                     },
                     {
                         id: 'cystitis-assessment',
                         title: 'Assessment',
-                        content: `
-                            <p>The hallmark symptoms of UTI are <strong>frequency</strong>, <strong>dysuria</strong> (painful urination), and <strong>urgency</strong>. Urine may be cloudy, foul-smelling, or blood-tinged. In older adults, symptoms might be atypical, such as confusion or falls, but diagnosis should be based on urinary symptoms.</p>
-                            <p><strong>Laboratory Assessment:</strong></p>
-                            <ul class="list-disc list-inside">
-                                <li><strong>Urinalysis:</strong> Looks for leukocyte esterase, nitrites, WBCs, and RBCs.</li>
-                                <li><strong>Urine Culture:</strong> Confirms the organism and guides antibiotic choice. A colony count of >10<sup>5</sup> CFU/mL is diagnostic.</li>
-                            </ul>
-                            <p><strong>Other Diagnostics:</strong> Cystoscopy may be used for recurrent UTIs to check for structural abnormalities.</p>
-                        `
+                        type: 'text',
+                        content: `<p>The hallmark symptoms of UTI are <strong>frequency</strong>, <strong>dysuria</strong> (painful urination), and <strong>urgency</strong>. Urine may be cloudy, foul-smelling, or blood-tinged. In older adults, symptoms might be atypical, such as confusion or falls, but diagnosis should be based on urinary symptoms.</p><p><strong>Laboratory Assessment:</strong></p><ul class="list-disc list-inside"><li><strong>Urinalysis:</strong> Looks for leukocyte esterase, nitrites, WBCs, and RBCs.</li><li><strong>Urine Culture:</strong> Confirms the organism and guides antibiotic choice. A colony count of >10<sup>5</sup> CFU/mL is diagnostic.</li></ul><p><strong>Other Diagnostics:</strong> Cystoscopy may be used for recurrent UTIs to check for structural abnormalities.</p>`
                     },
                     {
                         id: 'cystitis-interventions',
                         title: 'Interventions',
-                        content: `
-                            <h4>Nonsurgical Management</h4>
-                            <p>Management focuses on drug therapy, fluid intake, and comfort measures.</p>
-                            <ul class="list-disc list-inside">
-                                <li><strong>Drug Therapy:</strong> Antibiotics like nitrofurantoin or trimethoprim/sulfamethoxazole are first-line treatments. Fluconazole is used for fungal infections. Urinary analgesics like phenazopyridine can relieve pain but don't treat the infection (and turn urine orange-red).</li>
-                                <li><strong>Fluid Intake:</strong> Encourage liberal fluid intake to dilute urine and flush bacteria. Cranberry products may help by preventing bacterial adherence.</li>
-                                <li><strong>Comfort Measures:</strong> Warm sitz baths can provide relief.</li>
-                            </ul>
-                            <h4>Surgical Management</h4>
-                            <p>Surgery is reserved for treating underlying conditions that cause recurrent UTIs, such as removing obstructions or repairing vesicoureteral reflux.</p>
-                        `
+                        type: 'text',
+                        content: `<h4>Nonsurgical Management</h4><p>Management focuses on drug therapy, fluid intake, and comfort measures.</p><ul class="list-disc list-inside"><li><strong>Drug Therapy:</strong> Antibiotics like nitrofurantoin or trimethoprim/sulfamethoxazole are first-line treatments. Fluconazole is used for fungal infections. Urinary analgesics like phenazopyridine can relieve pain but don't treat the infection (and turn urine orange-red).</li><li><strong>Fluid Intake:</strong> Encourage liberal fluid intake to dilute urine and flush bacteria. Cranberry products may help by preventing bacterial adherence.</li><li><strong>Comfort Measures:</strong> Warm sitz baths can provide relief.</li></ul><h4>Surgical Management</h4><p>Surgery is reserved for treating underlying conditions that cause recurrent UTIs, such as removing obstructions or repairing vesicoureteral reflux.</p>`
                     }
                 ]
             },
@@ -318,72 +186,32 @@
                     {
                         id: 'hepatitis-patho',
                         title: 'Pathophysiology Review',
-                        content: `
-                            <p>Hepatitis is the widespread inflammation and infection of liver cells. Viral hepatitis is the most common type, caused by one of five viruses (A, B, C, D, E). The liver becomes enlarged and congested, leading to right upper quadrant pain. As the disease progresses, liver cell necrosis and distortion of the liver's architecture can increase portal pressure and cause obstructive jaundice. Chronic hepatitis (lasting >6 months), usually from HBV or HCV, can lead to cirrhosis and liver cancer.</p>
-                        `
+                        type: 'text',
+                        content: `<p>Hepatitis is the widespread inflammation and infection of liver cells. Viral hepatitis is the most common type, caused by one of five viruses (A, B, C, D, E). The liver becomes enlarged and congested, leading to right upper quadrant pain. As the disease progresses, liver cell necrosis and distortion of the liver's architecture can increase portal pressure and cause obstructive jaundice. Chronic hepatitis (lasting >6 months), usually from HBV or HCV, can lead to cirrhosis and liver cancer.</p>`
                     },
                     {
                         id: 'hepatitis-etiology',
                         title: 'Etiology and Genetic Risk',
-                        content: `
-                            <h4>Hepatitis A (HAV)</h4>
-                            <p>An RNA virus transmitted via the fecal-oral route (contaminated food/water). Usually a mild, flu-like illness. Incubation is 15-50 days. Vaccination is available.</p>
-                            <h4>Hepatitis B (HBV)</h4>
-                            <p>A DNA virus transmitted through blood and body fluids (sexual contact, shared needles, birth). Incubation is 25-180 days. Most adults recover, but some become chronic carriers, at high risk for cirrhosis and liver cancer. Vaccination is available.</p>
-                            <h4>Hepatitis C (HCV)</h4>
-                            <p>An RNA virus transmitted blood-to-blood (primarily illicit IV drug use). Most people are unaware of infection and develop chronic disease over decades, leading to cirrhosis. No vaccine is available, but effective antiviral treatments exist.</p>
-                            <h4>Hepatitis D (HDV)</h4>
-                            <p>A defective RNA virus that requires HBV to replicate. Transmitted parenterally. It usually develops into chronic disease.</p>
-                            <h4>Hepatitis E (HEV)</h4>
-                            <p>A waterborne virus transmitted via the fecal-oral route, common in areas with poor sanitation. It is self-limiting.</p>
-                        `
+                        type: 'text',
+                        content: `<h4>Hepatitis A (HAV)</h4><p>An RNA virus transmitted via the fecal-oral route (contaminated food/water). Usually a mild, flu-like illness. Incubation is 15-50 days. Vaccination is available.</p><h4>Hepatitis B (HBV)</h4><p>A DNA virus transmitted through blood and body fluids (sexual contact, shared needles, birth). Incubation is 25-180 days. Most adults recover, but some become chronic carriers, at high risk for cirrhosis and liver cancer. Vaccination is available.</p><h4>Hepatitis C (HCV)</h4><p>An RNA virus transmitted blood-to-blood (primarily illicit IV drug use). Most people are unaware of infection and develop chronic disease over decades, leading to cirrhosis. No vaccine is available, but effective antiviral treatments exist.</p><h4>Hepatitis D (HDV)</h4><p>A defective RNA virus that requires HBV to replicate. Transmitted parenterally. It usually develops into chronic disease.</p><h4>Hepatitis E (HEV)</h4><p>A waterborne virus transmitted via the fecal-oral route, common in areas with poor sanitation. It is self-limiting.</p>`
                     },
                     {
                         id: 'hepatitis-prevention',
                         title: 'Health Promotion/Prevention',
-                        content: `
-                            <p>Vaccines for HAV and HBV are highly effective. Prevention measures include:</p>
-                            <ul class="list-disc list-inside">
-                                <li><strong>Hepatitis A:</strong> Proper handwashing, avoiding contaminated food/water, and vaccination.</li>
-                                <li><strong>Hepatitis B:</strong> Vaccination, safe sex practices, not sharing needles, and screening of blood products.</li>
-                                <li><strong>Hepatitis C:</strong> Avoiding needle sharing and using Standard Precautions. Screening is recommended for "baby boomers" (born 1945-1965).</li>
-                            </ul>
-                            <div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400">
-                                <h4 class="font-bold text-yellow-800">Best Practice: Prevention for Healthcare Workers</h4>
-                                <p>Use Standard Precautions, utilize needleless systems, and receive the hepatitis B vaccine series.</p>
-                            </div>
-                        `
+                        type: 'text',
+                        content: `<p>Vaccines for HAV and HBV are highly effective. Prevention measures include:</p><ul class="list-disc list-inside"><li><strong>Hepatitis A:</strong> Proper handwashing, avoiding contaminated food/water, and vaccination.</li><li><strong>Hepatitis B:</strong> Vaccination, safe sex practices, not sharing needles, and screening of blood products.</li><li><strong>Hepatitis C:</strong> Avoiding needle sharing and using Standard Precautions. Screening is recommended for "baby boomers" (born 1945-1965).</li></ul><div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400"><h4 class="font-bold text-yellow-800">Best Practice: Prevention for Healthcare Workers</h4><p>Use Standard Precautions, utilize needleless systems, and receive the hepatitis B vaccine series.</p></div>`
                     },
                     {
                         id: 'hepatitis-assessment',
                         title: 'Assessment',
-                        content: `
-                            <p><strong>History:</strong> Ask about exposure to infected persons, risk factors (travel, drug use, sexual history).</p>
-                            <p><strong>Physical Assessment:</strong> Symptoms include abdominal pain, jaundice (yellowish skin/sclera), arthralgia, myalgia, diarrhea/constipation, dark urine, and clay-colored stools. Palpate for liver tenderness in the right upper quadrant.</p>
-                            <p><strong>Psychosocial Assessment:</strong> Patients may feel sick, fatigued, depressed, or guilty. Social stigma can lead to isolation. Financial burdens from lost work can cause anxiety.</p>
-                            <p><strong>Laboratory Assessment:</strong></p>
-                            <ul class="list-disc list-inside">
-                                <li><strong>Liver Enzymes:</strong> ALT and AST levels can rise into the thousands.</li>
-                                <li><strong>Serologic Markers:</strong> Specific antibodies (e.g., anti-HAV IgM, HBsAg, anti-HCV) confirm the type of hepatitis.</li>
-                            </ul>
-                            <p><strong>Other Diagnostics:</strong> Liver biopsy can confirm the diagnosis and establish the stage of liver damage.</p>
-                        `
+                        type: 'text',
+                        content: `<p><strong>History:</strong> Ask about exposure to infected persons, risk factors (travel, drug use, sexual history).</p><p><strong>Physical Assessment:</strong> Symptoms include abdominal pain, jaundice (yellowish skin/sclera), arthralgia, myalgia, diarrhea/constipation, dark urine, and clay-colored stools. Palpate for liver tenderness in the right upper quadrant.</p><p><strong>Psychosocial Assessment:</strong> Patients may feel sick, fatigued, depressed, or guilty. Social stigma can lead to isolation. Financial burdens from lost work can cause anxiety.</p><p><strong>Laboratory Assessment:</strong></p><ul class="list-disc list-inside"><li><strong>Liver Enzymes:</strong> ALT and AST levels can rise into the thousands.</li><li><strong>Serologic Markers:</strong> Specific antibodies (e.g., anti-HAV IgM, HBsAg, anti-HCV) confirm the type of hepatitis.</li></ul><p><strong>Other Diagnostics:</strong> Liver biopsy can confirm the diagnosis and establish the stage of liver damage.</p>`
                     },
                     {
                         id: 'hepatitis-interventions',
                         title: 'Interventions',
-                        content: `
-                            <p>Care focuses on resting the liver, promoting regeneration, and strengthening immunity.</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Promoting Nutrition:</strong> A high-carbohydrate, high-calorie diet with moderate fat and protein is recommended. Small, frequent meals are often better tolerated.</li>
-                                <li><strong>Managing Fatigue:</strong> Rest is essential to reduce the liver's metabolic demands. Alternate rest periods with light activity.</li>
-                                <li><strong>Drug Therapy:</strong> Drugs are used sparingly in acute hepatitis. For chronic HBV and HCV, antiviral and immunomodulating drugs are used (e.g., tenofovir for HBV; direct-acting antivirals like glecaprevir for HCV).</li>
-                            </ul>
-                            <div class="p-4 my-4 bg-red-50 border-l-4 border-red-400">
-                                <h4 class="font-bold text-red-800">Action Alert</h4>
-                                <p>Teach patients to avoid alcohol and check with their provider before taking any medication, vitamin, or herbal preparation.</p>
-                            </div>
-                        `
+                        type: 'text',
+                        content: `<p>Care focuses on resting the liver, promoting regeneration, and strengthening immunity.</p><ul class="list-disc list-inside space-y-2"><li><strong>Promoting Nutrition:</strong> A high-carbohydrate, high-calorie diet with moderate fat and protein is recommended. Small, frequent meals are often better tolerated.</li><li><strong>Managing Fatigue:</strong> Rest is essential to reduce the liver's metabolic demands. Alternate rest periods with light activity.</li><li><strong>Drug Therapy:</strong> Drugs are used sparingly in acute hepatitis. For chronic HBV and HCV, antiviral and immunomodulating drugs are used (e.g., tenofovir for HBV; direct-acting antivirals like glecaprevir for HCV).</li></ul><div class="p-4 my-4 bg-red-50 border-l-4 border-red-400"><h4 class="font-bold text-red-800">Action Alert</h4><p>Teach patients to avoid alcohol and check with their provider before taking any medication, vitamin, or herbal preparation.</p></div>`
                     }
                 ]
             },
@@ -400,188 +228,369 @@
                     {
                         id: 'hiv-overview',
                         title: 'Overview and Stages',
-                        content: `
-                            <p>Human immunodeficiency virus (HIV) causes a chronic infection that impairs immunity. The disease progresses along a continuum of three stages:</p>
-                            <ol class="list-decimal list-inside space-y-2">
-                                <li><strong>Stage I: Acute HIV Infection:</strong> Begins within 4 weeks of infection. Symptoms are flu-like (fever, sore throat, rash). The viral load is high, and transmission is very possible.</li>
-                                <li><strong>Stage II: Chronic HIV Infection:</strong> Can be treated as a chronic disorder with drug therapy. Patients can have undetectable viral loads and live for decades.</li>
-                                <li><strong>Stage III: Acquired Immunodeficiency Syndrome (AIDS):</strong> Characterized by profoundly reduced immunity. Diagnosed when CD4+ T-cell count is <200 cells/mm³ or when specific opportunistic infections (OIs) are present.</li>
-                            </ol>
-                            <p>OIs are caused by organisms that are normally kept in check by a healthy immune system, such as <em>Candida albicans</em>, <em>Pneumocystis jirovecii</em> pneumonia (PCP), and tuberculosis (TB). Common cancers in Stage III include Kaposi sarcoma (KS) and certain lymphomas.</p>
-                        `
+                        type: 'text',
+                        content: `<p>Human immunodeficiency virus (HIV) causes a chronic infection that impairs immunity. The disease progresses along a continuum of three stages:</p><ol class="list-decimal list-inside space-y-2"><li><strong>Stage I: Acute HIV Infection:</strong> Begins within 4 weeks of infection. Symptoms are flu-like (fever, sore throat, rash). The viral load is high, and transmission is very possible.</li><li><strong>Stage II: Chronic HIV Infection:</strong> Can be treated as a chronic disorder with drug therapy. Patients can have undetectable viral loads and live for decades.</li><li><strong>Stage III: Acquired Immunodeficiency Syndrome (AIDS):</strong> Characterized by profoundly reduced immunity. Diagnosed when CD4+ T-cell count is <200 cells/mm³ or when specific opportunistic infections (OIs) are present.</li></ol><p>OIs are caused by organisms that are normally kept in check by a healthy immune system, such as <em>Candida albicans</em>, <em>Pneumocystis jirovecii</em> pneumonia (PCP), and tuberculosis (TB). Common cancers in Stage III include Kaposi sarcoma (KS) and certain lymphomas.</p>`
                     },
                     {
                         id: 'hiv-patho',
                         title: 'Pathophysiology Review',
-                        content: `
-                            <p>HIV is a retrovirus, meaning it uses RNA as its genetic material. It uses the enzyme reverse transcriptase to convert its RNA into DNA, which is then integrated into the host cell's DNA. This allows the virus to take over the cell's machinery to produce more viral particles.</p>
-                            <h4>The HIV Life Cycle:</h4>
-                            <ol class="list-decimal list-inside space-y-1">
-                                <li><strong>Binding:</strong> HIV attaches to CD4 cell receptors.</li>
-                                <li><strong>Fusion:</strong> HIV enters the CD4 cell.</li>
-                                <li><strong>Reverse Transcription:</strong> HIV RNA is converted to HIV DNA.</li>
-                                <li><strong>Integration:</strong> HIV DNA is inserted into the host cell's DNA.</li>
-                                <li><strong>Replication:</strong> The host cell makes long chains of HIV proteins.</li>
-                                <li><strong>Assembly:</strong> New, immature HIV particles are assembled.</li>
-                                <li><strong>Budding:</strong> Immature HIV pushes out of the cell and matures into an infectious virus.</li>
-                            </ol>
-                            <p>Antiretroviral drugs interrupt this life cycle at various stages.</p>
-                        `
+                        type: 'text',
+                        content: `<p>HIV is a retrovirus, meaning it uses RNA as its genetic material. It uses the enzyme reverse transcriptase to convert its RNA into DNA, which is then integrated into the host cell's DNA. This allows the virus to take over the cell's machinery to produce more viral particles.</p><h4>The HIV Life Cycle:</h4><ol class="list-decimal list-inside space-y-1"><li><strong>Binding:</strong> HIV attaches to CD4 cell receptors.</li><li><strong>Fusion:</strong> HIV enters the CD4 cell.</li><li><strong>Reverse Transcription:</strong> HIV RNA is converted to HIV DNA.</li><li><strong>Integration:</strong> HIV DNA is inserted into the host cell's DNA.</li><li><strong>Replication:</strong> The host cell makes long chains of HIV proteins.</li><li><strong>Assembly:</strong> New, immature HIV particles are assembled.</li><li><strong>Budding:</strong> Immature HIV pushes out of the cell and matures into an infectious virus.</li></ol><p>Antiretroviral drugs interrupt this life cycle at various stages.</p>`
                     },
                     {
                         id: 'hiv-prevention',
                         title: 'Health Promotion/Prevention',
-                        content: `
-                            <p>HIV is found in all body fluids but is transmitted most often through sexual contact, parenteral exposure (sharing needles), and perinatally (mother to child). It is NOT transmitted by casual contact.</p>
-                            <h4>Sexual Transmission</h4>
-                            <p>Safer sex practices are crucial. This includes consistent use of condoms for all types of intercourse and using water-based lubricants.</p>
-                            <h4>Parenteral Transmission</h4>
-                            <p>Preventive practices include using syringe services programs (SSPs) to obtain sterile needles and teaching proper cleaning techniques for those who reuse needles.</p>
-                            <h4>Prophylactic Prevention</h4>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Preexposure Prophylaxis (PrEP):</strong> Antiretroviral drugs taken by an HIV-negative person at high risk to prevent infection. Reduces risk from sex by about 99%.</li>
-                                <li><strong>Postexposure Prophylaxis (PEP):</strong> Antiretroviral treatment used in emergencies after a potential exposure. Must be started within 72 hours.</li>
-                                <li><strong>Treatment as Prevention (TasP):</strong> An HIV-positive person takes medication to achieve an undetectable viral load, which greatly reduces the risk of sexual transmission.</li>
-                            </ul>
-                            <div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400">
-                                <h4 class="font-bold text-yellow-800">Drug Alert</h4>
-                                <p>PrEP and TasP do not replace standard safer sex practices. Adherence to an every-3-month HIV testing schedule is crucial for those on PrEP.</p>
-                            </div>
-                        `
+                        type: 'text',
+                        content: `<p>HIV is found in all body fluids but is transmitted most often through sexual contact, parenteral exposure (sharing needles), and perinatally (mother to child). It is NOT transmitted by casual contact.</p><h4>Sexual Transmission</h4><p>Safer sex practices are crucial. This includes consistent use of condoms for all types of intercourse and using water-based lubricants.</p><h4>Parenteral Transmission</h4><p>Preventive practices include using syringe services programs (SSPs) to obtain sterile needles and teaching proper cleaning techniques for those who reuse needles.</p><h4>Prophylactic Prevention</h4><ul class="list-disc list-inside space-y-2"><li><strong>Preexposure Prophylaxis (PrEP):</strong> Antiretroviral drugs taken by an HIV-negative person at high risk to prevent infection. Reduces risk from sex by about 99%.</li><li><strong>Postexposure Prophylaxis (PEP):</strong> Antiretroviral treatment used in emergencies after a potential exposure. Must be started within 72 hours.</li><li><strong>Treatment as Prevention (TasP):</strong> An HIV-positive person takes medication to achieve an undetectable viral load, which greatly reduces the risk of sexual transmission.</li></ul><div class="p-4 my-4 bg-yellow-50 border-l-4 border-yellow-400"><h4 class="font-bold text-yellow-800">Drug Alert</h4><p>PrEP and TasP do not replace standard safer sex practices. Adherence to an every-3-month HIV testing schedule is crucial for those on PrEP.</p></div>`
                     },
                     {
                         id: 'hiv-assessment',
                         title: 'Assessment',
-                        content: `
-                            <h4>History</h4>
-                            <p>A thorough and confidential history is essential. Ask about risk factors, sexual practices (using the "5 Ps": Partners, Practices, Protection, Past history, Prevention of pregnancy), and any current symptoms.</p>
-                            <h4>Physical Assessment</h4>
-                            <p>Assess for opportunistic infections (see Table 17.3 in original text), such as oral candidiasis, skin lesions (Kaposi sarcoma), and respiratory issues (PCP, TB). Monitor for neurologic changes, GI issues (diarrhea, weight loss), and other systemic symptoms.</p>
-                            <h4>Laboratory Assessment</h4>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li><strong>Serologic/Virologic Testing:</strong> Rapid tests, antigen/antibody combo assays, and home kits are available. A 3-week "seroconversion window" can produce false negatives.</li>
-                                <li><strong>Lymphocyte Counts:</strong> Patients often have leukopenia (WBC < 4000) and lymphopenia.</li>
-                                <li><strong>CD4+ T-cell Count:</strong> A key indicator of immune function. Normal is 600-1500 cells/mm³. A count <200 indicates Stage III (AIDS).</li>
-                                <li><strong>Viral Load Testing (HIV RNA):</strong> Measures the amount of virus in the blood. An undetectable viral load is the goal of therapy.</li>
-                            </ul>
-                        `
+                        type: 'text',
+                        content: `<h4>History</h4><p>A thorough and confidential history is essential. Ask about risk factors, sexual practices (using the "5 Ps": Partners, Practices, Protection, Past history, Prevention of pregnancy), and any current symptoms.</p><h4>Physical Assessment</h4><p>Assess for opportunistic infections (see Table 17.3 in original text), such as oral candidiasis, skin lesions (Kaposi sarcoma), and respiratory issues (PCP, TB). Monitor for neurologic changes, GI issues (diarrhea, weight loss), and other systemic symptoms.</p><h4>Laboratory Assessment</h4><ul class="list-disc list-inside space-y-2"><li><strong>Serologic/Virologic Testing:</strong> Rapid tests, antigen/antibody combo assays, and home kits are available. A 3-week "seroconversion window" can produce false negatives.</li><li><strong>Lymphocyte Counts:</strong> Patients often have leukopenia (WBC < 4000) and lymphopenia.</li><li><strong>CD4+ T-cell Count:</strong> A key indicator of immune function. Normal is 600-1500 cells/mm³. A count <200 indicates Stage III (AIDS).</li><li><strong>Viral Load Testing (HIV RNA):</strong> Measures the amount of virus in the blood. An undetectable viral load is the goal of therapy.</li></ul>`
                     },
                     {
                         id: 'hiv-interventions',
                         title: 'Interventions',
-                        content: `
-                            <h4>Preventing Transmission</h4>
-                            <p>Patient education on safer sex, not sharing needles, and the importance of TasP is a priority.</p>
-                            <h4>Preventing Infections & Complications</h4>
-                            <p>Management focuses on supporting immunity with combination antiretroviral therapy (cART) and preventing/treating opportunistic infections.</p>
-                            <p><strong>Drug Therapy (cART):</strong> Uses multiple drugs from different classes (NRTIs, NNRTIs, Protease Inhibitors, etc.) to suppress viral replication. Adherence is critical to prevent drug resistance.</p>
-                            <div class="p-4 my-4 bg-red-50 border-l-4 border-red-400">
-                                <h4 class="font-bold text-red-800">Drug Alert</h4>
-                                <p>Teach patients the importance of taking cART drugs exactly as prescribed. Ongoing missed doses can promote drug resistance.</p>
-                            </div>
-                            <p><strong>Immune Reconstitution Inflammatory Syndrome (IRIS):</strong> An inflammatory reaction that can occur after starting cART as the immune system begins to recover and recognizes underlying opportunistic infections. It is usually treated with short-term corticosteroids.</p>
-                            <p><strong>Management of Complications:</strong> Interventions are tailored to the specific opportunistic infection or complication, such as facilitating gas exchange for PCP, managing pain from neuropathy, enhancing nutrition to combat wasting syndrome, and preserving skin integrity from lesions like Kaposi sarcoma.</p>
-                        `
+                        type: 'text',
+                        content: `<h4>Preventing Transmission</h4><p>Patient education on safer sex, not sharing needles, and the importance of TasP is a priority.</p><h4>Preventing Infections & Complications</h4><p>Management focuses on supporting immunity with combination antiretroviral therapy (cART) and preventing/treating opportunistic infections.</p><p><strong>Drug Therapy (cART):</strong> Uses multiple drugs from different classes (NRTIs, NNRTIs, Protease Inhibitors, etc.) to suppress viral replication. Adherence is critical to prevent drug resistance.</p><div class="p-4 my-4 bg-red-50 border-l-4 border-red-400"><h4 class="font-bold text-red-800">Drug Alert</h4><p>Teach patients the importance of taking cART drugs exactly as prescribed. Ongoing missed doses can promote drug resistance.</p></div><p><strong>Immune Reconstitution Inflammatory Syndrome (IRIS):</strong> An inflammatory reaction that can occur after starting cART as the immune system begins to recover and recognizes underlying opportunistic infections. It is usually treated with short-term corticosteroids.</p><p><strong>Management of Complications:</strong> Interventions are tailored to the specific opportunistic infection or complication, such as facilitating gas exchange for PCP, managing pain from neuropathy, enhancing nutrition to combat wasting syndrome, and preserving skin integrity from lesions like Kaposi sarcoma.</p>`
+                    },
+                    {
+                        id: 'hiv-quiz',
+                        title: 'Review Questions',
+                        type: 'quiz',
+                        questions: [
+                            {
+                                question: "A patient with HIV has a CD4+ T-cell count of 180 cells/mm³. This finding corresponds to which stage of HIV infection?",
+                                options: ["Stage I: Acute Infection", "Stage II: Chronic Infection", "Stage III: AIDS", "Stage 0: Pre-infection"],
+                                correctAnswer: "Stage III: AIDS"
+                            },
+                            {
+                                question: "Which statement by a patient indicates a correct understanding of how to prevent Hepatitis A infection?",
+                                options: ["I will get the Hepatitis B vaccine.", "I need to make sure I use clean needles.", "I should always wash my hands thoroughly after using the bathroom.", "I will use condoms during sexual intercourse."],
+                                correctAnswer: "I should always wash my hands thoroughly after using the bathroom."
+                            },
+                            {
+                                question: "What are the hallmark signs of a typical, uncomplicated urinary tract infection (UTI)? (Select all that apply.)",
+                                options: ["High fever and chills", "Urinary frequency", "Painful urination (dysuria)", "Jaundice", "Urinary urgency"],
+                                correctAnswer: ["Urinary frequency", "Painful urination (dysuria)", "Urinary urgency"]
+                            },
+                        ]
                     }
                 ]
             }
         };
+        
+        // Data for the initial diagnostic quiz
+        const preAssessmentQuizData = [
+            { moduleId: 'infection-concept', question: "What is the term for a worldwide epidemic of a disease?", options: ["Localized", "Systemic", "Epidemic", "Pandemic"], correctAnswer: "Pandemic" },
+            { moduleId: 'cystitis-exemplar', question: "What is the most common pathogen causing infectious cystitis (UTI)?", options: ["Candida albicans", "Staphylococcus aureus", "Escherichia coli", "Streptococcus"], correctAnswer: "Escherichia coli" },
+            { moduleId: 'hepatitis-exemplar', question: "Which type of hepatitis is primarily transmitted through the blood-to-blood route, such as sharing needles?", options: ["Hepatitis A", "Hepatitis B", "Hepatitis C", "Hepatitis E"], correctAnswer: "Hepatitis C" },
+            { moduleId: 'hiv-exemplar', question: "Which medication strategy involves an HIV-negative person taking antiretroviral drugs to prevent infection?", options: ["PEP (Postexposure Prophylaxis)", "TasP (Treatment as Prevention)", "cART (Combination Antiretroviral Therapy)", "PrEP (Preexposure Prophylaxis)"], correctAnswer: "PrEP (Preexposure Prophylaxis)" },
+        ];
+
 
         // --- React Components ---
 
-        // Component for the main dashboard/homepage
-        const Dashboard = ({ onSelectModule }) => {
+        const Quiz = ({ questions, onComplete, isPreAssessment = false }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState([]);
+            const [feedback, setFeedback] = useState(null);
+            const [answers, setAnswers] = useState([]);
+
+            const currentQuestion = questions[currentQuestionIndex];
+            const isSATA = Array.isArray(currentQuestion.correctAnswer);
+
+            const handleOptionSelect = (option) => {
+                if (feedback && !isPreAssessment) return;
+                if (isSATA) {
+                    setSelectedOption(prev => prev.includes(option) ? prev.filter(item => item !== option) : [...prev, option]);
+                } else {
+                    setSelectedOption(option);
+                }
+            };
+
+            const checkCorrectness = (userAnswers, correctAnswers) => {
+                if (Array.isArray(correctAnswers)) {
+                    return correctAnswers.every(ans => userAnswers.includes(ans)) && userAnswers.every(ans => correctAnswers.includes(ans)) && userAnswers.length > 0;
+                }
+                return userAnswers === correctAnswers;
+            };
+
+            const handleSubmitOrNext = () => {
+                const isCorrect = checkCorrectness(selectedOption, currentQuestion.correctAnswer);
+                const updatedAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(updatedAnswers);
+
+                if (isPreAssessment) {
+                    if (currentQuestionIndex < questions.length - 1) {
+                        setCurrentQuestionIndex(prev => prev + 1);
+                        setSelectedOption([]);
+                    } else {
+                        onComplete(updatedAnswers);
+                    }
+                } else {
+                    if (!feedback) {
+                        setFeedback(isCorrect ? 'correct' : 'incorrect');
+                        if (isCorrect) {
+                             onComplete({ score: updatedAnswers.filter(a=>a.isCorrect).length, total: questions.length });
+                        }
+                    } else {
+                         if (currentQuestionIndex < questions.length - 1) {
+                            setCurrentQuestionIndex(prev => prev + 1);
+                            setSelectedOption([]);
+                            setFeedback(null);
+                        } else {
+                            onComplete({ score: updatedAnswers.filter(a=>a.isCorrect).length, total: questions.length });
+                        }
+                    }
+                }
+            };
+            
+            if (!currentQuestion) return <p>Loading quiz...</p>;
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner animate-slide-in-up">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Quiz: {currentQuestionIndex + 1} of {questions.length}</h4>
+                    <p className="font-semibold text-gray-700 mb-3">{currentQuestion.question}</p>
+                    {isSATA && <p className="text-sm text-indigo-600 mb-4 font-medium">Select all that apply.</p>}
+                    <div className="space-y-2">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = Array.isArray(selectedOption) ? selectedOption.includes(option) : selectedOption === option;
+                            const isCorrectOption = Array.isArray(currentQuestion.correctAnswer) ? currentQuestion.correctAnswer.includes(option) : option === currentQuestion.correctAnswer;
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+                            if (feedback && !isPreAssessment) {
+                                if (isCorrectOption) optionClass = 'bg-green-100 border-green-500 text-green-800';
+                                else if (isSelected && !isCorrectOption) optionClass = 'bg-red-100 border-red-500 text-red-800';
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800';
+                            }
+
+                            return (
+                                <div key={index} onClick={() => handleOptionSelect(option)} className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}>
+                                    <div className="flex items-center">
+                                        {isSATA ? <input type="checkbox" checked={isSelected} readOnly className="mr-3 text-indigo-600 rounded focus:ring-indigo-500" /> : <span className={`w-4 h-4 rounded-full border-2 mr-3 ${isSelected ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-gray-400'}`}></span>}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-6 text-center">
+                        <button onClick={handleSubmitOrNext} disabled={selectedOption.length === 0} className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                            {isPreAssessment ? (currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Assessment') : (!feedback ? 'Submit Answer' : (currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'View Results'))}
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+        
+        const PreAssessmentQuiz = ({ onComplete, onExit }) => {
+            const [results, setResults] = useState(null);
+
+            const handleQuizComplete = (finalAnswers) => {
+                const moduleResults = {};
+                finalAnswers.forEach(answer => {
+                    const { moduleId } = answer.question;
+                    if (!moduleResults[moduleId]) moduleResults[moduleId] = { correct: 0, total: 0 };
+                    if (answer.isCorrect) moduleResults[moduleId].correct++;
+                    moduleResults[moduleId].total++;
+                });
+                const completedModules = Object.keys(moduleResults).filter(id => moduleResults[id].correct === moduleResults[id].total && moduleResults[id].total > 0);
+                setResults({ completedModules, total: finalAnswers.length, correct: finalAnswers.filter(a => a.isCorrect).length });
+                onComplete(completedModules);
+            };
+
+            if (results) {
+                return (
+                    <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4 animate-fade-in">
+                        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full text-center">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">Assessment Complete!</h2>
+                            <p className="text-lg text-gray-600 mb-6">You correctly answered {results.correct} out of {results.total} questions.</p>
+                            {results.completedModules.length > 0 ? (
+                                <>
+                                    <p className="text-green-600 font-semibold mb-4">You've tested out of the following modules:</p>
+                                    <ul className="list-disc list-inside text-left mb-6 bg-green-50 p-4 rounded-lg">
+                                        {results.completedModules.map(id => <li key={id}>{contentData[id].title}</li>)}
+                                    </ul>
+                                </>
+                            ) : (
+                                <p className="text-yellow-600 font-semibold mb-6">You haven't tested out of any modules. You can proceed to the main modules for learning.</p>
+                            )}
+                            <button onClick={onExit} className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors">
+                                Return to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
+                        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Diagnostic Quiz</h2>
+                        <Quiz questions={preAssessmentQuizData} onComplete={handleQuizComplete} isPreAssessment={true} />
+                    </div>
+                </div>
+            );
+        };
+
+        const Dashboard = ({ onSelectModule, progress, onResetProgress, onStartPreAssessment }) => {
+            let totalCompletedSteps = 0;
+            let totalPossibleSteps = 0;
+
+            Object.entries(contentData).forEach(([moduleId, module]) => {
+                totalPossibleSteps += module.steps.length;
+                const moduleProgress = progress[moduleId] || {};
+                totalCompletedSteps += Object.values(moduleProgress).filter(p => p.completed).length;
+            });
+
+            const overallPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+
             return (
                 <div className="p-4 sm:p-6 md:p-8 min-h-screen w-full flex flex-col items-center">
                     <div className="w-full max-w-6xl">
-                        <header className="mb-10 text-center animate-fade-in">
+                        <header className="mb-8 text-center animate-fade-in">
                             <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-800">Infection Learning Module</h1>
                             <p className="text-lg text-gray-500 max-w-3xl mx-auto mt-4">An interactive guide to the concept of infection and key clinical exemplars. Select a module to begin.</p>
                         </header>
 
+                        <div className="mb-8 text-center">
+                            <button onClick={onStartPreAssessment} className="w-full max-w-md mx-auto px-6 py-4 bg-teal-500 text-white font-bold rounded-lg shadow-lg hover:bg-teal-600 transition-all duration-300 transform hover:scale-105">
+                                <div className="text-xl">Skip Ahead: Take Diagnostic Quiz</div>
+                                <div className="text-sm font-normal">Test your knowledge and potentially skip modules.</div>
+                            </button>
+                        </div>
+
+                        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
+                            <div className="flex justify-between items-center mb-3">
+                                <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                                <button onClick={onResetProgress} className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M4 2a1 1 0 011 1v2.101A7.002 7.002 0 0111.601 7.567a1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" /></svg>
+                                    Reset Progress
+                                </button>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4"><div className="bg-indigo-600 h-4 rounded-full transition-all duration-500 ease-out" style={{ width: `${overallPercentage}%` }}></div></div>
+                            <p className="text-right text-sm text-gray-600 mt-2">{Math.round(overallPercentage)}% Completed</p>
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-                            {Object.entries(contentData).map(([id, module], index) => (
-                                <div
-                                    key={id}
-                                    onClick={() => onSelectModule(id)}
-                                    className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-2 group flex flex-col animate-slide-in-up"
-                                    style={{ animationDelay: `${index * 100}ms` }}
-                                >
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div className={cn("p-3 rounded-full bg-gradient-to-br text-white shadow-md flex-shrink-0", module.color)}>
-                                            {module.icon}
+                            {Object.entries(contentData).map(([id, module], index) => {
+                                const moduleProgress = progress[id] || {};
+                                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                                const totalSteps = module.steps.length;
+                                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+                                let statusText = completedCount === totalSteps ? "Completed" : (completedCount > 0 ? "In Progress" : "Not Started");
+                                let statusColor = completedCount === totalSteps ? "text-green-600" : (completedCount > 0 ? "text-yellow-600" : "text-gray-500");
+
+                                return (
+                                    <div key={id} onClick={() => onSelectModule(id)} className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-2 group flex flex-col animate-slide-in-up" style={{ animationDelay: `${index * 100}ms` }}>
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className={cn("p-3 rounded-full bg-gradient-to-br text-white shadow-md flex-shrink-0", module.color)}>{module.icon}</div>
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <svg className="w-full h-full" viewBox="0 0 36 36"><path className="text-gray-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" /><path className="text-indigo-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray={`${percentage}, 100`} strokeLinecap="round" transform="rotate(-90 18 18)"/></svg>
+                                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-gray-800 mb-2">{module.title}</h3>
+                                        <p className="text-gray-500 text-sm mb-4 flex-grow">{module.description}</p>
+                                        <div className="mt-auto">
+                                            <p className={cn("text-sm font-semibold", statusColor)}>{statusText}</p>
+                                            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700 mt-2">Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span></div>
                                         </div>
                                     </div>
-                                    <h3 className="text-2xl font-bold text-gray-800 mb-2">{module.title}</h3>
-                                    <p className="text-gray-500 text-sm mb-4 flex-grow">{module.description}</p>
-                                    <div className="mt-auto flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
-                                        Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        const StaticContentStep = ({ step, onComplete }) => {
+            useEffect(() => { onComplete(); }, [onComplete]);
+            return <div className="prose max-w-none text-gray-700 leading-relaxed p-6 bg-white rounded-lg shadow-inner space-y-4 border border-gray-200 animate-slide-in-up" dangerouslySetInnerHTML={{ __html: step.content }} />;
+        };
+
+        const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
+                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button onClick={onClose} className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm">Back to Dashboard</button>
+                            {hasNextModule && <button onClick={onNextModule} className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors">Continue to Next Module</button>}
                         </div>
                     </div>
                 </div>
             );
         };
 
-        // Component for displaying a single learning module
-        const LearningModule = ({ module, onBack }) => {
-            const [activeStep, setActiveStep] = useState(0);
+        const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
+            const initialActiveStep = useMemo(() => {
+                const moduleProgress = progress[module.id] || {};
+                const firstIncompleteIndex = module.steps.findIndex(step => !moduleProgress[step.id]?.completed);
+                return firstIncompleteIndex !== -1 ? firstIncompleteIndex : 0;
+            }, [module.id, progress]);
+            
+            const [activeStep, setActiveStep] = useState(initialActiveStep);
             const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
 
-            if (!module || !module.steps) {
-                console.error("LearningModule received invalid module prop:", module);
-                return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
-            }
+            const handleStepComplete = useCallback((stepId, data = {}) => {
+                onProgressUpdate(module.id, stepId, { completed: true, ...data });
+            }, [onProgressUpdate, module.id]);
 
+            const allStepsCompletedInModule = module.steps.every(step => progress[module.id]?.[step.id]?.completed);
+
+            const handleNextStep = () => {
+                if (activeStep < module.steps.length - 1) setActiveStep(prev => prev + 1);
+                else if (allStepsCompletedInModule) setIsCompletionModalOpen(true);
+            };
+
+            const handlePrevStep = () => {
+                if (activeStep > 0) setActiveStep(prev => prev - 1);
+            };
+            
+            if (!module || !module.steps) return <div>Loading...</div>;
+            
             const currentStep = module.steps[activeStep];
             
             const renderStepContent = (step) => {
                 if (!step) return <p>Please select a step.</p>;
-                return (
-                    <div 
-                        key={step.id} 
-                        className="prose max-w-none text-gray-700 leading-relaxed p-6 bg-white rounded-lg shadow-inner space-y-4 border border-gray-200 animate-slide-in-up"
-                        dangerouslySetInnerHTML={{ __html: step.content }} 
-                    />
-                );
+                const onCompleteForStep = (data) => {
+                    handleStepComplete(step.id, data);
+                };
+                switch (step.type) {
+                    case 'text': return <StaticContentStep key={step.id} step={step} onComplete={onCompleteForStep} />;
+                    case 'quiz': return <Quiz key={step.id} questions={step.questions} onComplete={onCompleteForStep} />;
+                    default: return <p key={step.id}>Error: Unknown content type.</p>;
+                }
             };
 
             return (
                 <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
                     <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
-                        <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                            <span className="hidden sm:inline">Dashboard</span>
-                        </button>
-                        <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
-                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                        </button>
+                         <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                             <span className="hidden sm:inline">Dashboard</span>
+                         </button>
+                         <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                         <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                         </button>
                     </header>
                     {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
                     <div className="flex flex-1 overflow-hidden">
-                        <aside className={cn(
-                            "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
-                            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                        )}>
+                        <aside className={cn("bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20", isSidebarOpen ? 'translate-x-0' : '-translate-x-full')}>
                             <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Sections</h3>
                             <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
                                 {module.steps.map((step, index) => (
-                                    <button
-                                        key={step.id}
-                                        onClick={() => {
-                                            setActiveStep(index);
-                                            setIsSidebarOpen(false);
-                                        }}
-                                        className={cn(
-                                            'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
-                                            activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700'
-                                        )}
-                                    >
+                                    <button key={step.id} onClick={() => { setActiveStep(index); setIsSidebarOpen(false); }} className={cn('w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors', activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700')}>
                                         <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
-                                            <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                            {progress[module.id]?.[step.id]?.completed ? <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg> : <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>}
                                         </div>
                                         <span className="flex-1 text-sm">{step.title}</span>
                                     </button>
@@ -592,29 +601,99 @@
                             <div className="max-w-5xl mx-auto">
                                 <h3 className="text-3xl font-bold text-gray-800 mb-6">{currentStep.title}</h3>
                                 {renderStepContent(currentStep)}
+                                <div className="flex justify-between mt-8">
+                                    <button onClick={handlePrevStep} disabled={activeStep === 0} className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm">Previous</button>
+                                    <button onClick={handleNextStep} disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule} className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md">
+                                        {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
+                                    </button>
+                                </div>
                             </div>
                         </main>
                     </div>
+                     <CompletionModal isOpen={isCompletionModalOpen} onClose={() => { setIsCompletionModalOpen(false); onBack(); }} onNextModule={() => { setIsCompletionModalOpen(false); onNextModule(); }} hasNextModule={hasNextModule} />
                 </div>
             );
         };
-
-        // Main App Component
+        
         function App() {
             const [currentModuleId, setCurrentModuleId] = useState(null);
+            const [isPreAssessmentActive, setIsPreAssessmentActive] = useState(false);
+            const [userId, setUserId] = useState(null);
+            const [progress, setProgress] = useState({});
+            const [isAuthReady, setIsAuthReady] = useState(false);
 
-            const selectedModule = currentModuleId ? { ...contentData[currentModuleId], id: currentModuleId } : null;
+            useEffect(() => {
+                const unsubscribe = mockAuth.onAuthStateChanged((user) => {
+                    if (user) setUserId(user.uid);
+                    setIsAuthReady(true);
+                });
+                return () => unsubscribe();
+            }, []);
+
+            useEffect(() => {
+                if (!isAuthReady || !userId) return;
+                const storedProgress = localStorage.getItem(`infection-module-progress-${userId}`);
+                if (storedProgress) {
+                    try {
+                        setProgress(JSON.parse(storedProgress));
+                    } catch (e) {
+                        console.error("Failed to parse stored progress, resetting.", e);
+                        setProgress({});
+                    }
+                }
+            }, [isAuthReady, userId]);
+
+            const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
+                if (!isAuthReady || !userId) return;
+                setProgress(currentProgress => {
+                    const newProgress = { ...currentProgress, [moduleId]: { ...(currentProgress[moduleId] || {}), [stepId]: { ...(currentProgress[moduleId]?.[stepId] || {}), ...data } } };
+                    localStorage.setItem(`infection-module-progress-${userId}`, JSON.stringify(newProgress));
+                    return newProgress;
+                });
+            }, [isAuthReady, userId]);
+
+            const handlePreAssessmentComplete = (completedModuleIds) => {
+                const newProgress = { ...progress };
+                completedModuleIds.forEach(moduleId => {
+                    const module = contentData[moduleId];
+                    if (module) {
+                        newProgress[moduleId] = {};
+                        module.steps.forEach(step => newProgress[moduleId][step.id] = { completed: true });
+                    }
+                });
+                setProgress(newProgress);
+                localStorage.setItem(`infection-module-progress-${userId}`, JSON.stringify(newProgress));
+            };
+            
+            const handleResetProgress = useCallback(() => {
+                if (!isAuthReady || !userId) return;
+                setProgress({});
+                localStorage.removeItem(`infection-module-progress-${userId}`);
+            }, [isAuthReady, userId]);
+            
+            const handleNextModule = useCallback(() => {
+                const moduleIds = Object.keys(contentData);
+                const currentIndex = moduleIds.indexOf(currentModuleId);
+                if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
+                    setCurrentModuleId(moduleIds[currentIndex + 1]);
+                } else {
+                    setCurrentModuleId(null);
+                }
+            }, [currentModuleId]);
+
+            const selectedModule = currentModuleId && contentData[currentModuleId] ? { ...contentData[currentModuleId], id: currentModuleId } : null;
+            const moduleIds = Object.keys(contentData);
+            const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
+            const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
 
             return (
                 <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
-                    {selectedModule ? (
-                        <LearningModule
-                            key={selectedModule.id}
-                            module={selectedModule}
-                            onBack={() => setCurrentModuleId(null)}
-                        />
+                    {isPreAssessmentActive ? (
+                        <PreAssessmentQuiz onComplete={handlePreAssessmentComplete} onExit={() => setIsPreAssessmentActive(false)} />
+                    ) : selectedModule ? (
+                        <LearningModule key={selectedModule.id} module={selectedModule} onBack={() => setCurrentModuleId(null)} progress={progress} onProgressUpdate={handleProgressUpdate} onNextModule={handleNextModule} hasNextModule={hasNextModule} />
                     ) : (
-                        <Dashboard onSelectModule={setCurrentModuleId} />
+                        <Dashboard onSelectModule={setCurrentModuleId} progress={progress} onResetProgress={handleResetProgress} onStartPreAssessment={() => setIsPreAssessmentActive(true)} />
                     )}
                 </div>
             );
