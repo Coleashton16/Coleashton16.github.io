@@ -1,0 +1,2435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pharmacology Final Exam</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2253af;
+      --highlight: #2e8efd;
+      --danger: #ea2e49;
+      --success: #18b47b;
+      --border: #e3e7ec;
+      --nav-bg: #14263a;
+      --nav-text: #fff;
+      --bg: #f7f8fa;
+      --option-bg: #f4f7fa;
+      --option-active: #eaf3ff;
+      --option-correct: #e8fbe8;
+      --option-wrong: #fff0f3;
+      --modal-bg: #202534cc;
+    }
+    html, body {
+      height: 100%; width: 100vw;
+      margin: 0; padding: 0;
+      font-family: 'Inter', Arial, sans-serif;
+      background: var(--bg);
+      color: #1a2336;
+    }
+    body {
+      min-height: 100vh; min-width: 100vw;
+      height: 100vh; width: 100vw;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .topbar {
+      width: 100vw;
+      background: var(--nav-bg);
+      color: var(--nav-text);
+      height: 54px; min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 0; left: 0; z-index: 10;
+      font-size: 1.09rem;
+      font-weight: 600;
+      letter-spacing: -.5px;
+    }
+    .timer-box {
+      position: absolute;
+      right: 32px; top: 0;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      font-size: 1.08rem;
+      font-weight: 600;
+      color: #f8cb4a;
+      background: transparent;
+      letter-spacing: 0.03em;
+      user-select: none;
+      z-index: 30;
+      padding-left: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-box.urgent { color: #f32d32;}
+    .main-exam {
+      display: flex;
+      flex: 1 1 auto;
+      height: calc(100vh - 54px - 64px);
+      min-height: 0; min-width: 0;
+      margin-top: 54px;
+      margin-bottom: 64px;
+      width: 100vw;
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .qnav {
+      background: #fff;
+      border-right: 1.5px solid var(--border);
+      width: 80px; min-width: 60px; max-width: 100px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 18px 0 0 0;
+      gap: 10px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .q-btn {
+      width: 38px; height: 38px;
+      border: 2px solid var(--border);
+      background: #fff;
+      color: #344665;
+      border-radius: 50%;
+      display: flex;
+      align-items: center; justify-content: center;
+      font-weight: 600;
+      font-size: 1.10rem;
+      margin-bottom: 6px;
+      transition: border .15s, background .14s, color .16s;
+      box-sizing: border-box;
+      pointer-events: none;
+      user-select: none;
+    }
+    .q-btn.current {
+      border: 2.3px solid var(--highlight);
+      background: var(--highlight);
+      color: #fff;
+    }
+    .q-btn.answered:not(.current) {
+      border: 2px solid var(--success);
+      color: var(--success);
+      background: var(--option-correct);
+    }
+    .q-btn.unanswered:not(.current) {
+      border: 2px solid #e7e8ee;
+      color: #a6b2c9;
+      background: #fff;
+    }
+    .center-area {
+      flex: 1 1 auto;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      display: flex;
+      align-items: stretch;
+      justify-content: stretch;
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .question-card, .review-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 2px 24px #1b347213;
+      border-radius: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      padding: 38px 5vw 28px 5vw;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .question-text {
+      font-size: 1.18rem;
+      font-weight: 600;
+      margin-bottom: 23px;
+      color: #25394a;
+      line-height: 1.47;
+    }
+    .options {
+      margin-bottom: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .option-label {
+      background: var(--option-bg);
+      border-radius: 7px;
+      border: 2px solid transparent;
+      padding: 16px 18px;
+      cursor: pointer;
+      display: flex; align-items: center;
+      font-size: 1.09rem;
+      transition: background .18s, border .18s, color .17s;
+      user-select: none;
+      gap: 12px;
+      min-height: 46px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    .option-label.selected {
+      border: 2px solid var(--highlight);
+      background: var(--option-active);
+      color: #1d428a;
+    }
+    .option-label.user-answer {
+      border: 2px solid var(--danger);
+      background: var(--option-wrong);
+      color: #c91a36;
+      font-weight: 600;
+    }
+    .option-label.correct-answer {
+      border: 2px solid var(--success);
+      background: var(--option-correct);
+      color: #168b56;
+      font-weight: 600;
+    }
+    .footer-bar {
+      position: fixed; left: 0; bottom: 0; width: 100vw;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -2px 16px #2357b015;
+      height: 64px;
+      min-height: 64px;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 20;
+    }
+    .footer-inner {
+      width: 100vw; max-width: 900px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px;
+    }
+    .progress-display {
+      font-size: 1.11rem;
+      color: #4667a1;
+      font-weight: 500;
+    }
+    .footer-btns {
+      display: flex; gap: 15px;
+    }
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 12px 36px;
+      font-size: 1.13rem;
+      font-weight: 600;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background 0.13s;
+      box-shadow: 0 2px 7px #2c539c14;
+      outline: none;
+      letter-spacing: 0.01em;
+      min-width: 150px;
+    }
+    .btn:active { background: #20438c; }
+    .btn[disabled] { background: #c5d9f3; color: #7a8aa2; cursor: not-allowed;}
+    .score-ctn {
+      text-align: center;
+      margin-top: 39px;
+      margin-bottom: 45px;
+    }
+    .score-title {
+      font-size: 1.21rem;
+      color: #2374e0;
+      margin-bottom: 13px;
+      font-weight: 600;
+    }
+    .score-value {
+      font-size: 2.21rem;
+      color: #18b47b;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+    .score-msg {
+      font-size: 1.15rem;
+      color: #757b86;
+      margin: 17px 0 13px 0;
+    }
+    .restart-btn {
+      background: #24b334;
+      margin-top: 21px;
+      color: #fff;
+      border-radius: 7px;
+      font-size: 1.08rem;
+      font-weight: 500;
+      padding: 12px 38px;
+      border: none;
+      cursor: pointer;
+    }
+    .review-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 0;
+      box-shadow: 0 2px 24px #18457d11;
+      width: 100%;
+      margin: 32px auto;
+      padding: 28px 2vw 16px 2vw;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      box-sizing: border-box;
+    }
+    .review-q {
+      color: #264169;
+      font-size: 1.08rem;
+      font-weight: 600;
+      margin-bottom: 11px;
+    }
+    .review-options {
+      margin-bottom: 13px;
+      margin-top: 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .rationale {
+      background: #f6f8fd;
+      border-left: 4px solid var(--highlight);
+      border-radius: 8px;
+      padding: 15px 22px 13px 17px;
+      font-size: 1.07rem;
+      color: #2d436e;
+      min-height: 30px;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+    /* Modal Styles */
+    .modal-bg {
+      position: fixed;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      background: var(--modal-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+    .modal-window {
+      background: #fff;
+      border-radius: 13px;
+      box-shadow: 0 6px 36px #1d2e6318;
+      padding: 35px 28px 26px 28px;
+      max-width: 98vw; min-width: 320px;
+      width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .modal-title {
+      font-size: 1.16rem;
+      font-weight: 600;
+      color: #24436d;
+      margin-bottom: 14px;
+    }
+    .modal-msg {
+      font-size: 1.06rem;
+      color: #3d4860;
+      margin-bottom: 22px;
+    }
+    .modal-btns {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+    .modal-btn {
+      min-width: 100px;
+      font-size: 1.08rem;
+      padding: 10px 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      background: var(--primary);
+      color: #fff;
+      transition: background .13s;
+    }
+    .modal-btn.cancel {
+      background: #f1f1f7;
+      color: #24436d;
+      border: 1px solid #d7d8df;
+    }
+    @media (max-width: 700px) {
+      .qnav { display: none; }
+      .footer-inner { padding: 0 3vw;}
+      .question-card, .review-card { padding: 11px 2vw 8px 2vw;}
+      .center-area { padding-left: 0;}
+      .timer-box { right: 6vw;}
+    }
+    @media (max-width: 420px) {
+      .question-card, .review-card { padding: 7px 1vw 2px 1vw;}
+      .footer-inner { padding: 0 1vw;}
+      .topbar { font-size: .97rem;}
+      .modal-window { min-width: unset; width: 98vw;}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    NCLEX Examination
+    <span class="timer-box" id="timerBox"></span>
+  </div>
+  <div class="main-exam">
+    <div class="qnav" id="qPalette"></div>
+    <div class="center-area">
+      <div class="question-card" id="qArea"></div>
+      <div id="reviewArea" style="display:none;width:100%;height:100%;overflow-y:auto;"></div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <div class="footer-inner">
+      <div class="progress-display" id="progressBar"></div>
+      <div class="footer-btns">
+        <button class="btn" id="nextBtn" disabled>Next</button>
+      </div>
+    </div>
+  </div>
+  <div id="modal" style="display:none"></div>
+  <script>
+    // PASTE YOUR ENTIRE TEST BANK HERE:
+    const allQuestions = [
+  {
+    "questionText": "A client with chronic atrial fibrillation takes warfarin and develops a new prescription for trimethoprim-sulfamethoxazole for a UTI. Which action is the nurse’s priority?",
+    "options": {
+      "A": "Teach the client to increase vitamin K intake.",
+      "B": "Monitor closely for signs of bleeding.",
+      "C": "Encourage a high-fluid diet.",
+      "D": "Administer both medications as scheduled without adjustment."
+    },
+    "correctAnswer": "B",
+    "rationale": "TMP-SMX can potentiate warfarin’s effect and increase bleeding risk. Monitoring for bleeding is crucial."
+  },
+  {
+    "questionText": "A 74-year-old patient with heart failure, diabetes, and mild cognitive impairment is prescribed a new oral antidiabetic drug. Which consideration is most critical for safe medication administration?",
+    "options": {
+      "A": "Assess for the ability to swallow pills.",
+      "B": "Evaluate for potential drug-drug interactions.",
+      "C": "Arrange for blood glucose self-monitoring.",
+      "D": "Ensure the patient takes the medication with breakfast."
+    },
+    "correctAnswer": "B",
+    "rationale": "Older adults on multiple medications are at high risk for drug-drug interactions, which may be life-threatening."
+  },
+  {
+    "questionText": "A patient is started on IV vancomycin for sepsis. Two hours later, they develop diffuse flushing and hypotension. Which action should the nurse take first?",
+    "options": {
+      "A": "Stop the infusion immediately.",
+      "B": "Slow the infusion rate.",
+      "C": "Give diphenhydramine as ordered.",
+      "D": "Obtain a serum vancomycin level."
+    },
+    "correctAnswer": "A",
+    "rationale": "Red man syndrome is an infusion reaction. Stop the drug immediately before intervening further."
+  },
+  {
+    "questionText": "A client with end-stage renal disease (ESRD) is prescribed morphine for pain management. What is the nurse’s priority concern?",
+    "options": {
+      "A": "Potential for respiratory depression.",
+      "B": "Risk of accumulation and toxicity.",
+      "C": "Development of constipation.",
+      "D": "Decreased analgesic effectiveness."
+    },
+    "correctAnswer": "B",
+    "rationale": "Morphine’s metabolites are renally excreted and can accumulate in ESRD, causing neurotoxicity."
+  },
+  {
+    "questionText": "A patient on lithium for bipolar disorder presents with vomiting, diarrhea, and hand tremors. Which order should the nurse anticipate?",
+    "options": {
+      "A": "Increase lithium dose.",
+      "B": "Hold lithium and check serum level.",
+      "C": "Administer potassium supplement.",
+      "D": "Switch to a different mood stabilizer."
+    },
+    "correctAnswer": "B",
+    "rationale": "Symptoms suggest lithium toxicity; hold dose and assess levels."
+  },
+  {
+    "questionText": "A patient is prescribed metronidazole for bacterial vaginosis. Which teaching is most important?",
+    "options": {
+      "A": "Avoid sunlight while taking the drug.",
+      "B": "Report any ringing in the ears.",
+      "C": "Abstain from alcohol during and 48 hours after therapy.",
+      "D": "Increase dairy intake during treatment."
+    },
+    "correctAnswer": "C",
+    "rationale": "Alcohol with metronidazole causes a severe disulfiram-like reaction."
+  },
+  {
+    "questionText": "A client is receiving an aminoglycoside antibiotic. Which assessment findings require immediate action? Select all that apply.",
+    "options": {
+      "A": "Tinnitus",
+      "B": "Elevated BUN and creatinine",
+      "C": "Mild nausea",
+      "D": "Vertigo",
+      "E": "Urinary retention"
+    },
+    "correctAnswer": ["A", "B", "D"],
+    "rationale": "Aminoglycosides can cause nephrotoxicity (high BUN/Cr) and ototoxicity (tinnitus, vertigo)."
+  },
+  {
+    "questionText": "A 70-year-old on digoxin, furosemide, and spironolactone develops confusion and vision changes. Labs show K+ 3.0, digoxin 2.8 ng/mL. What should the nurse do first?",
+    "options": {
+      "A": "Call the provider to discuss digoxin toxicity.",
+      "B": "Administer potassium supplement.",
+      "C": "Hold all morning medications.",
+      "D": "Monitor heart rate closely for 1 hour."
+    },
+    "correctAnswer": "A",
+    "rationale": "Confusion, vision changes, low K+, and high digoxin = digoxin toxicity. Notify provider urgently."
+  },
+  {
+    "questionText": "A client who uses ginkgo biloba is scheduled for elective surgery. Which action should the nurse take?",
+    "options": {
+      "A": "Remind the client to stop ginkgo 1-2 weeks before surgery.",
+      "B": "Reassure the client that ginkgo is safe to continue.",
+      "C": "Encourage the client to take a higher dose for anxiety.",
+      "D": "Withhold information unless asked."
+    },
+    "correctAnswer": "A",
+    "rationale": "Ginkgo increases bleeding risk; it should be discontinued before surgery."
+  },
+  {
+    "questionText": "A patient receiving high-dose prednisone develops black, tarry stools. Which assessment should be prioritized?",
+    "options": {
+      "A": "Blood glucose level.",
+      "B": "Heart rate and blood pressure.",
+      "C": "White blood cell count.",
+      "D": "Skin integrity."
+    },
+    "correctAnswer": "B",
+    "rationale": "Steroids increase risk of GI bleeding; assess for hypovolemic shock."
+  },
+  {
+    "questionText": "A patient on warfarin is prescribed amiodarone for new-onset atrial fibrillation. What is the nurse’s priority action?",
+    "options": {
+      "A": "Check INR more frequently.",
+      "B": "Encourage low vitamin K foods.",
+      "C": "Administer both medications together.",
+      "D": "Schedule warfarin for evening dosing."
+    },
+    "correctAnswer": "A",
+    "rationale": "Amiodarone raises warfarin levels, increasing bleeding risk—closer INR monitoring is required."
+  },
+  {
+    "questionText": "A nurse reviews a patient’s medication list and notes both carvedilol and insulin. Which potential concern is most important to address?",
+    "options": {
+      "A": "Increased risk for bradycardia.",
+      "B": "Potential for masked hypoglycemia symptoms.",
+      "C": "Need for increased insulin doses.",
+      "D": "Higher risk for hypertension."
+    },
+    "correctAnswer": "B",
+    "rationale": "Beta-blockers can mask hypoglycemia symptoms except for sweating."
+  },
+  {
+    "questionText": "A nurse is teaching a patient with chronic kidney disease about avoiding over-the-counter medications that can worsen renal function. Which should the nurse emphasize? Select all that apply.",
+    "options": {
+      "A": "Ibuprofen",
+      "B": "Acetaminophen",
+      "C": "Naproxen",
+      "D": "Calcium carbonate",
+      "E": "Pseudoephedrine"
+    },
+    "correctAnswer": ["A", "C", "E"],
+    "rationale": "NSAIDs (ibuprofen, naproxen) and decongestants (pseudoephedrine) can worsen kidney function."
+  },
+  {
+    "questionText": "A client with a seizure disorder is taking phenytoin and begins taking omeprazole for GERD. Which complication is the nurse most concerned about?",
+    "options": {
+      "A": "Decreased phenytoin effect due to enzyme induction.",
+      "B": "Increased risk of phenytoin toxicity.",
+      "C": "Seizure breakthrough due to interaction.",
+      "D": "Development of gingival hyperplasia."
+    },
+    "correctAnswer": "B",
+    "rationale": "Omeprazole can inhibit phenytoin metabolism, raising levels and toxicity risk."
+  },
+  {
+    "questionText": "A patient receiving an ACE inhibitor develops persistent dry cough. What is the nurse’s best response?",
+    "options": {
+      "A": "Encourage continued use, as this is expected.",
+      "B": "Notify the provider; consider switching to an ARB.",
+      "C": "Stop the ACE inhibitor immediately.",
+      "D": "Check for signs of angioedema."
+    },
+    "correctAnswer": "B",
+    "rationale": "ACE inhibitors often cause cough; ARBs are alternatives if cough is intolerable."
+  },
+  {
+    "questionText": "A patient taking statins for hyperlipidemia reports new muscle pain and dark urine. What complication is the nurse most concerned about?",
+    "options": {
+      "A": "Rhabdomyolysis",
+      "B": "Renal stones",
+      "C": "Hepatitis",
+      "D": "Heart failure"
+    },
+    "correctAnswer": "A",
+    "rationale": "Statin-induced rhabdomyolysis is life-threatening and causes muscle breakdown and renal injury."
+  },
+  {
+    "questionText": "A patient with type 2 diabetes is prescribed metformin. Which lab finding requires the nurse to hold the next dose?",
+    "options": {
+      "A": "Blood glucose 68 mg/dL",
+      "B": "eGFR 28 mL/min/1.73m²",
+      "C": "ALT 40 U/L",
+      "D": "BUN 20 mg/dL"
+    },
+    "correctAnswer": "B",
+    "rationale": "Metformin is contraindicated in severe renal impairment due to risk of lactic acidosis."
+  },
+  {
+    "questionText": "A client taking multiple antihypertensive medications is experiencing dizziness and frequent falls. Which of the following interventions should the nurse prioritize? Select all that apply.",
+    "options": {
+      "A": "Monitor orthostatic blood pressures.",
+      "B": "Assess for signs of hypokalemia.",
+      "C": "Review all current medications for potential drug interactions.",
+      "D": "Encourage increased physical activity.",
+      "E": "Institute fall precautions."
+    },
+    "correctAnswer": ["A", "C", "E"],
+    "rationale": "Falls may result from hypotension or drug interactions; monitoring, medication review, and fall precautions are key."
+  },
+  {
+    "questionText": "A client with advanced liver cirrhosis is prescribed acetaminophen for pain. Which statement best reflects appropriate nursing action?",
+    "options": {
+      "A": "Administer full adult dose and monitor liver enzymes monthly.",
+      "B": "Question the order and clarify the safe dose with the provider.",
+      "C": "Instruct the client to take the medication with food.",
+      "D": "Double-check the dose and give if pain is severe."
+    },
+    "correctAnswer": "B",
+    "rationale": "Cirrhosis greatly increases risk of acetaminophen toxicity; doses must be limited or avoided."
+  },
+  {
+    "questionText": "A patient taking levothyroxine reports chest pain and palpitations after starting a new weight-loss supplement. Which action is most appropriate?",
+    "options": {
+      "A": "Advise the patient to stop levothyroxine.",
+      "B": "Assess the supplement ingredients for stimulant effects and notify the provider.",
+      "C": "Encourage continued use if symptoms resolve.",
+      "D": "Reassure the patient that palpitations are common."
+    },
+    "correctAnswer": "B",
+    "rationale": "Many supplements contain stimulants that interact dangerously with thyroid medication."
+  },
+  {
+    "questionText": "A client taking oral contraceptives begins rifampin for tuberculosis. Which teaching is most important?",
+    "options": {
+      "A": "Rifampin increases contraceptive efficacy.",
+      "B": "Use additional, non-hormonal contraception.",
+      "C": "Take both medications together in the morning.",
+      "D": "Monitor for hypertension."
+    },
+    "correctAnswer": "B",
+    "rationale": "Rifampin reduces effectiveness of oral contraceptives; additional protection is required."
+  },
+  {
+    "questionText": "A client with severe COPD is prescribed theophylline. Which of the following findings should the nurse report immediately? Select all that apply.",
+    "options": {
+      "A": "Seizures",
+      "B": "Nausea and vomiting",
+      "C": "Insomnia",
+      "D": "Palpitations",
+      "E": "Restlessness"
+    },
+    "correctAnswer": ["A", "B", "D"],
+    "rationale": "Toxicity presents with seizures, arrhythmias, GI symptoms; these require urgent attention."
+  },
+  {
+    "questionText": "A nurse is reviewing medication orders for a patient with a penicillin allergy. Which prescription should be questioned?",
+    "options": {
+      "A": "Azithromycin",
+      "B": "Cefazolin",
+      "C": "Doxycycline",
+      "D": "Clindamycin"
+    },
+    "correctAnswer": "B",
+    "rationale": "Cephalosporins like cefazolin may cross-react with penicillin allergies."
+  },
+  {
+    "questionText": "A patient with a history of heart failure is prescribed NSAIDs for arthritis pain. Which outcome is most likely if the nurse does not intervene?",
+    "options": {
+      "A": "Improved joint mobility",
+      "B": "Worsening edema and heart failure symptoms",
+      "C": "Increased urine output",
+      "D": "Reduced risk of GI bleeding"
+    },
+    "correctAnswer": "B",
+    "rationale": "NSAIDs can cause sodium and water retention, exacerbating heart failure."
+  },
+  {
+    "questionText": "A client recently started on methotrexate for rheumatoid arthritis is instructed to take folic acid. What is the rationale?",
+    "options": {
+      "A": "Folic acid enhances methotrexate absorption.",
+      "B": "Folic acid decreases methotrexate side effects.",
+      "C": "Folic acid potentiates methotrexate’s anti-inflammatory action.",
+      "D": "Folic acid prevents methotrexate toxicity to the kidneys."
+    },
+    "correctAnswer": "B",
+    "rationale": "Folic acid reduces methotrexate’s common toxicities (oral ulcers, GI, liver)."
+  },
+  {
+    "questionText": "A patient prescribed amlodipine develops significant peripheral edema. What is the nurse’s best response?",
+    "options": {
+      "A": "Explain that this is a benign effect and no intervention is needed.",
+      "B": "Assess lung sounds and notify the provider about the edema.",
+      "C": "Hold the next dose until potassium is checked.",
+      "D": "Encourage sodium restriction only."
+    },
+    "correctAnswer": "B",
+    "rationale": "Edema may indicate adverse effect; provider may reduce dose or switch class."
+  },
+  {
+    "questionText": "A patient on long-term prednisone for lupus develops a new fever and productive cough. Which order is the nurse’s highest priority?",
+    "options": {
+      "A": "Obtain sputum cultures before starting antibiotics.",
+      "B": "Encourage fluids and rest.",
+      "C": "Administer prednisone with food.",
+      "D": "Check blood sugar before antibiotics."
+    },
+    "correctAnswer": "A",
+    "rationale": "Immunosuppressed patients are prone to severe infections—prompt cultures before antibiotics are critical."
+  },
+  {
+    "questionText": "A nurse is teaching about safe use of herbal supplements. Which statement requires correction?",
+    "options": {
+      "A": "‘Natural’ supplements are always safe for everyone.",
+      "B": "Herbs may interact with prescription drugs.",
+      "C": "Quality varies between brands.",
+      "D": "Clients should disclose all supplement use to their provider."
+    },
+    "correctAnswer": "A",
+    "rationale": "‘Natural’ does not mean safe; many herbs have serious interactions or side effects."
+  },
+  {
+    "questionText": "A patient receiving linezolid for MRSA develops a severe headache and high blood pressure after eating aged cheese. What is the most likely cause?",
+    "options": {
+      "A": "Drug-induced nephrotoxicity",
+      "B": "Serotonin syndrome",
+      "C": "Tyramine-induced hypertensive crisis",
+      "D": "Mild allergic reaction"
+    },
+    "correctAnswer": "C",
+    "rationale": "Linezolid acts as an MAOI; tyramine ingestion can cause hypertensive crisis."
+  },
+  {
+    "questionText": "A nurse is evaluating a patient on antipsychotic therapy who develops a fever, muscle rigidity, and confusion. Which complication does this suggest?",
+    "options": {
+      "A": "Neuroleptic malignant syndrome",
+      "B": "Serotonin syndrome",
+      "C": "Tardive dyskinesia",
+      "D": "Parkinsonism"
+    },
+    "correctAnswer": "A",
+    "rationale": "Fever, rigidity, and confusion suggest life-threatening neuroleptic malignant syndrome."
+  },
+  {
+    "questionText": "A patient is newly prescribed lamotrigine for bipolar disorder. Which symptom is the nurse most concerned about?",
+    "options": {
+      "A": "Mild headache",
+      "B": "Drowsiness",
+      "C": "Rash",
+      "D": "Increased appetite"
+    },
+    "correctAnswer": "C",
+    "rationale": "Lamotrigine-associated rash can indicate Stevens-Johnson syndrome—a serious, potentially fatal reaction."
+  },
+  {
+    "questionText": "A patient on warfarin is also taking several herbal supplements. Which supplements increase bleeding risk? Select all that apply.",
+    "options": {
+      "A": "Ginseng",
+      "B": "Ginkgo biloba",
+      "C": "St. John’s Wort",
+      "D": "Garlic",
+      "E": "Echinacea"
+    },
+    "correctAnswer": ["A", "B", "D"],
+    "rationale": "Ginseng, ginkgo, and garlic increase bleeding risk with warfarin. St. John’s Wort can decrease warfarin’s effect; echinacea has little impact."
+  },
+  {
+    "questionText": "A nurse is reviewing discharge instructions for a patient on oral nystatin suspension for oral candidiasis. Which instruction is most important?",
+    "options": {
+      "A": "Swallow the medication immediately after rinsing.",
+      "B": "Hold medication in the mouth before swallowing.",
+      "C": "Take with food for best absorption.",
+      "D": "Avoid eating for 30 minutes after taking the drug."
+    },
+    "correctAnswer": "B",
+    "rationale": "Holding nystatin in the mouth increases contact time and efficacy."
+  },
+  {
+    "questionText": "A patient with HIV is prescribed ritonavir and omeprazole. Which risk does the nurse recognize?",
+    "options": {
+      "A": "Decreased efficacy of HIV treatment",
+      "B": "Increased risk of opportunistic infection",
+      "C": "Reduced absorption of ritonavir",
+      "D": "Ritonavir toxicity due to CYP inhibition"
+    },
+    "correctAnswer": "D",
+    "rationale": "Omeprazole can inhibit CYP enzymes, raising ritonavir levels and toxicity risk."
+  },
+  {
+    "questionText": "A patient is admitted for acute alcohol withdrawal. Which medication order should the nurse question?",
+    "options": {
+      "A": "Lorazepam PRN for agitation",
+      "B": "Disulfiram to prevent relapse",
+      "C": "Multivitamin with thiamine",
+      "D": "IV fluids with dextrose"
+    },
+    "correctAnswer": "B",
+    "rationale": "Disulfiram is not appropriate during acute withdrawal; it is used for long-term abstinence."
+  },
+  {
+    "questionText": "A nurse is administering clindamycin IV. The patient reports chest pain, difficulty breathing, and a rash at the infusion site. What should the nurse do first?",
+    "options": {
+      "A": "Stop the infusion and assess airway.",
+      "B": "Slow the infusion rate.",
+      "C": "Flush the IV line with saline.",
+      "D": "Administer diphenhydramine."
+    },
+    "correctAnswer": "A",
+    "rationale": "Signs of anaphylaxis require immediate cessation and airway assessment."
+  },
+  {
+    "questionText": "A client with hypertension is prescribed spironolactone. Which dietary instruction is most appropriate?",
+    "options": {
+      "A": "Increase potassium-rich foods.",
+      "B": "Limit sodium and potassium intake.",
+      "C": "Take with grapefruit juice.",
+      "D": "Eat extra dairy products."
+    },
+    "correctAnswer": "B",
+    "rationale": "Spironolactone is potassium-sparing; excessive K+ intake increases hyperkalemia risk."
+  },
+  {
+    "questionText": "A patient with tuberculosis is prescribed isoniazid. Which laboratory value requires immediate intervention?",
+    "options": {
+      "A": "ALT 98 U/L (high)",
+      "B": "Platelets 180,000/mm³",
+      "C": "Hemoglobin 13 g/dL",
+      "D": "BUN 14 mg/dL"
+    },
+    "correctAnswer": "A",
+    "rationale": "Isoniazid can cause hepatotoxicity; elevated ALT may indicate liver injury."
+  },
+  {
+    "questionText": "A client is admitted for heart failure exacerbation and is prescribed furosemide. Which assessment requires the nurse’s immediate attention?",
+    "options": {
+      "A": "Potassium 2.7 mEq/L",
+      "B": "Blood pressure 132/78 mmHg",
+      "C": "Heart rate 88 bpm",
+      "D": "Weight loss of 1 lb since yesterday"
+    },
+    "correctAnswer": "A",
+    "rationale": "Severe hypokalemia is a life-threatening complication of loop diuretics."
+  },
+  {
+    "questionText": "A client prescribed methadone for opioid use disorder develops prolonged QT interval on ECG. What is the nurse’s priority?",
+    "options": {
+      "A": "Continue methadone and monitor vital signs.",
+      "B": "Notify the provider due to risk of torsades de pointes.",
+      "C": "Administer magnesium supplement.",
+      "D": "Discontinue all other medications."
+    },
+    "correctAnswer": "B",
+    "rationale": "QT prolongation may cause fatal arrhythmias—urgent intervention is needed."
+  },
+  {
+    "questionText": "A patient with chronic pain takes both an opioid and gabapentin. Which of the following are appropriate safety measures? Select all that apply.",
+    "options": {
+      "A": "Assess for excessive sedation.",
+      "B": "Monitor for respiratory depression.",
+      "C": "Encourage alcohol use to enhance pain relief.",
+      "D": "Educate about fall risk.",
+      "E": "Suggest abrupt discontinuation of both drugs."
+    },
+    "correctAnswer": ["A", "B", "D"],
+    "rationale": "Opioids and gabapentin increase sedation, respiratory depression, and fall risk."
+  },
+    {
+    "questionText": "A client newly prescribed carbamazepine for trigeminal neuralgia reports fever, sore throat, and mouth ulcers after 2 weeks of therapy. Which lab result is most concerning?",
+    "options": {
+      "A": "Hemoglobin 13 g/dL",
+      "B": "White blood cell count 2,200/mm³",
+      "C": "Platelets 250,000/mm³",
+      "D": "Potassium 4.0 mEq/L"
+    },
+    "correctAnswer": "B",
+    "rationale": "Carbamazepine can cause agranulocytosis (dangerous drop in WBCs), leading to infection risk."
+  },
+  {
+    "questionText": "A patient receiving clopidogrel post-stent placement is prescribed omeprazole for GERD. Which risk should the nurse monitor for most closely?",
+    "options": {
+      "A": "Decreased effectiveness of clopidogrel",
+      "B": "Increased risk of GI bleeding",
+      "C": "Severe hypokalemia",
+      "D": "Hypertension"
+    },
+    "correctAnswer": "A",
+    "rationale": "Omeprazole inhibits CYP2C19, reducing activation of clopidogrel and lowering its antiplatelet effect."
+  },
+  {
+    "questionText": "A 68-year-old with advanced CKD is prescribed enoxaparin for DVT prevention. Which action should the nurse take?",
+    "options": {
+      "A": "Administer the standard dose as ordered.",
+      "B": "Hold the dose and clarify with the provider.",
+      "C": "Encourage increased water intake.",
+      "D": "Monitor for bradycardia."
+    },
+    "correctAnswer": "B",
+    "rationale": "Low molecular weight heparins accumulate in renal impairment; dosing should be adjusted or withheld to prevent bleeding."
+  },
+  {
+    "questionText": "A nurse is caring for a patient with myasthenia gravis taking pyridostigmine. The client suddenly develops muscle fasciculations, increased salivation, and bradycardia. What is the nurse’s priority?",
+    "options": {
+      "A": "Give the next dose early.",
+      "B": "Hold the next dose and notify the provider.",
+      "C": "Administer atropine as ordered.",
+      "D": "Encourage oral fluids."
+    },
+    "correctAnswer": "B",
+    "rationale": "Signs of cholinergic crisis (overdose) require immediate cessation and provider notification."
+  },
+  {
+    "questionText": "A client with a sulfa allergy develops hives and shortness of breath after starting a new medication. Which order should be questioned?",
+    "options": {
+      "A": "Acetaminophen",
+      "B": "Furosemide",
+      "C": "Amoxicillin",
+      "D": "Metoprolol"
+    },
+    "correctAnswer": "B",
+    "rationale": "Furosemide is a sulfa-containing diuretic and can trigger an allergic reaction in sulfa-allergic clients."
+  },
+  {
+    "questionText": "A patient taking digoxin for atrial fibrillation reports seeing yellow-green halos around lights. Which additional finding would support the nurse’s suspicion?",
+    "options": {
+      "A": "Heart rate 64 bpm",
+      "B": "Potassium 2.8 mEq/L",
+      "C": "INR 1.9",
+      "D": "Blood glucose 90 mg/dL"
+    },
+    "correctAnswer": "B",
+    "rationale": "Hypokalemia increases risk of digoxin toxicity, which may present with visual disturbances."
+  },
+  {
+    "questionText": "A nurse is reviewing discharge instructions with a patient starting oral iron supplements. Which instructions should the nurse include? Select all that apply.",
+    "options": {
+      "A": "Take with orange juice to increase absorption.",
+      "B": "Avoid taking with milk or antacids.",
+      "C": "Expect dark, tarry stools as a side effect.",
+      "D": "Crush tablets if difficulty swallowing.",
+      "E": "Report constipation or abdominal pain."
+    },
+    "correctAnswer": ["A", "B", "C", "E"],
+    "rationale": "Vitamin C enhances iron absorption; dairy/antacids inhibit it. Black stools and constipation are expected; crushing may cause gastric irritation."
+  },
+  {
+    "questionText": "A patient on chronic corticosteroids for autoimmune disease is scheduled for surgery. Which preoperative order is most important?",
+    "options": {
+      "A": "Administer extra corticosteroid coverage.",
+      "B": "Hold steroids 12 hours pre-op.",
+      "C": "Give double antibiotics.",
+      "D": "Restrict fluids before anesthesia."
+    },
+    "correctAnswer": "A",
+    "rationale": "Clients on chronic steroids require supplemental doses to prevent adrenal crisis during perioperative stress."
+  },
+  {
+    "questionText": "A client with asthma using a fluticasone inhaler daily is experiencing hoarseness and white patches in the mouth. Which interventions should the nurse include? Select all that apply.",
+    "options": {
+      "A": "Rinse mouth after each use.",
+      "B": "Assess for oral candidiasis.",
+      "C": "Encourage increased inhaler use.",
+      "D": "Switch to a dry-powder inhaler.",
+      "E": "Notify the provider."
+    },
+    "correctAnswer": ["A", "B", "E"],
+    "rationale": "Steroid inhalers can cause thrush and hoarseness. Rinse mouth, assess, and notify provider for further orders."
+  },
+  {
+    "questionText": "A patient with a history of chronic alcohol use is admitted for pneumonia and started on IV ceftriaxone. Which vitamin supplement is most important?",
+    "options": {
+      "A": "Folic acid",
+      "B": "Vitamin B6",
+      "C": "Thiamine",
+      "D": "Vitamin D"
+    },
+    "correctAnswer": "C",
+    "rationale": "Chronic alcohol use leads to thiamine deficiency, increasing risk of Wernicke’s encephalopathy."
+  },
+  {
+    "questionText": "A nurse is administering amphotericin B IV. Which interventions help prevent infusion-related reactions? Select all that apply.",
+    "options": {
+      "A": "Premedicate with acetaminophen and diphenhydramine.",
+      "B": "Monitor vital signs every 15–30 minutes during infusion.",
+      "C": "Infuse rapidly over 30 minutes.",
+      "D": "Assess for chills and rigors.",
+      "E": "Monitor potassium and magnesium levels."
+    },
+    "correctAnswer": ["A", "B", "D", "E"],
+    "rationale": "Amphotericin B can cause severe infusion and electrolyte disturbances. Premedication, monitoring, and slow infusion are key."
+  },
+  {
+    "questionText": "A 62-year-old with hypertension and BPH is started on tamsulosin. Which teaching is most important?",
+    "options": {
+      "A": "Monitor for urinary retention.",
+      "B": "Rise slowly from sitting or lying positions.",
+      "C": "Avoid foods high in tyramine.",
+      "D": "Increase daily fluid intake."
+    },
+    "correctAnswer": "B",
+    "rationale": "Tamsulosin, an alpha blocker, can cause orthostatic hypotension and falls."
+  },
+  {
+    "questionText": "A patient is prescribed allopurinol for gout. Which symptom should the nurse report immediately?",
+    "options": {
+      "A": "Mild nausea",
+      "B": "Fever and skin rash",
+      "C": "Increased joint pain",
+      "D": "Dark urine"
+    },
+    "correctAnswer": "B",
+    "rationale": "Fever and rash can signal life-threatening hypersensitivity reaction (DRESS/Stevens-Johnson syndrome)."
+  },
+  {
+    "questionText": "A client taking verapamil for hypertension reports constipation, dizziness, and mild lower extremity edema. Which action should the nurse take?",
+    "options": {
+      "A": "Encourage a high-fiber diet and continue monitoring.",
+      "B": "Hold the next dose and call the provider.",
+      "C": "Instruct the client to increase fluid and sodium intake.",
+      "D": "Suggest switching to a beta blocker."
+    },
+    "correctAnswer": "A",
+    "rationale": "Constipation and edema are common; diet and continued monitoring are appropriate unless symptoms worsen."
+  },
+  {
+    "questionText": "A nurse is preparing to administer insulin lispro. The meal tray is running late. What is the nurse’s best action?",
+    "options": {
+      "A": "Give insulin as ordered to avoid delays.",
+      "B": "Hold insulin until the tray is at the bedside.",
+      "C": "Double-check the dose and give anyway.",
+      "D": "Give half the ordered dose."
+    },
+    "correctAnswer": "B",
+    "rationale": "Lispro is rapid-acting and should be given with food to prevent hypoglycemia."
+  },
+  {
+    "questionText": "A patient on oral contraceptives is prescribed phenobarbital for seizure control. What should the nurse include in patient education?",
+    "options": {
+      "A": "Expect increased contraceptive effectiveness.",
+      "B": "Use backup contraception to prevent pregnancy.",
+      "C": "No changes to routine are needed.",
+      "D": "Discontinue oral contraceptives."
+    },
+    "correctAnswer": "B",
+    "rationale": "Phenobarbital induces hepatic enzymes, decreasing efficacy of oral contraceptives."
+  },
+  {
+    "questionText": "A client with newly diagnosed tuberculosis begins therapy with isoniazid, rifampin, ethambutol, and pyrazinamide. Which finding is most urgent?",
+    "options": {
+      "A": "Visual changes",
+      "B": "Mild joint pain",
+      "C": "Red-orange urine",
+      "D": "Increased appetite"
+    },
+    "correctAnswer": "A",
+    "rationale": "Ethambutol can cause optic neuritis; visual changes require immediate attention."
+  },
+  {
+    "questionText": "A patient with chronic stable angina uses sublingual nitroglycerin PRN. Which instructions should the nurse provide? Select all that apply.",
+    "options": {
+      "A": "Sit or lie down before taking the medication.",
+      "B": "Call 911 if chest pain is unrelieved after one tablet and 5 minutes.",
+      "C": "Repeat the dose every 5 minutes, up to 3 doses.",
+      "D": "Store the tablets in a cool, dry place.",
+      "E": "Take with food to prevent nausea."
+    },
+    "correctAnswer": ["A", "B", "C", "D"],
+    "rationale": "Sublingual nitro can cause hypotension and must be stored properly. Emergency services should be called if unrelieved after one dose."
+  },
+  {
+    "questionText": "A client with Parkinson’s disease is prescribed levodopa/carbidopa. Which foods should the nurse teach the client to limit to avoid reduced drug efficacy?",
+    "options": {
+      "A": "Foods high in vitamin K",
+      "B": "High-protein foods",
+      "C": "Citrus fruits",
+      "D": "Leafy greens"
+    },
+    "correctAnswer": "B",
+    "rationale": "High-protein meals can interfere with absorption of levodopa."
+  },
+  {
+    "questionText": "A client on oral fluoroquinolone therapy develops pain and swelling in the Achilles tendon. What should the nurse do?",
+    "options": {
+      "A": "Encourage gentle stretching.",
+      "B": "Advise immediate discontinuation and provider notification.",
+      "C": "Apply heat and massage.",
+      "D": "Reassure this is a common effect."
+    },
+    "correctAnswer": "B",
+    "rationale": "Fluoroquinolones can cause tendon rupture—discontinue and alert the provider."
+  },
+  {
+    "questionText": "A patient is taking spironolactone and lisinopril for heart failure. Which finding requires immediate intervention?",
+    "options": {
+      "A": "Potassium 6.2 mEq/L",
+      "B": "Heart rate 70 bpm",
+      "C": "Blood pressure 118/76 mmHg",
+      "D": "Sodium 137 mEq/L"
+    },
+    "correctAnswer": "A",
+    "rationale": "Both drugs can cause hyperkalemia, which may result in fatal arrhythmias."
+  },
+  {
+    "questionText": "A nurse is reviewing a new prescription for lamotrigine in a pediatric patient. Which parent teaching is most urgent?",
+    "options": {
+      "A": "Monitor for headache and fatigue.",
+      "B": "Watch for any skin rash and report immediately.",
+      "C": "Expect increased appetite.",
+      "D": "Observe for signs of drowsiness."
+    },
+    "correctAnswer": "B",
+    "rationale": "Lamotrigine can cause life-threatening rashes (Stevens-Johnson)."
+  },
+  {
+    "questionText": "A client with depression is prescribed phenelzine. Which over-the-counter medication should be avoided?",
+    "options": {
+      "A": "Acetaminophen",
+      "B": "Pseudoephedrine",
+      "C": "Calcium carbonate",
+      "D": "Docusate sodium"
+    },
+    "correctAnswer": "B",
+    "rationale": "Pseudoephedrine, when combined with MAOIs like phenelzine, can cause hypertensive crisis."
+  },
+  {
+    "questionText": "A patient receiving vancomycin IV develops a sudden drop in blood pressure and red rash on the upper torso. What is the most likely cause?",
+    "options": {
+      "A": "Anaphylactic reaction",
+      "B": "Red man syndrome",
+      "C": "Sepsis",
+      "D": "Stevens-Johnson syndrome"
+    },
+    "correctAnswer": "B",
+    "rationale": "Rapid vancomycin infusion can cause histamine release (red man syndrome)."
+  },
+  {
+    "questionText": "A patient taking methotrexate for rheumatoid arthritis has mouth ulcers and new bruising. Which labs should the nurse anticipate? Select all that apply.",
+    "options": {
+      "A": "CBC with differential",
+      "B": "Liver function tests",
+      "C": "BUN and creatinine",
+      "D": "Thyroid panel",
+      "E": "Serum folate"
+    },
+    "correctAnswer": ["A", "B", "E"],
+    "rationale": "Methotrexate can cause myelosuppression, hepatotoxicity, and folate deficiency."
+  },
+  {
+    "questionText": "A patient with hypertension and chronic kidney disease is prescribed a thiazide diuretic. Which electrolyte imbalance should the nurse anticipate?",
+    "options": {
+      "A": "Hyperkalemia",
+      "B": "Hypokalemia",
+      "C": "Hypernatremia",
+      "D": "Hypercalcemia"
+    },
+    "correctAnswer": "B",
+    "rationale": "Thiazide diuretics can cause low potassium, especially in CKD."
+  },
+  {
+    "questionText": "A nurse is preparing to administer a beta-blocker to a client with asthma. Which finding is most concerning?",
+    "options": {
+      "A": "Heart rate 60 bpm",
+      "B": "Blood pressure 110/68 mmHg",
+      "C": "Wheezing on auscultation",
+      "D": "Mild ankle edema"
+    },
+    "correctAnswer": "C",
+    "rationale": "Beta-blockers may trigger bronchospasm in asthmatic clients."
+  },
+  {
+    "questionText": "A client using nicotine replacement patches for smoking cessation develops a red, itchy rash at the patch site. What should the nurse recommend?",
+    "options": {
+      "A": "Discontinue all nicotine products.",
+      "B": "Rotate sites daily and use topical hydrocortisone as directed.",
+      "C": "Apply the patch to the same area each time.",
+      "D": "Switch to nicotine gum only."
+    },
+    "correctAnswer": "B",
+    "rationale": "Skin irritation is common; rotation and topical agents help reduce symptoms."
+  },
+  {
+    "questionText": "A patient newly diagnosed with diabetes is prescribed metformin. Which adverse effect, if reported, requires immediate attention?",
+    "options": {
+      "A": "Nausea and diarrhea",
+      "B": "Muscle pain and fatigue",
+      "C": "Mild hypoglycemia",
+      "D": "Metallic taste"
+    },
+    "correctAnswer": "B",
+    "rationale": "Muscle pain and fatigue may indicate lactic acidosis, a rare but serious side effect."
+  },
+  {
+    "questionText": "A patient on chronic warfarin therapy is found to have a low INR and a new DVT. Which actions should the nurse anticipate? Select all that apply.",
+    "options": {
+      "A": "Start heparin therapy as a bridge.",
+      "B": "Increase warfarin dose per protocol.",
+      "C": "Monitor for bleeding.",
+      "D": "Administer vitamin K.",
+      "E": "Assess for dietary changes affecting vitamin K intake."
+    },
+    "correctAnswer": ["A", "B", "E"],
+    "rationale": "Low INR indicates subtherapeutic anticoagulation. Heparin may be started as a bridge; dose adjustment and dietary assessment are also needed."
+  },
+  {
+    "questionText": "A client taking St. John’s Wort for depression also takes oral contraceptives. What is the nurse’s priority teaching?",
+    "options": {
+      "A": "St. John’s Wort increases contraceptive efficacy.",
+      "B": "Use a backup method of contraception.",
+      "C": "Continue usual regimen without concern.",
+      "D": "Take both medications at night."
+    },
+    "correctAnswer": "B",
+    "rationale": "St. John’s Wort induces hepatic enzymes, reducing contraceptive effectiveness."
+  },
+  {
+    "questionText": "A patient with a history of severe penicillin allergy is prescribed imipenem-cilastatin. What is the nurse’s concern?",
+    "options": {
+      "A": "High risk for nephrotoxicity",
+      "B": "Possible cross-reactivity and anaphylaxis",
+      "C": "Development of hypertension",
+      "D": "Risk for hypokalemia"
+    },
+    "correctAnswer": "B",
+    "rationale": "Imipenem is a carbapenem, structurally similar to penicillin; cross-reactivity is possible."
+  },
+  {
+    "questionText": "A nurse is educating a client prescribed a new bisphosphonate for osteoporosis. Which instructions should be included? Select all that apply.",
+    "options": {
+      "A": "Take the medication with a full glass of water.",
+      "B": "Remain upright for at least 30 minutes after dosing.",
+      "C": "Take with food to decrease GI upset.",
+      "D": "Report new or worsening heartburn.",
+      "E": "Skip doses on weekends."
+    },
+    "correctAnswer": ["A", "B", "D"],
+    "rationale": "Bisphosphonates can cause esophagitis. Upright posture, water, and reporting GI symptoms are key."
+  },
+  {
+    "questionText": "A patient with heart failure is prescribed digoxin. Which symptoms indicate digoxin toxicity? Select all that apply.",
+    "options": {
+      "A": "Anorexia",
+      "B": "Blurred or yellow vision",
+      "C": "Bradycardia",
+      "D": "Dry cough",
+      "E": "Headache"
+    },
+    "correctAnswer": ["A", "B", "C"],
+    "rationale": "Classic toxicity signs: GI upset, vision changes, bradycardia."
+  },
+  {
+    "questionText": "A client with HIV/AIDS is prescribed trimethoprim-sulfamethoxazole for Pneumocystis jirovecii prophylaxis. Which finding requires intervention?",
+    "options": {
+      "A": "Mild skin rash",
+      "B": "Serum potassium 6.0 mEq/L",
+      "C": "White blood cell count 5,000/mm³",
+      "D": "Creatinine 1.0 mg/dL"
+    },
+    "correctAnswer": "B",
+    "rationale": "Trimethoprim can cause hyperkalemia; severe elevations are dangerous."
+  },
+  {
+    "questionText": "A nurse is caring for a client with chronic pain prescribed both an opioid and acetaminophen-hydrocodone. Which interventions help prevent overdose? Select all that apply.",
+    "options": {
+      "A": "Educate about max daily acetaminophen dose.",
+      "B": "Encourage use of non-pharmacologic pain relief.",
+      "C": "Instruct to check all OTC medications for acetaminophen.",
+      "D": "Advise to skip doses if pain is well-controlled.",
+      "E": "Suggest alcohol to potentiate effects."
+    },
+    "correctAnswer": ["A", "B", "C"],
+    "rationale": "Overlapping acetaminophen sources risk hepatotoxicity. Education and alternatives are essential."
+  },
+  {
+    "questionText": "A client on methotrexate reports mouth ulcers and shortness of breath. Which order should the nurse anticipate?",
+    "options": {
+      "A": "Administer folic acid.",
+      "B": "Discontinue methotrexate and check CBC.",
+      "C": "Continue therapy and monitor.",
+      "D": "Switch to NSAID for symptom relief."
+    },
+    "correctAnswer": "B",
+    "rationale": "Mouth ulcers and SOB may reflect myelosuppression or pulmonary toxicity."
+  },
+  {
+    "questionText": "A patient with a history of substance use disorder is admitted for pain control after surgery. Which strategy reduces risk of undertreatment?",
+    "options": {
+      "A": "Avoid opioids completely.",
+      "B": "Use a multimodal pain approach and assess frequently.",
+      "C": "Rely solely on non-opioid analgesics.",
+      "D": "Use higher opioid doses than usual."
+    },
+    "correctAnswer": "B",
+    "rationale": "Clients with SUD are often undertreated; balanced, regular assessment is vital."
+  },
+  {
+    "questionText": "A client prescribed furosemide reports muscle cramps and generalized weakness. Which lab value is most likely?",
+    "options": {
+      "A": "Potassium 2.4 mEq/L",
+      "B": "Sodium 142 mEq/L",
+      "C": "Calcium 10.0 mg/dL",
+      "D": "Magnesium 2.0 mg/dL"
+    },
+    "correctAnswer": "A",
+    "rationale": "Furosemide, a loop diuretic, commonly causes hypokalemia."
+  },
+  {
+    "questionText": "A client with atrial fibrillation is prescribed dabigatran. Which teaching is important for this medication?",
+    "options": {
+      "A": "Do not discontinue suddenly without provider input.",
+      "B": "Open capsules to sprinkle on food if difficulty swallowing.",
+      "C": "Monitor INR weekly.",
+      "D": "Take with antacids to reduce GI side effects."
+    },
+    "correctAnswer": "A",
+    "rationale": "Abrupt cessation increases risk of stroke; capsules must not be opened or crushed."
+  },
+    {
+    "questionText": "A 76-year-old client taking metoprolol for hypertension complains of fatigue, cold intolerance, and low heart rate. Which additional medication would most concern the nurse if ordered concurrently?",
+    "options": {
+      "A": "Levothyroxine",
+      "B": "Digoxin",
+      "C": "Furosemide",
+      "D": "Lisinopril"
+    },
+    "correctAnswer": "B",
+    "rationale": "Both metoprolol and digoxin depress AV conduction and heart rate, increasing bradycardia risk."
+  },
+  {
+    "questionText": "A client with chronic kidney disease is prescribed magnesium hydroxide for constipation. Which finding requires immediate intervention?",
+    "options": {
+      "A": "Mild abdominal discomfort",
+      "B": "Decreased deep tendon reflexes",
+      "C": "Soft, formed stool",
+      "D": "Dry mouth"
+    },
+    "correctAnswer": "B",
+    "rationale": "CKD patients cannot excrete magnesium efficiently; toxicity causes diminished reflexes and can be fatal."
+  },
+  {
+    "questionText": "A nurse is educating a client taking alendronate for osteoporosis. Which instructions are correct? Select all that apply.",
+    "options": {
+      "A": "Take with a full glass of water first thing in the morning.",
+      "B": "Remain upright for 30-60 minutes after taking.",
+      "C": "Take with calcium or antacids to reduce GI upset.",
+      "D": "Report any new or severe heartburn.",
+      "E": "Skip dose if unable to sit up after taking."
+    },
+    "correctAnswer": ["A", "B", "D", "E"],
+    "rationale": "Alendronate can cause esophageal irritation. Upright posture, water, and reporting heartburn are important; never take if unable to sit up."
+  },
+  {
+    "questionText": "A patient with atrial fibrillation on dabigatran suddenly stops the medication without consulting their provider. What is the greatest risk?",
+    "options": {
+      "A": "Bleeding",
+      "B": "Ischemic stroke",
+      "C": "Hypertension",
+      "D": "Hyperglycemia"
+    },
+    "correctAnswer": "B",
+    "rationale": "Abrupt cessation of anticoagulation in atrial fibrillation greatly increases stroke risk."
+  },
+  {
+    "questionText": "A nurse prepares to administer morphine IV to a client with severe COPD and drowsiness. What is the nurse’s priority action?",
+    "options": {
+      "A": "Administer the dose and monitor closely.",
+      "B": "Hold the medication and notify the provider.",
+      "C": "Give half the ordered dose.",
+      "D": "Check the client's pain level."
+    },
+    "correctAnswer": "B",
+    "rationale": "Drowsiness in a client with severe COPD may indicate CO2 retention; morphine could worsen respiratory depression."
+  },
+  {
+    "questionText": "A client with lupus on hydroxychloroquine reports blurred vision and difficulty focusing. What should the nurse do first?",
+    "options": {
+      "A": "Encourage increased hydration.",
+      "B": "Instruct the client to rest the eyes.",
+      "C": "Hold the medication and notify the provider.",
+      "D": "Advise using artificial tears."
+    },
+    "correctAnswer": "C",
+    "rationale": "Ocular toxicity is a known adverse effect and requires prompt assessment."
+  },
+  {
+    "questionText": "A patient with hypertension is prescribed clonidine patches. Which instructions should the nurse provide? Select all that apply.",
+    "options": {
+      "A": "Apply to a hairless, intact area of the upper arm or chest.",
+      "B": "Replace patch every 7 days.",
+      "C": "Remove old patch before applying new one.",
+      "D": "Abrupt discontinuation may cause rebound hypertension.",
+      "E": "Keep used patches for 30 days before discarding."
+    },
+    "correctAnswer": ["A", "B", "C", "D"],
+    "rationale": "Proper patch application and avoidance of abrupt discontinuation are essential to prevent hypertensive crisis."
+  },
+  {
+    "questionText": "A client with a history of epilepsy is prescribed valproic acid. Which laboratory results should be monitored routinely? Select all that apply.",
+    "options": {
+      "A": "Liver function tests",
+      "B": "Platelet count",
+      "C": "INR",
+      "D": "Renal function",
+      "E": "Serum sodium"
+    },
+    "correctAnswer": ["A", "B", "C"],
+    "rationale": "Valproic acid can cause hepatotoxicity, thrombocytopenia, and coagulopathy."
+  },
+  {
+    "questionText": "A nurse is caring for a patient prescribed gentamicin. Which findings suggest toxicity? Select all that apply.",
+    "options": {
+      "A": "Difficulty hearing",
+      "B": "Vertigo",
+      "C": "Increased urine output",
+      "D": "Decreased creatinine clearance",
+      "E": "Pruritus"
+    },
+    "correctAnswer": ["A", "B", "D"],
+    "rationale": "Gentamicin can cause ototoxicity (hearing loss, vertigo) and nephrotoxicity (decreased clearance)."
+  },
+  {
+    "questionText": "A client using sumatriptan for migraines develops chest tightness and jaw pain. What is the nurse’s first response?",
+    "options": {
+      "A": "Reassure this is a normal side effect.",
+      "B": "Assess cardiac history and call the provider immediately.",
+      "C": "Advise client to increase water intake.",
+      "D": "Administer a second dose of sumatriptan."
+    },
+    "correctAnswer": "B",
+    "rationale": "Sumatriptan can cause coronary vasospasm; chest pain requires immediate evaluation."
+  },
+  {
+    "questionText": "A client taking nitrofurantoin for a UTI develops cough, shortness of breath, and fever. Which complication should the nurse suspect?",
+    "options": {
+      "A": "Pneumonitis",
+      "B": "Anaphylaxis",
+      "C": "Bronchospasm",
+      "D": "Pulmonary embolism"
+    },
+    "correctAnswer": "A",
+    "rationale": "Nitrofurantoin can cause pulmonary toxicity (pneumonitis), especially in older adults."
+  },
+  {
+    "questionText": "A patient is prescribed linezolid for MRSA. Which foods should the nurse instruct the patient to avoid?",
+    "options": {
+      "A": "Aged cheese and cured meats",
+      "B": "Citrus fruits",
+      "C": "Leafy greens",
+      "D": "Dairy products"
+    },
+    "correctAnswer": "A",
+    "rationale": "Linezolid is an MAOI; tyramine-rich foods can trigger hypertensive crisis."
+  },
+  {
+    "questionText": "A nurse is teaching a client about potential adverse effects of oral corticosteroids. Which statements by the client indicate understanding? Select all that apply.",
+    "options": {
+      "A": "I may have increased blood sugar.",
+      "B": "I should report signs of infection.",
+      "C": "I might notice mood changes.",
+      "D": "I can stop the medication abruptly if I feel better.",
+      "E": "I should watch for bruising or bleeding."
+    },
+    "correctAnswer": ["A", "B", "C", "E"],
+    "rationale": "Steroids increase glucose, infection risk, mood swings, and bleeding. Abrupt cessation risks adrenal crisis."
+  },
+  {
+    "questionText": "A patient on phenytoin presents with ataxia, slurred speech, and nystagmus. Which factor likely contributed to these findings?",
+    "options": {
+      "A": "Subtherapeutic phenytoin dose",
+      "B": "Grapefruit juice ingestion",
+      "C": "Low serum albumin",
+      "D": "Recent weight loss"
+    },
+    "correctAnswer": "C",
+    "rationale": "Low albumin increases free (active) phenytoin, raising toxicity risk."
+  },
+  {
+    "questionText": "A client prescribed metoclopramide for gastroparesis develops facial twitching and lip smacking. Which action is most appropriate?",
+    "options": {
+      "A": "Continue current therapy.",
+      "B": "Notify provider; assess for tardive dyskinesia.",
+      "C": "Switch to a proton pump inhibitor.",
+      "D": "Administer diphenhydramine."
+    },
+    "correctAnswer": "B",
+    "rationale": "These are signs of tardive dyskinesia, a potentially irreversible side effect."
+  },
+  {
+    "questionText": "A patient taking cyclosporine post-transplant is prescribed erythromycin for pneumonia. What is the nurse's greatest concern?",
+    "options": {
+      "A": "Reduced cyclosporine effectiveness",
+      "B": "Cyclosporine toxicity",
+      "C": "Worsening infection",
+      "D": "Neutropenia"
+    },
+    "correctAnswer": "B",
+    "rationale": "Erythromycin inhibits CYP enzymes, raising cyclosporine to toxic levels."
+  },
+  {
+    "questionText": "A client on warfarin is also started on amiodarone. Which adjustments should the nurse anticipate? Select all that apply.",
+    "options": {
+      "A": "Decrease warfarin dose.",
+      "B": "Monitor INR closely.",
+      "C": "Educate to report signs of bleeding.",
+      "D": "Increase vitamin K intake.",
+      "E": "Administer warfarin with food."
+    },
+    "correctAnswer": ["A", "B", "C"],
+    "rationale": "Amiodarone increases warfarin levels; close monitoring and dose reduction are necessary."
+  },
+  {
+    "questionText": "A nurse is reviewing labs for a client on high-dose IV furosemide. Which findings require intervention? Select all that apply.",
+    "options": {
+      "A": "Potassium 2.8 mEq/L",
+      "B": "Calcium 7.5 mg/dL",
+      "C": "Magnesium 1.2 mg/dL",
+      "D": "Creatinine 1.1 mg/dL",
+      "E": "Sodium 138 mEq/L"
+    },
+    "correctAnswer": ["A", "B", "C"],
+    "rationale": "Loop diuretics can cause hypokalemia, hypocalcemia, and hypomagnesemia."
+  },
+  {
+    "questionText": "A patient with schizophrenia on risperidone reports sudden high fever, muscle rigidity, and confusion. What complication should the nurse suspect?",
+    "options": {
+      "A": "Neuroleptic malignant syndrome",
+      "B": "Serotonin syndrome",
+      "C": "Parkinsonism",
+      "D": "Anticholinergic toxicity"
+    },
+    "correctAnswer": "A",
+    "rationale": "NMS is a medical emergency associated with antipsychotics."
+  },
+  {
+    "questionText": "A client on diltiazem for atrial fibrillation experiences bradycardia and hypotension. Which additional medication would worsen these symptoms?",
+    "options": {
+      "A": "Hydrochlorothiazide",
+      "B": "Propranolol",
+      "C": "Losartan",
+      "D": "Spironolactone"
+    },
+    "correctAnswer": "B",
+    "rationale": "Propranolol (a beta-blocker) and diltiazem both depress cardiac conduction and contractility."
+  },
+  {
+    "questionText": "A client taking lisinopril develops swelling of the lips and tongue. What is the nurse’s immediate action?",
+    "options": {
+      "A": "Apply cold compresses.",
+      "B": "Assess airway and prepare to administer epinephrine.",
+      "C": "Notify the provider to adjust the dose.",
+      "D": "Encourage oral hydration."
+    },
+    "correctAnswer": "B",
+    "rationale": "This is angioedema, a potentially fatal airway emergency."
+  },
+  {
+    "questionText": "A nurse is teaching a patient about tamsulosin for BPH. Which statement indicates a need for further teaching?",
+    "options": {
+      "A": "I should rise slowly to avoid dizziness.",
+      "B": "This medication may improve urinary flow.",
+      "C": "I can take this medication with sildenafil for erectile dysfunction.",
+      "D": "My blood pressure may decrease after the first few doses."
+    },
+    "correctAnswer": "C",
+    "rationale": "Concurrent use with other vasodilators (e.g., sildenafil) increases hypotension risk."
+  },
+  {
+    "questionText": "A client with type 2 diabetes is prescribed glipizide. Which finding is most concerning?",
+    "options": {
+      "A": "Blood glucose 72 mg/dL",
+      "B": "Mild weight loss",
+      "C": "Pruritus",
+      "D": "Severe sunburn after brief sun exposure"
+    },
+    "correctAnswer": "D",
+    "rationale": "Sulfonylureas can cause photosensitivity and severe sunburn."
+  },
+  {
+    "questionText": "A nurse is caring for a patient with opioid overdose. Which orders are appropriate? Select all that apply.",
+    "options": {
+      "A": "Administer naloxone as ordered.",
+      "B": "Monitor respiratory rate and depth.",
+      "C": "Place on continuous cardiac monitoring.",
+      "D": "Obtain a stat blood glucose.",
+      "E": "Restrict oral fluids."
+    },
+    "correctAnswer": ["A", "B", "C", "D"],
+    "rationale": "Reversal, monitoring, cardiac monitoring, and checking for hypoglycemia are essential; fluid restriction is not."
+  },
+  {
+    "questionText": "A client receiving amphotericin B for a fungal infection develops chills, fever, and hypotension. What should the nurse do first?",
+    "options": {
+      "A": "Stop the infusion and notify the provider.",
+      "B": "Administer acetaminophen as prescribed.",
+      "C": "Increase IV fluids.",
+      "D": "Continue infusion and reassess in 30 minutes."
+    },
+    "correctAnswer": "A",
+    "rationale": "These are signs of a severe infusion reaction; stop the infusion immediately."
+  },
+  {
+    "questionText": "A patient is taking levothyroxine for hypothyroidism. Which symptom suggests over-replacement?",
+    "options": {
+      "A": "Constipation",
+      "B": "Weight gain",
+      "C": "Palpitations",
+      "D": "Dry skin"
+    },
+    "correctAnswer": "C",
+    "rationale": "Palpitations suggest hyperthyroidism from excessive dosing."
+  },
+  {
+    "questionText": "A nurse is preparing to administer dantrolene IV for malignant hyperthermia. Which action is essential?",
+    "options": {
+      "A": "Use sterile water for injection to reconstitute.",
+      "B": "Reconstitute with normal saline.",
+      "C": "Administer by rapid IV push undiluted.",
+      "D": "Mix with dextrose 5%."
+    },
+    "correctAnswer": "A",
+    "rationale": "Dantrolene is reconstituted only with sterile water for injection."
+  },
+  {
+    "questionText": "A patient is prescribed sertraline for depression. Which finding should the nurse monitor for in the first weeks of therapy?",
+    "options": {
+      "A": "Hypertension",
+      "B": "Worsening suicidal ideation",
+      "C": "Hyperglycemia",
+      "D": "Weight gain"
+    },
+    "correctAnswer": "B",
+    "rationale": "SSRIs can increase suicide risk, especially in young adults, early in therapy."
+  },
+  {
+    "questionText": "A client taking oral prednisone for severe asthma develops black, tarry stools. What complication should the nurse suspect?",
+    "options": {
+      "A": "Upper GI bleeding",
+      "B": "Lower GI infection",
+      "C": "Steroid-induced diarrhea",
+      "D": "Colorectal cancer"
+    },
+    "correctAnswer": "A",
+    "rationale": "Steroids increase risk for gastric ulcers and GI bleeding."
+  },
+  {
+    "questionText": "A patient on chronic warfarin therapy presents with new bruising, nosebleeds, and an INR of 7.8. Which actions should the nurse anticipate? Select all that apply.",
+    "options": {
+      "A": "Hold the next warfarin dose.",
+      "B": "Administer vitamin K as ordered.",
+      "C": "Monitor for signs of internal bleeding.",
+      "D": "Prepare for fresh frozen plasma administration.",
+      "E": "Encourage high vitamin K diet immediately."
+    },
+    "correctAnswer": ["A", "B", "C", "D"],
+    "rationale": "Supratherapeutic INR and bleeding may require all of these interventions."
+  },
+  {
+    "questionText": "A client with depression is starting bupropion. Which history finding would require the nurse to clarify the order?",
+    "options": {
+      "A": "Epilepsy",
+      "B": "Obesity",
+      "C": "Seasonal allergies",
+      "D": "Family history of depression"
+    },
+    "correctAnswer": "A",
+    "rationale": "Bupropion lowers seizure threshold; contraindicated in epilepsy."
+  },
+  {
+    "questionText": "A nurse is reviewing a new order for metronidazole in a client being treated for trichomoniasis. Which patient statement requires intervention?",
+    "options": {
+      "A": "I’ll avoid alcohol during treatment and for 3 days after.",
+      "B": "I’ll notify my provider if I notice a metallic taste.",
+      "C": "I can stop the medication once my symptoms resolve.",
+      "D": "My partner should also be treated."
+    },
+    "correctAnswer": "C",
+    "rationale": "Antibiotics should be finished completely, even if symptoms improve."
+  },
+  {
+    "questionText": "A client receiving IV potassium chloride for hypokalemia complains of burning at the infusion site. What is the nurse’s best action?",
+    "options": {
+      "A": "Stop the infusion and notify the provider.",
+      "B": "Slow the infusion rate and reassess.",
+      "C": "Increase the rate to speed up correction.",
+      "D": "Apply warm compresses to the site."
+    },
+    "correctAnswer": "B",
+    "rationale": "Burning is common with IV potassium; slow the rate and reassess for extravasation."
+  },
+  {
+    "questionText": "A patient with HIV is prescribed efavirenz. Which symptom requires immediate provider notification?",
+    "options": {
+      "A": "Vivid dreams",
+      "B": "Mild dizziness",
+      "C": "Severe depression with suicidal thoughts",
+      "D": "Mild rash"
+    },
+    "correctAnswer": "C",
+    "rationale": "Efavirenz can cause neuropsychiatric side effects; suicide risk is an emergency."
+  },
+  {
+    "questionText": "A client is prescribed carbamazepine for bipolar disorder. Which teaching is most important?",
+    "options": {
+      "A": "Report fever, sore throat, or easy bruising.",
+      "B": "Take with grapefruit juice.",
+      "C": "Increase dairy intake.",
+      "D": "Expect mild drowsiness."
+    },
+    "correctAnswer": "A",
+    "rationale": "Carbamazepine can cause agranulocytosis—report infection or bleeding symptoms promptly."
+  },
+  {
+    "questionText": "A patient receiving methyldopa for hypertension develops jaundice and elevated liver enzymes. What is the nurse’s best action?",
+    "options": {
+      "A": "Continue medication and monitor labs.",
+      "B": "Hold the medication and notify the provider.",
+      "C": "Encourage increased hydration.",
+      "D": "Monitor for constipation."
+    },
+    "correctAnswer": "B",
+    "rationale": "Methyldopa can cause hepatotoxicity; discontinuation and evaluation are indicated."
+  },
+  {
+    "questionText": "A nurse is teaching a patient starting lithium therapy. Which points should be included? Select all that apply.",
+    "options": {
+      "A": "Maintain adequate fluid intake.",
+      "B": "Monitor for signs of dehydration.",
+      "C": "Avoid sudden changes in salt intake.",
+      "D": "Report new onset tremors or confusion.",
+      "E": "Take a daily multivitamin with iron."
+    },
+    "correctAnswer": ["A", "B", "C", "D"],
+    "rationale": "Fluid, sodium, and toxicity precautions are crucial with lithium."
+  },
+  {
+    "questionText": "A client prescribed allopurinol for gout experiences new-onset fever and a widespread skin rash. What complication is most likely?",
+    "options": {
+      "A": "Acute renal failure",
+      "B": "Stevens-Johnson syndrome",
+      "C": "Hepatitis",
+      "D": "Anaphylactic shock"
+    },
+    "correctAnswer": "B",
+    "rationale": "Stevens-Johnson syndrome is a life-threatening reaction associated with allopurinol."
+  },
+  {
+    "questionText": "A client with Alzheimer’s disease is started on donepezil. Which effect is expected?",
+    "options": {
+      "A": "Rapid cognitive improvement",
+      "B": "Slowing of cognitive decline",
+      "C": "Reversal of memory loss",
+      "D": "Cure of the disease"
+    },
+    "correctAnswer": "B",
+    "rationale": "Donepezil slows, but does not reverse, progression of symptoms."
+  },
+   {
+    "questionText": "A client with schizophrenia stabilized on olanzapine reports significant weight gain, increased thirst, and frequent urination. Which lab value would the nurse prioritize reviewing?",
+    "options": {
+      "A": "White blood cell count",
+      "B": "Hemoglobin A1c",
+      "C": "Serum sodium",
+      "D": "Serum potassium"
+    },
+    "correctAnswer": "B",
+    "rationale": "Olanzapine can induce hyperglycemia and new-onset diabetes; check A1c for glucose control."
+  },
+  {
+    "questionText": "A client with new-onset hypertension is prescribed amlodipine and is complaining of ankle swelling and mild headache. What is the nurse’s best initial response?",
+    "options": {
+      "A": "Notify the provider to discontinue amlodipine immediately.",
+      "B": "Reassure the client these effects are common but monitor for worsening.",
+      "C": "Instruct the client to reduce sodium intake sharply.",
+      "D": "Encourage extra fluid intake."
+    },
+    "correctAnswer": "B",
+    "rationale": "Peripheral edema and headache are common but should be monitored; escalate if severe or progressive."
+  },
+  {
+    "questionText": "A patient with rheumatoid arthritis is on long-term NSAID therapy and reports black, tarry stools and dizziness. Which assessment should be prioritized?",
+    "options": {
+      "A": "Heart rate and blood pressure",
+      "B": "Joint assessment",
+      "C": "Oxygen saturation",
+      "D": "Neurological function"
+    },
+    "correctAnswer": "A",
+    "rationale": "Black stools and dizziness suggest GI bleeding with possible hypovolemia—check vitals first."
+  },
+  {
+    "questionText": "A patient is prescribed nitroglycerin for angina. Which instructions should the nurse include? Select all that apply.",
+    "options": {
+      "A": "Sit or lie down before taking nitroglycerin.",
+      "B": "Take up to three doses, 5 minutes apart if pain persists.",
+      "C": "Keep nitroglycerin in original container, tightly closed.",
+      "D": "Chew or swallow the tablets for rapid effect.",
+      "E": "Seek medical attention if pain is unrelieved after one dose."
+    },
+    "correctAnswer": ["A", "B", "C", "E"],
+    "rationale": "Sublingual nitro can cause hypotension; storage and dosing must be precise; chewing inactivates it."
+  },
+  {
+    "questionText": "A client on isoniazid develops numbness and tingling of the hands and feet. Which supplementation can help prevent this adverse effect?",
+    "options": {
+      "A": "Vitamin D",
+      "B": "Pyridoxine (vitamin B6)",
+      "C": "Folic acid",
+      "D": "Iron"
+    },
+    "correctAnswer": "B",
+    "rationale": "INH can cause peripheral neuropathy; vitamin B6 prevents this."
+  },
+  {
+    "questionText": "A nurse is reviewing home medications with an older adult who takes multiple drugs, including digoxin, furosemide, and diltiazem. Which symptom would warrant immediate provider notification?",
+    "options": {
+      "A": "Mild ankle edema",
+      "B": "Vision changes and confusion",
+      "C": "Slightly elevated blood pressure",
+      "D": "Dry mouth"
+    },
+    "correctAnswer": "B",
+    "rationale": "Vision changes/confusion suggest digoxin toxicity, especially with polypharmacy."
+  },
+  {
+    "questionText": "A patient prescribed ciprofloxacin for a complicated UTI develops pain and swelling in the left Achilles tendon. Which action is best?",
+    "options": {
+      "A": "Advise rest and finish the course.",
+      "B": "Stop the medication and notify the provider.",
+      "C": "Apply heat to the tendon.",
+      "D": "Continue therapy if fever is present."
+    },
+    "correctAnswer": "B",
+    "rationale": "Fluoroquinolones can cause tendon rupture; immediate discontinuation is warranted."
+  },
+  {
+    "questionText": "A patient with gout is prescribed colchicine. Which findings should the nurse report immediately? Select all that apply.",
+    "options": {
+      "A": "Severe diarrhea",
+      "B": "Muscle pain",
+      "C": "Nausea",
+      "D": "Tingling in the fingers",
+      "E": "Signs of infection"
+    },
+    "correctAnswer": ["A", "B", "E"],
+    "rationale": "Severe diarrhea and muscle pain signal toxicity; infection can indicate bone marrow suppression."
+  },
+  {
+    "questionText": "A client with a sulfa allergy develops a rash after starting glipizide. Which action should the nurse take?",
+    "options": {
+      "A": "Continue therapy; rash is expected.",
+      "B": "Hold glipizide and notify the provider.",
+      "C": "Instruct the client to take an antihistamine.",
+      "D": "Switch to a higher dose."
+    },
+    "correctAnswer": "B",
+    "rationale": "Sulfonylureas may cross-react with sulfa allergy; provider evaluation needed."
+  },
+  {
+    "questionText": "A client prescribed oral potassium chloride for hypokalemia reports difficulty swallowing large tablets. What is the best action?",
+    "options": {
+      "A": "Crush the tablet and mix with applesauce.",
+      "B": "Contact the provider to request a liquid preparation.",
+      "C": "Instruct the client to break the tablet in half.",
+      "D": "Take the tablet with milk."
+    },
+    "correctAnswer": "B",
+    "rationale": "Potassium tablets should not be crushed due to GI irritation; use liquid/suspension instead."
+  },
+  {
+    "questionText": "A nurse is caring for a patient on warfarin who reports new back pain and weakness in both legs. Which complication is the nurse most concerned about?",
+    "options": {
+      "A": "Myositis",
+      "B": "Spinal epidural hematoma",
+      "C": "Osteoarthritis",
+      "D": "Neuropathy"
+    },
+    "correctAnswer": "B",
+    "rationale": "Warfarin increases bleeding risk; sudden back pain and leg weakness may indicate spinal cord compression."
+  },
+  {
+    "questionText": "A patient started on enalapril for hypertension develops a persistent, dry cough. What is the best nursing intervention?",
+    "options": {
+      "A": "Continue medication and encourage fluids.",
+      "B": "Switch to a calcium channel blocker.",
+      "C": "Notify the provider; likely switch to an ARB.",
+      "D": "Reduce the dose and reassess."
+    },
+    "correctAnswer": "C",
+    "rationale": "ACE inhibitors commonly cause dry cough; ARBs are alternatives."
+  },
+  {
+    "questionText": "A nurse is preparing to administer IV vancomycin. Which practices promote safety and reduce adverse effects? Select all that apply.",
+    "options": {
+      "A": "Infuse over at least 60 minutes.",
+      "B": "Monitor for flushing and hypotension.",
+      "C": "Dilute in 100 mL of normal saline or as recommended.",
+      "D": "Assess for phlebitis at the IV site.",
+      "E": "Flush IV line with heparin before and after."
+    },
+    "correctAnswer": ["A", "B", "C", "D"],
+    "rationale": "Infusing too quickly can cause red man syndrome; monitor for reactions and site issues."
+  },
+  {
+    "questionText": "A client receiving IV acyclovir for herpes zoster asks about adverse effects. Which teaching is most important?",
+    "options": {
+      "A": "Increase oral fluids to reduce kidney injury risk.",
+      "B": "Monitor for photosensitivity.",
+      "C": "Expect hair loss.",
+      "D": "Anticipate increased appetite."
+    },
+    "correctAnswer": "A",
+    "rationale": "IV acyclovir can cause nephrotoxicity; hydration reduces risk."
+  },
+  {
+    "questionText": "A nurse is reviewing discharge instructions with a patient taking nitrofurantoin for UTI. Which teaching is correct? Select all that apply.",
+    "options": {
+      "A": "Take with food to minimize GI upset.",
+      "B": "Report any cough, chest pain, or shortness of breath.",
+      "C": "Urine may turn brown; this is harmless.",
+      "D": "Discontinue the drug if urine color changes.",
+      "E": "Take until prescription is finished, even if symptoms resolve."
+    },
+    "correctAnswer": ["A", "B", "C", "E"],
+    "rationale": "Food reduces GI upset; pulmonary symptoms need urgent evaluation; urine color change is benign; full course required."
+  },
+  {
+    "questionText": "A patient on chronic corticosteroids is scheduled for a dental procedure. Which pre-procedure intervention is essential?",
+    "options": {
+      "A": "Withhold corticosteroids to reduce infection risk.",
+      "B": "Administer extra steroid ('stress dose') coverage.",
+      "C": "Give broad-spectrum antibiotics preemptively.",
+      "D": "Monitor temperature every hour."
+    },
+    "correctAnswer": "B",
+    "rationale": "Chronic steroid users need additional doses during stress to prevent adrenal crisis."
+  },
+  {
+    "questionText": "A patient is started on lithium for bipolar disorder. Which medications, if also prescribed, would most concern the nurse? Select all that apply.",
+    "options": {
+      "A": "Ibuprofen",
+      "B": "Hydrochlorothiazide",
+      "C": "Sertraline",
+      "D": "Furosemide",
+      "E": "Omeprazole"
+    },
+    "correctAnswer": ["A", "B", "D"],
+    "rationale": "NSAIDs, thiazides, and loop diuretics can increase lithium levels and toxicity risk."
+  },
+  {
+    "questionText": "A client is prescribed clozapine for schizophrenia. Which finding would require the nurse to hold the next dose?",
+    "options": {
+      "A": "Constipation",
+      "B": "White blood cell count 2,000/mm³",
+      "C": "Sedation",
+      "D": "Mild tachycardia"
+    },
+    "correctAnswer": "B",
+    "rationale": "Clozapine can cause agranulocytosis (WBC < 3,000 is concerning)."
+  },
+  {
+    "questionText": "A nurse is caring for a client with heart failure prescribed digoxin. Which assessment finding requires immediate intervention?",
+    "options": {
+      "A": "Apical pulse 54 bpm",
+      "B": "Potassium 4.3 mEq/L",
+      "C": "Weight gain of 1 pound overnight",
+      "D": "Blood pressure 124/82 mmHg"
+    },
+    "correctAnswer": "A",
+    "rationale": "Bradycardia is a classic sign of digoxin toxicity; hold medication and notify provider."
+  },
+  {
+    "questionText": "A patient started on rifampin for tuberculosis asks about medication effects. Which teaching should be included? Select all that apply.",
+    "options": {
+      "A": "Urine and tears may turn orange.",
+      "B": "Use non-hormonal birth control if on oral contraceptives.",
+      "C": "Report any yellowing of the skin or eyes.",
+      "D": "Rifampin can decrease effect of other medications.",
+      "E": "Stop medication if GI upset occurs."
+    },
+    "correctAnswer": ["A", "B", "C", "D"],
+    "rationale": "Rifampin causes orange secretions, interacts with many drugs, and may cause hepatotoxicity."
+  },
+  {
+    "questionText": "A nurse is reviewing labs for a client on enoxaparin. Which result requires immediate action?",
+    "options": {
+      "A": "Platelet count 45,000/mm³",
+      "B": "Hemoglobin 13 g/dL",
+      "C": "White blood cell count 8,000/mm³",
+      "D": "Potassium 3.9 mEq/L"
+    },
+    "correctAnswer": "A",
+    "rationale": "Low platelets can indicate heparin-induced thrombocytopenia, a serious complication."
+  },
+  {
+    "questionText": "A patient on lamotrigine for seizure disorder reports a new widespread rash. What is the nurse’s first action?",
+    "options": {
+      "A": "Encourage skin moisturization.",
+      "B": "Hold lamotrigine and notify the provider.",
+      "C": "Apply topical hydrocortisone.",
+      "D": "Reassure the patient and schedule a follow-up."
+    },
+    "correctAnswer": "B",
+    "rationale": "Rash can indicate Stevens-Johnson syndrome, which can be life-threatening."
+  },
+  {
+    "questionText": "A client prescribed methotrexate for rheumatoid arthritis asks about side effects. Which responses by the nurse are correct? Select all that apply.",
+    "options": {
+      "A": "You may experience mouth sores.",
+      "B": "Report any signs of infection immediately.",
+      "C": "Alcohol should be avoided during therapy.",
+      "D": "Take folic acid as directed.",
+      "E": "Methotrexate causes rapid joint healing."
+    },
+    "correctAnswer": ["A", "B", "C", "D"],
+    "rationale": "Mouth sores, infection, liver toxicity (worse with alcohol), and need for folic acid are key teaching points."
+  },
+  {
+    "questionText": "A patient prescribed fluoxetine for depression reports restlessness, confusion, and muscle rigidity after also starting tramadol for pain. What complication should the nurse suspect?",
+    "options": {
+      "A": "Serotonin syndrome",
+      "B": "Withdrawal symptoms",
+      "C": "Opioid toxicity",
+      "D": "NMS"
+    },
+    "correctAnswer": "A",
+    "rationale": "Combination of serotonergic agents can precipitate serotonin syndrome."
+  },
+  {
+    "questionText": "A client receiving heparin for DVT prevention has an aPTT of 110 seconds (normal: 30–40 sec). Which interventions should the nurse anticipate? Select all that apply.",
+    "options": {
+      "A": "Hold the next dose of heparin.",
+      "B": "Administer protamine sulfate as ordered.",
+      "C": "Monitor for bleeding.",
+      "D": "Increase the heparin infusion rate.",
+      "E": "Check for new bruising or hematuria."
+    },
+    "correctAnswer": ["A", "B", "C", "E"],
+    "rationale": "A high aPTT indicates risk for bleeding; reversal, monitoring, and assessment are essential."
+  },
+  {
+    "questionText": "A client with Parkinson’s disease is prescribed carbidopa-levodopa. Which dietary instruction is most appropriate?",
+    "options": {
+      "A": "Increase protein intake at all meals.",
+      "B": "Avoid high-protein meals near medication times.",
+      "C": "Take with milk to prevent nausea.",
+      "D": "Take the medication only when symptoms occur."
+    },
+    "correctAnswer": "B",
+    "rationale": "High-protein meals can impair absorption; schedule protein and meds separately."
+  },
+  {
+    "questionText": "A client started on statin therapy for hyperlipidemia develops muscle weakness and dark urine. Which action is priority?",
+    "options": {
+      "A": "Advise increased fluid intake.",
+      "B": "Hold the medication and notify the provider.",
+      "C": "Continue therapy and monitor symptoms.",
+      "D": "Suggest a lower fat diet."
+    },
+    "correctAnswer": "B",
+    "rationale": "Statins can cause rhabdomyolysis, leading to renal failure; prompt action required."
+  },
+  {
+    "questionText": "A patient prescribed phenytoin for seizures is being discharged. Which instructions are correct? Select all that apply.",
+    "options": {
+      "A": "Do not stop the medication abruptly.",
+      "B": "Report new rash or skin changes immediately.",
+      "C": "Oral hygiene is important to prevent gum overgrowth.",
+      "D": "Take with antacids if GI upset occurs.",
+      "E": "Routine blood level monitoring may be required."
+    },
+    "correctAnswer": ["A", "B", "C", "E"],
+    "rationale": "Abrupt withdrawal may cause seizures; rash can indicate serious reactions; gingival hyperplasia is common."
+  },
+  {
+    "questionText": "A patient taking levetiracetam for epilepsy develops agitation and mood swings. What is the best nursing action?",
+    "options": {
+      "A": "Encourage relaxation exercises.",
+      "B": "Assess for suicidal thoughts and notify the provider.",
+      "C": "Continue therapy and reassess in one week.",
+      "D": "Increase the medication dose."
+    },
+    "correctAnswer": "B",
+    "rationale": "Antiepileptics can increase suicidality; urgent assessment is warranted."
+  },
+  {
+    "questionText": "A patient on hydralazine for hypertension develops facial rash, joint pain, and fever. Which complication does the nurse suspect?",
+    "options": {
+      "A": "Lupus-like syndrome",
+      "B": "Viral infection",
+      "C": "Allergic dermatitis",
+      "D": "Rheumatoid arthritis"
+    },
+    "correctAnswer": "A",
+    "rationale": "Hydralazine can cause a lupus-like syndrome, especially with chronic use."
+  },
+  {
+    "questionText": "A patient with chronic pain on morphine reports new constipation and difficulty urinating. What interventions are appropriate? Select all that apply.",
+    "options": {
+      "A": "Increase dietary fiber and fluids.",
+      "B": "Use stool softeners or laxatives as prescribed.",
+      "C": "Catheterize routinely for urinary retention.",
+      "D": "Monitor urinary output closely.",
+      "E": "Reduce fluid intake to avoid bladder overfilling."
+    },
+    "correctAnswer": ["A", "B", "D"],
+    "rationale": "Morphine can cause constipation and urinary retention; noninvasive management and monitoring are essential."
+  },
+  {
+    "questionText": "A client is prescribed warfarin and is told to eat a consistent amount of leafy greens. Why?",
+    "options": {
+      "A": "Leafy greens prevent GI upset.",
+      "B": "Vitamin K affects warfarin’s anticoagulant effect.",
+      "C": "Leafy greens lower cholesterol.",
+      "D": "High intake prevents anemia."
+    },
+    "correctAnswer": "B",
+    "rationale": "Vitamin K is an antidote to warfarin; dietary consistency avoids INR swings."
+  },
+  {
+    "questionText": "A client taking gentamicin develops tinnitus, decreased urine output, and headache. Which orders would the nurse anticipate? Select all that apply.",
+    "options": {
+      "A": "Hold the next dose of gentamicin.",
+      "B": "Obtain gentamicin trough level.",
+      "C": "Monitor renal function labs.",
+      "D": "Assess hearing.",
+      "E": "Start high-dose furosemide."
+    },
+    "correctAnswer": ["A", "B", "C", "D"],
+    "rationale": "Signs of nephro- and ototoxicity require stopping drug, checking levels, and assessing damage."
+  },
+  {
+    "questionText": "A patient prescribed codeine for a severe cough reports severe nausea, dizziness, and itching after the first dose. What is the nurse’s best action?",
+    "options": {
+      "A": "Continue therapy with antiemetic.",
+      "B": "Hold codeine and notify provider of possible allergy.",
+      "C": "Switch to a higher dose.",
+      "D": "Apply topical lotion for itching."
+    },
+    "correctAnswer": "B",
+    "rationale": "Itching, dizziness, and severe nausea may indicate a codeine allergy."
+  },
+  {
+    "questionText": "A client with peptic ulcer disease is started on sucralfate. Which instruction is correct?",
+    "options": {
+      "A": "Take sucralfate with meals for best effect.",
+      "B": "Take on an empty stomach before meals.",
+      "C": "Crush tablets and mix with fruit juice.",
+      "D": "Take with antacids simultaneously."
+    },
+    "correctAnswer": "B",
+    "rationale": "Sucralfate acts by coating ulcers; empty stomach is required for binding."
+  },
+  {
+    "questionText": "A patient is prescribed nystatin suspension for oral candidiasis. What should the nurse teach?",
+    "options": {
+      "A": "Swallow immediately after rinsing mouth.",
+      "B": "Hold in mouth for several minutes before swallowing.",
+      "C": "Take with food for best absorption.",
+      "D": "Drink water right after taking."
+    },
+    "correctAnswer": "B",
+    "rationale": "Prolonged contact increases efficacy against oral thrush."
+  }
+   ];
+    // SELECT 85 RANDOM QUESTIONS, SHUFFLE
+    function sampleQuestions(arr, n) {
+      const out = [];
+      const idxs = Array.from({length: arr.length}, (_, i) => i);
+      for (let i = idxs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [idxs[i], idxs[j]] = [idxs[j], idxs[i]];
+      }
+      for (let i = 0; i < Math.min(n, idxs.length); i++) out.push(arr[idxs[i]]);
+      return out;
+    }
+    // Set questions
+    let questions = sampleQuestions(allQuestions, 85);
+
+    // TIMER STATE
+    const DURATION_SEC = 3 * 60 * 60; // 3 hours
+    let timer = {
+      timeLeft: DURATION_SEC,
+      running: true,
+      interval: null
+    };
+
+    // STATE
+    let state = {
+      idx: 0,
+      answers: Array(questions.length).fill(null),
+      submitted: Array(questions.length).fill(false),
+      completed: false,
+      auto: false // set true if auto-submitted by timer
+    };
+
+    // RENDERING
+    function renderPalette() {
+      const palette = document.getElementById('qPalette');
+      if (!palette) return;
+      palette.innerHTML = '';
+      questions.forEach((q, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = i + 1;
+        btn.className = 'q-btn';
+        if (state.idx === i) btn.classList.add('current');
+        if (state.submitted[i]) btn.classList.add('answered');
+        else btn.classList.add('unanswered');
+        palette.appendChild(btn);
+      });
+    }
+
+    function renderQuestion() {
+      const idx = state.idx;
+      const q = questions[idx];
+      const isMC = q.type === 'mc';
+      const selected = state.answers[idx];
+      let html = `<div class="question-text">${q.questionText || ''}</div>
+                  <form class="options" id="optionsForm">`;
+      if(q.options) {
+        Object.entries(q.options).forEach(([key, text]) => {
+          let checked = isMC ? (selected === key) : (Array.isArray(selected) && selected.includes(key));
+          let cls = checked ? "selected" : "";
+          html += `<label class="option-label ${cls}">
+            <input type="${isMC ? "radio" : "checkbox"}" name="opt" value="${key}" ${checked ? "checked" : ""} ${state.submitted[idx] ? "disabled" : ""}>
+            <span><b>${key}.</b> ${text}</span>
+          </label>`;
+        });
+      }
+      html += `</form>`;
+      document.getElementById('qArea').innerHTML = html;
+      document.getElementById('qArea').style.display = "flex";
+      document.getElementById('reviewArea').style.display = "none";
+    }
+
+    function renderFooter() {
+      const idx = state.idx;
+      document.getElementById('progressBar').textContent = `Question ${idx + 1} of ${questions.length}`;
+      const nextBtn = document.getElementById('nextBtn');
+      nextBtn.disabled = !canProceed();
+      nextBtn.textContent = (idx === questions.length - 1) ? "Finish Exam" : "Next";
+    }
+
+    function renderAll() {
+      renderPalette();
+      renderQuestion();
+      renderFooter();
+      // Only setup select logic if not completed or submitted
+      if (!state.completed && !state.submitted[state.idx]) {
+        const idx = state.idx;
+        const q = questions[idx];
+        const isMC = q.type === 'mc';
+        const form = document.getElementById('optionsForm');
+        if (form) {
+          form.addEventListener('change', e => {
+            let val = e.target.value;
+            if (isMC) {
+              state.answers[idx] = val;
+            } else {
+              let arr = Array.isArray(state.answers[idx]) ? [...state.answers[idx]] : [];
+              if (e.target.checked) arr.push(val);
+              else arr = arr.filter(x => x !== val);
+              state.answers[idx] = arr;
+            }
+            // Update visual
+            document.querySelectorAll('.option-label').forEach(label => {
+              let input = label.querySelector('input');
+              label.classList.toggle('selected', input.checked);
+            });
+            renderFooter();
+          });
+        }
+      }
+      document.getElementById('qArea').style.height = "100%";
+      document.getElementById('qArea').style.overflowY = "auto";
+    }
+
+    function canProceed() {
+      const idx = state.idx;
+      if (state.submitted[idx]) return true;
+      const q = questions[idx];
+      if (q && q.type === 'mc') return !!state.answers[idx];
+      return Array.isArray(state.answers[idx]) && state.answers[idx].length > 0;
+    }
+
+    // BUTTON LOGIC
+    document.getElementById('nextBtn').onclick = () => {
+      const idx = state.idx;
+      state.submitted[idx] = true;
+      if (idx < questions.length - 1) {
+        state.idx++;
+        renderAll();
+      } else {
+        showModal();
+      }
+    };
+
+    // MODAL LOGIC
+    function showModal() {
+      const modal = document.getElementById('modal');
+      modal.innerHTML = `
+        <div class="modal-bg">
+          <div class="modal-window" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div class="modal-title" id="modal-title">Submit Exam?</div>
+            <div class="modal-msg">You are about to submit your answers. Are you sure you want to finish and see your results?</div>
+            <div class="modal-btns">
+              <button class="modal-btn cancel" id="cancelModalBtn">Cancel</button>
+              <button class="modal-btn" id="confirmModalBtn">Submit Exam</button>
+            </div>
+          </div>
+        </div>`;
+      modal.style.display = "block";
+      document.body.style.overflow = "hidden";
+      document.getElementById('cancelModalBtn').onclick = () => {
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+      };
+      document.getElementById('confirmModalBtn').onclick = () => {
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+        timer.running = false;
+        state.completed = true;
+        renderReview();
+      };
+    }
+
+    // TIMER LOGIC
+    function renderTimer() {
+      const box = document.getElementById('timerBox');
+      if (!box) return;
+      if (state.completed) {
+        box.style.display = "none";
+        if (timer.interval) clearInterval(timer.interval);
+        return;
+      }
+      box.style.display = "inline-flex";
+      let t = timer.timeLeft;
+      let h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), s = t % 60;
+      box.textContent = `Time Left: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      box.className = "timer-box" + (t <= 300 ? " urgent" : "");
+    }
+
+    function startTimer() {
+      renderTimer();
+      timer.running = true;
+      if (timer.interval) clearInterval(timer.interval);
+      timer.interval = setInterval(() => {
+        if (!timer.running) return;
+        timer.timeLeft--;
+        renderTimer();
+        if (timer.timeLeft <= 0) {
+          timer.running = false;
+          state.auto = true;
+          state.completed = true;
+          if (timer.interval) clearInterval(timer.interval);
+          autoSubmitExam();
+        }
+      }, 1000);
+    }
+
+    function autoSubmitExam() {
+      // Mark all remaining as submitted
+      for (let i = 0; i < questions.length; ++i) state.submitted[i] = true;
+      renderReview(true);
+    }
+
+    // REVIEW SECTION AT THE END
+    function renderReview(auto=false) {
+      let corrects = [];
+      let wrongs = [];
+      questions.forEach((q, idx) => {
+        let user = state.answers[idx];
+        let right = false;
+        if (q.type === "mc") right = user === q.correctAnswer;
+        else {
+          let u = Array.isArray(user) ? [...user].sort() : [];
+          let c = [...q.correctAnswer].sort();
+          right = u.length === c.length && u.every((v, i) => v === c[i]);
+        }
+        if (right) corrects.push(idx);
+        else wrongs.push(idx);
+      });
+
+      // Show score and review wrongs
+      let percent = Math.round(corrects.length / questions.length * 100);
+      let msg = percent === 100
+        ? "🏆 Perfect! You're ready."
+        : percent >= 80
+          ? "Great work! Review missed questions below."
+          : percent >= 60
+            ? "Keep practicing. Review the rationales."
+            : "Don't give up. Review, study, and try again!";
+      let html = `
+        <div class="score-ctn">
+          <div class="score-title">Exam Complete</div>
+          <div class="score-value">${corrects.length} / ${questions.length} <span style="font-size:1.08rem;color:#4a83f2;">(${percent}%)</span></div>
+          <div class="score-msg">${msg}</div>
+          ${auto ? `<div style="color:#f32d32;margin-top:10px;font-size:1.12rem;"><b>Time expired – exam auto-submitted</b></div>` : ""}
+          <button class="restart-btn" onclick="location.reload()">Retake Exam</button>
+        </div>
+      `;
+      if (wrongs.length > 0) {
+        html += `<div style="text-align:center;margin-bottom:8px;font-size:1.05rem;font-weight:500;color:#b92525;">Incorrect Responses & Rationales</div>`;
+        wrongs.forEach(idx => {
+          const q = questions[idx];
+          const user = state.answers[idx];
+          const isMC = q.type === "mc";
+          html += `<div class="review-card">
+            <div class="review-q">${q.questionText || ''}</div>
+            <div class="review-options">`;
+          if(q.options) {
+            Object.entries(q.options).forEach(([key, text]) => {
+              let uwrong = isMC ? (user === key) : (Array.isArray(user) && user.includes(key));
+              let ucorrect = isMC ? (key === q.correctAnswer) : (Array.isArray(q.correctAnswer) && q.correctAnswer.includes(key));
+              let classStr = uwrong ? "user-answer" : (ucorrect ? "correct-answer" : "");
+              html += `<div class="option-label ${classStr}"><b>${key}.</b> ${text}</div>`;
+            });
+          }
+          html += `</div>
+            <div class="rationale"><b>Rationale:</b> ${q.rationale || ''}</div>
+          </div>`;
+        });
+      }
+      document.getElementById('qArea').style.display = "none";
+      let reviewArea = document.getElementById('reviewArea');
+      reviewArea.style.display = "block";
+      reviewArea.innerHTML = html;
+      reviewArea.style.height = "100%";
+      reviewArea.style.overflowY = "auto";
+      document.querySelector('.footer-inner').innerHTML = "";
+      renderTimer();
+    }
+
+    // INIT (Only run if you have 85+ questions)
+    if(allQuestions.length >= 85) {
+      questions = sampleQuestions(allQuestions, 85);
+    } else {
+      questions = []; // Or throw error, or show "Please add 85+ questions"
+    }
+    // Set up state arrays based on question count
+    state.answers = Array(questions.length).fill(null);
+    state.submitted = Array(questions.length).fill(false);
+
+    renderAll();
+    startTimer();
+  </script>
+</body>
+</html>
