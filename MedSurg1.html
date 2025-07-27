@@ -114,9 +114,9 @@
                 </button>
                 <div class="accordion-content overflow-hidden max-h-0">
                     <div class="p-6 pt-0">
-                       <div class="border-t border-slate-200 pt-6">
+                        <div class="border-t border-slate-200 pt-6">
                             <p class="text-center text-slate-500">No resources currently available for this unit.</p>
-                       </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -257,6 +257,32 @@
                 </div>
             </div>
 
+            <!-- New Final Exam Simulation Unit -->
+            <div class="accordion-item bg-white border border-slate-200 rounded-2xl shadow-md transition-all duration-300 hover:shadow-xl overflow-hidden">
+                <button class="accordion-header w-full flex justify-between items-center p-5 md:p-6 text-left">
+                    <h2 class="text-xl md:text-2xl font-semibold text-slate-800">Final Exam Simulation <span class="hidden sm:inline-block text-base font-normal text-slate-500 ml-2">(Comprehensive Review)</span></h2>
+                    <svg class="accordion-icon w-6 h-6 text-slate-500 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="accordion-content overflow-hidden max-h-0">
+                    <div class="p-6 pt-0 space-y-6">
+                        <div class="border-t border-slate-200 pt-6 space-y-6">
+                            <div class="p-5 bg-slate-50/70 rounded-xl border border-slate-200">
+                                <h3 class="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-3">
+                                    <span class="emoji-icon">🎓</span>
+                                    <span>Comprehensive Exam</span>
+                                </h3>
+                                <div class="grid grid-cols-1 gap-4"> <!-- Changed to 1 column for full width -->
+                                    <a href="MedSurg1FinalExamSim.html" target="_blank" rel="noopener noreferrer" class="resource-button-final-exam">
+                                        <span>Final Exam Simulation</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End New Final Exam Simulation Unit -->
+
         </main>
 
         <footer class="text-center mt-12 py-6 border-t border-slate-200">
@@ -277,6 +303,13 @@
             // Learning Module Button styles
             document.querySelectorAll('.resource-button-learn').forEach(button => {
                 button.className = `${baseClasses} bg-white border-sky-200 text-sky-700 hover:bg-sky-50 hover:border-sky-400`;
+            });
+
+            // Final Exam Button styles (newly added)
+            document.querySelectorAll('.resource-button-final-exam').forEach(button => {
+                button.className = `w-full flex items-center justify-center p-4 rounded-xl border-2 shadow-md transition-all duration-300 transform-gpu hover:shadow-lg hover:-translate-y-1 font-bold text-lg
+                                    bg-gradient-to-r from-purple-600 to-indigo-700 text-white border-purple-700
+                                    hover:from-purple-700 hover:to-indigo-800`;
             });
         };
         
@@ -320,3 +353,4 @@
 
 </body>
 </html>
+
