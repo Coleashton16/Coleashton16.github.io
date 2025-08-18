@@ -4,11 +4,11 @@
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js/g-tag/js?id=G-WQKB2E7CLH"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-  gtag('config', 'G-WQKB2E7CLH');
+    gtag('config', 'G-WQKB2E7CLH');
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,11 +71,11 @@
                         },
                         slideInUp: {
                             '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                            '100%': { transform: 'translateY(0)' },
                         },
                         slideInDown: { /* New keyframe for sliding down from top */
                             '0%': { opacity: '0', transform: 'translateY(-20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                            '100%': { transform: 'translateY(0)' },
                         },
                         pulseFade: {
                             '0%, 100%': { opacity: '0.8', transform: 'scale(1)' },
@@ -144,7 +144,7 @@
 
         /* Animated Background for Login/Auth Area */
         #auth-container {
-            background: linear-gradient(135deg, theme('colors.vsrep-bg-start'), theme('colors.vsrep-bg-end'), theme('colors.vsrep-blue-light'));
+            background: linear-gradient(135deg, theme('colors.vsrep-blue-light'), theme('colors.vsrep-blue-medium'), theme('colors.vsrep-blue-light'));
             background-size: 200% 200%;
             animation: bgPan 15s ease infinite;
         }
@@ -238,7 +238,7 @@
         /* Styles for notifications */
         /* Removed .update-notification styles as they are now handled by the modal */
 
-        /* Fireworks Canvas Styling */
+        /* Fireworks Canvas Styling - Kept for potential future use or if styling is needed even when hidden */
         #fireworks-canvas {
             position: absolute; /* Position over other content */
             top: 0;
@@ -253,6 +253,16 @@
             position: relative; /* Needed for absolute positioning of canvas */
             min-height: 400px; /* Ensure it has some height even if content is small */
             overflow: hidden; /* Hide overflow from fireworks */
+            display: none; /* Added to ensure it's always hidden unless explicitly changed by JS */
+        }
+
+        /* Active navigation link styling */
+        .active-nav-link {
+            @apply bg-vsrep-blue-medium !text-white shadow-md; /* Apply distinct background and ensure text is white */
+            /* Add any other active styles here */
+        }
+        .active-nav-link span { /* Active underline */
+            @apply w-4/5 !block;
         }
     </style>
 </head>
@@ -298,11 +308,11 @@
                 <!-- Login/Signup Toggle Tabs -->
                 <div class="flex justify-center mb-8 relative z-10 animate-fadeIn" style="animation-delay: 0.2s;">
                     <button id="show-login" class="px-6 py-3 rounded-l-full text-lg font-bold transition-all duration-300
-                                                   bg-vsrep-blue-dark text-white shadow-md hover:bg-vsrep-blue-medium">
+                                                 bg-vsrep-blue-dark text-white shadow-md hover:bg-vsrep-blue-medium">
                         Login
                     </button>
                     <button id="show-signup" class="px-6 py-3 rounded-r-full text-lg font-bold transition-all duration-300
-                                                   bg-vsrep-gray-medium text-white shadow-md hover:bg-vsrep-gray-dark">
+                                                 bg-vsrep-gray-medium text-white shadow-md hover:bg-vsrep-gray-dark">
                         Sign Up
                     </button>
                 </div>
@@ -343,9 +353,9 @@
                     </div>
 
                     <button type="submit" id="main-auth-button" class="w-full py-4 bg-vsrep-blue-dark text-white font-bold text-xl rounded-xl
-                                                                       shadow-lg button-shimmer overflow-hidden relative group
-                                                                       hover:bg-vsrep-blue-medium transform hover:-translate-y-1 transition-all duration-300
-                                                                       hover:shadow-button-hover-blue">
+                                                                         shadow-lg button-shimmer overflow-hidden relative group
+                                                                         hover:bg-vsrep-blue-medium transform hover:-translate-y-1 transition-all duration-300
+                                                                         hover:shadow-button-hover-blue">
                         Login
                         <span class="absolute inset-0 block bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-shimmer"></span>
                     </button>
@@ -362,31 +372,31 @@
             <!-- Top Navigation Menu -->
             <nav class="sticky top-0 z-40 bg-vsrep-blue-dark py-3 shadow-md">
                 <div class="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col sm:flex-row items-center justify-between">
-                    <ul class="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6 lg:gap-8 list-none m-0 p-0 mb-3 sm:mb-0">
+                    <ul id="main-nav-links" class="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6 lg:gap-8 list-none m-0 p-0 mb-3 sm:mb-0">
                         <li class="group">
                             <a href="index.html" class="block text-white font-semibold text-base lg:text-lg px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden
-                                                         hover:bg-vsrep-blue-light/20 hover:scale-105 hover:shadow-md">
+                                                     hover:bg-vsrep-blue-light/20 hover:scale-105 hover:shadow-md">
                                 Home
                                 <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-4/5"></span>
                             </a>
                         </li>
                         <li class="group">
                             <a href="AcademicSupportResourcesConsentAndTOS.html" class="block text-white font-semibold text-base lg:text-lg px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden
-                                                         hover:bg-vsrep-blue-light/20 hover:scale-105 hover:shadow-md">
+                                                     hover:bg-vsrep-blue-light/20 hover:scale-105 hover:shadow-md">
                                 Learning Support
                                 <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-4/5"></span>
                             </a>
                         </li>
                         <li class="group">
                             <a href="Calendar.html" class="block text-white font-semibold text-base lg:text-lg px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden
-                                                         hover:bg-vsrep-blue-light/20 hover:scale-105 hover:shadow-md">
+                                                     hover:bg-vsrep-blue-light/20 hover:scale-105 hover:shadow-md">
                                 Calendar
                                 <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-4/5"></span>
                             </a>
                         </li>
                         <li class="group">
                             <a href="https://www.vsrep.org/anonymous-reporting-form" target="_blank" rel="noopener noreferrer" class="block text-white font-semibold text-base lg:text-lg px-4 py-2 rounded-lg transition-all duration-300 relative overflow-hidden
-                                                         hover:bg-vsrep-blue-light/20 hover:scale-105 hover:shadow-md">
+                                                     hover:bg-vsrep-blue-light/20 hover:scale-105 hover:shadow-md">
                                 Complaints
                                 <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-4/5"></span>
                             </a>
@@ -404,8 +414,8 @@
                         </div>
                         <div id="logout-button-container" class="hidden">
                             <button id="logout-button" class="bg-vsrep-red text-white py-2 px-5 rounded-lg text-lg font-medium shadow-md
-                                                               hover:bg-red-700 transform hover:-translate-y-0.5 transition-all duration-200
-                                                               hover:shadow-button-hover-red">
+                                                                 hover:bg-red-700 transform hover:-translate-y-0.5 transition-all duration-200
+                                                                 hover:shadow-button-hover-red">
                                 Logout <i class="fas fa-sign-out-alt ml-2"></i>
                             </button>
                         </div>
@@ -454,7 +464,7 @@
                 </header>
 
                 <main>
-                    <!-- Fireworks Canvas Container -->
+                    <!-- Fireworks Canvas Container - Now hidden by default -->
                     <div id="fireworks-container" class="relative w-full h-[500px] mb-12 hidden">
                         <canvas id="fireworks-canvas"></canvas>
                     </div>
@@ -488,8 +498,8 @@
                             <!-- Card 1: Anonymous Issue Reporting -->
                             <a href="https://www.vsrep.org/anonymous-reporting-form" target="_blank" rel="noopener noreferrer"
                                class="relative overflow-hidden group bg-vsrep-red/10 border border-vsrep-red text-vsrep-red
-                                      p-8 rounded-2xl text-center font-bold text-xl flex flex-col items-center justify-center space-y-4
-                                      shadow-lg transition-all duration-300 hover:shadow-card-hover hover:scale-105">
+                                       p-8 rounded-2xl text-center font-bold text-xl flex flex-col items-center justify-center space-y-4
+                                       shadow-lg transition-all duration-300 hover:shadow-card-hover hover:scale-105">
                                 <div class="absolute inset-0 bg-vsrep-red opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                                 <i class="fas fa-mask text-5xl leading-none transition-transform duration-300 group-hover:scale-110"></i>
                                 <span class="block">Anonymous Issue Reporting</span>
@@ -499,8 +509,8 @@
                             <!-- Card 2: Calendar / Upcoming Events -->
                             <a href="Calendar.html"
                                class="relative overflow-hidden group bg-vsrep-green/10 border border-vsrep-green text-vsrep-green
-                                      p-8 rounded-2xl text-center font-bold text-xl flex flex-col items-center justify-center space-y-4
-                                      shadow-lg transition-all duration-300 hover:shadow-card-hover hover:scale-105">
+                                       p-8 rounded-2xl text-center font-bold text-xl flex flex-col items-center justify-center space-y-4
+                                       shadow-lg transition-all duration-300 hover:shadow-card-hover hover:scale-105">
                                 <div class="absolute inset-0 bg-vsrep-green opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                                 <i class="fas fa-calendar-alt text-5xl leading-none transition-transform duration-300 group-hover:scale-110"></i>
                                 <span class="block">Calendar / Upcoming Events</span>
@@ -510,8 +520,8 @@
                             <!-- Card 3: Academic Support Resources -->
                             <a href="AcademicSupportResourcesConsentAndTOS.html"
                                class="relative overflow-hidden group bg-vsrep-blue-light border border-vsrep-blue-medium text-vsrep-blue-dark
-                                      p-8 rounded-2xl text-center font-bold text-xl flex flex-col items-center justify-center space-y-4
-                                      shadow-lg transition-all duration-300 hover:shadow-card-hover hover:scale-105">
+                                       p-8 rounded-2xl text-center font-bold text-xl flex flex-col items-center justify-center space-y-4
+                                       shadow-lg transition-all duration-300 hover:shadow-card-hover hover:scale-105">
                                 <div class="absolute inset-0 bg-vsrep-blue-medium opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                                 <i class="fas fa-graduation-cap text-5xl leading-none transition-transform duration-300 group-hover:scale-110"></i>
                                 <span class="block">Academic Support Resources</span>
@@ -625,6 +635,7 @@
         const showSignupButton = document.getElementById('show-signup'); 
         const confirmPasswordGroup = document.getElementById('confirm-password-group'); 
         const welcomeUserName = document.getElementById('welcome-user-name'); 
+        const mainNavLinks = document.getElementById('main-nav-links'); // Get the ul element for navigation
 
         // Notification Bell and Modal elements
         const notificationBell = document.getElementById('notification-bell');
@@ -641,13 +652,13 @@
         const countdownSeconds = document.getElementById('countdown-seconds');
         const celebrationMessage = document.getElementById('celebration-message');
 
-        // Fireworks elements
+        // Fireworks elements (variables remain but functions are altered to disable functionality)
         const fireworksContainer = document.getElementById('fireworks-container');
         const fireworksCanvas = document.getElementById('fireworks-canvas');
-        let ctx = fireworksCanvas.getContext('2d');
+        let ctx = fireworksCanvas.getContext('2d'); // Still get context, but won't be used for drawing
         let fireworks = [];
         let particles = [];
-        let hue = 0; // For color cycling
+        let hue = 0; 
 
         let isLoginMode = true; // Track current mode (login by default)
 
@@ -793,8 +804,8 @@
         }
 
         // --- Countdown Logic ---
-        // Updated semester end date to July 28th, 2025 at 15:30 (3:30 PM)
-        const semesterEndDate = new Date('July 28, 2025 15:30:00').getTime();
+        // Updated semester end date to December 1st, 2025 at 17:00 (5:00 PM)
+        const semesterEndDate = new Date('December 1, 2025 17:00:00').getTime();
 
         function updateCountdown() {
             const now = new Date().getTime();
@@ -804,7 +815,7 @@
                 clearInterval(countdownInterval);
                 document.getElementById("countdown").innerHTML = ""; // Clear countdown numbers
                 celebrationMessage.classList.remove('hidden'); // Show celebration message
-                startFireworks(); // Start fireworks!
+                // No fireworks here, as requested
                 return;
             }
 
@@ -938,10 +949,13 @@
                 updateCountdown(); // Initial call to display immediately
                 countdownInterval = setInterval(updateCountdown, 1000);
 
-
                 // Update welcome message with user email
                 welcomeUserName.textContent = user.email || 'User'; // Fallback to 'User' if email is null/empty
                 displayAuthMessage('', false); // Clear any login/signup messages
+
+                // Highlight active navigation link
+                highlightActiveNavLink();
+
             } else {
                 // User is signed out, show auth container and hide app content
                 authContainer.classList.remove('hidden');
@@ -956,178 +970,70 @@
 
                 // Stop the countdown
                 if (countdownInterval) clearInterval(countdownInterval);
-                // Stop fireworks if active
-                stopFireworks();
+                // No fireworks to stop
+                // The fireworks container is already hidden by default in CSS and its JS functions are no-ops.
 
                 welcomeUserName.textContent = 'Guest';
                 displayAuthMessage('', false); // Clear any messages on logout/initial load
             }
         }
 
-        // --- Fireworks Logic ---
+        // --- Fireworks Logic - REMOVED OR MADE INTO NO-OPs ---
 
-        // Particle class for individual firework sparks
+        // Particle class - now a no-op as fireworks are removed
         class Particle {
-            constructor(x, y, hue) {
-                this.x = x;
-                this.y = y;
-                this.coordinates = [];
-                this.coordinateCount = 5; // Number of trailing points
-                while (this.coordinateCount--) {
-                    this.coordinates.push([this.x, this.y]);
-                }
-                this.angle = Math.random() * Math.PI * 2;
-                this.speed = Math.random() * 10 + 1;
-                this.friction = 0.95;
-                this.gravity = 1;
-                this.hue = hue;
-                this.brightness = Math.random() * 30 + 50;
-                this.alpha = 1;
-                this.decay = Math.random() * 0.015 + 0.01;
-            }
-
-            update(index) {
-                this.coordinates.pop();
-                this.coordinates.unshift([this.x, this.y]);
-                this.speed *= this.friction;
-                this.x += Math.cos(this.angle) * this.speed;
-                this.y += Math.sin(this.angle) * this.speed + this.gravity;
-                this.alpha -= this.decay;
-
-                if (this.alpha <= this.decay) {
-                    particles.splice(index, 1);
-                }
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
-                ctx.lineTo(this.x, this.y);
-                ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`;
-                ctx.stroke();
-            }
+            constructor(x, y, hue) { /* No operation */ }
+            update(index) { /* No operation */ }
+            draw() { /* No operation */ }
         }
 
-        // Firework class for the initial rocket and its explosion
+        // Firework class - now a no-op as fireworks are removed
         class Firework {
-            constructor(startX, startY, endX, endY) {
-                this.x = startX;
-                this.y = startY;
-                this.startX = startX;
-                this.startY = startY;
-                this.endX = endX;
-                this.endY = endY;
-                this.distanceToEnd = Math.hypot(endX - startX, endY - startY);
-                this.distanceTraveled = 0;
-                this.coordinates = [];
-                this.coordinateCount = 3;
-                while (this.coordinateCount--) {
-                    this.coordinates.push([this.x, this.y]);
-                }
-                this.angle = Math.atan2(endY - startY, endX - startX);
-                this.speed = 2;
-                this.acceleration = 1.05;
-                this.brightness = Math.random() * 20 + 50;
-                this.targetRadius = 1;
-                this.hue = hue;
-                this.exploded = false;
-            }
-
-            update(index) {
-                this.coordinates.pop();
-                this.coordinates.unshift([this.x, this.y]);
-
-                if (!this.exploded) {
-                    this.speed *= this.acceleration;
-                    const vx = Math.cos(this.angle) * this.speed;
-                    const vy = Math.sin(this.angle) * this.speed;
-                    this.distanceTraveled = Math.hypot(this.x + vx - this.startX, this.y + vy - this.startY);
-
-                    if (this.distanceTraveled >= this.distanceToEnd) {
-                        this.exploded = true;
-                        fireworks.splice(index, 1);
-                        this.explode();
-                    } else {
-                        this.x += vx;
-                        this.y += vy;
-                    }
-                }
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
-                ctx.lineTo(this.x, this.y);
-                ctx.strokeStyle = `hsl(${this.hue}, 100%, ${this.brightness}%)`;
-                ctx.stroke();
-
-                if (this.targetRadius < 8) {
-                    this.targetRadius += 0.3;
-                } else {
-                    this.targetRadius = 1;
-                }
-            }
-
-            explode() {
-                const count = 30 + Math.random() * 20; // More particles for a richer explosion
-                for (let i = 0; i < count; i++) {
-                    particles.push(new Particle(this.x, this.y, this.hue));
-                }
-            }
+            constructor(startX, startY, endX, endY) { /* No operation */ }
+            update(index) { /* No operation */ }
+            draw() { /* No operation */ }
+            explode() { /* No operation */ }
         }
 
-        // Resize canvas function
-        function resizeCanvas() {
-            fireworksCanvas.width = fireworksContainer.clientWidth;
-            fireworksCanvas.height = fireworksContainer.clientHeight;
-        }
+        // Resize canvas function - now a no-op as fireworks are removed
+        function resizeCanvas() { /* No operation */ }
 
-        // Main animation loop for fireworks
+        // Main animation loop for fireworks - now a no-op as fireworks are removed
         let animationFrameId;
-        function animateFireworks() {
-            animationFrameId = requestAnimationFrame(animateFireworks);
-            hue += 0.5; // Cycle through colors
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; // Fading trail effect
-            ctx.fillRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
-            ctx.globalCompositeOperation = 'lighter';
+        function animateFireworks() { /* No operation */ }
 
-            for (let i = fireworks.length - 1; i >= 0; i--) {
-                fireworks[i].draw();
-                fireworks[i].update(i);
-            }
-
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].draw();
-                particles[i].update(i);
-            }
-
-            // Periodically launch new fireworks
-            if (Math.random() < 0.05 && fireworks.length < 5) { // Control frequency and max active fireworks
-                const startX = Math.random() * fireworksCanvas.width;
-                const startY = fireworksCanvas.height;
-                const endX = Math.random() * fireworksCanvas.width;
-                const endY = Math.random() * fireworksCanvas.height / 2; // Explode in upper half
-                fireworks.push(new Firework(startX, startY, endX, endY));
-            }
-        }
-
-        // Function to start fireworks
-        function startFireworks() {
-            fireworksContainer.classList.remove('hidden');
-            resizeCanvas(); // Set initial canvas size
-            window.addEventListener('resize', resizeCanvas); // Resize on window resize
-            animateFireworks();
-        }
-
-        // Function to stop fireworks
-        function stopFireworks() {
-            cancelAnimationFrame(animationFrameId);
+        // Function to start fireworks - now a no-op as fireworks are removed
+        function startFireworks() { 
+            // Ensures the container remains hidden and no animation starts
             fireworksContainer.classList.add('hidden');
-            ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height); // Clear canvas
-            fireworks = []; // Clear arrays
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            fireworks = [];
+            particles = [];
+        }
+
+        // Function to stop fireworks - now a no-op as fireworks are removed
+        function stopFireworks() {
+            fireworksContainer.classList.add('hidden');
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            // ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height); // Optional: clear canvas if needed
+            fireworks = []; 
             particles = [];
             window.removeEventListener('resize', resizeCanvas);
+        }
+
+        // --- Active Navigation Link Logic ---
+        function highlightActiveNavLink() {
+            const currentPath = window.location.pathname.split('/').pop(); // Get filename (e.g., "index.html")
+            const navLinks = mainNavLinks.querySelectorAll('a');
+
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href').split('/').pop(); // Get filename from link href
+                if (linkPath === currentPath) {
+                    link.parentElement.classList.add('active-nav-link');
+                } else {
+                    link.parentElement.classList.remove('active-nav-link');
+                }
+            });
         }
 
 
@@ -1266,6 +1172,8 @@
             // Initial load and render of notifications (for the bell icon count)
             loadDismissedNotifications();
             renderNotifications();
+            // Highlight active navigation link on initial load
+            highlightActiveNavLink();
 
             // Select all links within the #app-content that are not the logout button
             const appContentLinks = document.querySelectorAll('#app-content a:not(#logout-button)');
