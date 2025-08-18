@@ -423,6 +423,18 @@
                 </div>
             </nav>
 
+            <!-- New: Announcement Banner -->
+            <div class="w-full bg-gradient-to-r from-vsrep-blue-medium to-vsrep-blue-dark text-vsrep-blue-light text-center p-4 md:p-6
+                        font-semibold text-lg md:text-xl shadow-md mb-8 animate-slideInDown rounded-b-3xl overflow-hidden
+                        bg-[length:200%_auto] animate-gradient-shift">
+                <div class="max-w-4xl mx-auto flex items-center justify-center space-x-3">
+                    <i class="fas fa-bullhorn text-vsrep-blue-light text-2xl animate-icon-bounce"></i>
+                    <span>
+                        🎉 <strong>Exciting News! A New Era for Your Platform is Dawning!</strong> We are thrilled to announce that this platform will soon transition to a new company, bringing you enhanced features and an even more empowering experience. While the ownership remains with me, our new identity will no longer be affiliated with Valencia Student Representation. We appreciate your continued support and look forward to sharing more updates soon! ✨
+                    </span>
+                </div>
+            </div>
+
             <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 md:py-16">
                 <!-- Welcome Section with User Name -->
                 <header class="text-center p-8 md:p-12 bg-vsrep-blue-light/50 rounded-3xl mb-12 shadow-md border border-vsrep-gray-light animate-fadeIn">
@@ -817,7 +829,10 @@
                 celebrationMessage.classList.remove('hidden'); // Show celebration message
                 // No fireworks here, as requested
                 return;
+            } else {
+                celebrationMessage.classList.add('hidden'); // Ensure celebration message is hidden if countdown is active
             }
+
 
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
