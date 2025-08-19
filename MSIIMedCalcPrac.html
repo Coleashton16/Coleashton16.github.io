@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nursing Dosage Calculation Exam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #3498db;
+            --primary-dark-blue: #2980b9;
+            --secondary-orange: #f39c12;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #ecf0f1;
+            --bg-white: #FFFFFF;
+            --border-light: #e0e4eb;
+            --success-green: #2ecc71;
+            --danger-red: #e74c3c;
+            --shadow-color: rgba(44, 62, 80, 0.1);
+            --light-green-bg: #e6f7ee;
+            --light-red-bg: #fbe9e7;
+            --light-blue-bg: #eaf3f9;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            box-sizing: border-box;
+        }
+
+        .quiz-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .quiz-header {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            padding: 0.75rem 2rem;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            position: absolute;
+            left: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
+        .animated-icon {
+            position: absolute;
+            right: 0;
+            animation: inspect 4s ease-in-out infinite;
+        }
+
+        .animated-icon svg { width: 30px; height: 30px; fill: var(--primary-blue); }
+        .quiz-header h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+        .version-info { font-size: 0.7rem; color: var(--text-light); margin-top: 0.2rem; }
+        
+        .quiz-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        #initial-screen { text-align: center; padding: 2rem; }
+        #initial-screen h2 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-dark-blue); }
+        #initial-screen p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 1rem auto 2rem auto; color: var(--text-light); }
+        #start-btn { background-color: var(--primary-blue); color: white; padding: 1rem 2.5rem; font-size: 1.1rem; font-weight: 600; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
+        #start-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+        
+        #quiz-form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 15px 40px var(--shadow-color);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            box-sizing: border-box;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        
+        #quiz-form.is-transitioning { opacity: 0; transform: scale(0.98); }
+
+        .question-header { font-size: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; flex-shrink: 0; border-bottom: 1px dashed var(--border-light); color: var(--text-light); font-weight: 500; }
+        .question-header strong { font-weight: 700; color: var(--primary-blue); }
+        .question-text { font-size: 1.25rem; font-weight: 500; line-height: 1.6; margin-top: 0; margin-bottom: 1rem; flex-shrink: 0; }
+        
+        .options-container { 
+            flex-grow: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0.5rem 0;
+        }
+
+        .options-container label {
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .answer-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        #answerInput {
+            padding: 10px 15px;
+            border: 2px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            width: 100%; /* Full width on small screens */
+            max-width: 300px; /* Limit width on larger screens */
+            box-sizing: border-box;
+            transition: border-color 0.2s ease-in-out;
+        }
+
+        #answerInput:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        #unitDisplay {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        .question-footer { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .flag-container label { cursor: pointer; font-weight: 500; color: var(--text-light); display: flex; align-items: center; }
+        .flag-container input { margin-right: 0.5rem; }
+        .confidence-slider-container { display: flex; align-items: center; gap: 1rem; }
+        .confidence-slider-container label { font-weight: 500; color: var(--text-light); }
+        .confidence-slider { max-width: 150px; }
+
+        #navigation-btn { padding: 0.8rem 2rem; font-size: 1rem; background-color: var(--primary-blue); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        #navigation-btn:hover { background-color: var(--primary-dark-blue); transform: scale(1.05); }
+
+        #results-area { animation: fadeIn 0.8s ease-out; box-sizing: border-box; width: 100%; height: 100%; overflow-y: auto; padding: 2rem; }
+        .results-summary, #confidence-analysis, #study-focus, #results-details { background-color: var(--bg-white); margin: 0 auto 2rem auto; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px var(--shadow-color); max-width: 1000px; }
+        .results-summary { text-align: center; }
+
+        .score-animation-container { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--primary-blue); display: flex; justify-content: center; align-items: center; margin: 1.5rem auto; position: relative; background-color: var(--bg-white); }
+        .score-animation-circle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--success-green) 0% 0%, var(--border-light) 0% 100%); transition: background 1.5s ease-out; }
+        .score-animation-inner { position: relative; z-index: 2; background-color: var(--bg-white); width: calc(100% - 16px); height: calc(100% - 16px); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .score-animation-text { font-size: 2.5rem; font-weight: 800; color: var(--text-dark); }
+        
+        #confidence-analysis h3, #study-focus h3, #results-details h2 { margin-top: 0; border-bottom: 2px solid; padding-bottom: 1rem; font-size: 1.5rem; margin-bottom: 1.5rem; }
+        #confidence-analysis h3 { color: var(--primary-dark-blue); border-color: var(--primary-blue); }
+        #study-focus h3 { color: #c0392b; border-color: #e74c3c; }
+        #results-details h2 { color: var(--text-dark); border-color: var(--border-light); }
+        
+        .result-question { border: 1px solid var(--border-light); padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 12px; }
+        .result-question p strong { display: block; margin-bottom: 1rem; font-size: 1.1em; color: var(--text-dark); }
+        .result-question .user-answer-display { font-size: 1.1em; margin-bottom: 0.5rem; }
+        .result-question .correct-answer-display { font-size: 1.1em; font-weight: 600; }
+        
+        .correct-answer-label { background-color: var(--light-green-bg); color: #27ae60; font-weight: 600; padding: 0.5rem 0.75rem; border-radius: 8px; }
+        .incorrect-answer-label { background-color: var(--light-red-bg); color: var(--danger-red); font-weight: 600; padding: 0.5rem 0.75rem; border-radius: 8px; }
+        
+        .rationale { margin-top: 1.5rem; padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--primary-blue); background-color: var(--light-blue-bg); font-size: 0.95rem; }
+
+        .hidden { display: none !important; }
+        .confetti { position: fixed; width: 10px; height: 10px; opacity: 0; animation: confetti-fall 5s linear forwards; border-radius: 50%; z-index: 9999; }
+        @keyframes confetti-fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+        @keyframes inspect { 0% { transform: rotate(-15deg); } 50% { transform: rotate(10deg); } 100% { transform: rotate(-15deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .quiz-header { padding: 0.5rem 1rem; }
+            .header-content { flex-direction: column; }
+            .logo, .animated-icon { position: static; margin-bottom: 0.5rem; }
+            .quiz-header h1 { font-size: 1.2rem; }
+            .quiz-content { padding: 1rem; }
+            #initial-screen h2 { font-size: 2rem; }
+            #initial-screen p { font-size: 1rem; }
+            #start-btn { padding: 0.8rem 2rem; font-size: 1rem; }
+            #quiz-form { padding: 1.5rem; }
+            .question-text { font-size: 1.1rem; }
+            .question-footer { flex-direction: column; align-items: stretch; gap: 1rem; }
+            .confidence-slider-container { justify-content: center; width: 100%; }
+            #navigation-btn { width: 100%; }
+            #answerInput { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-wrapper">
+        <header class="quiz-header">
+            <div class="header-content">
+                <div class="logo">MEDCALC</div>
+                <div>
+                    <h1>Nursing Dosage Calculation Exam</h1>
+                    <div class="version-info">
+                        <span>Engine: V1.0</span> | <span>Test: V1.0</span>
+                    </div>
+                </div>
+                <div class="animated-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-content">
+            <div id="initial-screen">
+                <h2>Welcome to the Dosage Calculation Exam</h2>
+                <p>This exam consists of 30 challenging dosage calculation questions. Enter your numerical answer in the text box provided. Pay close attention to units and rounding instructions!</p>
+                <button id="start-btn">Start Exam</button>
+            </div>
+
+            <form id="quiz-form" class="hidden"></form>
+
+            <div id="results-area" class="hidden"></div>
+        </main>
+    </div>
+
+<script>
+    const fullQuizData = [    
+        {
+            "questionText": "Order: Furosemide 25 mg PO. Available: Furosemide 10 mg/mL solution. How many mL will the nurse administer? (Round to the nearest tenth.)",
+            "correctAnswer": 2.5,
+            "unit": "mL",
+            "tolerance": 0.05, // Allows for answers like 2.45 to 2.55
+            "rationale": "Formula: (Desired/Available) x Quantity = Dose. (25 mg / 10 mg) x 1 mL = 2.5 mL."
+        },
+        {
+            "questionText": "Order: Amoxicillin 0.5 g PO. Available: Amoxicillin 250 mg tablets. How many tablets will the nurse administer?",
+            "correctAnswer": 2,
+            "unit": "tablets",
+            "tolerance": 0.01,
+            "rationale": "First, convert grams to milligrams: 0.5 g = 500 mg. Then, (Desired/Available) x Quantity = Dose. (500 mg / 250 mg) x 1 tablet = 2 tablets."
+        },
+        {
+            "questionText": "Order: Infuse 1000 mL D5W over 8 hours. What is the IV flow rate in mL/hr?",
+            "correctAnswer": 125,
+            "unit": "mL/hr",
+            "tolerance": 0.01,
+            "rationale": "Formula: Total Volume (mL) / Time (hr) = Flow Rate (mL/hr). 1000 mL / 8 hr = 125 mL/hr."
+        },
+        {
+            "questionText": "Order: Infuse 500 mL Normal Saline over 4 hours. Drop factor: 15 gtts/mL. Calculate the drip rate in gtts/min. (Round to the nearest whole number.)",
+            "correctAnswer": 31, // Exact is 31.25
+            "unit": "gtts/min",
+            "tolerance": 0.5, // Allows for rounding
+            "rationale": "Formula: [Total Volume (mL) x Drop Factor (gtts/mL)] / Time (min) = Drip Rate (gtts/min).\n500 mL x 15 gtts/mL = 7500 gtts. 4 hours x 60 minutes/hour = 240 minutes.\n7500 gtts / 240 min = 31.25 gtts/min. Rounded to the nearest whole number, this is 31 gtts/min."
+        },
+        {
+            "questionText": "A child weighs 44 lbs. The order is Cefazolin 50 mg/kg/day IV divided into 3 equal doses. Available: Cefazolin 125 mg/mL. How many mL will be administered per dose? (Round to the nearest tenth.)",
+            "correctAnswer": 2.7, // Exact is 2.666...
+            "unit": "mL/dose",
+            "tolerance": 0.05,
+            "rationale": "1. Convert weight: 44 lbs / 2.2 lbs/kg = 20 kg.\n2. Calculate total daily dose: 50 mg/kg/day x 20 kg = 1000 mg/day.\n3. Calculate dose per administration: 1000 mg/day / 3 doses = 333.33 mg/dose.\n4. Calculate volume per dose: (333.33 mg / 125 mg) x 1 mL = 2.666... mL. Rounded to the nearest tenth, this is 2.7 mL/dose."
+        },
+        {
+            "questionText": "A patient is receiving 250 mL of medication at 50 mL/hr. How many hours will the infusion run?",
+            "correctAnswer": 5,
+            "unit": "hours",
+            "tolerance": 0.01,
+            "rationale": "Formula: Total Volume (mL) / Flow Rate (mL/hr) = Time (hr). 250 mL / 50 mL/hr = 5 hours."
+        },
+        {
+            "questionText": "Ampicillin 1g powder. Reconstitute with 3.5 mL sterile water for a concentration of 250 mg/mL. Order: Ampicillin 750 mg IV. How many mL will the nurse draw up?",
+            "correctAnswer": 3,
+            "unit": "mL",
+            "tolerance": 0.01,
+            "rationale": "Formula: (Desired/Available) x Quantity = Dose. (750 mg / 250 mg) x 1 mL = 3 mL."
+        },
+        {
+            "questionText": "A 2% Lidocaine solution is available. How many mg of Lidocaine are in 10 mL of this solution?",
+            "correctAnswer": 200,
+            "unit": "mg",
+            "tolerance": 0.01,
+            "rationale": "A 2% solution means 2 grams of drug per 100 mL of solution. 2 g = 2000 mg.\nSo, 2000 mg / 100 mL = 20 mg/mL. For 10 mL: 20 mg/mL x 10 mL = 200 mg."
+        },
+        {
+            "questionText": "Dopamine 400 mg in 250 mL D5W. Order: Infuse at 5 mcg/kg/min. Patient weight: 150 lbs. Calculate the flow rate in mL/hr. (Round to the nearest tenth.)",
+            "correctAnswer": 12.8, 
+            "unit": "mL/hr",
+            "tolerance": 0.05,
+            "rationale": "1. Convert weight: 150 lbs / 2.2 lbs/kg = 68.18 kg.\n2. Convert mg to mcg: 400 mg = 400,000 mcg.\n3. Calculate concentration: 400,000 mcg / 250 mL = 1600 mcg/mL.\n4. Calculate mcg/min needed: 5 mcg/kg/min x 68.18 kg = 340.9 mcg/min.\n5. Calculate mcg/hr needed: 340.9 mcg/min x 60 min/hr = 20454 mcg/hr.\n6. Calculate mL/hr: 20454 mcg/hr / 1600 mcg/mL = 12.78375 mL/hr. Rounded to the nearest tenth, this is 12.8 mL/hr."
+        },
+        {
+            "questionText": "A medication is ordered at 10 mg/m². Patient's Body Surface Area (BSA) is 1.5 m². Available: 5 mg tablets. How many tablets will the nurse administer?",
+            "correctAnswer": 3,
+            "unit": "tablets",
+            "tolerance": 0.01,
+            "rationale": "1. Calculate total dose needed: 10 mg/m² x 1.5 m² = 15 mg.\n2. Calculate number of tablets: (15 mg / 5 mg) x 1 tablet = 3 tablets."
+        },
+        {
+            "questionText": "Order: Dextrose 10% at 80 mL/kg/day. Patient weight: 10 kg. Drop factor: 60 microgtts/mL. Calculate the drip rate in microgtts/min. (Round to the nearest whole number.)",
+            "correctAnswer": 33, // Exact is 33.33
+            "unit": "microgtts/min",
+            "tolerance": 0.5,
+            "rationale": "1. Calculate total daily volume: 80 mL/kg/day x 10 kg = 800 mL/day.\n2. Calculate total volume per hour: 800 mL / 24 hours = 33.33 mL/hr.\n3. Calculate total volume per minute: 33.33 mL/hr / 60 min/hr = 0.555 mL/min.\n4. Calculate drip rate: 0.555 mL/min x 60 microgtts/mL = 33.33 microgtts/min. Rounded to the nearest whole number, this is 33 microgtts/min."
+        },
+        {
+            "questionText": "Order: Novolog 8 units subcutaneous. Available: Novolog U-100 (100 units/mL). How many mL will the nurse administer? (Round to the nearest hundredth.)",
+            "correctAnswer": 0.08,
+            "unit": "mL",
+            "tolerance": 0.005,
+            "rationale": "Formula: (Desired/Available) x Quantity = Dose. (8 units / 100 units) x 1 mL = 0.08 mL."
+        },
+        {
+            "questionText": "Heparin 25,000 units in 500 mL D5W. Order: Infuse at 1200 units/hr. What is the flow rate in mL/hr?",
+            "correctAnswer": 24,
+            "unit": "mL/hr",
+            "tolerance": 0.01,
+            "rationale": "1. Calculate concentration: 25,000 units / 500 mL = 50 units/mL.\n2. Calculate flow rate: (Desired / Available) = Volume. (1200 units/hr / 50 units/mL) = 24 mL/hr."
+        },
+        {
+            "questionText": "Heparin 25,000 units in 500 mL D5W. Patient is receiving 20 mL/hr. How many units/hr is the patient receiving?",
+            "correctAnswer": 1000,
+            "unit": "units/hr",
+            "tolerance": 0.01,
+            "rationale": "1. Calculate concentration: 25,000 units / 500 mL = 50 units/mL.\n2. Calculate units/hr: 20 mL/hr x 50 units/mL = 1000 units/hr."
+        },
+        {
+            "questionText": "Order: Morphine 4 mg/hr IV. Available: Morphine 250 mg in 250 mL Normal Saline. Calculate the flow rate in mL/hr.",
+            "correctAnswer": 4,
+            "unit": "mL/hr",
+            "tolerance": 0.01,
+            "rationale": "1. Calculate concentration: 250 mg / 250 mL = 1 mg/mL.\n2. Calculate flow rate: (Desired / Available) = Volume. (4 mg/hr / 1 mg/mL) = 4 mL/hr."
+        },
+        {
+            "questionText": "A patient is on Prednisone 40 mg daily for 5 days, then 20 mg daily for 5 days, then 10 mg daily for 5 days. How many total milligrams of Prednisone will the patient receive over the 15 days?",
+            "correctAnswer": 350,
+            "unit": "mg",
+            "tolerance": 0.01,
+            "rationale": "1. Days 1-5: 40 mg/day x 5 days = 200 mg.\n2. Days 6-10: 20 mg/day x 5 days = 100 mg.\n3. Days 11-15: 10 mg/day x 5 days = 50 mg.\nTotal: 200 mg + 100 mg + 50 mg = 350 mg."
+        },
+        {
+            "questionText": "Order: Paracetamol 15 mg/kg PO. Child's weight: 15 kg. Available: Paracetamol oral suspension 240 mg/5 mL. How many mL will the nurse administer per dose? (Round to the nearest tenth.)",
+            "correctAnswer": 4.7,
+            "unit": "mL",
+            "tolerance": 0.05,
+            "rationale": "1. Calculate total dose needed: 15 mg/kg x 15 kg = 225 mg.\n2. Determine available concentration: 240 mg / 5 mL = 48 mg/mL.\n3. Calculate volume to administer: (Desired 225 mg / Available 48 mg) x 1 mL = 4.6875 mL. Rounded to the nearest tenth, this is 4.7 mL."
+        },
+        {
+            "questionText": "Order: Lidocaine 75 mg IV bolus. Available: Lidocaine 100 mg/5 mL. How many mL will the nurse administer? (Round to the nearest hundredth.)",
+            "correctAnswer": 3.75,
+            "unit": "mL",
+            "tolerance": 0.005,
+            "rationale": "Formula: (Desired/Available) x Quantity = Dose. (75 mg / 100 mg) x 5 mL = 3.75 mL."
+        },
+        {
+            "questionText": "A patient weighs 220 lbs. What is their weight in kilograms? (Round to the nearest tenth.)",
+            "correctAnswer": 100.0,
+            "unit": "kg",
+            "tolerance": 0.05,
+            "rationale": "Formula: Weight in lbs / 2.2 lbs/kg = Weight in kg. 220 lbs / 2.2 = 100 kg."
+        },
+        {
+            "questionText": "A vial contains 5 mL of a drug with a concentration of 20 mg/mL. How many total milligrams are in the vial?",
+            "correctAnswer": 100,
+            "unit": "mg",
+            "tolerance": 0.01,
+            "rationale": "Formula: Concentration x Volume = Total Amount. 20 mg/mL x 5 mL = 100 mg."
+        },
+        {
+            "questionText": "A 1-liter IV bag is infusing at 100 mL/hr. After 4 hours, how much solution remains in the bag? (Answer in mL)",
+            "correctAnswer": 600,
+            "unit": "mL",
+            "tolerance": 0.01,
+            "rationale": "1. Convert liters to mL: 1 Liter = 1000 mL.\n2. Calculate volume infused: 100 mL/hr x 4 hours = 400 mL.\n3. Calculate remaining volume: 1000 mL - 400 mL = 600 mL."
+        },
+        {
+            "questionText": "Order: Nitroglycerin 0.5 mcg/kg/min IV. Patient weight: 25 kg. Available: Nitroglycerin 50 mg in 250 mL D5W. Calculate the flow rate in mL/hr. (Round to the nearest tenth.)",
+            "correctAnswer": 3.8,
+            "unit": "mL/hr",
+            "tolerance": 0.05,
+            "rationale": "1. Convert mg to mcg: 50 mg = 50,000 mcg.\n2. Calculate concentration: 50,000 mcg / 250 mL = 200 mcg/mL.\n3. Calculate mcg/min needed: 0.5 mcg/kg/min x 25 kg = 12.5 mcg/min.\n4. Calculate mcg/hr needed: 12.5 mcg/min x 60 min/hr = 750 mcg/hr.\n5. Calculate mL/hr: 750 mcg/hr / 200 mcg/mL = 3.75 mL/hr. Rounded to the nearest tenth, this is 3.8 mL/hr."
+        },
+        {
+            "questionText": "Order: Cephalexin 250 mg PO q6h. How many total milligrams will the patient receive in 24 hours?",
+            "correctAnswer": 1000,
+            "unit": "mg",
+            "tolerance": 0.01,
+            "rationale": "1. Calculate doses per day: 24 hours / 6 hours/dose = 4 doses.\n2. Calculate total daily milligrams: 250 mg/dose x 4 doses = 1000 mg."
+        },
+        {
+            "questionText": "Order: Regular insulin infusion at 0.1 unit/kg/hr. Patient weight: 70 kg. Available: Regular insulin 100 units in 100 mL Normal Saline. Calculate the flow rate in mL/hr.",
+            "correctAnswer": 7,
+            "unit": "mL/hr",
+            "tolerance": 0.01,
+            "rationale": "1. Calculate total units/hr needed: 0.1 unit/kg/hr x 70 kg = 7 units/hr.\n2. Determine concentration: 100 units / 100 mL = 1 unit/mL.\n3. Calculate flow rate: (Desired / Available) = Volume. (7 units/hr / 1 unit/mL) = 7 mL/hr."
+        },
+        {
+            "questionText": "A nurse needs to prepare 500 mg of a medication. The medication comes as 1 g powder, and when reconstituted with 4.8 mL of diluent, yields 200 mg/mL. How many mL of the reconstituted solution are needed?",
+            "correctAnswer": 2.5,
+            "unit": "mL",
+            "tolerance": 0.05,
+            "rationale": "Formula: (Desired/Available) x Quantity = Dose. (500 mg / 200 mg) x 1 mL = 2.5 mL."
+        },
+        {
+            "questionText": "An IV is infusing at 75 mL/hr. The drop factor is 10 gtts/mL. What is the drip rate in gtts/min? (Round to the nearest whole number.)",
+            "correctAnswer": 13, // Exact is 12.5
+            "unit": "gtts/min",
+            "tolerance": 0.5,
+            "rationale": "1. Calculate mL/min: 75 mL/hr / 60 min/hr = 1.25 mL/min.\n2. Calculate drip rate: 1.25 mL/min x 10 gtts/mL = 12.5 gtts/min. Rounded to the nearest whole number, this is 13 gtts/min."
+        },
+        {
+            "questionText": "Order: Magnesium Sulfate 2 g IV. Available: Magnesium Sulfate 500 mg/mL. How many mL will the nurse administer?",
+            "correctAnswer": 4,
+            "unit": "mL",
+            "tolerance": 0.01,
+            "rationale": "1. Convert grams to milligrams: 2 g = 2000 mg.\n2. Calculate volume: (Desired 2000 mg / Available 500 mg) x 1 mL = 4 mL."
+        },
+        {
+            "questionText": "Order: Propofol 25 mcg/kg/min. Patient weight: 60 kg. Available: Propofol 500 mg in 50 mL D5W. Calculate the flow rate in mL/hr. (Round to the nearest tenth.)",
+            "correctAnswer": 9.0, // Exact is 9.0
+            "unit": "mL/hr",
+            "tolerance": 0.05,
+            "rationale": "1. Convert mg to mcg: 500 mg = 500,000 mcg.\n2. Calculate concentration: 500,000 mcg / 50 mL = 10,000 mcg/mL.\n3. Calculate mcg/min needed: 25 mcg/kg/min x 60 kg = 1500 mcg/min.\n4. Calculate mcg/hr needed: 1500 mcg/min x 60 min/hr = 90,000 mcg/hr.\n5. Calculate mL/hr: 90,000 mcg/hr / 10,000 mcg/mL = 9.0 mL/hr."
+        },
+        {
+            "questionText": "A child weighs 20 kg. Calculate their 24-hour maintenance fluid requirement using the Holliday-Segar method (100 mL/kg for first 10 kg, 50 mL/kg for next 10 kg).",
+            "correctAnswer": 1500,
+            "unit": "mL",
+            "tolerance": 0.01,
+            "rationale": "1. First 10 kg: 10 kg x 100 mL/kg = 1000 mL.\n2. Next 10 kg: 10 kg x 50 mL/kg = 500 mL.\n3. Total 24-hour maintenance: 1000 mL + 500 mL = 1500 mL."
+        },
+        {
+            "questionText": "A 10 mL vial contains 250 mg of a drug. What is the concentration of the drug in mg/mL?",
+            "correctAnswer": 25,
+            "unit": "mg/mL",
+            "tolerance": 0.01,
+            "rationale": "Formula: Total Amount / Total Volume = Concentration. 250 mg / 10 mL = 25 mg/mL."
+        },
+        {
+            "questionText": "Order: Vancomycin 15 mg/kg IV. Patient weight: 176 lbs. Available: Vancomycin 500 mg vial. Reconstitute with 10 mL sterile water to yield 50 mg/mL. How many mL will the nurse administer? (Round to the nearest tenth.)",
+            "correctAnswer": 24.0, // Exact 23.999...
+            "unit": "mL",
+            "tolerance": 0.05,
+            "rationale": "1. Convert weight: 176 lbs / 2.2 lbs/kg = 80 kg.\n2. Calculate total dose needed: 15 mg/kg x 80 kg = 1200 mg.\n3. Calculate volume to administer: (1200 mg / 50 mg) x 1 mL = 24 mL. Rounded to the nearest tenth, this is 24.0 mL."
+        },
+        {
+            "questionText": "A continuous insulin infusion is ordered at 0.05 units/kg/hr. Patient weight: 198 lbs. Available: 250 units Regular Insulin in 250 mL Normal Saline. Calculate the flow rate in mL/hr. (Round to the nearest tenth.)",
+            "correctAnswer": 4.5, // Exact 4.5
+            "unit": "mL/hr",
+            "tolerance": 0.05,
+            "rationale": "1. Convert weight: 198 lbs / 2.2 lbs/kg = 90 kg.\n2. Calculate total units/hr needed: 0.05 units/kg/hr x 90 kg = 4.5 units/hr.\n3. Determine concentration: 250 units / 250 mL = 1 unit/mL.\n4. Calculate flow rate: (4.5 units/hr / 1 unit/mL) = 4.5 mL/hr. Rounded to the nearest tenth, this is 4.5 mL/hr."
+        },
+        {
+            "questionText": "Order: Dopamine 800 mg in 500 mL D5W. Order to infuse at 10 mcg/kg/min. Patient weight: 132 lbs. What is the flow rate in mL/hr? (Round to the nearest tenth.)",
+            "correctAnswer": 22.5,
+            "unit": "mL/hr",
+            "tolerance": 0.05,
+            "rationale": "1. Convert weight: 132 lbs / 2.2 lbs/kg = 60 kg.\n2. Convert mg to mcg: 800 mg = 800,000 mcg.\n3. Calculate concentration: 800,000 mcg / 500 mL = 1600 mcg/mL.\n4. Calculate mcg/min needed: 10 mcg/kg/min x 60 kg = 600 mcg/min.\n5. Calculate mcg/hr needed: 600 mcg/min x 60 min/hr = 36,000 mcg/hr.\n6. Calculate mL/hr: 36,000 mcg/hr / 1600 mcg/mL = 22.5 mL/hr. Rounded to the nearest tenth, this is 22.5 mL/hr."
+        },
+        {
+            "questionText": "Order: Pediatric maintenance fluids at 1200 mL/24 hours. Drop factor: 60 gtts/mL. Calculate the drip rate in gtts/min. (Round to the nearest whole number.)",
+            "correctAnswer": 50, // Exact 50
+            "unit": "gtts/min",
+            "tolerance": 0.5,
+            "rationale": "1. Convert hours to minutes: 24 hours x 60 minutes/hour = 1440 minutes.\n2. Calculate drip rate: [Total Volume (mL) x Drop Factor (gtts/mL)] / Time (min) = Drip Rate (gtts/min).\n[1200 mL x 60 gtts/mL] / 1440 min = 72000 gtts / 1440 min = 50 gtts/min."
+        },
+        {
+            "questionText": "A child weighs 15 kg. The order is for a medication at 5 mg/kg/day PO divided into 4 equal doses. Available: 15 mg/mL solution. How many mL will be administered per dose? (Round to the nearest tenth.)",
+            "correctAnswer": 1.3, // Exact 1.25
+            "unit": "mL/dose",
+            "tolerance": 0.05,
+            "rationale": "1. Calculate total daily dose: 5 mg/kg/day x 15 kg = 75 mg/day.\n2. Calculate dose per administration: 75 mg/day / 4 doses = 18.75 mg/dose.\n3. Calculate volume per dose: (18.75 mg / 15 mg) x 1 mL = 1.25 mL. Rounded to the nearest tenth, this is 1.3 mL/dose."
+        },
+        {
+            "questionText": "Order: Diltiazem 5 mg/hr IV. Available: Diltiazem 125 mg in 100 mL D5W. Calculate the flow rate in mL/hr. (Round to the nearest tenth.)",
+            "correctAnswer": 4.0, // Exact 4.0
+            "unit": "mL/hr",
+            "tolerance": 0.05,
+            "rationale": "1. Calculate concentration: 125 mg / 100 mL = 1.25 mg/mL.\n2. Calculate flow rate: (Desired / Available) = Volume. (5 mg/hr / 1.25 mg/mL) = 4.0 mL/hr."
+        },
+        {
+            "questionText": "A patient is prescribed 30 units of NPH insulin. Available: NPH U-100 (100 units/mL). How many mL will the nurse administer? (Round to the nearest tenth.)",
+            "correctAnswer": 0.3,
+            "unit": "mL",
+            "tolerance": 0.05,
+            "rationale": "Formula: (Desired/Available) x Quantity = Dose. (30 units / 100 units) x 1 mL = 0.3 mL."
+        },
+        {
+            "questionText": "Order: Administer 2 grams of a medication IV over 30 minutes. Available: Medication comes as 500 mg/mL. How many mL will the nurse add to the IV bag? (Round to the nearest whole number.)",
+            "correctAnswer": 4,
+            "unit": "mL",
+            "tolerance": 0.5,
+            "rationale": "1. Convert grams to milligrams: 2 g = 2000 mg.\n2. Calculate volume to add: (Desired 2000 mg / Available 500 mg) x 1 mL = 4 mL."
+        },
+        {
+            "questionText": "A patient needs to receive 1500 mL of IV fluids over 12 hours. The IV tubing has a drop factor of 20 gtts/mL. Calculate the drip rate in gtts/min. (Round to the nearest whole number.)",
+            "correctAnswer": 42, // Exact 41.66
+            "unit": "gtts/min",
+            "tolerance": 0.5,
+            "rationale": "1. Convert hours to minutes: 12 hours x 60 minutes/hour = 720 minutes.\n2. Calculate drip rate: [Total Volume (mL) x Drop Factor (gtts/mL)] / Time (min) = Drip Rate (gtts/min).\n[1500 mL x 20 gtts/mL] / 720 min = 30000 gtts / 720 min = 41.66 gtts/min. Rounded to the nearest whole number, this is 42 gtts/min."
+        },
+        {
+            "questionText": "Order: Phenytoin 5 mg/kg/day PO in 3 divided doses. Patient weight: 66 lbs. Available: Phenytoin 125 mg/5 mL. How many mL will the nurse administer per dose? (Round to the nearest tenth.)",
+            "correctAnswer": 2.0, // Exact 2
+            "unit": "mL/dose",
+            "tolerance": 0.05,
+            "rationale": "1. Convert weight: 66 lbs / 2.2 lbs/kg = 30 kg.\n2. Calculate total daily dose: 5 mg/kg/day x 30 kg = 150 mg/day.\n3. Calculate dose per administration: 150 mg/day / 3 doses = 50 mg/dose.\n4. Calculate volume per dose: (Desired 50 mg / Available 125 mg) x 5 mL = 2 mL. Rounded to the nearest tenth, this is 2.0 mL."
+        },
+        {
+            "questionText": "A 0.9% Normal Saline solution is available. How many milligrams of Sodium Chloride are in 50 mL of this solution?",
+            "correctAnswer": 450,
+            "unit": "mg",
+            "tolerance": 0.01,
+            "rationale": "A 0.9% solution means 0.9 grams of solute per 100 mL of solution.\n1. Convert grams to milligrams: 0.9 g = 900 mg.\n2. Calculate mg per mL: 900 mg / 100 mL = 9 mg/mL.\n3. Calculate total mg in 50 mL: 9 mg/mL x 50 mL = 450 mg."
+        },
+        {
+            "questionText": "Order: Gentamicin 7 mg/kg/day IV divided q8h. Patient weight: 110 lbs. Available: Gentamicin 25 mg/mL. How many mL will the nurse administer per dose? (Round to the nearest tenth.)",
+            "correctAnswer": 4.7,
+            "unit": "mL/dose",
+            "tolerance": 0.05,
+            "rationale": "1. Convert weight: 110 lbs / 2.2 lbs/kg = 50 kg.\n2. Calculate total daily dose: 7 mg/kg/day x 50 kg = 350 mg/day.\n3. Calculate doses per day: 24 hours / 8 hours/dose = 3 doses.\n4. Calculate dose per administration: 350 mg/day / 3 doses = 116.67 mg/dose.\n5. Calculate volume per dose: (Desired 116.67 mg / Available 25 mg) x 1 mL = 4.6668 mL. Rounded to the nearest tenth, this is 4.7 mL/dose."
+        },
+        {
+            "questionText": "A unit of Packed Red Blood Cells (PRBCs) is 300 mL and needs to infuse over 3 hours. The IV tubing has a drop factor of 10 gtts/mL. What is the drip rate in gtts/min? (Round to the nearest whole number.)",
+            "correctAnswer": 17, // Exact 16.66
+            "unit": "gtts/min",
+            "tolerance": 0.5,
+            "rationale": "1. Convert hours to minutes: 3 hours x 60 minutes/hour = 180 minutes.\n2. Calculate drip rate: [Total Volume (mL) x Drop Factor (gtts/mL)] / Time (min) = Drip Rate (gtts/min).\n[300 mL x 10 gtts/mL] / 180 min = 3000 gtts / 180 min = 16.66 gtts/min. Rounded to the nearest whole number, this is 17 gtts/min."
+        },
+        {
+            "questionText": "Order: Zithromax 500 mg PO on day 1, then 250 mg PO daily for 4 days. Available: Zithromax 250 mg tablets. How many tablets will the patient take in total for the entire course?",
+            "correctAnswer": 6,
+            "unit": "tablets",
+            "tolerance": 0.01,
+            "rationale": "1. Day 1: 500 mg / 250 mg/tablet = 2 tablets.\n2. Days 2-5: 250 mg/day x 4 days = 1000 mg. 1000 mg / 250 mg/tablet = 4 tablets.\n3. Total tablets: 2 tablets + 4 tablets = 6 tablets."
+        },
+        {
+            "questionText": "Order: Heparin 80 units/kg IV bolus. Patient weight: 165 lbs. Available: Heparin 10,000 units/mL. How many mL will the nurse administer? (Round to the nearest hundredth.)",
+            "correctAnswer": 0.60, // Exact 0.6
+            "unit": "mL",
+            "tolerance": 0.005,
+            "rationale": "1. Convert weight: 165 lbs / 2.2 lbs/kg = 75 kg.\n2. Calculate total units needed: 80 units/kg x 75 kg = 6000 units.\n3. Calculate volume: (Desired 6000 units / Available 10,000 units) x 1 mL = 0.6 mL. Rounded to the nearest hundredth, this is 0.60 mL."
+        },
+        {
+            "questionText": "Order: Administer 1 liter of Normal Saline over 6 hours. What is the flow rate in mL/hr?",
+            "correctAnswer": 166.7, // Exact 166.66
+            "unit": "mL/hr",
+            "tolerance": 0.05,
+            "rationale": "1. Convert liters to mL: 1 Liter = 1000 mL.\n2. Calculate flow rate: 1000 mL / 6 hours = 166.66 mL/hr. Rounded to the nearest tenth, this is 166.7 mL/hr."
+        },
+        {
+            "questionText": "A medication order is for 7.5 mg. Available: 15 mg tablets, scored. How many tablets will the nurse administer?",
+            "correctAnswer": 0.5,
+            "unit": "tablets",
+            "tolerance": 0.01,
+            "rationale": "Formula: (Desired/Available) x Quantity = Dose. (7.5 mg / 15 mg) x 1 tablet = 0.5 tablets."
+        },
+        {
+            "questionText": "Order: Ampicillin 25 mg/kg IV q6h. Patient weight: 55 lbs. Available: Ampicillin 125 mg/mL. How many mL will the nurse administer per dose? (Round to the nearest tenth.)",
+            "correctAnswer": 5.0, // Exact 5
+            "unit": "mL/dose",
+            "tolerance": 0.05,
+            "rationale": "1. Convert weight: 55 lbs / 2.2 lbs/kg = 25 kg.\n2. Calculate dose per administration: 25 mg/kg x 25 kg = 625 mg.\n3. Calculate volume per dose: (625 mg / 125 mg) x 1 mL = 5 mL. Rounded to the nearest tenth, this is 5.0 mL/dose."
+        },
+        {
+            "questionText": "A patient requires 2000 mL of IV fluids per day. What is the hourly flow rate in mL/hr?",
+            "correctAnswer": 83.3, // Exact 83.33
+            "unit": "mL/hr",
+            "tolerance": 0.05,
+            "rationale": "Formula: Total Volume (mL) / Time (hr) = Flow Rate (mL/hr). 2000 mL / 24 hr = 83.33 mL/hr. Rounded to the nearest tenth, this is 83.3 mL/hr."
+        },
+        {
+            "questionText": "Order: Fentanyl 25 mcg IV push. Available: Fentanyl 0.1 mg/2 mL. How many mL will the nurse administer? (Round to the nearest hundredth.)",
+            "correctAnswer": 0.50, // Exact 0.5
+            "unit": "mL",
+            "tolerance": 0.005,
+            "rationale": "1. Convert mg to mcg: 0.1 mg = 100 mcg.\n2. Calculate volume: (Desired 25 mcg / Available 100 mcg) x 2 mL = 0.5 mL. Rounded to the nearest hundredth, this is 0.50 mL."
+        },
+        {
+            "questionText": "A solution contains 250 mg of a drug in 50 mL. If the patient needs 15 mg of the drug, how many mL will the nurse administer?",
+            "correctAnswer": 3.0,
+            "unit": "mL",
+            "tolerance": 0.01,
+            "rationale": "1. Calculate concentration: 250 mg / 50 mL = 5 mg/mL.\n2. Calculate volume: (Desired 15 mg / Available 5 mg) x 1 mL = 3 mL."
+        },
+        {
+            "questionText": "Order: Infuse 50 mL of medication over 20 minutes using a microdrip (60 gtts/mL) tubing. Calculate the drip rate in gtts/min. (Round to the nearest whole number.)",
+            "correctAnswer": 150, // Exact 150
+            "unit": "gtts/min",
+            "tolerance": 0.5,
+            "rationale": "Formula: [Total Volume (mL) x Drop Factor (gtts/mL)] / Time (min) = Drip Rate (gtts/min).\n[50 mL x 60 gtts/mL] / 20 min = 3000 gtts / 20 min = 150 gtts/min."
+        },
+        {
+            "questionText": "A patient weighs 135 lbs. The order is for a medication at 0.5 mg/kg PO. Available: 20 mg/mL oral solution. How many mL will the nurse administer? (Round to the nearest tenth.)",
+            "correctAnswer": 1.5, // Exact 1.534
+            "unit": "mL",
+            "tolerance": 0.05,
+            "rationale": "1. Convert weight: 135 lbs / 2.2 lbs/kg = 61.36 kg.\n2. Calculate total dose needed: 0.5 mg/kg x 61.36 kg = 30.68 mg.\n3. Calculate volume: (30.68 mg / 20 mg) x 1 mL = 1.534 mL. Rounded to the nearest tenth, this is 1.5 mL."
+        },
+        {
+            "questionText": "Order: D5W with 20 mEq KCl/L at 125 mL/hr. How many mEq of KCl will the patient receive in 8 hours? (Round to the nearest tenth.)",
+            "correctAnswer": 20.0, // Exact 20
+            "unit": "mEq",
+            "tolerance": 0.01,
+            "rationale": "1. Calculate total volume infused: 125 mL/hr x 8 hours = 1000 mL.\n2. Determine mEq per mL: 20 mEq / 1000 mL = 0.02 mEq/mL.\n3. Calculate total mEq: 0.02 mEq/mL x 1000 mL = 20 mEq. Rounded to the nearest tenth, this is 20.0 mEq."
+        },
+        {
+            "questionText": "A patient is to receive 100 mg of a medication diluted in 50 mL of D5W to infuse over 30 minutes. What is the flow rate in mL/hr?",
+            "correctAnswer": 100,
+            "unit": "mL/hr",
+            "tolerance": 0.01,
+            "rationale": "1. Convert minutes to hours: 30 minutes / 60 minutes/hr = 0.5 hours.\n2. Calculate flow rate: 50 mL / 0.5 hours = 100 mL/hr."
+        },
+        {
+            "questionText": "Order: Dilantin 100 mg PO three times a day. Available: Dilantin 50 mg capsules. How many capsules will the nurse administer per day?",
+            "correctAnswer": 6,
+            "unit": "capsules/day",
+            "tolerance": 0.01,
+            "rationale": "1. Capsules per dose: (100 mg / 50 mg) x 1 capsule = 2 capsules/dose.\n2. Total capsules per day: 2 capsules/dose x 3 doses/day = 6 capsules/day."
+        },
+        {
+            "questionText": "A nurse needs to prepare a solution that has a final concentration of 1 mg/mL. If she starts with a 100 mg tablet, what is the final volume of the solution in mL?",
+            "correctAnswer": 100,
+            "unit": "mL",
+            "tolerance": 0.01,
+            "rationale": "Formula: Total Amount / Desired Concentration = Total Volume. 100 mg / 1 mg/mL = 100 mL."
+        },
+        {
+            "questionText": "Order: Atropine 0.4 mg IV push. Available: Atropine 0.5 mg/mL. How many mL will the nurse administer? (Round to the nearest hundredth.)",
+            "correctAnswer": 0.80, // Exact 0.8
+            "unit": "mL",
+            "tolerance": 0.005,
+            "rationale": "Formula: (Desired/Available) x Quantity = Dose. (0.4 mg / 0.5 mg) x 1 mL = 0.8 mL. Rounded to the nearest hundredth, this is 0.80 mL."
+        },
+        {
+            "questionText": "A patient is to receive 1.5 liters of IV fluids over 10 hours. What is the flow rate in mL/hr?",
+            "correctAnswer": 150,
+            "unit": "mL/hr",
+            "tolerance": 0.01,
+            "rationale": "1. Convert liters to mL: 1.5 Liters = 1500 mL.\n2. Calculate flow rate: 1500 mL / 10 hours = 150 mL/hr."
+        },
+        {
+            "questionText": "Order: Dextrose 50% in Water (D50W) 25 grams IV. Available: D50W 25 g/50 mL prefilled syringe. How many mL will the nurse administer?",
+            "correctAnswer": 50,
+            "unit": "mL",
+            "tolerance": 0.01,
+            "rationale": "Formula: (Desired/Available) x Quantity = Dose. (25 g / 25 g) x 50 mL = 50 mL."
+        },
+        {
+            "questionText": "Order: Levothyroxine 125 mcg PO daily. Available: Levothyroxine 0.1 mg tablets. How many tablets will the nurse administer?",
+            "correctAnswer": 1.25,
+            "unit": "tablets",
+            "tolerance": 0.01,
+            "rationale": "1. Convert mg to mcg: 0.1 mg = 100 mcg.\n2. Calculate number of tablets: (Desired 125 mcg / Available 100 mcg) x 1 tablet = 1.25 tablets."
+        }
+    ];
+
+    let finalQuizData = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let confidenceRatings = {};
+    let flaggedForReview = new Set();
+    const NUM_QUESTIONS_TO_SELECT = 30; // Ensuring exactly 30 questions from the pool
+
+    const initialScreen = document.getElementById('initial-screen');
+    const startBtn = document.getElementById('start-btn');
+    const quizForm = document.getElementById('quiz-form');
+    const resultsArea = document.getElementById('results-area');
+
+    function prepareQuizData() {
+        // Shuffle the full quiz data and select the specified number of questions
+        const shuffledPool = [...fullQuizData].sort(() => 0.5 - Math.random());
+        finalQuizData = shuffledPool.slice(0, NUM_QUESTIONS_TO_SELECT);
+    }
+
+    function prepareAndStartQuiz() {
+        prepareQuizData();
+        if (finalQuizData.length === 0) {
+            // Using a simple modal message box instead of alert()
+            displayMessageBox("Error: No questions loaded. Please try again.");
+            return;
+        }
+        initialScreen.classList.add('hidden');
+        quizForm.classList.remove('hidden');
+        displayCurrentQuestion();
+    }
+
+    function displayCurrentQuestion() {
+        if (currentQuestionIndex >= finalQuizData.length) return;
+        const qData = finalQuizData[currentQuestionIndex];
+        
+        let answerInputGroupHtml = `
+            <div class="answer-input-group">
+                <input type="text" id="answerInput" name="answer" placeholder="Enter numerical answer" class="rounded-md p-2 border border-gray-300 w-full md:w-1/2">
+                <span id="unitDisplay" class="text-sm text-gray-600 mt-1">${qData.unit || ''}</span>
+            </div>
+        `;
+
+        quizForm.innerHTML = `
+            <div class="question-header">
+                Question <strong>${currentQuestionIndex + 1}</strong> of ${finalQuizData.length}
+            </div>
+            <p class="question-text">${qData.questionText}</p>
+            <div class="options-container">
+                ${answerInputGroupHtml}
+            </div>
+            <div class="question-footer">
+                <div class="flag-container">
+                    <label><input type="checkbox" class="flag-for-review"> Flag for Review</label>
+                </div>
+                <div class="confidence-slider-container">
+                    <label>Confidence:</label>
+                    <input type="range" min="1" max="5" value="3" class="confidence-slider">
+                </div>
+                <button type="submit" id="navigation-btn">${(currentQuestionIndex === finalQuizData.length - 1) ? "Submit Exam" : "Next Question"}</button>
+            </div>
+        `;
+
+        // Restore previous answer and settings if exists
+        const answerInput = quizForm.querySelector('#answerInput');
+        if (userAnswers[currentQuestionIndex] !== undefined && userAnswers[currentQuestionIndex] !== null) {
+            answerInput.value = userAnswers[currentQuestionIndex];
+        }
+        const flagInput = quizForm.querySelector('.flag-for-review');
+        if (flaggedForReview.has(currentQuestionIndex)) {
+            flagInput.checked = true;
+        }
+        const confidenceInput = quizForm.querySelector('.confidence-slider');
+        if (confidenceRatings[currentQuestionIndex] !== undefined) {
+            confidenceInput.value = confidenceRatings[currentQuestionIndex];
+        }
+
+        answerInput.focus(); // Focus on the answer input field
+    }
+    
+    function saveAnswer() {
+        const answerInput = quizForm.querySelector('#answerInput');
+        const userInput = answerInput ? answerInput.value.trim() : '';
+        userAnswers[currentQuestionIndex] = userInput === '' ? null : parseFloat(userInput);
+
+        const flagInput = quizForm.querySelector('.flag-for-review');
+        if(flagInput && flagInput.checked) {
+            flaggedForReview.add(currentQuestionIndex);
+        } else {
+            flaggedForReview.delete(currentQuestionIndex); // Unflag if unchecked
+        }
+
+        const confidenceInput = quizForm.querySelector('.confidence-slider');
+        if(confidenceInput) {
+            confidenceRatings[currentQuestionIndex] = parseInt(confidenceInput.value, 10);
+        }
+    }
+    
+    function handleNavigation() {
+        saveAnswer();
+        quizForm.classList.add('is-transitioning');
+        
+        setTimeout(() => {
+            if (currentQuestionIndex < finalQuizData.length - 1) {
+                currentQuestionIndex++;
+                displayCurrentQuestion();
+                quizForm.classList.remove('is-transitioning');
+            } else {
+                submitQuiz();
+            }
+        }, 300);
+    }
+
+    function submitQuiz() {
+        quizForm.classList.add('hidden');
+        resultsArea.classList.remove('hidden');
+        displayResults();
+    }
+
+    function checkAnswerCorrectness(qData, userAnswer) {
+        if (userAnswer === null || userAnswer === undefined) return false;
+
+        const parsedUserAnswer = parseFloat(userAnswer);
+        if (isNaN(parsedUserAnswer)) return false; // User input wasn't a number
+
+        // Define a default tolerance if not specified in question data
+        const tolerance = qData.tolerance !== undefined ? qData.tolerance : 0.01; // Default tolerance for most calculations
+
+        // Special handling for gtts/min to allow rounding to nearest whole number
+        if (qData.unit === 'gtts/min') {
+            return Math.abs(Math.round(parsedUserAnswer) - Math.round(qData.correctAnswer)) <= tolerance;
+        }
+
+        return Math.abs(parsedUserAnswer - qData.correctAnswer) <= tolerance;
+    }
+
+    function displayResults() {
+        let correctCount = 0;
+        finalQuizData.forEach((q, i) => { if (checkAnswerCorrectness(q, userAnswers[i])) correctCount++; });
+        const score = finalQuizData.length > 0 ? (correctCount / finalQuizData.length) * 100 : 0;
+
+        let resultsHTML = `
+            <div class="results-summary">
+                <h2>Exam Complete!</h2>
+                <div class="score-animation-container">
+                    <div class="score-animation-circle"></div>
+                    <div class="score-animation-inner">
+                        <span class="score-animation-text">${score.toFixed(0)}%</span>
+                    </div>
+                </div>
+                <p>You answered <strong>${correctCount}</strong> out of <strong>${finalQuizData.length}</strong> questions correctly.</p>
+            </div>
+        `;
+        
+        resultsArea.innerHTML = resultsHTML;
+        resultsArea.innerHTML += generateConfidenceAnalysis();
+        resultsArea.innerHTML += generateStudyFocus();
+        resultsArea.innerHTML += generateDetailedReview();
+
+        // Animate score circle
+        setTimeout(() => {
+            const scoreCircle = document.querySelector('.score-animation-circle');
+            if (scoreCircle) {
+                scoreCircle.style.background = `conic-gradient(var(--success-green) ${score}%, var(--border-light) ${score}% 100%)`;
+            }
+        }, 100);
+
+        if (score >= 80) { // Confetti for 80% or higher
+            triggerConfetti();
+        }
+    }
+
+    function generateDetailedReview() {
+        let detailsHTML = '<div id="results-details"><h2>Question Review</h2>';
+        finalQuizData.forEach((qData, index) => {
+            const userAnswer = userAnswers[index];
+            const isCorrect = checkAnswerCorrectness(qData, userAnswer);
+            const statusClass = isCorrect ? 'correct-answer-label' : 'incorrect-answer-label';
+            
+            detailsHTML += `
+                <div class="result-question">
+                    <p><strong>Question ${index + 1}: ${qData.questionText}</strong></p>
+                    <p class="user-answer-display">Your Answer: <span class="${statusClass}">${userAnswer !== null ? userAnswer : 'No Answer'} ${qData.unit || ''}</span></p>
+                    <p class="correct-answer-display">Correct Answer: <span class="correct-answer-label">${qData.correctAnswer} ${qData.unit || ''}</span></p>
+                    <div class="rationale"><strong>Rationale:</strong> ${qData.rationale || 'N/A'}</div>
+                </div>`;
+        });
+        detailsHTML += '</div>';
+        return detailsHTML;
+    }
+    
+    function generateConfidenceAnalysis() {
+        let correctAndConfident = 0, correctButUnsure = 0, incorrectAndConfident = 0, incorrectButUnsure = 0;
+        finalQuizData.forEach((qData, index) => {
+            const isCorrect = checkAnswerCorrectness(qData, userAnswers[index]);
+            const confidence = confidenceRatings[index] || 3; // Default to 3 if not set
+            if (confidence >= 4) { // Confident (4 or 5)
+                if (isCorrect) correctAndConfident++;
+                else incorrectAndConfident++;
+            } else { // Unsure (1, 2, or 3)
+                if (isCorrect) correctButUnsure++;
+                else incorrectButUnsure++;
+            }
+        });
+        return `
+            <div id="confidence-analysis">
+                <h3>Confidence Analysis</h3>
+                <ul>
+                    <li>Correct & Confident: <strong>${correctAndConfident}</strong></li>
+                    <li>Correct but Unsure: <strong>${correctButUnsure}</strong></li>
+                    <li>Incorrect & Confident: <strong>${incorrectAndConfident}</strong></li>
+                    <li>Incorrect but Unsure: <strong>${incorrectButUnsure}</strong></li>
+                </ul>
+            </div>`;
+    }
+
+    function generateStudyFocus() {
+        const topicCounts = {};
+        finalQuizData.forEach((qData, index) => {
+            if (!checkAnswerCorrectness(qData, userAnswers[index])) {
+                // For dosage calculations, categorizing by type of calculation might be useful
+                const typeKeywords = [
+                    { keyword: "mL/hr", label: "IV Flow Rate (mL/hr)" },
+                    { keyword: "gtts/min", label: "IV Drip Rate (gtts/min)" },
+                    { keyword: "mcg/kg/min", label: "Weight-Based IV Drips" },
+                    { keyword: "mg/kg", label: "Weight-Based Dosing" },
+                    { keyword: "oral", label: "Oral Medication Dosing" },
+                    { keyword: "reconstitute", label: "Reconstitution Calculations" },
+                    { keyword: "units", label: "Insulin/Heparin Units" },
+                    { keyword: "percent", label: "Percentage Solutions" },
+                    { keyword: "total", label: "Total Daily/Course Dose" },
+                    { keyword: "weight", label: "Weight Conversion" }
+                ];
+                
+                let foundTopic = "General Dosage Calculation";
+                for (const tk of typeKeywords) {
+                    if (qData.questionText.toLowerCase().includes(tk.keyword.toLowerCase()) || qData.unit.toLowerCase().includes(tk.keyword.toLowerCase())) {
+                        foundTopic = tk.label;
+                        break;
+                    }
+                }
+                
+                topicCounts[foundTopic] = (topicCounts[foundTopic] || 0) + 1;
+            }
+        });
+        const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+        let focusHTML = '<div id="study-focus"><h3>Personalized Study Focus</h3>';
+        if (sortedTopics.length > 0) {
+            focusHTML += '<p>Based on your performance, focus your review on these types of calculations:</p><ul>';
+            sortedTopics.forEach(topic => { focusHTML += `<li><strong>${topic[0]}</strong> (${topic[1]} item${topic[1] > 1 ? 's' : ''} missed)</li>`; });
+            focusHTML += '</ul>';
+        } else {
+            focusHTML += '<p>Excellent work! No specific weak areas were identified. Keep practicing!</p>';
+        }
+        focusHTML += '</div>';
+        return focusHTML;
+    }
+
+    function triggerConfetti() {
+        const numConfetti = 150;
+        for (let i = 0; i < numConfetti; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 90%, 60%)`;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 6000);
+        }
+    }
+
+    // A simple message box function (replacing alert())
+    function displayMessageBox(message) {
+        const messageBox = document.createElement('div');
+        messageBox.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--bg-white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px var(--shadow-color);
+            z-index: 10000;
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            max-width: 80%;
+        `;
+        messageBox.innerHTML = `
+            <p>${message}</p>
+            <button onclick="this.parentNode.remove()" style="
+                background-color: var(--primary-blue);
+                color: white;
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+                font-weight: 600;
+                border: none;
+                border-radius: 50px;
+                cursor: pointer;
+                margin-top: 1rem;
+            ">OK</button>
+        `;
+        document.body.appendChild(messageBox);
+    }
+
+    startBtn.addEventListener('click', prepareAndStartQuiz);
+    quizForm.addEventListener('submit', e => { 
+        e.preventDefault(); 
+        handleNavigation(); 
+    });
+</script>
+
+</body>
+</html>
