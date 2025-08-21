@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardiac Rhythm Interpretation Module</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind CSS configuration to use the Inter font.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out forwards',
+                    },
+                },
+            },
+        };
+    </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- React and Library Setup ---
+        // Destructure necessary hooks from the global React object.
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        // --- Mock Authentication Setup for Standalone Demo ---
+        // This mock object simulates basic user authentication to allow progress tracking via localStorage.
+        // In a real application, this would be replaced with actual Firebase authentication.
+        const mockAuth = {
+            onAuthStateChanged: (callback) => {
+                // Simulate an asynchronous authentication check, providing a unique user ID.
+                setTimeout(() => callback({ uid: 'standalone-ekg-user' }), 100);
+                return () => {}; // Returns an empty function as a cleanup/unsubscribe placeholder.
+            },
+            signInAnonymously: () => Promise.resolve({ user: { uid: 'standalone-ekg-user' } }), // Mock anonymous sign-in.
+        };
+
+        // --- Content & Data Structure for the Learning Modules ---
+        // The main content is broken down into smaller, focused modules based on concepts.
+        const contentData = {
+            'electrophysiology-basics': {
+                title: 'Electrophysiology & EKG Basics',
+                color: 'from-blue-500 to-indigo-400',
+                description: 'Understand the heart\'s electrical system and how it looks on an EKG.',
+                steps: [
+                    { id: 'intro-ekg-objectives', title: 'Why EKG Matters: Our Objectives', type: 'text', content: `Hey future nurses! Understanding cardiac rhythms is HUGE. It's not just about memorizing squiggly lines; it's about knowing what the heart is telling you and when to act FAST. Think of the EKG as the heart's unique language. Here's what we'll nail down:<br><br>
+                        <ul>
+                            <li>Identify the **normal electrical flow** of the heart (think of it as a specific pathway).</li>
+                            <li>Spot the difference between **normal and abnormal** heart rhythms.</li>
+                            <li>Grasp the **basic terms** used in EKG monitoring (you'll sound like a pro!).</li>
+                            <li>Recognize **emergency situations** on the EKG and know the **appropriate nursing actions**. Because sometimes, seconds count!</li>
+                        </ul>` },
+                    { id: 'heart-electrical-highway', title: 'The Heart\'s Electrical Highway', type: 'text', content: `The heart has its own built-in electrical system, a "highway" that directs every beat. Let's meet the key players:<br><br>
+                        <strong>Sinoatrial (SA) Node:</strong>
+                        <ul>
+                            <li>Think of it as the heart's **natural pacemaker**, located in the upper right atrium.</li>
+                            <li>It sets the normal rhythm, usually firing at **60-100 beats/minute (bpm)**. This is where the normal electrical impulse *should* start.</li>
+                        </ul>
+                        <strong>Atrioventricular (AV) Node:</strong>
+                        <ul>
+                            <li>Located in the lower right atrium.</li>
+                            <li>Its job is to **delay the electrical impulse briefly**. Why? To allow the atria (the top chambers) to fully contract and push blood into the ventricles (the bottom chambers) before they squeeze. It's like a traffic light, ensuring everything fills up before pumping.</li>
+                        </ul>
+                        <strong>Bundle of His:</strong>
+                        <ul>
+                            <li>Connects the AV node to the ventricles.</li>
+                            <li>If the SA node or AV node fail, the Bundle of His can take over as a backup pacemaker, but at a slower rate: **40-60 bpm**.</li>
+                        </ul>
+                        <strong>Right & Left Bundle Branches:</strong>
+                        <ul>
+                            <li>These are the "roads" that spread the electrical signal to the right and left ventricles, making them contract.</li>
+                        </ul>
+                        <strong>Purkinje Fibers:</strong>
+                        <ul>
+                            <li>An intricate web of tiny "nerve endings" distributed throughout the ventricular muscle. They rapidly spread the electrical impulse, ensuring a coordinated contraction of the ventricles. If all else fails, the Purkinje fibers can initiate a very slow rhythm, often 20-40 bpm.</li>
+                        </ul>` },
+                    { id: 'ekg-basics-electrical', title: 'EKG Basics: What\'s Happening Electrically?', type: 'text', content: `When we talk about the heart's electricity, two big words come up:<br><br>
+                        <strong>Depolarization:</strong>
+                        <ul>
+                            <li>Imagine ions (charged particles like sodium, calcium) rushing *into* the heart muscle cells.</li>
+                            <li>This makes the inside of the cell go from negative to positive.</li>
+                            <li>What happens when muscle cells get a positive charge? They **contract**! So, depolarization = contraction.</li>
+                        </ul>
+                        <strong>Repolarization:</strong>
+                        <ul>
+                            <li>Now, the ions move back *out* of the cell, making the inside negative again.</li>
+                            <li>This is the muscle **relaxing** and resetting for the next beat. So, repolarization = relaxation/recharge.</li>
+                        </ul>
+                        Every bump and dip on an EKG strip represents this dance of depolarization and repolarization.` },
+                    { id: 'telemetry-lead-placement', title: 'Telemetry: Where Do Those Stickers Go?', type: 'text', content: `To "listen" to the heart's electricity, we use EKG leads (the stickers!). Proper placement is key for an accurate reading. For a common 5-lead telemetry setup, here's the quick guide:<br><br>
+                        <ul>
+                            <li><strong>White (RA - Right Arm):</strong> Distal right clavicle (below the collarbone).</li>
+                            <li><strong>Black (LA - Left Arm):</strong> Distal left clavicle (below the collarbone).</li>
+                            <li><strong>Red (LL - Left Leg):</strong> Left 5th intercostal space, mid-clavicular line (often near the lowest rib margin on the left).</li>
+                            <li><strong>Brown (Central):</strong> 4th intercostal space, right sternal border. This is often V1 and helps create a better picture.</li>
+                        </ul>
+                        The EKG often focuses on "Lead II" because it gives a great view of the electrical activity flowing from the SA node down to the ventricles – the heart's main electrical pathway.` },
+                    { id: 'reading-ekg-paper', title: 'Reading the EKG Paper: Time is Everything!', type: 'text', content: `EKG paper isn't just paper; it's a grid designed to measure time and voltage. For us, time is especially critical for calculating heart rates and intervals:<br><br>
+                        <ul>
+                            <li>Each **small square** horizontally represents **0.04 seconds**.</li>
+                            <li>Each **large square** (made of 5 small squares) horizontally represents **0.20 seconds** ($5 \times 0.04s = 0.20s$).</li>
+                            <li>So, **5 large boxes** represent **1 second**.</li>
+                            <li>And **30 large boxes** represent **6 seconds**. This 6-second strip is our best friend for quick rate calculations!</li>
+                        </ul>
+                        The paper often has markings at the top or bottom indicating 3-second intervals (15 large boxes) and 6-second intervals (30 large boxes).` },
+                    { id: 'rate-measurement-6sec', title: 'Quick Rate Check: The 6-Second Method', type: 'text', content: `When you're faced with an EKG strip, especially if the rhythm is irregular, the 6-second method is your go-to for estimating the rate. It's super simple:<br><br>
+                        <ol>
+                            <li>Find a <strong>6-second interval</strong> on your EKG strip (look for the markings, usually every 30 large boxes).</li>
+                            <li>Count the number of <strong>QRS complexes</strong> (those big spikes) within that 6-second period.</li>
+                            <li>Multiply that number by <strong>10</strong>. This gives you the estimated <strong>ventricular rate</strong> (the rate at which the ventricles are contracting).</li>
+                            <li><strong>Bonus:</strong> You can also count the number of <strong>P waves</strong> in 6 seconds and multiply by 10 to get the <strong>atrial rate</strong>. This is crucial for distinguishing some rhythms.</li>
+                        </ol>
+                        This method works well for both regular and irregular rhythms, giving you a quick estimate.` },
+                    { id: 'ekg-complex-waves', title: 'Decoding the EKG Waves: P, QRS, T', type: 'text', content: `Every bump and dip on the EKG has a meaning. Let's break down the main components:<br><br>
+                        <strong>P Wave:</strong>
+                        <ul>
+                            <li>Represents the **depolarization (contraction) of the atria** (the top chambers).</li>
+                            <li>It should look **smooth, rounded, and upright** in Lead II.</li>
+                            <li>Normal duration: **less than 0.12 seconds** (less than 3 small squares).</li>
+                        </ul>
+                        <strong>PR Segment:</strong>
+                        <ul>
+                            <li>This is the flat line after the P wave but before the QRS.</li>
+                            <li>It represents the brief delay at the AV node.</li>
+                            <li>Normally, it's an **isoelectric line** (flat, no electrical activity).</li>
+                        </ul>
+                        <strong>PR Interval:</strong>
+                        <ul>
+                            <li>Measures the time from the **beginning of the P wave to the beginning of the QRS complex**.</li>
+                            <li>This is the total time it takes for the electrical impulse to travel from the atria, through the AV node, and into the ventricles.</li>
+                            <li>Normal duration: **0.12-0.20 seconds** (3 to 5 small squares). If it's too long or too short, it tells us something is off with conduction!</li>
+                        </ul>
+                        <strong>QRS Complex:</strong>
+                        <ul>
+                            <li>The big spike! This represents the **depolarization (contraction) of the ventricles** (the bottom chambers). This is the powerful squeeze that pushes blood out.</li>
+                            <li>Atrial repolarization (relaxation) also happens during the QRS, but it's "overshadowed" by the much larger ventricular activity, so we don't usually see a distinct wave for it.</li>
+                            <li>Normal duration: **0.06-0.12 seconds** (1.5 to 3 small squares). If it's wider, the impulse isn't traveling through the ventricles as efficiently.</li>
+                        </ul>
+                        <strong>ST Segment:</strong>
+                        <ul>
+                            <li>The portion between the end of the S wave and the beginning of the T wave.</li>
+                            <li>Represents the **early part of ventricular repolarization**.</li>
+                            <li>Normally, it's an **isoelectric line** (flat, at the baseline). Any **elevation or depression** is a BIG DEAL and can indicate myocardial ischemia (lack of blood flow to the heart muscle) or infarction (heart attack!).</li>
+                        </ul>
+                        <strong>T Wave:</strong>
+                        <ul>
+                            <li>Represents **ventricular repolarization** (relaxation and recharging of the ventricles).</li>
+                            <li>It should also look smooth and rounded.</li>
+                            <li>Abnormal T waves can indicate electrolyte imbalances (like high potassium - **hyperkalemia**, leading to "peaked" T waves) or **coronary ischemia** (leading to "depressed" or inverted T waves).</li>
+                        </ul>
+                        <strong>QT Interval:</strong>
+                        <ul>
+                            <li>Measures the **entire ventricular activity**, from the beginning of the QRS to the end of the T wave.</li>
+                            <li>Normal duration: **0.36-0.44 seconds**. A prolonged QT interval is a risk factor for dangerous arrhythmias like Torsades de Pointes.</li>
+                        </ul>
+                        <strong>U Wave:</strong>
+                        <ul>
+                            <li>Sometimes seen after the T wave, especially with **hypokalemia** (low potassium).</li>
+                            <li>It's thought to represent the repolarization of the Purkinje fibers.</li>
+                        </ul>` },
+                    { id: 'ekg-analysis-checklist', title: 'Your EKG Analysis Checklist', type: 'text', content: `When you look at an EKG strip, don't just stare! Use a systematic approach. Think of it as your rhythm "recipe":<br><br>
+                        <ol>
+                            <li><strong>Rhythm:</strong> Is it regular or irregular? (Look at R-R intervals for ventricular, P-P intervals for atrial).</li>
+                            <li><strong>Rate:</strong> What's the ventricular rate (QRS) and atrial rate (P waves)? (Use the 6-second method!).</li>
+                            <li><strong>P Waves:</strong> Are they present? Do they look normal (rounded, upright, similar shape)? Is there one P wave for every QRS?</li>
+                            <li><strong>PR Interval:</strong> Is it within normal limits (0.12-0.20 seconds)? Is it consistent?</li>
+                            <li><strong>QRS Complex:</strong> Is it within normal limits (0.06-0.12 seconds)? Do all QRS complexes look similar?</li>
+                            <li><strong>ST Segment & T Wave:</strong> Are they normal? Any elevation, depression, or abnormal shape?</li>
+                        </ol>
+                        This checklist will guide you through any rhythm, helping you identify abnormalities and understand their implications.` },
+                    { id: 'ekg-basics-quiz', title: 'EKG Fundamentals Check-up', type: 'quiz',
+                        questions: [
+                            { question: "Which component of the EKG complex represents ventricular depolarization and contraction?", options: ["P Wave", "PR Interval", "QRS Complex", "T Wave"], correctAnswer: "QRS Complex" },
+                            { question: "What is the normal pacemaker of the heart, setting the intrinsic rate of 60-100 bpm?", options: ["Atrioventricular (AV) Node", "Bundle of His", "Purkinje Fibers", "Sinoatrial (SA) Node"], correctAnswer: "Sinoatrial (SA) Node" },
+                            { question: "On EKG paper, how many seconds does one large square represent?", options: ["0.04 seconds", "0.12 seconds", "0.20 seconds", "1.00 seconds"], correctAnswer: "0.20 seconds" },
+                            { question: "A prolonged PR interval (greater than 0.20 seconds) indicates a delay in conduction through which part of the electrical system?", options: ["SA Node", "Atria", "AV Node", "Ventricles"], correctAnswer: "AV Node" },
+                            { question: "Which EKG finding is a significant indicator of myocardial ischemia or infarction?", options: ["Normal P wave", "Isoelectric PR segment", "ST segment elevation or depression", "Normal QRS duration"], correctAnswer: "ST segment elevation or depression" }
+                        ]
+                    },
+                ]
+            },
+            'sinus-rhythms': {
+                title: 'Sinus Rhythms: The Normal & Its Variations',
+                color: 'from-green-500 to-emerald-400',
+                description: 'Explore rhythms originating from the SA node, from ideal to slightly off.',
+                steps: [
+                    { id: 'normal-sinus-rhythm', title: 'Normal Sinus Rhythm (NSR): The Gold Standard', type: 'text', content: `This is what we want to see! NSR means everything is working perfectly:<br><br>
+                        <ul>
+                            <li><strong>Origin:</strong> Starts in the SA node (the heart's natural pacemaker).</li>
+                            <li><strong>Rate:</strong> **60-100 bpm**.</li>
+                            <li><strong>Rhythm:</strong> **Regular** (consistent R-R and P-P intervals).</li>
+                            <li><strong>P Wave:</strong> Normal shape, size, and upright in Lead II. One P wave for every QRS.</li>
+                            <li><strong>PR Interval:</strong> Normal duration (0.12-0.20 seconds) and consistent.</li>
+                            <li><strong>QRS Complex:</strong> Normal duration (0.06-0.12 seconds) and uniform shape.</li>
+                            <li><strong>QT Interval:</strong> Normal duration (0.36-0.44 seconds).</li>
+                        </ul>
+                        When you see NSR, you can breathe a sigh of relief – at least rhythm-wise!` },
+                    { id: 'sinus-bradycardia', title: 'Sinus Bradycardia: Slow & Steady (Sometimes Too Slow!)', type: 'text', content: `Imagine a marathon runner at rest; their heart rate is naturally lower. Sinus bradycardia is just a slow heart rate originating from the SA node.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> SA node.</li>
+                            <li><strong>Rate:</strong> **Below 60 bpm**.</li>
+                            <li><strong>Rhythm:</strong> Regular.</li>
+                            <li><strong>P Wave, PR Interval, QRS Complex:</strong> All normal.</li>
+                        </ul>
+                        <strong>Causes (Why it happens):</strong>
+                        <ul>
+                            <li>**Normal variation:** Athletes, during sleep, increased vagal tone (e.g., straining to have a bowel movement).</li>
+                            <li>**Medications:** Beta-blockers (Inderal), Digoxin, Calcium Channel Blockers (Verapamil).</li>
+                            <li>**Medical Conditions:** Myocardial Infarction (MI), hypothermia.</li>
+                        </ul>
+                        <strong>Symptoms (When it's a problem):</strong>
+                        <ul>
+                            <li>Often **asymptomatic**. If the patient feels fine, you might just monitor.</li>
+                            <li>**If symptomatic:** Chest pain, shortness of breath (SOB), altered level of consciousness (LOC), hypotension, signs of heart failure (CHF, pulmonary congestion), fatigue, syncope (fainting), lightheadedness. These are signs of **poor perfusion**!</li>
+                        </ul>
+                        <strong>Treatment (If symptomatic):</strong>
+                        <ul>
+                            <li>First, check the patient, not just the monitor! Assess their symptoms.</li>
+                            <li>Oxygen (O2) and IV access are always good starting points.</li>
+                            <li>**Medication:** **Atropine IV** (helps speed up the heart).</li>
+                            <li>**Intervention:** **Transcutaneous pacing** (external device to deliver electrical impulses to stimulate heart rate).</li>
+                        </ul>` },
+                    { id: 'sinus-tachycardia', title: 'Sinus Tachycardia: Fast & Furious (What\'s the Trigger?)', type: 'text', content: `This is when the SA node is working overtime, usually in response to a body demand. Think of your heart racing after a sprint.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> SA node.</li>
+                            <li><strong>Rate:</strong> **101-160 bpm**.</li>
+                            <li><strong>Rhythm:</strong> Regular.</li>
+                            <li><strong>P Wave, PR Interval, QRS Complex:</strong> All normal.</li>
+                        </ul>
+                        <strong>Causes (Common Triggers):</strong>
+                        <ul>
+                            <li>**Physiological Stress:** Fever, pain, anxiety, exercise, infection, hypovolemia (low blood volume), dehydration.</li>
+                            <li>**Cardiac Issues:** CHF, MI.</li>
+                            <li>**Substances:** Caffeine, nicotine, cocaine, epinephrine, dopamine, atropine.</li>
+                        </ul>
+                        <strong>Symptoms:</strong>
+                        <ul>
+                            <li>Often **asymptomatic**.</li>
+                            <li>**If symptomatic:** Angina (chest pain due to increased oxygen demand on a heart that can't keep up).</li>
+                        </ul>
+                        <strong>Treatment:</strong>
+                        <ul>
+                            <li>The key here is to **correct the underlying cause!** Treat the fever, give fluids for dehydration, manage the pain, etc. Once the cause is resolved, the heart rate usually returns to normal.</li>
+                        </ul>` },
+                    { id: 'sinus-arrhythmia', title: 'Sinus Arrhythmia: The Breath-Related Wobble', type: 'text', content: `Don't let the word "arrhythmia" scare you with this one! It's a normal, often harmless variation.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Rate:</strong> Usually normal.</li>
+                            <li><strong>Rhythm:</strong> **Irregular** (the only irregular sinus rhythm!).</li>
+                            <li><strong>P Wave, PR Interval, QRS Complex:</strong> All normal.</li>
+                        </ul>
+                        <strong>Causes:</strong>
+                        <ul>
+                            <li>Directly related to **breathing**! The heart rate increases during inspiration (R-R interval shortens) and decreases during expiration (R-R interval lengthens).</li>
+                            <li>Commonly seen in young people and the elderly.</li>
+                        </ul>
+                        <strong>Symptoms & Treatment:</strong>
+                        <ul>
+                            <li>Almost always **asymptomatic**.</li>
+                            <li>**No treatment** is needed, and it does not require emergency intervention. Just recognize it as a normal variant.</li>
+                        </ul>` },
+                    { id: 'sinus-arrest-pause', title: 'Sinus Arrest/Pause: The Missing Beat', type: 'text', content: `This is when the SA node temporarily fails to initiate an impulse, causing a pause in the rhythm.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> SA node fails to fire.</li>
+                            <li><strong>Rate:</strong> Usually slow.</li>
+                            <li><strong>Rhythm:</strong> **Irregular**.</li>
+                            <li>**PQRST:** The **entire PQRST complex is absent** for one or more cycles. It's like the heart just pauses.</li>
+                        </ul>
+                        This can be serious if the pause is long, as it means no cardiac output during that time!` },
+                    { id: 'sinus-rhythms-quiz', title: 'Sinus Rhythms Quiz', type: 'quiz',
+                        questions: [
+                            { question: "A patient's EKG shows a regular rhythm with a heart rate of 50 bpm, a normal P wave, and a normal QRS. What is this rhythm?", options: ["Normal Sinus Rhythm", "Sinus Tachycardia", "Sinus Bradycardia", "Sinus Arrhythmia"], correctAnswer: "Sinus Bradycardia" },
+                            { question: "Which of the following causes is most commonly associated with Sinus Tachycardia?", options: ["Deep sleep", "Beta-blocker medication", "Fever", "Hypothermia"], correctAnswer: "Fever" },
+                            { question: "Which characteristic is unique to Sinus Arrhythmia compared to other sinus rhythms?", options: ["Rate below 60 bpm", "Rate above 100 bpm", "Irregular rhythm that changes with breathing", "Absence of P waves"], correctAnswer: "Irregular rhythm that changes with breathing" },
+                            { question: "In Sinus Bradycardia, if the patient is symptomatic (e.g., dizzy, hypotensive), what is a priority nursing intervention?", options: ["Administer a beta-blocker", "Prepare for synchronized cardioversion", "Administer Atropine IV", "Encourage vigorous exercise"], correctAnswer: "Administer Atropine IV" }
+                        ]
+                    },
+                ]
+            },
+            'atrial-rhythms': {
+                title: 'Atrial Rhythms: When the Atria Get Wonky',
+                color: 'from-orange-500 to-red-400',
+                description: 'Dive into rhythms that start in the atria, often leading to rapid or irregular beats.',
+                steps: [
+                    { id: 'premature-atrial-contraction', title: 'Premature Atrial Contraction (PAC): The Early Bird', type: 'text', content: `Think of a PAC as an "extra" heartbeat that comes too early, originating from an irritable spot in the atria, *not* the SA node.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> Somewhere in the atria, outside the SA node.</li>
+                            <li><strong>Rate:</strong> Usually normal overall, but the rhythm is interrupted by the early beat.</li>
+                            <li><strong>Rhythm:</strong> **Irregular** due to the premature beat.</li>
+                            <li><strong>P Wave:</strong> **Premature** and looks **different** from the normal sinus P waves (it's coming from a different spot!).</li>
+                            <li><strong>PR Interval & QRS Complex:</strong> Usually normal for the premature beat.</li>
+                        </ul>
+                        PACs are often harmless but can be a sign of irritation or a precursor to more serious atrial rhythms if frequent.` },
+                    { id: 'supraventricular-tachycardia', title: 'Supraventricular Tachycardia (SVT): Super Fast, From Above', type: 'text', content: `SVT means a very fast heart rate that starts "above the ventricles" (supra-ventricular), usually in the atria or AV node.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> Above the ventricles (atria or AV node).</li>
+                            <li><strong>Rate:</strong> Super fast! **150-250 bpm**.</li>
+                            <li><strong>Rhythm:</strong> Usually **regular**.</li>
+                            <li><strong>P Wave:</strong> Often **none identified** because they are hidden within the fast QRS complexes or are too tiny to see.</li>
+                            <li><strong>PR Interval & QT Interval:</strong> Often **none** or difficult to measure due to speed.</li>
+                            <li><strong>QRS Complex:</strong> Usually **normal** (narrow), because the impulse travels down the normal ventricular pathway.</li>
+                        </ul>
+                        <strong>Causes:</strong> Hypoxia, hypokalemia, caffeine, nicotine, stress, digitalis toxicity, rheumatic heart disease, CAD after MI, respiratory failure.<br><br>
+                        <strong>Symptoms:</strong>
+                        <ul>
+                            <li>Sudden racing of the heart, anxiety.</li>
+                            <li><strong>If unstable (poor perfusion):</strong> Angina, dizziness, SOB, altered LOC, hypotension.</li>
+                        </ul>
+                        <strong>Treatment (Depends on Stability):</strong>
+                        <ul>
+                            <li><strong>If Stable:</strong> O2, IV access. Try **vagal maneuvers** (bearing down like you're having a bowel movement, ice to the face – stimulates vagus nerve to slow heart rate).</li>
+                            <li>**Medications (If stable and vagal maneuvers fail):** **Adenosine** (given IV push rapidly, causes a brief pause/flatline on monitor to "reset" the heart), **Verapamil** (a calcium channel blocker).</li>
+                            <li><strong>If Unstable (Emergency!):</strong> O2, IV access, and prepare for **Synchronized Cardioversion** (a controlled electrical shock timed with the heart's rhythm to reset it).</li>
+                        </ul>` },
+                    { id: 'atrial-fibrillation', title: 'Atrial Fibrillation (A-Fib): Chaotic Quivering', type: 'text', content: `A-Fib is a very common and often dangerous arrhythmia. The atria aren't contracting effectively; they're just quivering ("fibrillating") in a chaotic way. This means blood can pool, increasing the risk of clots and stroke.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> Many irritable spots all over the atria ("chaotic discharge of impulses").</li>
+                            <li><strong>Atrial Rate:</strong> Unable to determine (can be 350-600 bpm, but it's disorganized).</li>
+                            <li><strong>Ventricular Rate:</strong> Usually **does not exceed 180 bpm** (the AV node blocks most of the chaotic impulses).</li>
+                            <li><strong>Rhythm:</strong> **Irregularly irregular** (no discernible pattern to the irregularity).</li>
+                            <li><strong>P Wave:</strong> **No true P waves identified**, instead you see "fibrillation waves" – tiny, chaotic squiggles on the baseline.</li>
+                            <li><strong>PR Interval & QT Interval:</strong> Unmeasurable.</li>
+                            <li><strong>QRS Complex:</strong> Usually normal (narrow).</li>
+                        </ul>
+                        <strong>Symptoms:</strong>
+                        <ul>
+                            <li>Often **asymptomatic**.</li>
+                            <li>**If symptomatic:** Palpitations, weakness, dizziness, chest pain, "skipped beats."</li>
+                        </ul>
+                        <strong>Treatment (Depends on Stability & Risk Factors):</strong>
+                        <ul>
+                            <li><strong>If Stable:</strong> Medications to control the heart rate (e.g., **Calcium channel blockers**, **Beta-blockers**) or to restore normal rhythm. Anticoagulants (blood thinners) are crucial due to stroke risk.</li>
+                            <li><strong>If Unstable (Emergency!):</strong> **Synchronized Cardioversion** to reset the rhythm.</li>
+                        </ul>` },
+                    { id: 'atrial-flutter', title: 'Atrial Flutter (A-Flutter): The Sawtooth Pattern', type: 'text', content: `In A-flutter, the atria are depolarizing rapidly and regularly, but in a very organized "circus movement" pattern, giving a distinctive "sawtooth" appearance on the EKG.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> Atria.</li>
+                            <li><strong>Atrial Rate:</strong> Fast but organized: **220-350 bpm**.</li>
+                            <li><strong>Ventricular Rate:</strong> Varies, can be regular or irregular, depending on how many atrial impulses get through the AV node (e.g., 2:1, 3:1 conduction).</li>
+                            <li><strong>Rhythm:</strong> Atrial rhythm is regular, ventricular can be regular or irregular.</li>
+                            <li><strong>P Wave:</strong> Not true P waves, but characteristic **"sawtooth" flutter waves**.</li>
+                            <li><strong>PR Interval & QT Interval:</strong> Unmeasurable.</li>
+                            <li><strong>QRS Complex:</strong> Usually normal (narrow), but can be wide if there's an associated bundle branch block.</li>
+                        </ul>
+                        <strong>Symptoms:</strong>
+                        <ul>
+                            <li>Can be **asymptomatic**.</li>
+                            <li>**If symptomatic:** Palpitations, weakness, dizziness.</li>
+                        </ul>
+                        <strong>Treatment (Depends on Stability):</strong>
+                        <ul>
+                            <li><strong>If Stable with Tachycardia:</strong> Medications to control heart rate (**Calcium Channel blockers, Beta-blockers**). Anticoagulation is also important due to clot risk.</li>
+                            <li><strong>If Unstable with Tachycardia (Emergency!):</strong> **Synchronized Cardioversion**.</li>
+                        </ul>` },
+                    { id: 'atrial-rhythms-quiz', title: 'Atrial Rhythms Quiz', type: 'quiz',
+                        questions: [
+                            { question: "Which atrial rhythm is characterized by an 'irregularly irregular' ventricular rhythm and no discernible P waves?", options: ["Premature Atrial Contraction", "Supraventricular Tachycardia", "Atrial Fibrillation", "Atrial Flutter"], correctAnswer: "Atrial Fibrillation" },
+                            { question: "The distinctive 'sawtooth' pattern on an EKG strip is characteristic of which atrial rhythm?", options: ["Normal Sinus Rhythm", "Sinus Arrhythmia", "Atrial Fibrillation", "Atrial Flutter"], correctAnswer: "Atrial Flutter" },
+                            { question: "A patient presents with a heart rate of 180 bpm, regular rhythm, and narrow QRS complexes with no identifiable P waves. What is the most likely rhythm?", options: ["Sinus Tachycardia", "Supraventricular Tachycardia (SVT)", "Ventricular Tachycardia", "Atrial Fibrillation"], correctAnswer: "Supraventricular Tachycardia (SVT)" },
+                            { question: "For a symptomatic patient with Supraventricular Tachycardia (SVT), what is a common first-line nursing intervention (before medications)?", options: ["Administering a beta-blocker", "Performing synchronized cardioversion", "Encouraging vagal maneuvers", "Starting CPR"], correctAnswer: "Encouraging vagal maneuvers" }
+                        ]
+                    },
+                ]
+            },
+            'ventricular-rhythms': {
+                title: 'Ventricular Rhythms: When the Ventricles Take Over (or Go Haywire)',
+                color: 'from-purple-600 to-pink-500',
+                description: 'Critical rhythms originating in the ventricles, ranging from benign to life-threatening.',
+                steps: [
+                    { id: 'premature-ventricular-contraction', title: 'Premature Ventricular Contraction (PVC): The Ventricular Imposter', type: 'text', content: `A PVC is an early, wide, and weird-looking beat that originates from an irritable spot directly in the ventricle, bypassing the normal electrical highway.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> Irritable site in the ventricle(s).</li>
+                            <li><strong>Rate:</strong> Varies with the underlying rhythm, but the PVC itself is premature.</li>
+                            <li><strong>Rhythm:</strong> **Irregular** due to the early beat.</li>
+                            <li><strong>P Wave:</strong> Usually **none** associated with the PVC (the impulse starts in the ventricle, not the atria).</li>
+                            <li><strong>PR Interval:</strong> None.</li>
+                            <li><strong>QRS Complex:</strong> **Wide** (greater than 0.12 seconds) and often **bizarre** or different from the patient's normal QRS. It's not using the normal conduction system.</li>
+                        </ul>
+                        <strong>Causes:</strong> Can be a **normal variant** (especially if infrequent and isolated), but also anxiety, exercise, hypoxia, digitalis toxicity, acid-base imbalance, myocardial ischemia/MI, CHF, alcohol, caffeine, tobacco, other drugs, and crucial electrolyte imbalances (hypokalemia, hypocalcemia, hypercalcemia, hypomagnesemia).<br><br>
+                        <strong>Symptoms:</strong>
+                        <ul>
+                            <li>Often **asymptomatic**, or the patient might feel a "skipped beat" or "palpitation."</li>
+                            <li>**If symptomatic:** Angina, hypotension (if frequent enough to impair cardiac output).</li>
+                        </ul>
+                        <strong>Treatment:</strong>
+                        <ul>
+                            <li>Focus on treating the **underlying cause** or symptoms. If a patient has an MI and starts having frequent PVCs, it's concerning!</li>
+                            <li>**Non-acute setting:** Oral antiarrhythmics like Beta Blockers, Calcium Channel Blockers.</li>
+                            <li>**Acute setting (e.g., post-MI, frequent/symptomatic PVCs):** IV Amiodarone, IV Procainamide.</li>
+                        </ul>
+                        **Think of PVCs like a warning sign.** A few here and there? Probably okay. Lots of them, especially after an MI, or if they're close to the T wave (R-on-T phenomenon, increasing risk for V-fib)? Immediate concern!` },
+                    { id: 'pvc-patterns', title: 'PVC Patterns: Bigeminy, Trigeminy, Couplets & More', type: 'text', content: `PVCs don't always appear alone. They can show up in specific patterns:<br><br>
+                        <ul>
+                            <li><strong>Bigeminy:</strong> Every **second** beat is a PVC (Normal, PVC, Normal, PVC...).</li>
+                            <li><strong>Trigeminy:</strong> Every **third** beat is a PVC (Normal, Normal, PVC, Normal, Normal, PVC...).</li>
+                            <li><strong>Quadrigeminy:</strong> Every **fourth** beat is a PVC.</li>
+                            <li><strong>Couplet:</strong> Two PVCs in a row.</li>
+                            <li><strong>Triplet/Salvo:</strong> Three PVCs in a row. (Three or more PVCs in a row? That's Ventricular Tachycardia!)</li>
+                        </ul>
+                        PVCs can also be:<br>
+                        <ul>
+                            <li><strong>Unifocal:</strong> All PVCs look the **same** (originating from a single irritable spot in the ventricle).</li>
+                            <li><strong>Multifocal:</strong> PVCs look **different** (originating from multiple irritable spots in the ventricle). This is generally more concerning as it suggests wider ventricular irritability.</li>
+                        </ul>
+                        Recognizing these patterns helps you understand the severity and potential implications for your patient.` },
+                    { id: 'ventricular-tachycardia', title: 'Ventricular Tachycardia (VT): The Danger Zone!', type: 'text', content: `VT is a serious, often life-threatening arrhythmia. It means the ventricles are beating extremely fast and usually from a single, irritable focus, often inefficiently.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> Arises directly from the ventricle.</li>
+                            <li><strong>Rate:</strong> Fast: **110-250 bpm**.</li>
+                            <li><strong>Rhythm:</strong> Usually regular, but can be slightly irregular.</li>
+                            <li><strong>P Wave & PR Interval:</strong> Usually **none** identifiable (ventricular activity is too dominant, or atrial activity is disconnected).</li>
+                            <li><strong>QRS Complex:</strong> **Wide and bizarre** (greater than 0.12 seconds), often looking like a series of wide, rapid, identical "mountains." No discernable T wave, or it's buried in the next QRS.</li>
+                        </ul>
+                        <strong>Causes:</strong> Hypoxia, exercise, digitalis toxicity, MI or ischemia, acid-base imbalance, ventricular aneurysm, CAD, rheumatic heart disease, CNS stimulants, hypokalemia, hypomagnesemia, R-on-T phenomenon (a PVC falling on the T wave of the preceding beat).<br><br>
+                        <strong>Symptoms:</strong>
+                        <ul>
+                            <li>Can range from palpitations, dizziness, chest pain, SOB, to **decreased LOC, acute MI, CHF, pulmonary congestion.**</li>
+                            <li>The critical question: **Does the patient HAVE a pulse?**</li>
+                        </ul>
+                        <strong>Treatment (URGENT! Depends on Pulse Presence):</strong>
+                        <ul>
+                            <li><strong>If Stable (patient has a pulse, good perfusion):</strong> O2, IV access. Medications like **IV Amiodarone** or oral antiarrhythmics.</li>
+                            <li><strong>If Unstable (patient has a pulse but showing signs of poor perfusion: hypotension, altered LOC, chest pain):</strong> O2, IV access, and immediate **Synchronized Cardioversion**. IV Amiodarone might be given as well.</li>
+                        </ul>` },
+                    { id: 'pulseless-ventricular-tachycardia', title: 'Pulseless Ventricular Tachycardia: CODE! No Time to Waste!', type: 'text', content: `This is a full-blown emergency. The EKG looks like VT, but the patient HAS NO PULSE. The heart is beating so fast and inefficiently that it's not actually pumping blood.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li>Same EKG characteristics as Ventricular Tachycardia (wide, bizarre, rapid complexes).</li>
+                            <li>**CRITICAL DIFFERENCE:** **NO PALPABLE PULSE.** This is a non-perfusing rhythm.</li>
+                        </ul>
+                        <strong>Causes:</strong> Same as VT (hypoxia, MI, electrolyte imbalances, etc.).<br><br>
+                        <strong>Symptoms:</strong> Loss of consciousness, **no palpable pulses.**<br><br>
+                        <strong>Treatment (IMMEDIATE CODE!):</strong>
+                        <ul>
+                            <li>Initiate **CPR** immediately.</li>
+                            <li>Get that **Defibrillator** ready! This is a **shockable rhythm**.</li>
+                            <li>O2, IV access.</li>
+                            <li>Medications: **IV Antiarrhythmics** (Amiodarone, Lidocaine) as per ACLS protocols.</li>
+                            <li>Every second counts here. CPR and defibrillation are paramount.` },
+                    { id: 'ventricular-fibrillation', title: 'Ventricular Fibrillation (V-Fib): The Quivering Death', type: 'text', content: `V-fib is absolute cardiac chaos. The ventricles are not contracting at all; they're just quivering randomly. No organized electrical activity means **no cardiac output, no pulse, and no life**.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> Ventricles (multiple irritable sites).</li>
+                            <li><strong>Rate:</strong> Cannot determine (it's chaos).</li>
+                            <li><strong>Rhythm:</strong> **Irregular, rapid, chaotic**. Looks like fine or coarse "bag of worms" or squiggly lines.</li>
+                            <li><strong>P Wave, PR Interval, QRS Complex, QT Interval:</strong> **NONE** identifiable.</li>
+                            <li>Can be **Coarse V-fib** (larger, more distinct chaotic waves) or **Fine V-fib** (smaller, less distinct waves, almost flatline).</li>
+                        </ul>
+                        <strong>Causes:</strong> Sudden cardiac death, acute MI, untreated VT, R-on-T PVCs, hypothermia, acid-base imbalance, accidental electrocution, lightning strikes, digitalis toxicity, mitral valve prolapse, hypo/hyperkalemia.<br><br>
+                        <strong>Symptoms:</strong> **No cardiac output, no pulse, no BP**, loss of consciousness, apnea (not breathing), cyanosis (blueish discoloration), seizures. This patient is clinically dead.<br><br>
+                        <strong>Treatment (IMMEDIATE CODE!):</strong>
+                        <ul>
+                            <li>Initiate **CPR** immediately.</li>
+                            <li>Get that **Defibrillator** ready! This is a **shockable rhythm**.</li>
+                            <li>O2, IV access, **Intubation**.</li>
+                            <li>Medications: As per ACLS protocols (e.g., Epinephrine, Amiodarone).</li>
+                        </ul>
+                        V-fib is the rhythm you absolutely need to recognize instantly and defibrillate!` },
+                    { id: 'torsades-de-pointes', title: 'Torsades de Pointes: The Twisting Rhythm', type: 'text', content: `Torsades de Pointes (French for "twisting of the points") is a unique and dangerous form of Ventricular Tachycardia. It's often associated with a prolonged QT interval.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Rate:</strong> **200-250 bpm**.</li>
+                            <li><strong>Rhythm:</strong> **Irregular**.</li>
+                            <li><strong>P Waves & PR Intervals:</strong> None.</li>
+                            <li><strong>QRS Complex:</strong> **Wide** (greater than 0.12 seconds) and has a distinctive **bizarre, polymorphic appearance** where the QRS complexes appear to "twist" around the baseline.</li>
+                        </ul>
+                        This rhythm can quickly degenerate into V-fib. It's often caused by drugs that prolong the QT interval or electrolyte imbalances (especially hypomagnesemia). Treatment often involves IV magnesium sulfate.` },
+                    { id: 'idioventricular-rhythm', title: 'Idioventricular Rhythm: The Last Resort (Ventricular Escape)', type: 'text', content: `This is a "dying heart" rhythm, literally. It means the SA node and AV node have failed, and the ventricles' own inherent pacemaker (Purkinje fibers) has taken over as a last ditch effort to maintain some circulation.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li><strong>Origin:</strong> Ventricles.</li>
+                            <li><strong>Rate:</strong> Very slow: **20-40 bpm** (the intrinsic rate of the ventricles).</li>
+                            <li><strong>Rhythm:</strong> Usually regular (ventricular rhythm), atrial rhythm is none.</li>
+                            <li><strong>P Wave & PR Interval:</strong> Usually **none**.</li>
+                            <li><strong>QRS Complex:</strong> **Wide** and bizarre (it's originating from the ventricles, not the normal pathway).</li>
+                            <li><strong>QT Interval:</strong> Variable, usually none.</li>
+                        </ul>
+                        <strong>Causes:</strong> Acute MI, digitalis toxicity.<br><br>
+                        <strong>Symptoms:</strong> **Decreased cardiac output**, severe hypotension, weakness, disorientation, loss of consciousness. The patient will look very sick.<br><br>
+                        <strong>Treatment:</strong>
+                        <ul>
+                            <li>Treat the **underlying cause**.</li>
+                            <li><strong>If pulse present:</strong> Prepare for **pacing** (transcutaneous or transvenous) to speed up the heart.</li>
+                            <li><strong>If no pulse:</strong> Initiate **CPR** and prepare for **endotracheal intubation**. This rhythm itself is not shockable because there's no fast, chaotic electrical activity.</li>
+                        </ul>` },
+                    { id: 'asystole', title: 'Asystole: The Flatline (Ventricular Standstill)', type: 'text', content: `This is the ultimate "no electrical activity" rhythm. It's a straight line on the EKG.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li>**NO ELECTRICAL ACTIVITY** on the cardiac monitor. It's a flatline.</li>
+                            <li>**No P waves, no QRS complexes, no T waves.**</li>
+                        </ul>
+                        <strong>Causes:</strong> MI, ventricular aneurysm, acute respiratory failure, hypoxia, pre-existing acidosis, drug overdose, hyperkalemia, hypokalemia, traumatic cardiac arrest, result of countershock.<br><br>
+                        <strong>Symptoms:</strong> **No pulse, no BP**, unconsciousness, cyanosis, seizures. Patient is clinically dead.<br><br>
+                        <strong>Treatment (IMMEDIATE CODE!):</strong>
+                        <ul>
+                            <li>Initiate **CPR** immediately.</li>
+                            <li>**DO NOT SHOCK!** There's no electrical activity to reset.</li>
+                            <li>Endotracheal intubation, IV access.</li>
+                            <li>Medications: Epinephrine.</li>
+                            <li>**Find and treat possible causes** (the "H's and T's" of ACLS, e.g., hypoxia, hypovolemia, acidosis, tension pneumothorax, tamponade, toxins, thrombosis).</li>
+                        </ul>
+                        Always confirm asystole in at least two leads to rule out a loose wire!` },
+                    { id: 'pulseless-electrical-activity', title: 'Pulseless Electrical Activity (PEA): Electrical but No Pump', type: 'text', content: `PEA is one of the trickiest rhythms because the EKG monitor *looks* normal, but the patient HAS NO PULSE. The electrical activity is there, but for some reason, the heart isn't contracting effectively enough to produce a pulse and blood flow.<br><br>
+                        <strong>Characteristics:</strong>
+                        <ul>
+                            <li>**Organized electrical activity** is visible on the cardiac monitor (P waves, QRS, T waves may appear normal).</li>
+                            <li>**CRITICAL DIFFERENCE:** **NO PALPABLE PULSE.** The heart is not perfusing the body.</li>
+                            <li>Rate, rhythm, P waves, PR interval, QRS, QT interval may all appear normal on the monitor.</li>
+                        </ul>
+                        <strong>Causes (Think "H's and T's" - Very Important!):</strong>
+                        <ul>
+                            <li><strong>H's:</strong> **H**ypovolemia (most common and easily reversible!), **H**ypoxia, **H**ydrogen ion (acidosis), **H**ypo/hyperkalemia, **H**ypothermia.</li>
+                            <li><strong>T's:</strong> **T**ension pneumothorax, cardiac **T**amponade, **T**oxins (drug overdose like tricyclics, digitalis, beta blockers, calcium channel blockers), **T**hrombosis (massive MI, pulmonary embolus).</li>
+                        </ul>
+                        <strong>Symptoms:</strong> **No pulse, no BP**, unconsciousness. You'll see electrical activity on the monitor, but feel no pulse.<br><br>
+                        <strong>Treatment (IMMEDIATE CODE!):</strong>
+                        <ul>
+                            <li>Initiate **CPR** immediately.</li>
+                            <li>**DO NOT SHOCK!** This is not a shockable rhythm.</li>
+                            <li>Endotracheal intubation, IV access.</li>
+                            <li>Medications: Epinephrine.</li>
+                            <li>**CRITICALLY IMPORTANT:** **Search for and treat the underlying cause!** (Go through those H's and T's). This is your priority to reverse PEA.</li>
+                        </ul>` },
+                    { id: 'ventricular-rhythms-quiz', title: 'Ventricular Rhythms Quiz', type: 'quiz',
+                        questions: [
+                            { question: "Which of the following EKG findings is characteristic of a Premature Ventricular Contraction (PVC)?", options: ["Narrow QRS complex", "Normal P wave preceding the QRS", "Wide and bizarre QRS complex", "Regular rhythm"], correctAnswer: "Wide and bizarre QRS complex" },
+                            { question: "A patient's monitor shows rapid, wide, bizarre QRS complexes at a rate of 180 bpm. The patient is unconscious and has no palpable pulse. What rhythm is this?", options: ["Ventricular Fibrillation", "Pulseless Ventricular Tachycardia", "Supraventricular Tachycardia", "Asystole"], correctAnswer: "Pulseless Ventricular Tachycardia" },
+                            { question: "In Ventricular Fibrillation (V-fib), what is the most immediate and critical intervention?", options: ["Administering Amiodarone IV", "Initiating CPR and defibrillation", "Performing vagal maneuvers", "Administering Atropine IV"], correctAnswer: "Initiating CPR and defibrillation" },
+                            { question: "Which rhythm displays organized electrical activity on the monitor but no palpable pulse?", options: ["Ventricular Tachycardia with a pulse", "Asystole", "Idioventricular Rhythm", "Pulseless Electrical Activity (PEA)"], correctAnswer: "Pulseless Electrical Activity (PEA)" },
+                            { question: "Torsades de Pointes is a specific type of ventricular tachycardia often associated with which EKG abnormality?", options: ["Short PR interval", "Prolonged QT interval", "Elevated ST segment", "Inverted P wave"], correctAnswer: "Prolonged QT interval" }
+                        ]
+                    },
+                ]
+            },
+            'pacemakers-and-review': {
+                title: 'Pacemakers & Final Review',
+                color: 'from-sky-700 to-cyan-600',
+                description: 'A brief look at pacemakers and a final knowledge check.',
+                steps: [
+                    { id: 'pacemaker-basics', title: 'Pacemakers: When the Heart Needs a Helping Hand', type: 'text', content: `Sometimes, the heart's natural electrical system isn't enough, and it needs a little help from a **pacemaker**.<br><br>
+                        A pacemaker is a small device implanted under the skin that sends electrical impulses to the heart to help it beat at a normal rate and rhythm. Think of it as a tiny, internal "pacemaker for the pacemaker" or a backup system.<br><br>
+                        Key terms when thinking about pacemakers and their EKG appearance:
+                        <ul>
+                            <li><strong>Sense:</strong> The pacemaker "listens" for the heart's own electrical activity. If it senses a natural beat, it won't fire.</li>
+                            <li><strong>Fire (or Pace):</strong> If the pacemaker *doesn't* sense a natural beat within a set time (or if the heart rate drops below a programmed minimum), it sends out an electrical impulse.</li>
+                            <li><strong>Pacer Spike:</strong> This is what you see on the EKG! A small, thin, vertical line (`|`) that immediately precedes the complex it paces.
+                                <ul>
+                                    <li>If it's before a P wave, it's an **atrial pacer spike**.</li>
+                                    <li>If it's before a QRS complex, it's a **ventricular pacer spike**.</li>
+                                    <li>If you see spikes before both, it's a **dual chamber (AV) pacer**.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Response:</strong> The heart's electrical activity immediately following the pacer spike (e.g., a paced P wave or a paced QRS complex). This confirms the pacemaker is effectively "capturing" the heart.</li>
+                        </ul>
+                        Pacemakers are designed to treat symptomatic bradycardias or certain tachyarrhythmias by ensuring the heart beats at an adequate rate.` },
+                    { id: 'critical-thinking-case-study-ekg', title: 'Critical Thinking Case Study: EKG Interpretation', type: 'case_study', case: {
+                        scenario: `You are the nurse on a telemetry unit. Your 72-year-old patient, admitted for pneumonia, suddenly complains of dizziness and feeling "lightheaded." You glance at the cardiac monitor and see the following:
+                        <ul>
+                            <li>Heart rate: 42 bpm</li>
+                            <li>Rhythm: Regular</li>
+                            <li>P waves: Present, normal shape, one before each QRS</li>
+                            <li>PR interval: 0.16 seconds (consistent)</li>
+                            <li>QRS complex: 0.08 seconds (consistent)</li>
+                        </ul>
+                        The patient's blood pressure is 90/58 mmHg. When you assess them, their skin is cool and clammy, and they appear pale.`,
+                        question: `Based on the EKG rhythm and the patient's symptoms, which of the following nursing actions are most appropriate? (Select all that apply.)`,
+                        options: [
+                            "Option A: Administer IV Atropine as ordered.",
+                            "Option B: Prepare for transcutaneous pacing.",
+                            "Option C: Obtain a 12-lead EKG.",
+                            "Option D: Instruct the patient to bear down as if having a bowel movement.",
+                            "Option E: Document findings and continue to monitor.",
+                            "Option F: Prepare for synchronized cardioversion.",
+                            "Option G: Administer Adenosine IV push."
+                        ],
+                        correctAnswer: [
+                            "Option A: Administer IV Atropine as ordered.",
+                            "Option B: Prepare for transcutaneous pacing.",
+                            "Option C: Obtain a 12-lead EKG."
+                        ],
+                        explanation: `<strong>Rationale:</strong>
+                        The EKG rhythm described (rate 42 bpm, regular, normal PQRST) is **Sinus Bradycardia**. The patient is **symptomatic** with dizziness, lightheadedness, hypotension, cool/clammy skin, and pallor, indicating poor perfusion due to the slow heart rate.
+
+                        Let's break down the options:
+                        <ul>
+                            <li><strong>Option A: Administer IV Atropine as ordered. (Correct)</strong> Atropine is the first-line medication for symptomatic bradycardia as it blocks vagal stimulation, allowing the heart rate to increase.</li>
+                            <li><strong>Option B: Prepare for transcutaneous pacing. (Correct)</strong> If Atropine is ineffective or if the patient's condition rapidly deteriorates, pacing is the next step to increase the heart rate.</li>
+                            <li><strong>Option C: Obtain a 12-lead EKG. (Correct)</strong> While you've identified the rhythm on telemetry, a 12-lead EKG provides a more comprehensive view of the heart's electrical activity and can help identify any underlying causes like an acute myocardial infarction (MI) which can cause bradycardia. This is an important diagnostic step.</li>
+                            <li><strong>Option D: Instruct the patient to bear down as if having a bowel movement. (Incorrect)</strong> Vagal maneuvers (like bearing down) *decrease* heart rate, which would worsen the patient's symptomatic bradycardia.</li>
+                            <li><strong>Option E: Document findings and continue to monitor. (Incorrect)</strong> The patient is symptomatic and unstable; simply documenting and monitoring is insufficient and delays critical intervention.</li>
+                            <li><strong>Option F: Prepare for synchronized cardioversion. (Incorrect)</strong> Synchronized cardioversion is used for *tachy*arrhythmias (fast rhythms) with a pulse that are causing instability (e.g., unstable SVT, VT with a pulse). It is not appropriate for bradycardia.</li>
+                            <li><strong>Option G: Administer Adenosine IV push. (Incorrect)</strong> Adenosine is used for Supraventricular Tachycardia (SVT) to temporarily block the AV node and terminate the rhythm. It would worsen bradycardia.</li>
+                        </ul>
+                        **Key takeaway:** Always assess the patient first! If the patient is symptomatic with bradycardia, interventions to increase heart rate are critical.`
+                    }},
+                    { id: 'nclex-review-rhythms', title: 'NCLEX Style Review Questions', type: 'quiz',
+                        questions: [
+                            { question: "A nurse is analyzing an EKG strip and notes an absence of P waves, an irregularly irregular rhythm, and a normal QRS complex. The ventricular rate is 130 bpm. Which rhythm does this describe?", options: ["Sinus Tachycardia", "Atrial Flutter", "Atrial Fibrillation", "Ventricular Tachycardia"], correctAnswer: "Atrial Fibrillation" },
+                            { question: "Which EKG characteristic is the hallmark of Ventricular Tachycardia (VT)?", options: ["Narrow QRS complex, fast rate", "P waves present, irregular rhythm", "Wide and bizarre QRS complexes, fast rate", "Flatline with no electrical activity"], correctAnswer: "Wide and bizarre QRS complexes, fast rate" },
+                            { question: "A patient's EKG shows a heart rate of 220 bpm, regular rhythm, and narrow QRS complexes. What is the most likely initial treatment if the patient is stable and vagal maneuvers are unsuccessful?", options: ["Defibrillation", "IV Atropine", "IV Adenosine", "Transcutaneous pacing"], correctAnswer: "IV Adenosine" },
+                            { question: "You observe a straight line on your patient's cardiac monitor. What is your immediate nursing action?", options: ["Call a code and begin CPR.", "Assess the patient for a pulse and responsiveness.", "Administer Epinephrine IV.", "Check the EKG lead connections."], correctAnswer: "Assess the patient for a pulse and responsiveness." },
+                            { question: "Which EKG finding is a priority for immediate intervention, as it suggests acute myocardial injury?", options: ["Inverted P wave", "Prolonged QT interval", "ST segment elevation", "Frequent unifocal PVCs"], correctAnswer: "ST segment elevation" },
+                            { question: "A patient with no palpable pulse has organized electrical activity on the cardiac monitor. What is this rhythm, and what is the most important initial action?", options: ["Ventricular Fibrillation; Defibrillate.", "Asystole; Administer Epinephrine.", "Pulseless Electrical Activity (PEA); Start CPR and find the cause.", "Ventricular Tachycardia; Synchronized Cardioversion."], correctAnswer: "Pulseless Electrical Activity (PEA); Start CPR and find the cause." },
+                            { question: "The nurse identifies that every second beat on a patient's EKG is a PVC. How is this pattern documented?", options: ["Couplet PVCs", "Trigeminy", "Quadrigeminy", "Bigeminy"], correctAnswer: "Bigeminy" },
+                            { question: "Which of the following describes the function of the AV node in normal cardiac conduction?", options: ["Initiates the heart beat at 60-100 bpm.", "Delays the electrical impulse to allow atrial contraction and ventricular filling.", "Rapidly conducts impulses throughout the ventricles.", "Is the primary backup pacemaker at 20-40 bpm."], correctAnswer: "Delays the electrical impulse to allow atrial contraction and ventricular filling." },
+                            { question: "A patient is in Torsades de Pointes. What is the most common medication used for this specific rhythm?", options: ["Lidocaine", "Atropine", "Magnesium Sulfate", "Digoxin"], correctAnswer: "Magnesium Sulfate" }
+                        ]
+                    },
+                ]
+            }
+        };
+
+        // The pre-assessment quiz data now includes questions for all new modules.
+        const preAssessmentQuizData = [
+            // Questions for Module 1: Electrophysiology & EKG Basics
+            { moduleId: 'electrophysiology-basics', question: "Which component of the EKG complex represents ventricular depolarization and contraction?", options: ["P Wave", "PR Interval", "QRS Complex", "T Wave"], correctAnswer: "QRS Complex" },
+            { moduleId: 'electrophysiology-basics', question: "What is the normal pacemaker of the heart, setting the intrinsic rate of 60-100 bpm?", options: ["Atrioventricular (AV) Node", "Bundle of His", "Purkinje Fibers", "Sinoatrial (SA) Node"], correctAnswer: "Sinoatrial (SA) Node" },
+            { moduleId: 'electrophysiology-basics', question: "On EKG paper, how many seconds does one large square represent?", options: ["0.04 seconds", "0.12 seconds", "0.20 seconds", "1.00 seconds"], correctAnswer: "0.20 seconds" },
+
+            // Questions for Module 2: Sinus Rhythms
+            { moduleId: 'sinus-rhythms', question: "A patient's EKG shows a regular rhythm with a heart rate of 50 bpm, a normal P wave, and a normal QRS. What is this rhythm?", options: ["Normal Sinus Rhythm", "Sinus Tachycardia", "Sinus Bradycardia", "Sinus Arrhythmia"], correctAnswer: "Sinus Bradycardia" },
+            { moduleId: 'sinus-rhythms', question: "Which characteristic is unique to Sinus Arrhythmia compared to other sinus rhythms?", options: ["Rate below 60 bpm", "Rate above 100 bpm", "Irregular rhythm that changes with breathing", "Absence of P waves"], correctAnswer: "Irregular rhythm that changes with breathing" },
+
+            // Questions for Module 3: Atrial Rhythms
+            { moduleId: 'atrial-rhythms', question: "Which atrial rhythm is characterized by an 'irregularly irregular' ventricular rhythm and no discernible P waves?", options: ["Premature Atrial Contraction", "Supraventricular Tachycardia", "Atrial Fibrillation", "Atrial Flutter"], correctAnswer: "Atrial Fibrillation" },
+            { moduleId: 'atrial-rhythms', question: "The distinctive 'sawtooth' pattern on an EKG strip is characteristic of which atrial rhythm?", options: ["Normal Sinus Rhythm", "Sinus Arrhythmia", "Atrial Fibrillation", "Atrial Flutter"], correctAnswer: "Atrial Flutter" },
+
+            // Questions for Module 4: Ventricular Rhythms
+            { moduleId: 'ventricular-rhythms', question: "Which of the following EKG findings is characteristic of a Premature Ventricular Contraction (PVC)?", options: ["Narrow QRS complex", "Normal P wave preceding the QRS", "Wide and bizarre QRS complex", "Regular rhythm"], correctAnswer: "Wide and bizarre QRS complex" },
+            { moduleId: 'ventricular-rhythms', question: "In Ventricular Fibrillation (V-fib), what is the most immediate and critical intervention?", options: ["Administering Amiodarone IV", "Initiating CPR and defibrillation", "Performing vagal maneuvers", "Administering Atropine IV"], correctAnswer: "Initiating CPR and defibrillation" },
+            { moduleId: 'ventricular-rhythms', question: "Which rhythm displays organized electrical activity on the monitor but no palpable pulse?", options: ["Ventricular Tachycardia with a pulse", "Asystole", "Idioventricular Rhythm", "Pulseless Electrical Activity (PEA)"], correctAnswer: "Pulseless Electrical Activity (PEA)" },
+
+            // Questions for Module 5: Pacemakers & Review
+            { moduleId: 'pacemakers-and-review', question: "You observe a straight line on your patient's cardiac monitor. What is your immediate nursing action?", options: ["Call a code and begin CPR.", "Assess the patient for a pulse and responsiveness.", "Administer Epinephrine IV.", "Check the EKG lead connections."], correctAnswer: "Assess the patient for a pulse and responsiveness." },
+            { moduleId: 'pacemakers-and-review', question: "Which EKG finding is a priority for immediate intervention, as it suggests acute myocardial injury?", options: ["Inverted P wave", "Prolonged QT interval", "ST segment elevation", "Frequent unifocal PVCs"], correctAnswer: "ST segment elevation" }
+        ];
+
+        // --- Helper Functions ---
+        // Utility for conditionally joining Tailwind CSS classes.
+        const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+
+        // --- Child Components ---
+
+        /**
+         * Quiz component for interactive multiple-choice questions.
+         * Users answer questions and receive immediate feedback.
+         */
+        const Quiz = ({ questions, onComplete, isPreAssessment = false }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedOption, setSelectedOption] = useState([]); // Changed to array for multi-select
+            const [feedback, setFeedback] = useState(null);
+            const [answers, setAnswers] = useState([]);
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            // Handle option selection for both single and multiple choice
+            const handleOptionSelect = (option) => {
+                if (feedback && !isPreAssessment) return; // Prevent changing answer after feedback in regular quiz
+
+                if (Array.isArray(currentQuestion.correctAnswer)) {
+                    // Multi-select (SATA)
+                    setSelectedOption(prevSelected => {
+                        if (prevSelected.includes(option)) {
+                            return prevSelected.filter(item => item !== option);
+                        } else {
+                            return [...prevSelected, option];
+                        }
+                    });
+                } else {
+                    // Single select
+                    setSelectedOption(option);
+                }
+            };
+
+            const handlePreAssessmentNext = () => {
+                if (selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)) return;
+                
+                // Logic for checking correctness for both single and multi-select
+                const isCorrect = Array.isArray(currentQuestion.correctAnswer)
+                    ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
+                    : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                
+                const updatedAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                setAnswers(updatedAnswers);
+
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]); // Reset for next question
+                    setFeedback(null);
+                } else {
+                    onComplete(updatedAnswers);
+                }
+            };
+            
+            const handleRegularQuizSubmit = () => {
+                if (selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)) return;
+                
+                const isCorrect = Array.isArray(currentQuestion.correctAnswer)
+                    ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
+                    : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                
+                setFeedback(isCorrect ? 'correct' : 'incorrect');
+            };
+
+            const handleRegularQuizNext = () => {
+                // Ensure the current answer is recorded before moving to the next question
+                const isCorrect = Array.isArray(currentQuestion.correctAnswer)
+                    ? currentQuestion.correctAnswer.every(ans => selectedOption.includes(ans)) && selectedOption.length === currentQuestion.correctAnswer.length
+                    : selectedOption.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                const finalAnswers = [...answers, { question: currentQuestion, isCorrect }];
+                
+                if (currentQuestionIndex < questions.length - 1) {
+                    setAnswers(finalAnswers);
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedOption([]); // Reset for next question
+                    setFeedback(null);
+                } else {
+                    const finalScore = finalAnswers.reduce((acc, ans) => acc + (ans.isCorrect ? 1 : 0), 0);
+                    onComplete({ score: finalScore, total: questions.length });
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Quiz: {currentQuestionIndex + 1} of {questions.length}</h4>
+                    <p className="font-semibold text-gray-700 mb-3">{currentQuestion.question}</p>
+                    <div className="space-y-2">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = Array.isArray(selectedOption) ? selectedOption.includes(option) : selectedOption === option;
+                            const isCorrectOption = Array.isArray(currentQuestion.correctAnswer)
+                                ? currentQuestion.correctAnswer.includes(option)
+                                : option.toLowerCase() === currentQuestion.correctAnswer.toLowerCase();
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200';
+
+                            if (feedback && !isPreAssessment) {
+                                if (isCorrectOption) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800';
+                                } else if (isSelected && !isCorrectOption) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800';
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800';
+                            }
+
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handleOptionSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {feedback && !isPreAssessment && (isCorrectOption || (isSelected && !isCorrectOption)) && (
+                                            isCorrectOption ? <span className="text-green-600 mr-2">✓</span> : <span className="text-red-600 mr-2">✗</span>
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-4 text-center">
+                        {isPreAssessment ? (
+                             <button
+                                onClick={handlePreAssessmentNext}
+                                disabled={selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)}
+                                className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {currentQuestionIndex < questions.length - 1 ? 'Next Question' : 'Finish Assessment'}
+                            </button>
+                        ) : (
+                            <>
+                            {!feedback ? (
+                                <button
+                                    onClick={handleRegularQuizSubmit}
+                                    disabled={selectedOption === null || (Array.isArray(selectedOption) && selectedOption.length === 0)}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    Submit Answer
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={handleRegularQuizNext}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Next Question
+                                </button>
+                            )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+        
+        /**
+         * PreAssessmentQuiz component to handle the initial diagnostic quiz.
+         * Displays quiz questions and then results, allowing users to "test out" of modules.
+         */
+        const PreAssessmentQuiz = ({ onComplete, onExit }) => {
+            const [results, setResults] = useState(null);
+
+            const handleQuizComplete = (finalAnswers) => {
+                const moduleResults = {};
+                finalAnswers.forEach(answer => {
+                    const { moduleId } = answer.question;
+                    if (!moduleResults[moduleId]) {
+                        moduleResults[moduleId] = { correct: 0, total: 0 };
+                    }
+                    if (answer.isCorrect) {
+                        moduleResults[moduleId].correct++;
+                    }
+                    moduleResults[moduleId].total++;
+                });
+
+                const completedModules = [];
+                for (const moduleId in moduleResults) {
+                    // For pre-assessment, a module is "completed" if all its questions in the pre-assessment quiz were answered correctly.
+                    if (moduleResults[moduleId].correct === moduleResults[moduleId].total) {
+                        completedModules.push(moduleId);
+                    }
+                }
+                setResults({ completedModules, total: finalAnswers.length, correct: finalAnswers.filter(a => a.isCorrect).length });
+                onComplete(completedModules);
+            };
+
+            if (results) {
+                return (
+                    <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4 animate-fade-in">
+                        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full text-center">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">Assessment Complete!</h2>
+                            <p className="text-lg text-gray-600 mb-6">
+                                You correctly answered {results.correct} out of {results.total} questions.
+                            </p>
+                            {results.completedModules.length > 0 ? (
+                                <>
+                                    <p className="text-green-600 font-semibold mb-4">You've tested out of the following modules:</p>
+                                    <ul className="list-disc list-inside text-left mb-6 bg-green-50 p-4 rounded-lg">
+                                        {results.completedModules.map(id => <li key={id}>{contentData[id].title}</li>)}
+                                    </ul>
+                                </>
+                            ) : (
+                                <p className="text-yellow-600 font-semibold mb-6">You haven't tested out of any modules. You can proceed to the main modules for learning.</p>
+                            )}
+                            <button
+                                onClick={onExit}
+                                className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                            >
+                                Return to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-40 p-4">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full">
+                        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Diagnostic Quiz</h2>
+                        <Quiz questions={preAssessmentQuizData} onComplete={handleQuizComplete} isPreAssessment={true} />
+                    </div>
+                </div>
+            );
+        };
+
+
+        /**
+         * Dashboard component to display the available learning modules.
+         * It allows users to select a module to start learning.
+         * Shows progress for each module using a circular progress bar and status.
+         */
+        const Dashboard = ({ onSelectModule, progress, onResetProgress, onStartPreAssessment }) => {
+            let totalCompletedSteps = 0;
+            let totalPossibleSteps = 0;
+            let totalQuizCorrect = 0;
+            let totalQuizQuestions = 0;
+
+            // Calculate overall progress and gather quiz scores
+            Object.entries(contentData).forEach(([moduleId, module]) => {
+                totalPossibleSteps += module.steps.length;
+                const moduleProgress = progress[moduleId] || {};
+                
+                Object.values(moduleProgress).forEach(stepProgress => {
+                    if (stepProgress.completed) {
+                        totalCompletedSteps++;
+                    }
+                    if (stepProgress.score !== undefined) {
+                        totalQuizCorrect += stepProgress.score;
+                    }
+                });
+
+                module.steps.forEach(step => {
+                    if (step.type === 'quiz') {
+                        totalQuizQuestions += step.questions.length;
+                    }
+                });
+            });
+
+
+            const overallPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+
+            return (
+                <div className="p-4 sm:p-6 md:p-8 min-h-screen w-full flex flex-col">
+                    <div className="w-full">
+                        <header className="mb-8 text-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                {/* Text placeholder for the main application identifier */}
+                                <span className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">EKG</span>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Cardiac Rhythm Interpretation Module</h1>
+                                <span className="bg-gray-200 text-gray-600 text-xs font-mono px-2.5 py-1 rounded-full">V:1.0</span>
+                            </div>
+                            <p className="text-lg text-gray-500 max-w-2xl mx-auto">Master EKG interpretation, identify life-threatening rhythms, and prepare for real-world nursing scenarios.</p>
+                        </header>
+
+                        {/* Skip Ahead Button */}
+                        <div className="mb-8 text-center">
+                            <button
+                                onClick={onStartPreAssessment}
+                                className="w-full max-w-md mx-auto px-6 py-4 bg-teal-500 text-white font-bold rounded-lg shadow-lg hover:bg-teal-600 transition-all duration-300 transform hover:scale-105"
+                            >
+                                <div className="text-xl">Skip Ahead: Take Diagnostic Quiz</div>
+                                <div className="text-sm font-normal">Test your knowledge and potentially skip modules.</div>
+                            </button>
+                        </div>
+
+                        {/* Overall Progress Bar & Reset Button */}
+                        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 w-full">
+                           <div className="flex justify-between items-center mb-3">
+                              <h3 className="text-xl font-bold text-gray-800">Overall Progress</h3>
+                              <button 
+                                   onClick={onResetProgress}
+                                   className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center gap-2"
+                               >
+                                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                       <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V4a1 1 0 112 0v1.001A7.002 7.002 0 0112.292 4.293a1 1 0 111.414 1.414A9.002 9.002 0 004 9.899V11a1 1 0 11-2 0V3a1 1 0 011-1z" clipRule="evenodd" />
+                                   </svg>
+                                   Reset Progress
+                               </button>
+                           </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div
+                                    className="bg-indigo-600 h-4 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${overallPercentage}%` }}
+                                ></div>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-left text-sm text-gray-600 mt-2">
+                                    {totalQuizQuestions > 0 && `Quiz Performance: ${totalQuizCorrect} / ${totalQuizQuestions} correct`}
+                                </p>
+                                <p className="text-right text-sm text-gray-600 mt-2">{Math.round(overallPercentage)}% Completed</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                            {/* Iterate over all modules defined in contentData */}
+                            {Object.entries(contentData).map(([id, module]) => {
+                                const moduleProgress = progress[id] || {};
+                                // Calculate completion count for steps within the module.
+                                const completedCount = Object.values(moduleProgress).filter(p => p.completed).length;
+                                const totalSteps = module.steps.length;
+                                const percentage = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
+
+                                let statusText = "Not Started";
+                                let statusColor = "text-gray-500";
+                                if (completedCount === totalSteps) {
+                                    statusText = "Completed";
+                                    statusColor = "text-green-600";
+                                } else if (completedCount > 0) {
+                                    statusText = "In Progress";
+                                    statusColor = "text-yellow-600";
+                                }
+
+                                // Get quiz score for this module if available
+                                const quizStep = module.steps.find(step => step.type === 'quiz');
+                                const quizProgress = quizStep ? moduleProgress[quizStep.id] : null;
+
+                                return (
+                                    <div
+                                        key={id}
+                                        onClick={() => onSelectModule(id)}
+                                        // Styling for module cards, including hover effects.
+                                        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col"
+                                    >
+                                        <div className="flex justify-between items-start mb-4">
+                                            {/* Placeholder for module icon: Displays the first letter of the module title. */}
+                                            <div className={cn("p-3 rounded-full bg-gradient-to-br", module.color, "w-10 h-10 flex items-center justify-center text-white text-lg font-bold shadow-md flex-shrink-0")}>
+                                                {module.title.split(' ').map(word => word.charAt(0)).join('')}
+                                            </div>
+                                            {/* Progress Circle */}
+                                            <div className="relative w-12 h-12 flex-shrink-0">
+                                                <svg className="w-full h-full" viewBox="0 0 36 36">
+                                                    {/* Background circle for the progress bar. */}
+                                                    <path
+                                                        className="text-gray-200"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                    />
+                                                    {/* Foreground arc representing the completion percentage. */}
+                                                    <path
+                                                        className="text-indigo-500"
+                                                        d="M18 2.0845
+                                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="3"
+                                                        strokeDasharray={`${percentage}, 100`}
+                                                        strokeLinecap="round"
+                                                        transform="rotate(-90 18 18)"
+                                                    />
+                                                </svg>
+                                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-600">{Math.round(percentage)}%</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h3>
+                                        <p className="text-gray-500 text-sm mb-2 h-10">{module.description}</p>
+                                        <div className="mt-auto">
+                                            <p className={cn("text-sm font-semibold", statusColor)}>{statusText}</p>
+                                            {quizProgress && quizProgress.score !== undefined && (
+                                                <p className="text-sm text-gray-600 mt-1">Quiz Score: {quizProgress.score} / {quizStep.questions.length}</p>
+                                            )}
+                                            <div className="flex items-center justify-end text-sm font-medium text-indigo-600 group-hover:text-indigo-700 mt-2">
+                                                Start Learning <span className="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        /**
+         * CaseStudy component for a multiple-choice case study challenge.
+         * Presents a scenario and a question with multiple options.
+         */
+        const CaseStudy = ({ caseData, onComplete }) => {
+            // State to store the user's selected answer.
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+            // Handles the selection of an answer option.
+            const handleSelect = (option) => {
+                if (selectedAnswer) return; // Prevents changing the answer once selected.
+                setSelectedAnswer(option);
+                // Case-insensitive comparison needs to check if the 'option' matches any of the correct answers.
+                // For the case study, the correct answers are an array in the data.
+                const isCorrect = Array.isArray(caseData.correctAnswer)
+                    ? caseData.correctAnswer.includes(option)
+                    : option.toLowerCase() === caseData.correctAnswer.toLowerCase();
+                
+                if (isCorrect) {
+                    onComplete(); // Marks the step as complete if the correct answer is chosen.
+                }
+            };
+
+            return (
+                <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h4 className="font-bold text-lg text-gray-800 mb-2">Case Study Challenge</h4>
+                    {/* Scenario description, using dangerouslySetInnerHTML to render HTML bold tags */}
+                    <p className="bg-blue-100 text-blue-800 p-3 rounded-md mb-4 text-sm" dangerouslySetInnerHTML={{ __html: caseData.scenario }}></p>
+                    <p className="font-semibold text-gray-700 mb-3">{caseData.question}</p>
+                    <div className="space-y-2">
+                        {caseData.options.map(option => {
+                            const isSelected = selectedAnswer === option;
+                            // Case-insensitive comparison for correct answer highlight
+                            const isCorrectOption = Array.isArray(caseData.correctAnswer)
+                                ? caseData.correctAnswer.includes(option)
+                                : option.toLowerCase() === caseData.correctAnswer.toLowerCase();
+                            const showFeedback = selectedAnswer !== null; // Show feedback once any answer is selected 
+
+                            let optionClass = 'bg-white hover:bg-gray-100 border-gray-200'; // Default styling for options.
+                            if (showFeedback) {
+                                if (isCorrectOption) {
+                                    optionClass = 'bg-green-100 border-green-500 text-green-800'; // Correct answer always green when feedback is shown 
+                                } else if (isSelected && !isCorrectOption) {
+                                    optionClass = 'bg-red-100 border-red-500 text-red-800'; // Incorrect selected answer is red 
+                                }
+                            } else if (isSelected) {
+                                optionClass = 'bg-indigo-100 border-indigo-500 text-indigo-800'; // Highlight selected before submission 
+                            } 
+
+                            return (
+                                <div
+                                    key={option}
+                                    onClick={() => handleSelect(option)}
+                                    className={cn('p-3 rounded-lg border-2 cursor-pointer transition-colors', optionClass)}
+                                >
+                                    <div className="flex items-center">
+                                        {showFeedback && ( // Display a checkmark or cross icon if feedback is active 
+                                            isCorrectOption ? <span className="text-green-600 mr-2">✓</span> : (isSelected && <span className="text-red-600 mr-2">✗</span>)
+                                        )}
+                                        <span className="flex-1">{option}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {selectedAnswer && ( // Display the explanation after an answer has been selected.
+                        <div className="mt-4 p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                            <h5 className="font-bold text-indigo-800">Explanation</h5>
+                            <p className="text-sm text-indigo-700" dangerouslySetInnerHTML={{ __html: caseData.explanation }}></p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        /**
+         * StaticContentStep component for displaying basic text content.
+         * Marks itself as complete immediately on render.
+         */
+        const StaticContentStep = ({ step, onComplete }) => {
+            // For 'text' type steps, mark them as complete immediately upon rendering.
+            // The effect should only run once when the component mounts to prevent an infinite loop.
+            useEffect(() => {
+                onComplete();
+            }, []); // Empty dependency array ensures this runs only once.
+
+            // Using dangerouslySetInnerHTML to render HTML content (e.g., <strong> tags).
+            return (
+                <div className="prose max-w-none text-gray-700 leading-relaxed p-4 bg-gray-50 rounded-lg shadow-inner space-y-4" dangerouslySetInnerHTML={{ __html: step.content }}>
+                </div>
+            );
+        };
+
+        /**
+         * CompletionModal component displayed when a module is completed.
+         */
+        const CompletionModal = ({ isOpen, onClose, onNextModule, hasNextModule }) => {
+            if (!isOpen) return null;
+
+            return (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center transform animate-fade-in">
+                        <h3 className="text-2xl font-bold text-indigo-700 mb-4">Module Completed! 🎉</h3>
+                        <p className="text-gray-700 mb-6">You've successfully completed all steps in this module. Great job!</p>
+                        <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors shadow-sm"
+                            >
+                                Back to Dashboard
+                            </button>
+                            {hasNextModule && (
+                                <button
+                                    onClick={onNextModule}
+                                    className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                                >
+                                    Continue to Next Module
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        /**
+         * LearningModule component to manage steps within the selected module.
+         * Provides navigation between steps and renders the appropriate content for each.
+         */
+        const LearningModule = ({ module, onBack, progress, onProgressUpdate, onNextModule, hasNextModule }) => {
+            const [activeStep, setActiveStep] = useState(0); // Manages the index of the currently active step.
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Controls the visibility of the sidebar on mobile.
+            const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false); // State for completion modal 
+
+            // Callback function to update the completion status of a specific step.
+            const handleStepComplete = useCallback((stepId, data = {}) => {
+                onProgressUpdate(module.id, stepId, { completed: true, ...data });
+            }, [onProgressUpdate, module.id]);
+
+            const moduleProgress = progress[module.id] || {};
+            
+            // Check if all steps in the current module are completed
+            const allStepsCompletedInModule = module.steps.every(step =>
+                moduleProgress[step.id] && moduleProgress[step.id].completed
+            );
+
+            // Navigates to the next step, if available.
+            const handleNextStep = () => {
+                // If it's the last step and all steps in the module are completed, open the modal 
+                if (activeStep === module.steps.length - 1 && allStepsCompletedInModule) {
+                    setIsCompletionModalOpen(true);
+                } else if (activeStep < module.steps.length - 1) {
+                    setActiveStep(activeStep + 1);
+                }
+            };
+
+            // Navigates to the previous step, if available.
+            const handlePrevStep = () => {
+                if (activeStep > 0) {
+                    setActiveStep(activeStep - 1);
+                }
+            };
+            
+            // Ensure module and its steps are defined before accessing properties 
+            if (!module || !module.steps) {
+                console.error("LearningModule received invalid module prop:", module);
+                return <div className="fixed inset-0 flex items-center justify-center bg-gray-100 text-gray-700">Loading module...</div>;
+            }
+
+            const currentStep = module.steps[activeStep];
+            
+            // Renders the appropriate content component based on the current step's type.
+            // This function acts as a router for different interactive and static content types.
+            const renderStepContent = (step) => {
+                if (!step) return <p>Please select a step.</p>;
+
+                const onCompleteForStep = (data) => handleStepComplete(step.id, data);
+
+                switch (step.type) {
+                    case 'text':
+                        return <StaticContentStep key={step.id} step={step} onComplete={onCompleteForStep} />;
+                    case 'case_study':
+                        return <CaseStudy key={step.id} caseData={step.case} onComplete={onCompleteForStep} />;
+                    case 'quiz':
+                        return <Quiz key={step.id} questions={step.questions} onComplete={onCompleteForStep} />;
+                    default:
+                        // Fallback for unrecognized step types, ensuring robust error handling.
+                        return <p key={step.id} className="text-red-600">Error: Content for this step type is not available.</p>;
+                }
+            };
+
+            const handleModalClose = () => {
+                setIsCompletionModalOpen(false);
+                onBack(); // Go back to dashboard when modal is closed 
+            };
+
+            const handleModalNextModule = () => {
+                setIsCompletionModalOpen(false);
+                onNextModule(); // Proceed to next module 
+            };
+
+
+            return (
+                <div className="fixed inset-0 bg-gray-100 flex flex-col z-20">
+                    {/* Header for the learning module, including back button and module title. */}
+                    <header className="bg-white shadow-md p-4 flex items-center justify-between z-30 flex-shrink-0">
+                        <button onClick={onBack} className="flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors p-2 rounded-lg -ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            <span className="hidden sm:inline">Dashboard</span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-800 text-center flex-1 sm:flex-initial truncate px-2">{module.title}</h2>
+                        </div>
+                        {/* Mobile sidebar toggle button using text/emoji placeholders. */}
+                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                    </header>
+                    {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>}
+                    <div className="flex flex-1 overflow-hidden">
+                        {/* Sidebar for navigation steps within the module. */}
+                        <aside className={cn(
+                            "bg-white border-r border-gray-200 p-4 w-72 lg:w-80 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 absolute md:static h-full z-20",
+                            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        )}>
+                            <h3 className="text-lg font-semibold mb-4 text-gray-700 px-3">Module Steps</h3>
+                            <nav className="space-y-1 overflow-y-auto flex-1 pr-1">
+                                {module.steps.map((step, index) => (
+                                    <button
+                                        key={step.id}
+                                        onClick={() => {
+                                            setActiveStep(index);
+                                            setIsSidebarOpen(false); // Close sidebar on mobile after a step is selected.
+                                        }}
+                                        className={cn(
+                                            'w-full text-left p-3 rounded-lg flex items-center gap-3 transition-colors',
+                                            activeStep === index ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'hover:bg-gray-100 text-gray-700'
+                                        )}
+                                    >
+                                        {/* Step completion indicator */}
+                                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                            {moduleProgress[step.id]?.completed ? (
+                                                <svg className="w-5 h-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                            ) : (
+                                                <div className={cn("w-3 h-3 rounded-full border-2", activeStep === index ? "border-indigo-500 bg-indigo-500" : "border-gray-400 bg-white")}></div>
+                                            )}
+                                        </div>
+                                        <span className="flex-1 text-sm">{step.title}</span>
+                                    </button>
+                                ))}
+                            </nav>
+                        </aside>
+
+                        {/* Main content area for the current step. */}
+                        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+                            <div className="max-w-5xl mx-auto">
+                                <h3 className="text-2xl font-bold text-gray-800 mb-4">{currentStep.title}</h3>
+                                {renderStepContent(currentStep)}
+
+                                {/* Navigation buttons for moving between steps. */}
+                                <div className="flex justify-between mt-8">
+                                    <button
+                                        onClick={handlePrevStep}
+                                        disabled={activeStep === 0}
+                                        className="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <button
+                                        onClick={handleNextStep}
+                                        disabled={activeStep === module.steps.length - 1 && !allStepsCompletedInModule}
+                                        className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md"
+                                    >
+                                        {activeStep === module.steps.length - 1 ? 'Finish Module' : 'Next'}
+                                    </button>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                    <CompletionModal
+                        isOpen={isCompletionModalOpen}
+                        onClose={handleModalClose}
+                        onNextModule={handleModalNextModule}
+                        hasNextModule={hasNextModule}
+                    />
+                </div>
+            );
+        };
+        
+        // --- Main App Component ---
+        /**
+         * The root component of the Cardiac Rhythm Interpretation learning module application.
+         * Manages overall application state, including module selection, user ID, and progress.
+         */
+        function App() {
+            // State for the currently selected learning module's ID. Null means Dashboard is active.
+            const [currentModuleId, setCurrentModuleId] = useState(null);
+            const [isPreAssessmentActive, setIsPreAssessmentActive] = useState(false);
+            // State for the authenticated user's ID, used for local storage progress tracking.
+            const [userId, setUserId] = useState(null);
+            // State for storing the user's progress across all modules and steps.
+            const [progress, setProgress] = useState({});
+            // State to indicate if authentication is complete and user ID is available.
+            const [isAuthReady, setIsAuthReady] = useState(false);
+
+            // Effect hook for handling initial authentication and setting the user ID.
+            useEffect(() => {
+                const unsubscribe = mockAuth.onAuthStateChanged((user) => {
+                    if (user) setUserId(user.uid);
+                    setIsAuthReady(true); // Mark authentication as ready once user is determined.
+                });
+                return () => unsubscribe(); // Cleanup the auth state listener on component unmount.
+            }, []); // Empty dependency array ensures this runs only once on mount.
+
+            // Effect hook for loading user progress from localStorage after authentication is ready.
+            useEffect(() => {
+                if (!isAuthReady || !userId) return; // Only proceed if auth is ready and userId is available.
+                const storedProgress = localStorage.getItem(`cardiac-rhythm-module-progress-${userId}`);
+                if (storedProgress) {
+                    try {
+                        setProgress(JSON.parse(storedProgress)); // Attempt to parse and set stored progress.
+                    } catch (e) {
+                        console.error("Failed to parse stored progress, resetting.", e);
+                        setProgress({}); // Reset progress if parsing fails (e.g., corrupted data).
+                    }
+                }
+            }, [isAuthReady, userId]); // Reruns when auth status or userId changes.
+
+            // Callback function to update and persist the user's progress for a specific step.
+            const handleProgressUpdate = useCallback((moduleId, stepId, data = {}) => {
+                if (!isAuthReady || !userId) return;
+
+                setProgress(currentProgress => {
+                    const currentStepProgress = currentProgress[moduleId]?.[stepId] || {};
+                    const newStepProgress = { ...currentStepProgress, ...data };
+
+                    // If the old and new step data are identical, do not update state.
+                    // This prevents the infinite re-render loop.
+                    if (JSON.stringify(currentStepProgress) === JSON.stringify(newStepProgress)) {
+                        return currentProgress;
+                    }
+
+                    // Otherwise, proceed with the update.
+                    const newProgress = {
+                        ...currentProgress,
+                        [moduleId]: {
+                            ...(currentProgress[moduleId] || {}),
+                            [stepId]: newStepProgress
+                        }
+                    };
+
+                    localStorage.setItem(`cardiac-rhythm-module-progress-${userId}`, JSON.stringify(newProgress));
+                    return newProgress;
+                });
+            }, [isAuthReady, userId]);
+
+            const handlePreAssessmentComplete = (completedModuleIds) => {
+                const newProgress = { ...progress };
+                completedModuleIds.forEach(moduleId => {
+                    const module = contentData[moduleId];
+                    if (module) {
+                        newProgress[moduleId] = {};
+                        module.steps.forEach(step => {
+                            newProgress[moduleId][step.id] = { completed: true };
+                        });
+                    }
+                });
+                setProgress(newProgress);
+                localStorage.setItem(`cardiac-rhythm-module-progress-${userId}`, JSON.stringify(newProgress));
+                // The results screen is now part of the PreAssessmentQuiz component.
+                // We just need to handle exiting it.
+            };
+            
+            // Callback to reset all progress
+            const handleResetProgress = useCallback(() => {
+                if (!isAuthReady || !userId) return;
+                // Clear from state
+                setProgress({});
+                // Clear from localStorage
+                localStorage.removeItem(`cardiac-rhythm-module-progress-${userId}`);
+            }, [isAuthReady, userId]);
+
+            // Function to navigate to the next module in the sequence
+            const handleNextModule = useCallback(() => {
+                const moduleIds = Object.keys(contentData);
+                const currentIndex = moduleIds.indexOf(currentModuleId);
+                if (currentIndex !== -1 && currentIndex < moduleIds.length - 1) {
+                    setCurrentModuleId(moduleIds[currentIndex + 1]);
+                } else {
+                    // If it's the last module, go back to the dashboard.
+                    setCurrentModuleId(null);
+                }
+            }, [currentModuleId]);
+
+            // Determine which module is currently selected based on `currentModuleId`.
+            const selectedModule = currentModuleId && contentData[currentModuleId]
+                                                    ? { ...contentData[currentModuleId], id: currentModuleId }
+                                                    : null;
+
+            const moduleIds = Object.keys(contentData);
+            const currentIndex = selectedModule ? moduleIds.indexOf(selectedModule.id) : -1;
+            const hasNextModule = currentIndex !== -1 && currentIndex < moduleIds.length - 1;
+
+
+            return (
+                <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+                    {isPreAssessmentActive ? (
+                        <PreAssessmentQuiz 
+                            onComplete={handlePreAssessmentComplete} 
+                            onExit={() => setIsPreAssessmentActive(false)}
+                        />
+                    ) : selectedModule ? (
+                        <LearningModule
+                            key={selectedModule.id}
+                            module={selectedModule}
+                            onBack={() => setCurrentModuleId(null)}
+                            progress={progress}
+                            onProgressUpdate={handleProgressUpdate}
+                            onNextModule={handleNextModule}
+                            hasNextModule={hasNextModule}
+                        />
+                    ) : (
+                        <Dashboard 
+                            onSelectModule={setCurrentModuleId} 
+                            progress={progress} 
+                            onResetProgress={handleResetProgress}
+                            onStartPreAssessment={() => setIsPreAssessmentActive(true)}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        // --- Render the App into the DOM ---
+        // Get the DOM element where the React application will be mounted.
+        const container = document.getElementById('root');
+        // Create a React root, which is the entry point for React 18+ applications.
+        const root = ReactDOM.createRoot(container);
+        // Render the main App component into the root.
+        root.render(<App />);
+    </script>
+</body>
+</html>
