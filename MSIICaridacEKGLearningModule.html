@@ -58,6 +58,320 @@
         // --- Content & Data Structure for the Learning Modules ---
         // The main content is broken down into smaller, focused modules based on concepts.
         const contentData = {
+            'perfusion-concepts': {
+                title: 'Perfusion Concepts: The Big Picture',
+                color: 'from-purple-500 to-indigo-600',
+                description: 'Understand the fundamental concept of perfusion and its vital role in the body.',
+                steps: [
+                    { id: 'perfusion-definition-goals', title: 'What is Perfusion & Why it Matters', type: 'text', content: `As nurses, <strong>perfusion</strong> is one of our most critical concepts. It refers to the <strong>flow of blood through arteries and capillaries, delivering essential nutrients and oxygen to cells</strong> throughout the body. Think of it as the body's delivery service – if it's interrupted, cells don't get what they need to survive!<br><br>
+                        Our goals for understanding this concept are:<br>
+                        <ol>
+                            <li>Define and describe what perfusion truly means.</li>
+                            <li>Notice the <strong>risk factors</strong> that can impair perfusion.</li>
+                            <li>Recognize when an individual has <strong>compromised perfusion</strong> (what does it look like?).</li>
+                            <li>Learn and provide appropriate <strong>nursing and collaborative interventions</strong> to optimize perfusion. This is where you make a difference!</li>
+                        </ol>` },
+                    { id: 'perfusion-interrelated-concepts', title: 'Perfusion: Interconnected Concepts', type: 'text', content: `Perfusion doesn't work in isolation; it's deeply connected to many other body systems and concepts. Understanding these links helps you see the whole patient picture:<br><br>
+                        <ul>
+                            <li><strong>Gas Exchange:</strong> You need good blood flow to transport oxygen and carbon dioxide.</li>
+                            <li><strong>Pain:</strong> Impaired perfusion (like in a heart attack) often causes severe pain.</li>
+                            <li><strong>Clotting:</strong> Too much clotting can block blood flow, while too little can lead to dangerous bleeding.</li>
+                            <li><strong>Cognition:</strong> The brain needs constant, good perfusion to function.</li>
+                            <li><strong>Mobility:</strong> Muscles need perfusion to move; impaired perfusion can cause weakness or pain with movement.</li>
+                            <li><strong>Elimination:</strong> Kidneys need good blood flow to filter waste and produce urine.</li>
+                            <li><strong>Inflammation:</strong> Can be both a cause and effect of perfusion issues (e.g., inflammation in arteries).</li>
+                            <li><strong>Patient Education:</strong> Crucial for preventing and managing perfusion problems.</li>
+                            <li><strong>Nutrition:</strong> Provides the building blocks for healthy blood and vessels.</li>
+                        </ul>` },
+                    { id: 'perfusion-exemplars', title: 'Perfusion Exemplars: Where Things Go Wrong', type: 'text', content: `When perfusion is compromised, it can manifest in many ways. Here are common examples (exemplars) you'll encounter in nursing:<br><br>
+                        <strong>Cardiac - Central Perfusion Issues (Problems with the heart's pumping action):</strong>
+                        <ul>
+                            <li><strong>Dysrhythmias:</strong> Irregular heartbeats affecting pumping efficiency.</li>
+                            <li><strong>Valvular Disease:</strong> Heart valves not opening/closing properly.</li>
+                            <li><strong>Congenital Defects:</strong> Structural heart problems from birth.</li>
+                            <li><strong>Shocks:</strong> Circulatory collapse (e.g., cardiogenic, hypovolemic).</li>
+                            <li><strong>Heart Failure:</strong> Heart can't pump enough blood.</li>
+                            <li><strong>Cardiomyopathy:</strong> Disease of the heart muscle.</li>
+                            <li><strong>Cor Pulmonale:</strong> Right-sided heart failure due to lung disease.</li>
+                            <li><strong>Endocarditis:</strong> Inflammation of the heart's inner lining/valves.</li>
+                            <li><strong>Pulmonary Hypertension:</strong> High blood pressure in lung arteries.</li>
+                            <li><strong>AAA Rupture:</strong> Rupture of the abdominal aorta, leading to massive blood loss.</li>
+                        </ul>
+                        <strong>Local/Tissue Perfusion Issues (Problems with blood flow to specific areas):</strong>
+                        <ul>
+                            <li><strong>Myocardial Infarction (MI):</strong> Heart attack (blockage in heart arteries).</li>
+                            <li><strong>Embolism:</strong> A traveling clot blocking a vessel.</li>
+                            <li><strong>Arteriosclerosis:</strong> Hardening of the arteries.</li>
+                            <li><strong>Hyperlipidemia:</strong> High cholesterol leading to plaque buildup.</li>
+                            <li><strong>Hypertension:</strong> High blood pressure damaging vessels.</li>
+                            <li><strong>PAD (Peripheral Artery Disease):</strong> Narrowed arteries in limbs.</li>
+                            <li><strong>Raynaud's:</strong> Spasms of small arteries, often in fingers/toes.</li>
+                            <li><strong>Sickle Cell:</strong> Abnormally shaped red blood cells blocking flow.</li>
+                            <li><strong>Stroke:</strong> Blockage or rupture of blood vessel in the brain.</li>
+                            <li><strong>VTE (Venous Thromboembolism):</strong> Blood clot in a vein (DVT, PE).</li>
+                        </ul>
+                        <strong>Clotting Disorders (Affecting blood flow directly):</strong>
+                        <ul>
+                            <li><strong>DIC (Disseminated Intravascular Coagulation):</strong> Widespread clotting and bleeding.</li>
+                            <li><strong>Hemophilia:</strong> Impaired blood clotting.</li>
+                            <li><strong>Thrombocytopenia:</strong> Low platelet count.</li>
+                            <li><strong>Von-Willebrand Disease:</strong> A bleeding disorder.</li>
+                        </ul>` },
+                    { id: 'normal-perfusion-process', title: 'Normal Physiological Process: Central vs. Tissue Perfusion', type: 'text', content: `To understand impaired perfusion, we first need to understand how it *should* work:<br><br>
+                        <strong>Central Perfusion:</strong>
+                        <p>This is the overall force of blood movement generated by the <strong>cardiac output</strong> (CO). It's the heart's job to create this pressure to send blood everywhere. It requires adequate cardiac function, blood pressure, and blood volume.</p>
+                        <p>Remember the formula: <strong>Cardiac Output (CO) = Stroke Volume ($\text{SV}$) $\times$ Heart Rate ($\text{HR}$)</strong></p><br>
+                        <strong>Tissue or Local Perfusion:</strong>
+                        <ul>
+                            <li>This is the <strong>volume of blood that flows to a specific target tissue</strong> (like your brain, kidneys, or leg muscles).</li>
+                            <li>It requires <strong>patent vessels</strong> (open, unobstructed arteries/capillaries), adequate <strong>hydrostatic pressure</strong> (the pushing force of blood), and normal <strong>capillary permeability</strong> (allowing fluid/nutrients to easily pass in and out).</li>
+                        </ul>` },
+                    { id: 'central-perfusion-terms', title: 'Central Perfusion Terms: Your Cardiac Glossary', type: 'text', content: `Let's break down the key terms related to central perfusion, because these are crucial for understanding cardiac function:<br><br>
+                        <ul>
+                            <li><strong>Stroke Volume (SV):</strong> The <strong>amount of blood ejected with each single heartbeat</strong>. Think of it as how much blood the ventricle pushes out per pump.</li>
+                            <li><strong>Cardiac Output (CO):</strong> The <strong>amount of blood pumped by the ventricle in liters per minute</strong>. This generates your overall central perfusion. (Remember: CO = SV $\times$ HR).</li>
+                            <li><strong>Preload:</strong> The <strong>degree of stretch of the cardiac muscle fibers at the end of diastole</strong>. Imagine a rubber band – the more you stretch it before letting go, the harder it snaps. More blood returning to the heart (more volume) increases preload.</li>
+                            <li><strong>Contractility:</strong> The <strong>ability of the cardiac muscle to shorten in response to an electrical impulse</strong>. It's the force or strength of the heart's squeeze.
+                                <ul>
+                                    <li>It's <strong>increased</strong> by catecholamines (like epinephrine), sympathetic nervous system (SNS) activation, and some medications that mimic catecholamines.</li>
+                                    <li>It's <strong>decreased</strong> by hypoxemia (low oxygen in blood) and acidosis (too much acid in blood) – think about your arterial blood gas (ABG) analysis!</li>
+                                </ul>
+                            </li>
+                            <li><strong>Afterload:</strong> The <strong>resistance to ejection of blood from the ventricle</strong>. Imagine pushing open a door – if the door is heavy or there's wind pushing against it, that's increased afterload. High blood pressure increases afterload.</li>
+                            <li><strong>Ejection Fraction (EF):</strong> The <strong>percent of end-diastolic volume ejected with each heartbeat</strong>. This is a key measure of how well the left ventricle is pumping. A normal EF is usually 55-70%.</li>
+                            <li><strong>Diastole:</strong> The <strong>phase of the cardiac cycle when the ventricles fill with blood</strong>. This is the relaxation phase.</li>
+                            <li><strong>Systole:</strong> The <strong>phase of cardiac cycle when the ventricles contract, pushing blood out</strong> into the pulmonary arteries (from the right ventricle) and aorta (from the left ventricle). This is the contraction phase.</li>
+                        </ul>` },
+                    { id: 'impaired-central-perfusion', title: 'Impaired Central Perfusion: What Happens?', type: 'text', content: `When central perfusion is impaired, it means your heart isn't pumping enough blood to meet the body's needs. This happens when cardiac output is inadequate.<br><br>
+                        <ul>
+                            <li>Reduced cardiac output leads to a <strong>reduction of oxygenated blood reaching <em>all</em> body tissues</strong> (this is a <strong>systemic effect</strong>).</li>
+                            <li>If severe, it's associated with <strong>shock</strong> (a life-threatening condition where organs aren't getting enough blood flow).</li>
+                            <li>If left untreated, this can quickly lead to <strong>ischemia</strong> (lack of oxygen to tissues), <strong>cell injury</strong>, and ultimately <strong>cell death</strong>. This is why recognizing and acting on impaired perfusion is so critical in nursing!</li>
+                        </ul>` },
+                    { id: 'perfusion-concepts-quiz', title: 'Perfusion Concepts Check-up', type: 'quiz',
+                        questions: [
+                            { question: "Which of the following best defines perfusion?", options: ["The amount of oxygen carried by red blood cells.", "The flow of blood through arteries and capillaries, delivering nutrients and oxygen.", "The process of gas exchange in the lungs.", "The heart's ability to contract forcefully."], correctAnswer: "The flow of blood through arteries and capillaries, delivering nutrients and oxygen." },
+                            { question: "What is the formula for Cardiac Output (CO)?", options: ["CO = Blood Pressure × Heart Rate", "CO = Stroke Volume + Heart Rate", "CO = Stroke Volume × Heart Rate", "CO = Preload × Afterload"], correctAnswer: "CO = Stroke Volume × Heart Rate" },
+                            { question: "A patient's blood pressure is very high, increasing the resistance the left ventricle must pump against. This increased resistance is known as:", options: ["Preload", "Contractility", "Afterload", "Ejection Fraction"], correctAnswer: "Afterload" },
+                            { question: "Which of the following is NOT a direct consequence of severely impaired central perfusion?", options: ["Shock", "Systemic ischemia", "Cell death", "Increased cardiac output"], correctAnswer: "Increased cardiac output" }
+                        ]
+                    },
+                ]
+            },
+            'myocardial-infarction': {
+                title: 'Myocardial Infarction: The Heart Attack',
+                color: 'from-red-600 to-rose-500',
+                description: 'Understand the causes, symptoms, diagnosis, and management of heart attacks.',
+                steps: [
+                    { id: 'mi-key-terms', title: 'MI Key Terms: Ischemia, Infarction, Anoxia', type: 'text', content: `When we talk about heart attacks, these three terms are fundamental:<br><br>
+                        <ul>
+                            <li><strong>Ischemia:</strong> An <strong>inadequate blood supply</strong> to the heart muscles. This is often due to narrowed coronary arteries. It causes pain (angina) but the tissue is not yet dead. Think of it as "starving" the tissue.</li>
+                            <li><strong>Infarction:</strong> This is a <strong>decreased or complete cessation of blood flow to a portion of the myocardium</strong> (heart muscle). This leads to <strong>tissue death</strong> due to prolonged ischemia. This is the "heart attack" itself.</li>
+                            <li><strong>Anoxia:</strong> An <strong>absence or deficiency of oxygen reaching the tissues</strong>. In the context of MI, it means the heart muscle isn't getting any oxygen, leading to rapid cell death.</li>
+                        </ul>` },
+                    { id: 'mi-chest-pain-assessment', title: 'Chest Pain: Recognizing the Signs (PQRSTU)', type: 'text', content: `Chest pain is the classic symptom of a heart attack, but it's not always straightforward. Use the <strong>PQRSTU</strong> assessment to gather detailed information:<br><br>
+                        <ul>
+                            <li><strong>P - Precipitating Factors:</strong> What were you doing when the pain started? (e.g., exercise, rest, stress)</li>
+                            <li><strong>Q - Quality:</strong> What does the pain feel like? (e.g., crushing, squeezing, burning, sharp, dull)</li>
+                            <li><strong>R - Radiation:</strong> Does the pain travel anywhere? (e.g., left arm, jaw, back, neck)</li>
+                            <li><strong>S - Severity:</strong> On a scale of 0-10, how bad is it?</li>
+                            <li><strong>T - Timing:</strong> When did it start? How long has it lasted? Is it constant or intermittent?</li>
+                            <li><strong>U - Understanding:</strong> What do <em>you</em> think is causing this pain? (Helps gauge patient's perception and anxiety).</li>
+                        </ul>
+                        <strong>Important:</strong> PQRST symptoms can have other causes (e.g., indigestion, musculoskeletal pain). How do you differentiate? Look for associated symptoms (SOB, nausea, diaphoresis), patient history, and objective findings like EKG changes and cardiac biomarkers.` },
+                    { id: 'angina-types-treatments', title: 'Angina Types & Treatments: Chest Pain Variations', type: 'text', content: `Angina is chest pain caused by reduced blood flow to the heart. Not all chest pain is an MI, but it's always treated as one until proven otherwise! Here are the main types:<br><br>
+                        <ul>
+                            <li><strong>Prinzmetal's Angina (Variant Angina):</strong>
+                                <ul>
+                                    <li>Caused by a <strong>spasm of the coronary arteries</strong>, not necessarily a blockage.</li>
+                                    <li>Often occurs at <strong>rest</strong>, sometimes at night.</li>
+                                    <li><strong>Treatment:</strong> Medications like <strong>calcium antagonists (calcium channel blockers)</strong> and <strong>nitrates</strong> are the mainstays to control the spasms.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Angina Pectoris (Stable Angina):</strong>
+                                <ul>
+                                    <li>Occurs with predictable <strong>stress or exertion</strong> (e.g., walking uphill, emotional stress).</li>
+                                    <li>Normally <strong>relieved with rest, nitroglycerin, or both</strong>.</li>
+                                    <li><strong>Nitroglycerin</strong> works by relaxing coronary arteries and other blood vessels, reducing the heart's workload and increasing blood supply to the heart.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Unstable Angina (Acute Coronary Syndrome):</strong>
+                                <ul>
+                                    <li>This is an <strong>emergency!</strong> It's a form of <strong>acute coronary syndrome</strong> and indicates impending MI.</li>
+                                    <li>Causes <strong>unexpected chest pain</strong>, often occurring <strong>while resting</strong>.</li>
+                                    <li>Most common cause: Reduced blood flow due to coronary arteries narrowed by fatty buildups (<strong>atherosclerosis</strong>) and <strong>blood clotting</strong> that blocks blood flow.</li>
+                                    <li>Requires immediate medical intervention.</li>
+                                </ul>
+                            </li>
+                        </ul>` },
+                    { id: 'mi-clinical-manifestations', title: 'MI: Common Clinical Manifestations', type: 'text', content: `Beyond chest pain, a myocardial infarction can present with a variety of symptoms. Remember, not everyone has the "classic" crushing chest pain!<br><br>
+                        <ul>
+                            <li><strong>Chest pain:</strong> (As discussed with PQRSTU)</li>
+                            <li><strong>Dyspnea:</strong> Shortness of breath.</li>
+                            <li><strong>Peripheral edema and weight gain:</strong> More common with heart failure, which can develop after an MI.</li>
+                            <li><strong>Fatigue:</strong> Profound tiredness.</li>
+                            <li><strong>Dizziness, syncope (fainting), changes in level of consciousness:</strong> Signs of decreased cerebral perfusion.</li>
+                            <li><strong>Nausea & vomiting:</strong> Common, especially with inferior wall MIs.</li>
+                            <li><strong>Women often present with different/less classic symptoms:</strong> They may experience more fatigue, back pain, jaw pain, or just "feeling unwell" without severe chest pain. Always keep this in mind!</li>
+                        </ul>` },
+                    { id: 'mi-diagnostics', title: 'MI Diagnostics: What Tests Tell Us', type: 'text', content: `When an MI is suspected, these are the key diagnostic tools:<br><br>
+                        <ul>
+                            <li><strong>Electrocardiogram (ECG) alterations:</strong> Can detect myocardial ischemia or infarction.
+                                <ul>
+                                    <li><strong>ST-elevation</strong> (STEMI) indicates acute, full-thickness infarction.</li>
+                                    <li><strong>ST-depression</strong> or <strong>T-wave inversion</strong> (NSTEMI/ischemia) indicates ischemia or partial-thickness infarction.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Cardiac enzymes (Biomarkers):</strong> Proteins released into the bloodstream when heart muscle is damaged.
+                                <ul>
+                                    <li><strong>CPK-MB (Creatine Phosphokinase-MB):</strong> Elevates within 4–8 hours, peaks in 12–20 hours, returns to normal in 48–72 hours. <strong>Not cardiac specific</strong> (can be elevated with skeletal muscle injury).</li>
+                                    <li><strong>Troponins (Cardiac Troponin I and T):</strong> These are <strong>cardiac specific</strong> and the preferred biomarker. Levels are elevated at 4–6 hours, peak at 14–18 hours, and return to baseline over 6–7 days.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Chest x-ray:</strong> May be normal or show an enlarged cardiac shadow suggestive of heart failure (HF) or ventricular aneurysm.</li>
+                            <li><strong>Coronary angiography:</strong> A procedure that visualizes narrowing/occlusion of coronary arteries. It's the gold standard for identifying blockages.</li>
+                            <li><strong>Echocardiogram:</strong> A non-invasive ultrasound used to evaluate the heart's structures and pumping function.</li>
+                            <li><strong>Calcium Scoring Test:</strong> Uses CT to detect calcium deposits in the coronary arteries, indicating atherosclerosis.</li>
+                            <li><strong>Stress test:</strong> Detects issues with cardiac perfusion when the heart is stressed (e.g., by exercise or medication).</li>
+                        </ul>` },
+                    { id: 'mi-complications', title: 'MI Complications: Short & Long Term', type: 'text', content: `A heart attack isn't just a one-time event; it can lead to various complications:<br><br>
+                        <ul>
+                            <li>Most complications occur <strong>within 24 hours</strong> after an acute MI, but mechanical complications can occur anytime in the first week.</li>
+                            <li><strong>Long-term complications:</strong> Hypotension, CHF (heart failure).</li>
+                            <li><strong>Electrical complications:</strong> Ventricular arrhythmias (like VT, V-fib), atrial fibrillation, and atrioventricular (AV) block. (This is why EKG interpretation is so vital!)</li>
+                            <li><strong>Pericardial complications:</strong> Post-infarction pericarditis (inflammation of the sac around the heart).</li>
+                            <li><strong>Mechanical complications:</strong> Aneurysm (bulging of heart wall), papillary muscle rupture, septal rupture.</li>
+                            <li><strong>Embolic, thrombotic, and bleeding complications:</strong> Left ventricular thrombus (clot in the heart), venous thromboembolism (VTE), and vascular access site bleeding after percutaneous coronary intervention (PCI).</li>
+                            <li><strong>Ischemic complications:</strong> Reinfarction (another MI), infarct extension (the MI area gets bigger), and post-infarction angina.</li>
+                        </ul>` },
+                    { id: 'n-stemi-vs-stemi', title: 'NSTEMI vs. STEMI: Understanding the Differences', type: 'text', content: `These are two types of myocardial infarction, differentiated by their EKG findings:<br><br>
+                        <strong>NSTEMI (Non-ST-Elevation Myocardial Infarction):</strong>
+                        <ul>
+                            <li><strong>Elevated cardiac biomarkers</strong> (e.g., troponin, CK-MB).</li>
+                            <li><strong>NO ECG evidence of acute MI</strong> (meaning, no ST-elevation). You might see ST-depression or T-wave inversion.</li>
+                            <li>Generally indicates <strong>less damage to the myocardium</strong> compared to STEMI, as it's often a partial blockage.</li>
+                            <li><strong>Treatment:</strong> Bedrest & anxiety management, continuous cardiac monitoring, assess for complications. <strong>Percutaneous Coronary Intervention (PCI)</strong> may be indicated for high-risk patients with persistent ischemia.</li>
+                        </ul>
+                        <strong>STEMI (ST-Elevation Myocardial Infarction):</strong>
+                        <ul>
+                            <li>This is a <strong>TRUE EMERGENCY!</strong> It indicates a complete blockage of a coronary artery.</li>
+                            <li><strong>Assessment:</strong>
+                                <ul>
+                                    <li><strong>ECG ASAP:</strong> Get an EKG within <strong>10 minutes</strong> of arrival to the ED. This is critical for diagnosis.</li>
+                                    <li>Large bore IV access.</li>
+                                    <li>Troponin, CPK-MB labs.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Treatment:</strong> The goal is to <strong>re-establish blood flow (reperfusion)</strong> as quickly as possible. "Time is Muscle!"
+                                <ul>
+                                    <li><strong>MONAB:</strong>
+                                        <ul>
+                                            <li><strong>M</strong>orphine: For pain relief and to reduce oxygen demand.</li>
+                                            <li><strong>O</strong>xygen: If oxygen saturation is low or patient is in distress.</li>
+                                            <li><strong>N</strong>itrates (e.g., Nitroglycerin): To vasodilate and reduce workload.</li>
+                                            <li><strong>A</strong>spirin: Antiplatelet to prevent further clotting.</li>
+                                            <li><strong>B</strong>eta-blocker: To reduce heart rate and oxygen demand.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Heparin:</strong> Anticoagulant to prevent further clot formation.</li>
+                                    <li><strong>Thrombolytic Therapy (e.g., Alteplase/Activase):</strong> "Clot busters" that dissolve the thrombus in the coronary artery.
+                                        <ul>
+                                            <li>May not be first-line if a cath lab is available.</li>
+                                            <li><strong>CONTRAINDICATIONS:</strong> Recent surgery, recent falls, spinal tap, history of hemorrhagic stroke (high bleeding risk!).</li>
+                                            <li>Used when cath lab not available or blockage is suspected but not accessible via catheter.</li>
+                                            <li>Administered within 30 minutes of hospital arrival.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Percutaneous Coronary Intervention (PCI):</strong> The preferred treatment if available.
+                                        <ul>
+                                            <li><strong>"Door-to-balloon time" < 90 minutes</strong> is the goal (time from patient arrival to balloon inflation in the cath lab).</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>CABG (Coronary Artery Bypass Graft):</strong> Surgical revascularization to restore blood supply to damaged tissue, if PCI isn't feasible or blockages are extensive.</li>
+                                </ul>
+                            </li>
+                        </ul>` },
+                    { id: 'pci-cath-lab', title: 'Percutaneous Coronary Intervention (PCI): The Cath Lab Journey', type: 'text', content: `PCI, often called "Cath Lab," is a common procedure for opening blocked coronary arteries. As a nurse, you'll be involved in both pre- and post-procedure care:<br><br>
+                        <strong>Pre-Procedure:</strong>
+                        <ul>
+                            <li><strong>NPO:</strong> Patient should be NPO (nothing by mouth) for at least 6-8 hours if the procedure is scheduled.</li>
+                            <li>Obtain <strong>baseline vital signs</strong> from both arms.</li>
+                            <li><strong>Mark peripheral pulses</strong> with a marker and an 'X' (dorsalis pedis, posterior tibial) – this is crucial for post-procedure assessment!</li>
+                            <li>Prep the patient for the "warm flush" sensation they'll feel when the contrast dye is injected.</li>
+                        </ul>
+                        <strong>Post-Procedure:</strong>
+                        <ul>
+                            <li><strong>Groin site assessment and peripheral pulses FIRST:</strong> This is your top priority! Check for bleeding, hematoma, and compare pulses to your baseline marks.</li>
+                            <li><strong>Vital signs:</strong> Start frequent vital signs and groin/site checks: <strong>every 15 minutes x4, then every 30 minutes x4, then every 60 minutes x4, then every 8 hours.</strong> This is often called "Q15, Q30, Q60, Q8" routine.</li>
+                            <li>Order finger food if diet order is resumed (patient usually on bedrest, so easy-to-eat food is best).</li>
+                            <li>Once the bandage is removed, perform a <strong>Q-shift assessment for puncture site bruit</strong> until discharge (a bruit indicates turbulent blood flow, possibly an aneurysm or pseudoaneurysm).</li>
+                            <li>Start discharge teaching regarding <strong>weight and duration of sitting restrictions</strong> (to prevent stress on the access site).</li>
+                        </ul>` },
+                    { id: 'other-collaborative-interventions', title: 'Other Collaborative Interventions for Perfusion', type: 'text', content: `Beyond medications and immediate MI treatments, many other interventions help optimize perfusion:<br><br>
+                        <strong>For Central Perfusion (Heart-related):</strong>
+                        <ul>
+                            <li><strong>Pacemaker insertion:</strong> For bradyarrhythmias.</li>
+                            <li><strong>Electrical cardioversion:</strong> To reset fast, unstable rhythms.</li>
+                            <li><strong>Ablation therapy:</strong> To destroy irritable heart tissue causing arrhythmias.</li>
+                            <li><strong>Intra-aortic balloon pump (IABP):</strong> A temporary device to assist the failing heart.</li>
+                            <li><strong>Cardiac valve surgery:</strong> To repair or replace faulty heart valves.</li>
+                            <li><strong>Cardiac transplant:</strong> For end-stage heart failure.</li>
+                        </ul>
+                        <strong>For Tissue (Local) Perfusion (Vessel-related):</strong>
+                        <ul>
+                            <li><strong>Bypass and/or graft surgery:</strong> To create new pathways around blocked arteries (e.g., CABG for coronary arteries, bypass for peripheral arteries).</li>
+                            <li><strong>Stent or angioplasty:</strong> To open narrowed vessels and keep them open.</li>
+                            <li><strong>Endarterectomy:</strong> Surgical removal of plaque from inside an artery.</li>
+                        </ul>` },
+                    { id: 'pharmacotherapy-impaired-perfusion', title: 'Pharmacotherapy: Medications for Impaired Perfusion', type: 'text', content: `Medications are a cornerstone of managing perfusion issues. Here's a general overview of drug classes:<br><br>
+                        <strong>For Impaired Central Perfusion (Heart-focused):</strong>
+                        <ul>
+                            <li><strong>Antihypertensives:</strong> To lower blood pressure and reduce cardiac workload.</li>
+                            <li><strong>Antiarrhythmics:</strong> To correct abnormal heart rhythms.</li>
+                            <li><strong>Inotropics:</strong> To increase the force of myocardial contraction (e.g., Digoxin, Dopamine).</li>
+                            <li><strong>Antianginal agents:</strong> To reduce chest pain by improving oxygen supply/demand (e.g., Nitrates, Beta-blockers, Calcium Channel Blockers).</li>
+                            <li><strong>Vasopressors:</strong> To constrict blood vessels and increase blood pressure (used in shock).</li>
+                            <li><strong>Vasodilators:</strong> To relax blood vessels, reducing preload and afterload (e.g., Nitrates).</li>
+                        </ul>
+                        <strong>For Impaired Tissue (Local) Perfusion (Vessel-focused):</strong>
+                        <ul>
+                            <li><strong>Anticoagulants:</strong> To prevent blood clot formation (e.g., Heparin, Warfarin).</li>
+                            <li><strong>Thrombolytics:</strong> To dissolve existing blood clots (e.g., Alteplase).</li>
+                            <li><strong>Lipid-lowering agents:</strong> To reduce cholesterol and prevent atherosclerosis (e.g., Statins).</li>
+                            <li><strong>Vasodilators:</strong> To open up narrowed blood vessels and improve local blood flow.</li>
+                            <li><strong>Antiplatelet agents and platelet inhibitors:</strong> To prevent platelets from clumping together and forming clots (e.g., Aspirin, Clopidogrel).</li>
+                        </ul>` },
+                    { id: 'perfusion-prevention-intervention', title: 'Prevention & Intervention: Keeping Perfusion Healthy', type: 'text', content: `As nurses, we play a huge role in both preventing perfusion issues and intervening when they occur. Think of it in terms of primary, secondary, and collaborative approaches:<br><br>
+                        <strong>Primary Prevention (Preventing the problem before it starts):</strong>
+                        <ul>
+                            <li><strong>Nutrition:</strong> Healthy diet to prevent atherosclerosis and maintain healthy weight.</li>
+                            <li><strong>Activity and Exercise:</strong> Regular physical activity strengthens the heart and improves circulation.</li>
+                            <li><strong>Sleep and Rest:</strong> Adequate rest supports cardiovascular health.</li>
+                            <li><strong>Blood Pressure Control:</strong> Managing hypertension is key to preventing vessel damage.</li>
+                        </ul>
+                        <strong>Secondary Prevention (Early detection and intervention to prevent worsening):</strong>
+                        <ul>
+                            <li><strong>Blood Pressure Screenings:</strong> Regular checks to catch hypertension early.</li>
+                            <li><strong>Annual Well-Visits:</strong> Or as scheduled with healthcare providers.</li>
+                            <li><strong>Serum Lipids Screening:</strong> Checking cholesterol levels.</li>
+                        </ul>
+                        <strong>Collaborative Interventions (Working with the healthcare team):</strong>
+                        <ul>
+                            <li><strong>Nutrition Therapy:</strong> Consulting with dietitians.</li>
+                            <li><strong>Smoking Cessation:</strong> Helping patients quit smoking (a major risk factor).</li>
+                            <li><strong>Pharmacotherapy:</strong> Administering and managing medications as discussed.</li>
+                        </ul>` },
+                    { id: 'mi-perfusion-quiz', title: 'Myocardial Infarction & Perfusion Quiz', type: 'quiz',
+                        questions: [
+                            { question: "Which term describes an inadequate blood supply to the heart muscles, causing pain but not immediate tissue death?", options: ["Infarction", "Anoxia", "Ischemia", "Myocarditis"], correctAnswer: "Ischemia" },
+                            { question: "A patient presents with sudden, unexpected chest pain at rest, relieved by nitroglycerin. This is most consistent with:", options: ["Stable Angina", "Unstable Angina", "Prinzmetal's Angina", "Myocardial Infarction"], correctAnswer: "Prinzmetal's Angina" },
+                            { question: "Which cardiac biomarker is considered the most specific for myocardial damage?", options: ["CPK-MB", "Troponins", "Myoglobin", "LDH"], correctAnswer: "Troponins" },
+                            { question: "For a patient experiencing a STEMI, what is the critical 'door-to-balloon' time target for Percutaneous Coronary Intervention (PCI)?", options: ["< 30 minutes", "< 60 minutes", "< 90 minutes", "< 120 minutes"], correctAnswer: "< 90 minutes" },
+                            { question: "When assessing a patient post-PCI, what is the nurse's immediate priority?", options: ["Administering oral pain medication.", "Checking the groin site for bleeding and peripheral pulses.", "Documenting the patient's diet intake.", "Educating the patient about smoking cessation."], correctAnswer: "Checking the groin site for bleeding and peripheral pulses." }
+                        ]
+                    },
+                ]
+            },
             'electrophysiology-basics': {
                 title: 'Electrophysiology & EKG Basics',
                 color: 'from-blue-500 to-indigo-400',
@@ -641,25 +955,33 @@
 
         // The pre-assessment quiz data now includes questions for all new modules.
         const preAssessmentQuizData = [
-            // Questions for Module 1: Electrophysiology & EKG Basics
+            // Questions for Module 1: Perfusion Concepts
+            { moduleId: 'perfusion-concepts', question: "Which of the following best defines perfusion?", options: ["The amount of oxygen carried by red blood cells.", "The flow of blood through arteries and capillaries, delivering nutrients and oxygen.", "The process of gas exchange in the lungs.", "The heart's ability to contract forcefully."], correctAnswer: "The flow of blood through arteries and capillaries, delivering nutrients and oxygen." },
+            { moduleId: 'perfusion-concepts', question: "What is the formula for Cardiac Output (CO)?", options: ["CO = Blood Pressure × Heart Rate", "CO = Stroke Volume + Heart Rate", "CO = Stroke Volume × Heart Rate", "CO = Preload × Afterload"], correctAnswer: "CO = Stroke Volume × Heart Rate" },
+
+            // Questions for Module 2: Myocardial Infarction
+            { moduleId: 'myocardial-infarction', question: "Which term describes an inadequate blood supply to the heart muscles, causing pain but not immediate tissue death?", options: ["Infarction", "Anoxia", "Ischemia", "Myocarditis"], correctAnswer: "Ischemia" },
+            { moduleId: 'myocardial-infarction', question: "Which cardiac biomarker is considered the most specific for myocardial damage?", options: ["CPK-MB", "Troponins", "Myoglobin", "LDH"], correctAnswer: "Troponins" },
+
+            // Questions for Module 3: Electrophysiology & EKG Basics
             { moduleId: 'electrophysiology-basics', question: "Which component of the EKG complex represents ventricular depolarization and contraction?", options: ["P Wave", "PR Interval", "QRS Complex", "T Wave"], correctAnswer: "QRS Complex" },
             { moduleId: 'electrophysiology-basics', question: "What is the normal pacemaker of the heart, setting the intrinsic rate of 60-100 bpm?", options: ["Atrioventricular (AV) Node", "Bundle of His", "Purkinje Fibers", "Sinoatrial (SA) Node"], correctAnswer: "Sinoatrial (SA) Node" },
             { moduleId: 'electrophysiology-basics', question: "On EKG paper, how many seconds does one large square represent?", options: ["0.04 seconds", "0.12 seconds", "0.20 seconds", "1.00 seconds"], correctAnswer: "0.20 seconds" },
 
-            // Questions for Module 2: Sinus Rhythms
+            // Questions for Module 4: Sinus Rhythms
             { moduleId: 'sinus-rhythms', question: "A patient's EKG shows a regular rhythm with a heart rate of 50 bpm, a normal P wave, and a normal QRS. What is this rhythm?", options: ["Normal Sinus Rhythm", "Sinus Tachycardia", "Sinus Bradycardia", "Sinus Arrhythmia"], correctAnswer: "Sinus Bradycardia" },
             { moduleId: 'sinus-rhythms', question: "Which characteristic is unique to Sinus Arrhythmia compared to other sinus rhythms?", options: ["Rate below 60 bpm", "Rate above 100 bpm", "Irregular rhythm that changes with breathing", "Absence of P waves"], correctAnswer: "Irregular rhythm that changes with breathing" },
 
-            // Questions for Module 3: Atrial Rhythms
+            // Questions for Module 5: Atrial Rhythms
             { moduleId: 'atrial-rhythms', question: "Which atrial rhythm is characterized by an 'irregularly irregular' ventricular rhythm and no discernible P waves?", options: ["Premature Atrial Contraction", "Supraventricular Tachycardia", "Atrial Fibrillation", "Atrial Flutter"], correctAnswer: "Atrial Fibrillation" },
             { moduleId: 'atrial-rhythms', question: "The distinctive 'sawtooth' pattern on an EKG strip is characteristic of which atrial rhythm?", options: ["Normal Sinus Rhythm", "Sinus Arrhythmia", "Atrial Fibrillation", "Atrial Flutter"], correctAnswer: "Atrial Flutter" },
 
-            // Questions for Module 4: Ventricular Rhythms
+            // Questions for Module 6: Ventricular Rhythms
             { moduleId: 'ventricular-rhythms', question: "Which of the following EKG findings is characteristic of a Premature Ventricular Contraction (PVC)?", options: ["Narrow QRS complex", "Normal P wave preceding the QRS", "Wide and bizarre QRS complex", "Regular rhythm"], correctAnswer: "Wide and bizarre QRS complex" },
             { moduleId: 'ventricular-rhythms', question: "In Ventricular Fibrillation (V-fib), what is the most immediate and critical intervention?", options: ["Administering Amiodarone IV", "Initiating CPR and defibrillation", "Performing vagal maneuvers", "Administering Atropine IV"], correctAnswer: "Initiating CPR and defibrillation" },
             { moduleId: 'ventricular-rhythms', question: "Which rhythm displays organized electrical activity on the monitor but no palpable pulse?", options: ["Ventricular Tachycardia with a pulse", "Asystole", "Idioventricular Rhythm", "Pulseless Electrical Activity (PEA)"], correctAnswer: "Pulseless Electrical Activity (PEA)" },
 
-            // Questions for Module 5: Pacemakers & Review
+            // Questions for Module 7: Pacemakers & Review
             { moduleId: 'pacemakers-and-review', question: "You observe a straight line on your patient's cardiac monitor. What is your immediate nursing action?", options: ["Call a code and begin CPR.", "Assess the patient for a pulse and responsiveness.", "Administer Epinephrine IV.", "Check the EKG lead connections."], correctAnswer: "Assess the patient for a pulse and responsiveness." },
             { moduleId: 'pacemakers-and-review', question: "Which EKG finding is a priority for immediate intervention, as it suggests acute myocardial injury?", options: ["Inverted P wave", "Prolonged QT interval", "ST segment elevation", "Frequent unifocal PVCs"], correctAnswer: "ST segment elevation" }
         ];
