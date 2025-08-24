@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Closure & New Brand</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define custom Tailwind configuration to include Inter font and custom colors */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Prevent body scrolling when modal is open */
+            overflow: hidden; 
+        }
+
+        /* Custom animation for fading in and subtle movement */
+        @keyframes fadeInMoveUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Adjusted animation delays for quicker appearance */
+        .animate-fadeInMoveUp-1 { animation: fadeInMoveUp 1s ease-out forwards; animation-delay: 0.2s; }
+        .animate-fadeInMoveUp-2 { animation: fadeInMoveUp 1s ease-out forwards; animation-delay: 0.4s; }
+        .animate-fadeInMoveUp-3 { animation: fadeInMoveUp 1s ease-out forwards; animation-delay: 0.6s; }
+        .animate-fadeInMoveUp-5 { animation: fadeInMoveUp 1s ease-out forwards; animation-delay: 1.0s; } /* Adjusted index */
+
+
+        /* Keyframe for modal entry animation */
+        @keyframes modalPopIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            80% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Ensure elements are initially hidden before animation */
+        .animated-element {
+            opacity: 0;
+        }
+
+        /* Modal specific styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's on top of everything */
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 2.5rem; /* 40px */
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-width: 90%;
+            width: 500px;
+            text-align: center;
+            animation: modalPopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            border-top: 5px solid #ef4444; /* Red border for alert */
+        }
+
+        .modal-hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 to-teal-100 flex items-center justify-center min-h-screen p-4 text-gray-800">
+
+    <!-- Login Information Alert Modal -->
+    <div id="loginAlertModal" class="modal-overlay">
+        <div class="modal-content">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <h2 class="text-3xl font-extrabold text-red-700 mb-3 uppercase">Important Alert!</h2>
+            <p class="text-xl text-gray-700 mb-6 font-semibold">
+                Your <strong>existing login information</strong> has been successfully migrated.
+            </p>
+            <p class="text-lg text-gray-600 mb-8">
+                You can use your <strong>same email and password</strong> to access your account on:
+            </p>
+            <a 
+                href="https://AlliedRNPrep.org" 
+                class="inline-flex items-center justify-center px-6 py-3 bg-emerald-600 text-white text-lg font-bold rounded-lg shadow-md hover:bg-emerald-700 transition duration-300 ease-in-out transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-opacity-50"
+            >
+                AlliedRNPrep.org
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+            <button 
+                id="dismissAlertButton" 
+                class="mt-6 px-5 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-100 transition duration-200 ease-in-out"
+            >
+                Got It!
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Page Content -->
+    <div class="bg-white rounded-xl shadow-2xl p-8 md:p-12 max-w-2xl w-full text-center border-t-4 border-emerald-600 space-y-6">
+        
+        <!-- Header Section -->
+        <div class="animated-element animate-fadeInMoveUp-1">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-emerald-700 mb-4 tracking-tight">
+                An Important Update
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600">
+                This site has now officially closed its operations.
+            </p>
+        </div>
+
+        <!-- Migration Message -->
+        <div class="animated-element animate-fadeInMoveUp-2">
+            <p class="text-xl md:text-2xl font-semibold text-gray-700">
+                We've proudly migrated to our new brand and enhanced platform!
+            </p>
+        </div>
+
+        <!-- Call to Action Button -->
+        <div class="animated-element animate-fadeInMoveUp-3">
+            <a 
+                href="https://AlliedRNPrep.org" 
+                class="inline-flex items-center justify-center px-8 py-4 bg-emerald-600 text-white text-xl font-bold rounded-lg shadow-lg hover:bg-emerald-700 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-opacity-50"
+            >
+                Visit AlliedRNPrep.org
+                <!-- Simple SVG arrow for a professional touch -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- The original login information notice, kept for when the modal is dismissed -->
+        <div class="animated-element animate-fadeInMoveUp-5 p-5 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 font-medium text-lg md:text-xl leading-relaxed">
+            <p class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Remember: Your <strong>existing login information</strong> remains valid!
+            </p>
+            <p class="mt-2">
+                You can use your <strong>same email and password</strong> to access your account on AlliedRNPrep.org.
+            </p>
+        </div>
+
+        <!-- Closing Remarks -->
+        <div class="animated-element animate-fadeInMoveUp-5 pt-4 text-gray-500 text-sm">
+            <p>Thank you for your continued support.</p>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginAlertModal = document.getElementById('loginAlertModal');
+            const dismissAlertButton = document.getElementById('dismissAlertButton');
+
+            // Show the modal immediately
+            loginAlertModal.classList.remove('modal-hidden');
+            // Disable body scrolling while modal is active
+            document.body.style.overflow = 'hidden';
+
+            dismissAlertButton.addEventListener('click', function() {
+                loginAlertModal.classList.add('modal-hidden');
+                // Re-enable body scrolling
+                document.body.style.overflow = 'auto';
+
+                // You might want to remove the pulse animation from the on-page notice
+                // if it was previously there, or just keep it as a subtle reminder.
+                // For this version, the on-page notice simply fades in with the rest
+                // of the content after the modal is dismissed.
+            });
+        });
+    </script>
+
+</body>
+</html>
